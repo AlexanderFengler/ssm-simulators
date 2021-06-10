@@ -621,7 +621,7 @@ def glob_flexbound(np.ndarray[float, ndim = 1] v,
 
             # Random walker
             while y >= (-1) * boundary_view[ix] and y <= boundary_view[ix] and t_particle <= max_t:
-                y += ((v_view[k] - (g_view[k] * y) * delta_t) + (delta_t_alpha * alpha_stable_values[m])
+                y += ((v_view[k] - (g_view[k] * y)) * delta_t) + (delta_t_alpha * alpha_stable_values[m])
                 t_particle += delta_t
                 ix += 1
                 m += 1
@@ -874,7 +874,7 @@ def full_ddm(np.ndarray[float, ndim = 1] v, # = 0,
             rts_view[n, k, 0] = t_particle + t_tmp # Store rt
             choices_view[n, k, 0] = np.sign(y) # Store choice
 
-    return ('rts': rts, 'choices': choices, 'metadata': {'v': v,
+    return {'rts': rts, 'choices': choices, 'metadata': {'v': v,
                                                          'a': a,
                                                          'z': z,
                                                          't': t,

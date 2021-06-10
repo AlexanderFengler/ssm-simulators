@@ -1,8 +1,15 @@
 import config
-import boundary_functions as bf
+from . import boundary_functions as bf
+import numpy as np
+import pandas as pd
+import sys
+
+
+
+import cssm
+
 
 # Basic simulators and basic preprocessing
-
 def bin_simulator_output_pointwise(out = [0, 0],
                                    bin_dt = 0.04,
                                    nbins = 0): # ['v', 'a', 'w', 't', 'angle']
@@ -205,6 +212,9 @@ def simulator(theta,
     if len(theta.shape) < 2:
         theta = np.expand_dims(theta, axis = 0)
     
+
+    # AF-TD allow for theta pd.DataFrame
+
     # # Is this necessary ?
     # if theta.shape[0] != n_trials:
     #     print('ERROR number of trials does not match first dimension of theta array')
@@ -220,272 +230,272 @@ def simulator(theta,
 
 
     if model == 'glob':
-        x = glob_flexbound(v = theta[:, 0], 
-                           a = theta[:, 1],
-                           z = theta[:, 2], 
-                           alphar = theta[:, 3],
-                           g = theta[:, 4],
-                           t = theta[:, 5], 
-                           s = s,
-                           boundary_fun = bf.angle, 
-                           boundary_multiplicative = False,
-                           boundary_params = {'theta': theta[:, 6]}, 
-                           delta_t = delta_t,
-                           n_samples = n_samples,
-                           n_trials = n_trials,
-                           max_t = max_t)
+        x = cssm.glob_flexbound(v = theta[:, 0], 
+                                a = theta[:, 1],
+                                z = theta[:, 2], 
+                                alphar = theta[:, 3],
+                                g = theta[:, 4],
+                                t = theta[:, 5], 
+                                s = s,
+                                boundary_fun = bf.angle, 
+                                boundary_multiplicative = False,
+                                boundary_params = {'theta': theta[:, 6]}, 
+                                delta_t = delta_t,
+                                n_samples = n_samples,
+                                n_trials = n_trials,
+                                max_t = max_t)
 
-    # if model == 'test':
-    #     x = ddm_flexbound(v = theta[:, 0],
-    #                       a = theta[:, 1], 
-    #                       z = theta[:, 2],
-    #                       t = theta[:, 3],
-    #                       s = s,
-    #                       n_samples = n_samples,
-    #                       n_trials = n_trials,
-    #                       delta_t = delta_t,
-    #                       boundary_params = {},
-    #                       boundary_fun = bf.constant,
-    #                       boundary_multiplicative = True,
-    #                       max_t = max_t)
+    if model == 'test':
+        x = cssm.ddm_flexbound(v = theta[:, 0],
+                               a = theta[:, 1], 
+                               z = theta[:, 2],
+                               t = theta[:, 3],
+                               s = s,
+                               n_samples = n_samples,
+                               n_trials = n_trials,
+                               delta_t = delta_t,
+                               boundary_params = {},
+                               boundary_fun = bf.constant,
+                               boundary_multiplicative = True,
+                               max_t = max_t)
     
-    # if model == 'ddm' or model == 'ddm_elife' or model == 'ddm_analytic':
-    #     x = ddm_flexbound(v = theta[:, 0],
-    #                       a = theta[:, 1], 
-    #                       z = theta[:, 2],
-    #                       t = theta[:, 3],
-    #                       s = s,
-    #                       n_samples = n_samples,
-    #                       n_trials = n_trials,
-    #                       delta_t = delta_t,
-    #                       boundary_params = {},
-    #                       boundary_fun = bf.constant,
-    #                       boundary_multiplicative = True,
-    #                       max_t = max_t)
+    if model == 'ddm' or model == 'ddm_elife' or model == 'ddm_analytic':
+        x = cssm.ddm_flexbound(v = theta[:, 0],
+                               a = theta[:, 1], 
+                               z = theta[:, 2],
+                               t = theta[:, 3],
+                               s = s,
+                               n_samples = n_samples,
+                               n_trials = n_trials,
+                               delta_t = delta_t,
+                               boundary_params = {},
+                               boundary_fun = bf.constant,
+                               boundary_multiplicative = True,
+                               max_t = max_t)
     
-    # if model == 'angle' or model == 'angle2':
-    #     x = ddm_flexbound(v = theta[:, 0], 
-    #                       a = theta[:, 1],
-    #                       z = theta[:, 2], 
-    #                       t = theta[:, 3], 
-    #                       s = s,
-    #                       boundary_fun = bf.angle, 
-    #                       boundary_multiplicative = False,
-    #                       boundary_params = {'theta': theta[:, 4]}, 
-    #                       delta_t = delta_t,
-    #                       n_samples = n_samples,
-    #                       n_trials = n_trials,
-    #                       max_t = max_t)
+    if model == 'angle' or model == 'angle2':
+        x = cssm.ddm_flexbound(v = theta[:, 0], 
+                               a = theta[:, 1],
+                               z = theta[:, 2], 
+                               t = theta[:, 3], 
+                               s = s,
+                               boundary_fun = bf.angle, 
+                               boundary_multiplicative = False,
+                               boundary_params = {'theta': theta[:, 4]}, 
+                               delta_t = delta_t,
+                               n_samples = n_samples,
+                               n_trials = n_trials,
+                               max_t = max_t)
     
-    # if model == 'weibull_cdf' or model == 'weibull_cdf2' or model == 'weibull_cdf_ext' or model == 'weibull_cdf_concave' or model == 'weibull':
-    #     x = ddm_flexbound(v = theta[:, 0], 
-    #                       a = theta[:, 1], 
-    #                       z = theta[:, 2], 
-    #                       t = theta[:, 3], 
-    #                       s = s,
-    #                       boundary_fun = bf.weibull_cdf, 
-    #                       boundary_multiplicative = True, 
-    #                       boundary_params = {'alpha': theta[:, 4], 'beta': theta[:, 5]}, 
-    #                       delta_t = delta_t,
-    #                       n_samples = n_samples,
-    #                       n_trials = n_trials,
-    #                       max_t = max_t)
+    if model == 'weibull_cdf' or model == 'weibull_cdf2' or model == 'weibull_cdf_ext' or model == 'weibull_cdf_concave' or model == 'weibull':
+        x = cssm.ddm_flexbound(v = theta[:, 0], 
+                               a = theta[:, 1], 
+                               z = theta[:, 2], 
+                               t = theta[:, 3], 
+                               s = s,
+                               boundary_fun = bf.weibull_cdf, 
+                               boundary_multiplicative = True, 
+                               boundary_params = {'alpha': theta[:, 4], 'beta': theta[:, 5]}, 
+                               delta_t = delta_t,
+                               n_samples = n_samples,
+                               n_trials = n_trials,
+                               max_t = max_t)
     
-    # if model == 'levy':
-    #     x = levy_flexbound(v = theta[:, 0], 
-    #                        a = theta[:, 1], 
-    #                        z = theta[:, 2], 
-    #                        alpha_diff = theta[:, 3], 
-    #                        t = theta[:, 4],
-    #                        s = s, 
-    #                        boundary_fun = bf.constant, 
-    #                        boundary_multiplicative = True, 
-    #                        boundary_params = {},
-    #                        delta_t = delta_t,
-    #                        n_samples = n_samples,
-    #                        n_trials = n_trials,
-    #                        max_t = max_t)
+    if model == 'levy':
+        x = cssm.levy_flexbound(v = theta[:, 0], 
+                                a = theta[:, 1], 
+                                z = theta[:, 2], 
+                                alpha_diff = theta[:, 3], 
+                                t = theta[:, 4],
+                                s = s, 
+                                boundary_fun = bf.constant, 
+                                boundary_multiplicative = True, 
+                                boundary_params = {},
+                                delta_t = delta_t,
+                                n_samples = n_samples,
+                                n_trials = n_trials,
+                                max_t = max_t)
     
-    # if model == 'full_ddm' or model == 'full_ddm2':
-    #     x = full_ddm(v = theta[:, 0],
-    #                  a = theta[:, 1],
-    #                  z = theta[:, 2], 
-    #                  t = theta[:, 3], 
-    #                  sz = theta[:, 4], 
-    #                  sv = theta[:, 5], 
-    #                  st = theta[:, 6], 
-    #                  s = s,
-    #                  boundary_fun = bf.constant, 
-    #                  boundary_multiplicative = True, 
-    #                  boundary_params = {}, 
-    #                  delta_t = delta_t,
-    #                  n_samples = n_samples,
-    #                  n_trials = n_trials,
-    #                  max_t = max_t)
+    if model == 'full_ddm' or model == 'full_ddm2':
+        x = cssm.full_ddm(v = theta[:, 0],
+                          a = theta[:, 1],
+                          z = theta[:, 2], 
+                          t = theta[:, 3], 
+                          sz = theta[:, 4], 
+                          sv = theta[:, 5], 
+                          st = theta[:, 6], 
+                          s = s,
+                          boundary_fun = bf.constant, 
+                          boundary_multiplicative = True, 
+                          boundary_params = {}, 
+                          delta_t = delta_t,
+                          n_samples = n_samples,
+                          n_trials = n_trials,
+                          max_t = max_t)
 
-    # if model == 'ddm_sdv':
-    #     x = ddm_sdv(v = theta[:, 0], 
-    #                 a = theta[:, 1], 
-    #                 z = theta[:, 2], 
-    #                 t = theta[:, 3],
-    #                 sv = theta[:, 4],
-    #                 s = s,
-    #                 boundary_fun = bf.constant,
-    #                 boundary_multiplicative = True, 
-    #                 boundary_params = {},
-    #                 delta_t = delta_t,
-    #                 n_samples = n_samples,
-    #                 n_trials = n_trials,
-    #                 max_t = max_t)
+    if model == 'ddm_sdv':
+        x = cssm.ddm_sdv(v = theta[:, 0], 
+                         a = theta[:, 1], 
+                         z = theta[:, 2], 
+                         t = theta[:, 3],
+                         sv = theta[:, 4],
+                         s = s,
+                         boundary_fun = bf.constant,
+                         boundary_multiplicative = True, 
+                         boundary_params = {},
+                         delta_t = delta_t,
+                         n_samples = n_samples,
+                         n_trials = n_trials,
+                         max_t = max_t)
         
-    # if model == 'ornstein' or model == 'ornstein_uhlenbeck':
-    #     x = ornstein_uhlenbeck(v = theta[:, 0], 
-    #                            a = theta[:, 1], 
-    #                            z = theta[:, 2], 
-    #                            g = theta[:, 3], 
-    #                            t = theta[:, 4],
-    #                            s = s,
-    #                            boundary_fun = bf.constant,
-    #                            boundary_multiplicative = True,
-    #                            boundary_params = {},
-    #                            delta_t = delta_t,
-    #                            n_samples = n_samples,
-    #                            n_trials = n_trials,
-    #                            max_t = max_t)
+    if model == 'ornstein' or model == 'ornstein_uhlenbeck':
+        x = cssm.ornstein_uhlenbeck(v = theta[:, 0], 
+                                    a = theta[:, 1], 
+                                    z = theta[:, 2], 
+                                    g = theta[:, 3], 
+                                    t = theta[:, 4],
+                                    s = s,
+                                    boundary_fun = bf.constant,
+                                    boundary_multiplicative = True,
+                                    boundary_params = {},
+                                    delta_t = delta_t,
+                                    n_samples = n_samples,
+                                    n_trials = n_trials,
+                                    max_t = max_t)
 
-    # # 3 Choice models
-    # if no_noise:
-    #     s = np.tile(np.array([0.0, 0.0, 0.0], dtype = np.float32), (n_trials, 1))
-    # else:
-    #     s = np.tile(np.array([1.0, 1.0, 1.0], dtype = np.float32), (n_trials, 1))
+    # 3 Choice models
+    if no_noise:
+        s = np.tile(np.array([0.0, 0.0, 0.0], dtype = np.float32), (n_trials, 1))
+    else:
+        s = np.tile(np.array([1.0, 1.0, 1.0], dtype = np.float32), (n_trials, 1))
 
-    # if model == 'race_model_3':
-    #     x = race_model(v = theta[:, :3],
-    #                    a = theta[:, [3]],
-    #                    z = theta[:, 4:7],
-    #                    t = theta[:, [7]],
-    #                    s = s,
-    #                    boundary_fun = bf.constant,
-    #                    boundary_multiplicative = True,
-    #                    boundary_params = {},
-    #                    delta_t = delta_t,
-    #                    n_samples = n_samples,
-    #                    n_trials = n_trials,
-    #                    max_t = max_t)
+    if model == 'race_model_3':
+        x = cssm.race_model(v = theta[:, :3],
+                            a = theta[:, [3]],
+                            z = theta[:, 4:7],
+                            t = theta[:, [7]],
+                            s = s,
+                            boundary_fun = bf.constant,
+                            boundary_multiplicative = True,
+                            boundary_params = {},
+                            delta_t = delta_t,
+                            n_samples = n_samples,
+                            n_trials = n_trials,
+                            max_t = max_t)
         
-    # if model == 'lca_3':
-    #     x = lca(v = theta[:, :3],
-    #             a = theta[:, [4]],
-    #             z = theta[:, 4:7],
-    #             g = theta[:, [7]],
-    #             b = theta[:, [8]],
-    #             t = theta[:, [9]],
-    #             s = s,
-    #             boundary_fun = bf.constant,
-    #             boundary_multiplicative = True,
-    #             boundary_params = {},
-    #             delta_t = delta_t,
-    #             n_samples = n_samples,
-    #             n_trials = n_trials,
-    #             max_t = max_t)
+    if model == 'lca_3':
+        x = cssm.lca(v = theta[:, :3],
+                     a = theta[:, [4]],
+                     z = theta[:, 4:7],
+                     g = theta[:, [7]],
+                     b = theta[:, [8]],
+                     t = theta[:, [9]],
+                     s = s,
+                     boundary_fun = bf.constant,
+                     boundary_multiplicative = True,
+                     boundary_params = {},
+                     delta_t = delta_t,
+                     n_samples = n_samples,
+                     n_trials = n_trials,
+                     max_t = max_t)
 
-    # # 4 Choice models
-    # if no_noise:
-    #     s = np.tile(np.array([0.0, 0.0, 0.0, 0.0], dtype = np.float32), (n_trials, 1))
-    # else:
-    #     s = np.tile(np.array([1.0, 1.0, 1.0, 0.0], dtype = np.float32), (n_trials, 1))
+    # 4 Choice models
+    if no_noise:
+        s = np.tile(np.array([0.0, 0.0, 0.0, 0.0], dtype = np.float32), (n_trials, 1))
+    else:
+        s = np.tile(np.array([1.0, 1.0, 1.0, 0.0], dtype = np.float32), (n_trials, 1))
 
-    # if model == 'race_model_4':
-    #     x = race_model(v = theta[:, :4],
-    #                    a = theta[:, [4]],
-    #                    z = theta[:, 5:9],
-    #                    t = theta[:, [9]],
-    #                    s = s,
-    #                    boundary_fun = bf.constant,
-    #                    boundary_multiplicative = True,
-    #                    boundary_params = {},
-    #                    delta_t = delta_t,
-    #                    n_samples = n_samples,
-    #                    n_trials = n_trials,
-    #                    max_t = max_t)
+    if model == 'race_model_4':
+        x = cssm.race_model(v = theta[:, :4],
+                            a = theta[:, [4]],
+                            z = theta[:, 5:9],
+                            t = theta[:, [9]],
+                            s = s,
+                            boundary_fun = bf.constant,
+                            boundary_multiplicative = True,
+                            boundary_params = {},
+                            delta_t = delta_t,
+                            n_samples = n_samples,
+                            n_trials = n_trials,
+                            max_t = max_t)
         
-    # if model == 'lca_4':
-    #     x = lca(v = theta[:, :4],
-    #             a = theta[:, [4]],
-    #             z = theta[:, 5:9],
-    #             g = theta[:, [9]],
-    #             b = theta[:, [10]],
-    #             t = theta[:, [11]],
-    #             s = s,
-    #             boundary_fun = bf.constant,
-    #             boundary_multiplicative = True,
-    #             boundary_params = {},
-    #             delta_t = delta_t,
-    #             n_samples = n_samples,
-    #             n_trials = n_trials,
-    #             max_t = max_t)
+    if model == 'lca_4':
+        x = cssm.lca(v = theta[:, :4],
+                     a = theta[:, [4]],
+                     z = theta[:, 5:9],
+                     g = theta[:, [9]],
+                     b = theta[:, [10]],
+                     t = theta[:, [11]],
+                     s = s,
+                     boundary_fun = bf.constant,
+                     boundary_multiplicative = True,
+                     boundary_params = {},
+                     delta_t = delta_t,
+                     n_samples = n_samples,
+                     n_trials = n_trials,
+                     max_t = max_t)
 
-    # # Seq / Parallel models (4 choice)
-    # if no_noise:
-    #     s = 0.0
-    # else: 
-    #     s = 1.0
+    # Seq / Parallel models (4 choice)
+    if no_noise:
+        s = 0.0
+    else: 
+        s = 1.0
 
         
-    # if model == 'ddm_seq2':
-    #     x = ddm_flexbound_seq2(v_h = theta[:, [0]],
-    #                            v_l_1 = theta[:, [1]],
-    #                            v_l_2 = theta[:, [2]],
-    #                            a = theta[:, [3]],
-    #                            z_h = theta[:, [4]],
-    #                            z_l_1 = theta[:, [5]],
-    #                            z_l_2 = theta[:, [6]],
-    #                            t = theta[:, [7]],
-    #                            s = s,
-    #                            n_samples = n_samples,
-    #                            n_trials = n_trials,
-    #                            delta_t = delta_t,
-    #                            max_t = max_t,
-    #                            boundary_fun = bf.constant,
-    #                            boundary_multiplicative = True,
-    #                            boundary_params = {})
+    if model == 'ddm_seq2':
+        x = cssm.ddm_flexbound_seq2(v_h = theta[:, [0]],
+                                    v_l_1 = theta[:, [1]],
+                                    v_l_2 = theta[:, [2]],
+                                    a = theta[:, [3]],
+                                    z_h = theta[:, [4]],
+                                    z_l_1 = theta[:, [5]],
+                                    z_l_2 = theta[:, [6]],
+                                    t = theta[:, [7]],
+                                    s = s,
+                                    n_samples = n_samples,
+                                    n_trials = n_trials,
+                                    delta_t = delta_t,
+                                    max_t = max_t,
+                                    boundary_fun = bf.constant,
+                                    boundary_multiplicative = True,
+                                    boundary_params = {})
 
-    # if model == 'ddm_par2':
-    #     x = ddm_flexbound_par2(v_h = theta[:, [0]],
-    #                            v_l_1 = theta[:, [1]],
-    #                            v_l_2 = theta[:, [2]],
-    #                            a = theta[:, [3]],
-    #                            z_h = theta[:, [4]],
-    #                            z_l_1 = theta[:, [5]],
-    #                            z_l_2 = theta[:, [6]],
-    #                            t = theta[:, [7]],
-    #                            s = s,
-    #                            n_samples = n_samples,
-    #                            n_trials = n_trials,
-    #                            delta_t = delta_t,
-    #                            max_t = max_t,
-    #                            boundary_fun = bf.constant,
-    #                            boundary_multiplicative = True,
-    #                            boundary_params = {})
+    if model == 'ddm_par2':
+        x = cssm.ddm_flexbound_par2(v_h = theta[:, [0]],
+                                    v_l_1 = theta[:, [1]],
+                                    v_l_2 = theta[:, [2]],
+                                    a = theta[:, [3]],
+                                    z_h = theta[:, [4]],
+                                    z_l_1 = theta[:, [5]],
+                                    z_l_2 = theta[:, [6]],
+                                    t = theta[:, [7]],
+                                    s = s,
+                                    n_samples = n_samples,
+                                    n_trials = n_trials,
+                                    delta_t = delta_t,
+                                    max_t = max_t,
+                                    boundary_fun = bf.constant,
+                                    boundary_multiplicative = True,
+                                    boundary_params = {})
 
-    # if model == 'ddm_mic2':
-    #     x = ddm_flexbound_mic2(v_h = theta[:, [0]],
-    #                            v_l_1 = theta[:, [1]],
-    #                            v_l_2 = theta[:, [2]],
-    #                            a = theta[:, [3]],
-    #                            z_h = theta[:, [4]],
-    #                            z_l_1 = theta[:, [5]],
-    #                            z_l_2 = theta[:, [6]],
-    #                            d = theta[:, [7]],
-    #                            t = theta[:, [8]],
-    #                            s = s,
-    #                            n_samples = n_samples,
-    #                            n_trials = n_trials,
-    #                            delta_t = delta_t,
-    #                            max_t = max_t,
-    #                            boundary_fun = bf.constant,
-    #                            boundary_multiplicative = True,
-    #                            boundary_params = {})
+    if model == 'ddm_mic2':
+        x = cssm.ddm_flexbound_mic2(v_h = theta[:, [0]],
+                                    v_l_1 = theta[:, [1]],
+                                    v_l_2 = theta[:, [2]],
+                                    a = theta[:, [3]],
+                                    z_h = theta[:, [4]],
+                                    z_l_1 = theta[:, [5]],
+                                    z_l_2 = theta[:, [6]],
+                                    d = theta[:, [7]],
+                                    t = theta[:, [8]],
+                                    s = s,
+                                    n_samples = n_samples,
+                                    n_trials = n_trials,
+                                    delta_t = delta_t,
+                                    max_t = max_t,
+                                    boundary_fun = bf.constant,
+                                    boundary_multiplicative = True,
+                                    boundary_params = {})
     
     # Output compatibility
     if n_trials == 1:
@@ -503,13 +513,13 @@ def simulator(theta,
         return x
     elif bin_dim > 0 and n_trials == 1 and not bin_pointwise:
         binned_out = bin_simulator_output(x, nbins = bin_dim)
-        return (binned_out, x[2])
+        return {'data': binned_out, 'metadata': x['metadata']}
     elif bin_dim > 0 and n_trials == 1 and bin_pointwise:
         binned_out = bin_simulator_output_pointwise(x, nbins = bin_dim)
-        return (np.expand_dims(binned_out[:,0], axis = 1), np.expand_dims(binned_out[:, 1], axis = 1), x[2])
+        return {'rts': np.expand_dims(binned_out[:,0], axis = 1), 'choices': np.expand_dims(binned_out[:, 1], axis = 1), 'metadata': x['metadata']}
     elif bin_dim > 0 and n_trials > 1 and n_samples == 1 and bin_pointwise:
         binned_out = bin_simulator_output_pointwise(x, nbins = bin_dim)
-        return (np.expand_dims(binned_out[:,0], axis = 1), np.expand_dims(binned_out[:, 1], axis = 1), x[2])
+        return {'rts': np.expand_dims(binned_out[:,0], axis = 1), 'choices': np.expand_dims(binned_out[:, 1], axis = 1), 'metadata': x['metadata']}
     elif bin_dim > 0 and n_trials > 1 and n_samples > 1 and bin_pointwise:
         return 'currently n_trials > 1 and n_samples > 1 will not work together with bin_pointwise'
     elif bin_dim > 0 and n_trials > 1 and not bin_pointwise:
