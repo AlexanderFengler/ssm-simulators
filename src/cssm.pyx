@@ -375,8 +375,8 @@ def ddm_flexbound(np.ndarray[float, ndim = 1] v,
     cdef float[:] gaussian_values = draw_gaussian(num_draws)
     cdef float[:] boundary_view = boundary
 
-    print('boundary shape')
-    print(boundary.shape)
+    #print('boundary shape')
+    #print(boundary.shape)
 
     
     # Loop over samples

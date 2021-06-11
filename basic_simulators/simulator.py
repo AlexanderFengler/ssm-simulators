@@ -6,7 +6,7 @@ import sys
 
 
 
-import cssm
+from src import cssm
 
 
 # Basic simulators and basic preprocessing
@@ -33,17 +33,17 @@ def bin_simulator_output_pointwise(out = [0, 0],
 
     # Generate bins
     if nbins == 0:
-        nbins = int(out[2]['max_t'] / bin_dt)
+        nbins = int(out['metadata']['max_t'] / bin_dt)
         bins = np.zeros(nbins + 1)
-        bins[:nbins] = np.linspace(0, out[2]['max_t'], nbins)
+        bins[:nbins] = np.linspace(0, out['metadata']['max_t'], nbins)
         bins[nbins] = np.inf
     else:  
         bins = np.zeros(nbins + 1)
-        bins[:nbins] = np.linspace(0, out[2]['max_t'], nbins)
+        bins[:nbins] = np.linspace(0, out['metadata']['max_t'], nbins)
         bins[nbins] = np.inf
 
     cnt = 0
-    counts = np.zeros( (nbins, len(out[2]['possible_choices']) ) )
+    counts = np.zeros( (nbins, len(out['metadata']['possible_choices']) ) )
     
     #data_out = pd.DataFrame(np.zeros(( columns = ['rt', 'response'])
     out_copy_tmp = deepcopy(out_copy)
@@ -85,8 +85,11 @@ def bin_simulator_output(out = None,
 
     """
 
+    #print(out)
+    print('passed')
+    print(out.keys())
     if max_t == -1:
-        max_t = out[2]['max_t']
+        max_t = out['metadata']['max_t']
     
     # Generate bins
     if nbins == 0:
@@ -100,14 +103,14 @@ def bin_simulator_output(out = None,
         bins[nbins] = np.inf
 
     cnt = 0
-    counts = np.zeros( (nbins, len(out[2]['possible_choices']) ) )
+    counts = np.zeros( (nbins, len(out['metadata']['possible_choices']) ) )
 
-    for choice in out[2]['possible_choices']:
-        counts[:, cnt] = np.histogram(out[0][out[1] == choice], bins = bins)[0]
+    for choice in out['metadata']['possible_choices']:
+        counts[:, cnt] = np.histogram(out['rts'][out['choices'] == choice], bins = bins)[0]
         cnt += 1
 
     if freq_cnt == False:
-        counts = counts / out[2]['n_samples']
+        counts = counts / out['metadata']['n_samples']
         
     return counts
 
@@ -512,14 +515,15 @@ def simulator(theta,
     if bin_dim == 0 or bin_dim == None:
         return x
     elif bin_dim > 0 and n_trials == 1 and not bin_pointwise:
+        #print(x)
         binned_out = bin_simulator_output(x, nbins = bin_dim)
         return {'data': binned_out, 'metadata': x['metadata']}
     elif bin_dim > 0 and n_trials == 1 and bin_pointwise:
         binned_out = bin_simulator_output_pointwise(x, nbins = bin_dim)
-        return {'rts': np.expand_dims(binned_out[:,0], axis = 1), 'choices': np.expand_dims(binned_out[:, 1], axis = 1), 'metadata': x['metadata']}
+        return {'rts': np.expand_dims(binned_out[:, 0], axis = 1), 'choices': np.expand_dims(binned_out[:, 1], axis = 1), 'metadata': x['metadata']}
     elif bin_dim > 0 and n_trials > 1 and n_samples == 1 and bin_pointwise:
         binned_out = bin_simulator_output_pointwise(x, nbins = bin_dim)
-        return {'rts': np.expand_dims(binned_out[:,0], axis = 1), 'choices': np.expand_dims(binned_out[:, 1], axis = 1), 'metadata': x['metadata']}
+        return {'rts': np.expand_dims(binned_out[:, 0], axis = 1), 'choices': np.expand_dims(binned_out[:, 1], axis = 1), 'metadata': x['metadata']}
     elif bin_dim > 0 and n_trials > 1 and n_samples > 1 and bin_pointwise:
         return 'currently n_trials > 1 and n_samples > 1 will not work together with bin_pointwise'
     elif bin_dim > 0 and n_trials > 1 and not bin_pointwise:
