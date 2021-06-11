@@ -1,4 +1,5 @@
 from basic_simulators import boundary_functions as bf
+import numpy as np
 
 model_config = {'ddm': {'name': 'ddm',
                         'params':['v', 'a', 'z', 't'],
@@ -59,11 +60,22 @@ model_config = {'ddm': {'name': 'ddm',
                            },
                 'glob':{'name': 'glob',
                         'params': ['v', 'a', 'z', 'alphar', 'g', 't', 'theta'],
-                        'param_bounds': [[-3.0, 0.3, 0.15, 1.0, -1.0, 1e-5, -0.1], [3.0, 2.0, 0.85, 2.0, 1.0, 2.0, 1.45]],
+                        'param_bounds': [[-3.0, 0.3, 0.15, 1.0, -1.0, 1e-5, -0.0], [3.0, 2.0, 0.85, 2.0, 1.0, 2.0, 1.45]],
                         'n_params': 7,
                         'default_params': [0.0, 1.0, 0.5, 2.0, 0.0, 1.0, 0.0],
                         'hddm_include': ['z', 'alphar', 'g', 'theta'],
-                        'nchoices': 2
+                        'nchoices': 2,
+                        'components': {'g': {'label_component': [1, 0, 0],
+                                             'off_value': 0,
+                                             'probability': 1/3},
+                                       'alphar': {'label_component': [0, 1, 0],
+                                                  'off_value': 1,
+                                                  'probability': 1/3},
+                                       'theta': {'label_component': [0, 0, 1],
+                                                 'off_value': 0,
+                                                 'probability': 1/3}
+                                       }
+                        }
                         },
                 }
 
@@ -79,7 +91,6 @@ kde_simulation_filters = {'mode': 20, # != (if mode is max_rt)
                           'std': 0, # > (std is positive for each choice)
                           'mode_cnt_rel': 0.5  # < (mode does not receive more than a proportion of samples for each choice)
                          }
-
 
 data_generator_config = {'lan': {'mlp': {'output_folder': 'data/lan_mlp/',
                                         'dgp_list': ['ddm'],
@@ -116,11 +127,4 @@ data_generator_config = {'lan': {'mlp': {'output_folder': 'data/lan_mlp/',
                                         },
                                  }
 }
-
-
-
-
-
-
-
 ##### -------------------------------------------------------------------------------------------
