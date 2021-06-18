@@ -1,5 +1,6 @@
-import basic_simulators as bs
-from support_utils import kde_class
+import ssms.basic_simulators as bs
+#import ssms.config as config
+from ssms.support_utils import kde_class
 import pandas as pd
 import numpy as np
 #from itertools import product
@@ -15,8 +16,7 @@ import multiprocessing as mp
 from multiprocessing import Process
 from multiprocessing import Pool
 import psutil
-import basic_simulators
-import config
+#import basic_simulators
 from functools import partial
 
 class data_generator():
@@ -445,11 +445,11 @@ class data_generator():
         else:
             return data
 
-    def generate_data_training_defective_simulations(self,
-                                                     mixture_probabilities = [0.5, 0.5], 
-                                                     save):
+    # def generate_data_training_defective_simulations(self,
+    #                                                  mixture_probabilities = [0.5, 0.5], 
+    #                                                  save = False):
 
-        return 
+    #     return 
 
     def _training_defective_simulations_get_preprocessed(seed):
         np.random.seed(random_seed)
