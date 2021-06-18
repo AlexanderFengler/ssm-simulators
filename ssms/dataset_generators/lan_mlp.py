@@ -357,7 +357,7 @@ class data_generator():
         if self.generator_config['nbins'] > 0:
             return {'data': np.expand_dims(simulations['data'], axis = 0), 'label_parameters': theta, 'label_components': label_tmp, 'metadata': simulations['metadata']}
         else: 
-            if self.data_generator['separate_response_channels']:
+            if self.generator_config['separate_response_channels']:
                 choice_data  = np.zeros((simulations['rts'].shape, self.model.config['nchoices']))
 
                 r_cnt = 0

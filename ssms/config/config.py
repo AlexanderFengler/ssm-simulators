@@ -69,7 +69,7 @@ model_config = {'ddm': {'name': 'ddm',
                                        'off_values': np.float32(np.array([0, 1, 0])),
                                        'probabilities': np.array([1/3, 1/3, 1/3]),
                                        'labels': np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]),
-                                       'n_components': 3
+                                       'n_components': 3,
                                        },
                         # 'components': {'g': {'label_component': np.float32(np.array([1, 0, 0])),
                         #                      'off_value': 0,
@@ -98,9 +98,9 @@ kde_simulation_filters = {'mode': 20, # != (if mode is max_rt)
                          }
 
 data_generator_config = {'lan': {'mlp': {'output_folder': 'data/lan_mlp/',
-                                        'dgp_list': ['ddm'],
+                                        'dgp_list': 'ddm', # should be ['ddm'],
                                         'nbins': 0,
-                                        'n_samples': {'low': 100000, 'high': 100000},
+                                        'n_samples': 100000,  # eventually should be {'low': 100000, 'high': 100000},
                                         'n_parameter_sets': 10000,
                                         'n_parameter_sets_rejected': 100,
                                         'n_training_samples_by_parameter_set': 1000,
@@ -116,8 +116,8 @@ data_generator_config = {'lan': {'mlp': {'output_folder': 'data/lan_mlp/',
                                         'separate_response_channels': False
                                         },
                                  'cnn': {'output_folder': 'data/lan_cnn/',
-                                        'dgp_list': ['ddm'],
-                                        'n_samples': {'low': 100000, 'high': 100000},
+                                        'dgp_list':'ddm', # should be  ['ddm'],
+                                        'n_samples': 100000, # eventually should be  {'low': 100000, 'high': 100000},
                                         'n_parameter_sets': 10000,
                                         'n_parameter_set_rejected': 100, # not used for CNNs
                                         'n_training_samples_by_parameter_set': 1000, # not necessary for CNNs
