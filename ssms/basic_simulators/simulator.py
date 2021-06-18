@@ -1,7 +1,7 @@
-import config
+import ssms.config as config
 from . import boundary_functions as bf
 import numpy as np
-import pandas as pd
+#import pandas as pd
 import sys
 
 
