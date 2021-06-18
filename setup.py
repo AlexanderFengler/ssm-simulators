@@ -1,11 +1,40 @@
-from distutils.core import setup
-from Cython.Build import cythonize
+#from distutils.core import setup
+#from Cython.Build import cythonize
+from setuptools import setup
+from setuptools import Extension
 import numpy
 
-setup(
-        ext_modules = cythonize("src/cssm.pyx", 
-                                annotate = True, 
-                                compiler_directives = {"language_level": "3"}),
-        include_dirs = [numpy.get_include()]
+import setuptools
+
+try:
+    from Cython.Build import cythonize
+    ext_modules = cythonize([Extension('cssm', ['src/wfpt.pyx'], language = 'c++')], 
+                                compiler_directives = {"lanugage_level": "3"})
+except ImportError:
+    ext_modules = [Extension('cssm', ['src/wfpt.pyx'], language = 'c++')]
+
+
+
+setup(  
+        name = 'SSMS',
+        version='0.0.1',
+        author = 'Alexander Fenger',
+        url = 'http://gihubt.com/alexanderfengler/ssms',
+        packages= ['ssms', 'ssms/basic_simulators', 'ssms/config', 'ssms/dataset_generators', 'ssms/support_utils'],
+        description='SSMS is a package collecting simulators and training data generators for a bunch of generative models of interest in the cognitive science / neuroscience and approximate bayesian computation communities',
+        install_requires= ['NumPy >= 1.20.3', 'SciPy >= 1.6.3', 'cython >= 0.29.23', 'pandas >= 1.2.4'],
+        setup_requires= ['NumPy >= 1.20.3', 'SciPy >= 1.6.3', 'cython >= 0.29.23', 'pandas >= 1.2.4'],
+        include_dirs = [numpy.get_include()] ,
+        ext_modules = ext_modules ,
+        classifiers=[ 'Development Status :: 1 - Planning', 
+                      'Environment :: Console',
+                      'License :: OSI Approved :: MIT License',
+                      'Programming Language :: Python',
+                      'Topic :: Scientific/Engineering'
+                    ]
+
     )
 
+
+# package_data={'hddm':['examples/*.csv', 'examples/*.conf', 'keras_models/*.h5', 'cnn_models/*/*', 'simulators/*']},
+# scripts=['scripts/hddm_demo.py'],

@@ -137,9 +137,16 @@ class data_generator():
         n_kde = int(n * p[0])
         n_unif_up = int(n * p[1])
         n_unif_down = int(n * p[2])
-                    
-        out = np.zeros((n_kde + n_unif_up + n_unif_down, 
-                        3 + len(theta)))
+
+        if self.generator_config['separate_response_channels']:
+            out = np.zeros((n_kde + n_unif_up + n_unif_down, 
+                            2 + self.model_config['nchoices'] + len(theta)))
+        else:
+            out = np.zeros((n_kde + n_unif_up + n_unif_down, 
+                            3 + len(theta)))
+        
+
+
         out[:, :len(theta)] = np.tile(theta, (n_kde + n_unif_up + n_unif_down, 1) )
         
         tmp_kde = kde_class.logkde((simulations['rts'],
@@ -150,8 +157,18 @@ class data_generator():
         samples_kde = tmp_kde.kde_sample(n_samples = n_kde)
         likelihoods_kde = tmp_kde.kde_eval(data = samples_kde).ravel()
 
-        out[:n_kde, -3] = samples_kde[0].ravel()
-        out[:n_kde, -2] = samples_kde[1].ravel()
+        if self.generator_config['separate_response_channels']:
+            out[:n_kde, (- 2 - self.model_config['nchoices'])] = samples_kde[0].ravel()
+            
+            r_cnt = 0
+            choices = samples_kde[1].ravel()
+            for response in simulations['metadata']['possible_choices']:
+                out[:n_kde, ((- 1 - self.model_config['nchoices']) + r_cnt)] = (choices == response).astype(int)
+                r_cnt += 1
+        else:
+            out[:n_kde, -3] = samples_kde[0].ravel()
+            out[:n_kde, -2] = samples_kde[1].ravel()
+        
         out[:n_kde, -1] = likelihoods_kde
 
         # Get positive uniform part:
@@ -204,7 +221,6 @@ class data_generator():
 
         data = self._make_kde_data(simulations = simulations,
                                    theta = theta)
-        
         return data
                      
     def _cnn_get_processed_data_for_theta(self,
@@ -221,7 +237,6 @@ class data_generator():
         keep = 1
         rej_cnt = 0
         while rej_cnt < 100:
-            
             theta = np.float32(np.random.uniform(low = self.model_config['param_bounds'][0], 
                                                  high = self.model_config['param_bounds'][1]))
             simulations = self.get_simulations(theta = theta)
@@ -232,10 +247,8 @@ class data_generator():
                 print('stats: ', stats)
                 print('theta', theta)
                 rejected_thetas.append(theta)
-                #break
-
             rej_cnt += 1
-        
+
         return rejected_thetas
           
     def generate_data_training_uniform(self, 
@@ -263,14 +276,13 @@ class data_generator():
             data = {}
             data['data'] = data_tmp[:, :-1]
             data['labels'] = data_tmp[:, -1]
-
-                
+    
         else:
             #data_grid = np.zeros((self.generator_config['n_parameter_sets'], self.generator_config['nbins'], self.model_config['nchoices']))
-            
+            data_list = []
             for i in range(self.generator_config['n_subruns']):
                 print('simulation round: ', i + 1, ' of', self.generator_config['n_subruns'])
-                data_list = []
+                
                 with Pool(processes = self.generator_config['n_cpus']) as pool:
                     # data_grid[(i * subrun_n): ((i + 1) * subrun_n), :, :] = np.concatenate(pool.map(self._cnn_get_processed_data_for_theta,
                     #                                                                                 [j for j in seeds[(i * subrun_n):((i + 1) * subrun_n)]]))
@@ -313,7 +325,210 @@ class data_generator():
         
         else:
             return data
-                 
+
+    def _nested_get_processed_data(self,
+                                   random_seed):
+        
+        np.random.seed(random_seed)
+        theta = np.float32(np.random.uniform(low = self.model_config['param_bounds'][0],
+                                             high = self.model_config['param_bounds'][1]))
+        
+        n_components_to_exclude = np.random.choice(self.model_config['components']['n_components'] + 1)
+        components_to_exclude = np.random.choice(self.model_config['components']['n_components'], size = n_components_to_exclude, replace = False)
+        
+        label_tmp = np.array([1 for i in range(self.model_config['components']['n_components'])])
+        #print('initial label')
+        #print(label_tmp)
+        for component_tmp in components_to_exclude:
+            #print('label_tmp')
+            #print(label_tmp)
+            # Get component name
+            component_name = self.model_config['components']['names'][component_tmp]
+            # Get index number in list of all model parameters
+            component_idx_in_full_params = self.model_config['params'].index(component_name)
+            # Set parameter to the 'off_value' that corresponds to a model without this particular model component
+            theta[component_idx_in_full_params] = self.model_config['components']['off_values'][component_tmp]
+            # Adjust label
+            label_tmp = label_tmp - self.model_config['components']['labels'][component_tmp]
+
+        # Should allow for binned and unbinned version of this
+        simulations = self.get_simulations(theta = theta)
+
+        if self.generator_config['nbins'] > 0:
+            return {'data': np.expand_dims(simulations['data'], axis = 0), 'label_parameters': theta, 'label_components': label_tmp, 'metadata': simulations['metadata']}
+        else: 
+            if self.data_generator['separate_response_channels']:
+                choice_data  = np.zeros((simulations['rts'].shape, self.model.config['nchoices']))
+
+                r_cnt = 0
+                for response in simulations['metadata']['possible_choices']:
+                    choice_data[:, r_cnt] = (simulations['choices'] == response).astype(int)
+                    r_cnt += 1
+                return {'data': np.column_stack([simulations['rts'], choice_data]), 'label_parameters': theta, 'label_components': label_tmp, 'metadata': simulations['metadata']}
+            
+            else:
+                return {'data': np.column_stack([simulations['rts'], simulations['choices']]), 'label_parameters': theta, 'label_components': label_tmp, 'metadata': simulations['metadata']}
+
+    def generate_data_nested(self, save):
+        seeds = np.random.choice(400000000, size = self.generator_config['n_parameter_sets'])
+        
+        # Inits
+        subrun_n = self.generator_config['n_parameter_sets'] // self.generator_config['n_subruns']
+        
+        data_list = []
+        for i in range(self.generator_config['n_subruns']):
+            print('simulation round: ', i + 1, ' of', self.generator_config['n_subruns'])
+            with Pool(processes = self.generator_config['n_cpus']) as pool:
+                data_tmp = pool.map(self._nested_get_processed_data,
+                                        [j for j in seeds[(i * subrun_n):((i + 1) * subrun_n)]])
+                
+                data_tmp_dict = {}
+                data_tmp_dict['data'] = np.float32(np.concatenate([x['data'] for x in data_tmp]))
+                data_tmp_dict['label_components'] = np.float32(np.concatenate([np.expand_dims(x['label_components'], axis = 0) for x in data_tmp]))
+                data_tmp_dict['label_parameters'] = np.float32(np.concatenate([np.expand_dims(x['label_parameters'], axis = 0) for x in data_tmp]))
+                data_list.append(data_tmp_dict)
+
+                print(data_tmp_dict['data'].shape)
+        
+        data = {}
+
+        data['data'] = np.float32(np.concatenate([x['data'] for x in data_list]))
+        data['label_components'] = np.float32(np.concatenate([x['label_components'] for x in data_list]))
+        data['label_parameters'] = np.float32(np.concatenate([x['label_parameters'] for x in data_list]))
+        data['generator_config'] = self.generator_config
+        data['model_config'] = self.model_config
+        
+        if save:    
+            full_file_name = self._make_save_file_name(unique_tag = 'nested_training_data_')
+            print('Writing to file: ', full_file_name)
+
+            pickle.dump(data,
+                        open(full_file_name, 'wb'), 
+                        protocol = self.config['pickleprotocol'])
+            return 'Dataset completed'
+        
+        else:
+            return data
+
+    def generate_data_ratio_estimator(self, save):
+        seeds = np.random.choice(400000000, size = self.generator_config['n_subdatasets'])
+        
+        # data_list = []
+        # print('simulation round: ', i + 1, ' of', self.generator_config['n_subdatasets'])
+        print('Starting simulations')
+        
+        with Pool(processes = self.generator_config['n_cpus']) as pool:
+            data_tmp = pool.map(self._ratio_estimator_get_processed_data, list(seeds))
+                
+        # data_tmp_dict = {}
+        # data_tmp_dict['data'] = np.float32(np.concatenate([x['data'] for x in data_tmp]))
+        # data_tmp_dict['labels'] = np.float32(np.concatenate([np.expand_dims(x['labels'], axis = 0) for x in data_tmp]))
+        # data_list.append(data_tmp_dict)
+
+        # print(data_tmp_dict['data'].shape)
+        
+        data = {}
+        data['data'] = np.float32(np.concatenate([x['data'] for x in data_tmp]))
+        data['labels'] = np.float32(np.concatenate([x['labels'] for x in data_tmp]))
+        data['generator_config'] = self.generator_config
+        data['model_config'] = self.model_config
+        
+        if save:    
+            full_file_name = self._make_save_file_name(unique_tag = 'ratio_training_data_')
+            print('Writing to file: ', full_file_name)
+
+            pickle.dump(data,
+                        open(full_file_name, 'wb'), 
+                        protocol = self.config['pickleprotocol'])
+            return 'Dataset completed'
+        
+        else:
+            return data
+
+    def generate_data_training_defective_simulations(self,
+                                                     mixture_probabilities = [0.5, 0.5], 
+                                                     save):
+
+        return 
+
+    def _training_defective_simulations_get_preprocessed(seed):
+        np.random.seed(random_seed)
+        rejected_thetas = []
+        accepted_thetas = []
+        stats_rej = []
+        stats_acc = []
+        cnt_max = self.generator_config['n_samples'] // 2
+        keep = 1
+        rej_cnt = 0
+        acc_cnt = 0
+        while rej_cnt < cnt_max or acc_cnt < cnt_max:
+            theta = np.float32(np.random.uniform(low = self.model_config['param_bounds'][0], 
+                                                 high = self.model_config['param_bounds'][1]))
+            simulations = self.get_simulations(theta = theta)
+            keep, stats = self._filter_simulations(simulations)
+            
+            if keep == 0 and rej_cnt < cnt_max:
+                print('simulation rejected')
+                print('stats: ', stats)
+                print('theta', theta)
+                rejected_thetas.append(theta)
+                stats_rej.append(stats)
+                rej_cnt += 1
+            elif acc_cnt < max_cnt and keep == 1:
+                    accepted_thetas.append(theta)
+                    stats_acc.append(stats)
+                    acc_cnt += 1
+            else: 
+                pass
+        return rejected_thetas
+
+    def _ratio_estimator_get_processed_data(self, random_seed):
+        np.random.seed(random_seed)
+        theta_real = np.float32(np.random.uniform(low = self.model_config['param_bounds'][0],
+                                             high = self.model_config['param_bounds'][1],
+                                             size = (self.generator_config['n_trials_per_dataset'], len(self.model_config['param_bounds'][0]))))
+
+        # Should allow for binned and unbinned version of this
+        simulations = self.get_simulations(theta = theta_real)
+        print('simulations finished!')
+
+        # Generate some new thetas
+        theta_fake = np.float32(np.random.uniform(low = self.model_config['param_bounds'][0],
+                                                  high = self.model_config['param_bounds'][1],
+                                                  size = (self.generator_config['n_trials_per_dataset'] // 2, len(self.model_config['param_bounds'][0]))))
+        
+        # Attach new thetas to existing simulations (negative examples)
+        indices_fake = np.random.choice([0, 1], size = self.generator_config['n_trials_per_dataset'] // 2)
+        theta_real[indices_fake, :] = theta_fake
+
+        if self.generator_config['nbins'] > 0:
+            return 'Error: Generating data for ratio estimators works only for unbinned data at this point' #{'data': np.expand_dims(simulations['data'], axis = 0), 'label_parameters': theta, 'label_components': label_tmp, 'metadata': simulations['metadata']}
+        else: 
+            return {'data': np.column_stack([simulations['rts'], simulations['choices'], theta_real]), 'labels': np.logical_not(indices_fake).astype(int)}
+            # return {'data': np.column_stack([simulations['rts'], simulations['choices']]), 'label_parameters': theta, 'label_components': label_tmp, 'metadata': simulations['metadata']}
+
+    def _make_save_file_name(self,
+                             unique_tag = ''):
+        
+        binned = str(0)
+        if self.generator_config['nbins'] > 0:
+            binned = str(1)
+
+        training_data_folder = self.generator_config['output_folder'] + \
+                        unique_tag + \
+                        binned + \
+                        '_nbins_' + str(self.generator_config['nbins']) + \
+                        '_n_' + str(self.generator_config['nsamples'])
+        
+        if not os.path.exists(training_data_folder):
+            os.makedirs(training_data_folder)
+
+        full_file_name = training_data_folder + '/' + \
+                             'training_data_' + self.model_config['name'] + '_' + \
+                             uuid.uuid1().hex + '.pickle'
+        return full_file_name
+        
+  
     def generate_rejected_parameterizations(self, 
                                             save = False):
 

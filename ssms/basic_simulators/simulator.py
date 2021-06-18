@@ -86,8 +86,8 @@ def bin_simulator_output(out = None,
     """
 
     #print(out)
-    print('passed')
-    print(out.keys())
+    #print('passed')
+    #print(out.keys())
     if max_t == -1:
         max_t = out['metadata']['max_t']
     
