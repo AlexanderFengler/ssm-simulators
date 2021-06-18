@@ -1,4 +1,4 @@
-from basic_simulators import boundary_functions as bf
+from ssms.basic_simulators import boundary_functions as bf
 import numpy as np
 
 model_config = {'ddm': {'name': 'ddm',
