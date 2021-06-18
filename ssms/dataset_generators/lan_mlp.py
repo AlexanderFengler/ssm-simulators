@@ -100,8 +100,8 @@ class data_generator():
         for choice_tmp in simulations['metadata']['possible_choices']:
             tmp_rts = simulations['rts'][simulations['choices'] == choice_tmp]
             tmp_n_c = len(tmp_rts)
-            print('tmp_n_c')
-            print(tmp_n_c)
+            #print('tmp_n_c')
+            #print(tmp_n_c)
             #debug_tmp_n_c_min = np.minimum(debug_tmp_n_c_min, tmp_n_c)
             if tmp_n_c > 0:
                 mode_, mode_cnt_ = mode(tmp_rts)
@@ -214,10 +214,10 @@ class data_generator():
                                                  high = self.model_config['param_bounds'][1]))
             
             simulations = self.get_simulations(theta = theta)
-            print(theta)
+            #print(theta)
             #print(simulations)
             keep, stats = self._filter_simulations(simulations)
-            print(keep)
+            #print(keep)
 
         data = self._make_kde_data(simulations = simulations,
                                    theta = theta)
@@ -388,7 +388,7 @@ class data_generator():
                 data_tmp_dict['label_parameters'] = np.float32(np.concatenate([np.expand_dims(x['label_parameters'], axis = 0) for x in data_tmp]))
                 data_list.append(data_tmp_dict)
 
-                print(data_tmp_dict['data'].shape)
+                #print(data_tmp_dict['data'].shape)
         
         data = {}
 
