@@ -8,7 +8,7 @@ import setuptools
 
 try:
     from Cython.Build import cythonize
-    ext_modules = cythonize([Extension('cssm', ['src/wfpt.pyx'], language = 'c++')], 
+    ext_modules = cythonize([Extension('cssm', ['src/cssm.pyx'], language = 'c++')], 
                                 compiler_directives = {"language_level": "3"})
 except ImportError:
     ext_modules = [Extension('cssm', ['src/cssm.pyx'], language = 'c++')]
