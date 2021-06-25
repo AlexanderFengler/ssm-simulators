@@ -4,9 +4,7 @@ import numpy as np
 #import pandas as pd
 import sys
 
-
-
-from src import cssm
+import cssm
 
 
 # Basic simulators and basic preprocessing
