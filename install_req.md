@@ -3,7 +3,7 @@
 
 # Packages that need installing
 
-cython 
+cython
 scipy
 
 
