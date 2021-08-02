@@ -320,7 +320,7 @@ class data_generator():
 
             pickle.dump(data,
                         open(full_file_name, 'wb'), 
-                        protocol = self.config['pickleprotocol'])
+                        protocol = self.generator_config['pickleprotocol'])
             return 'Dataset completed'
         
         else:
@@ -404,7 +404,7 @@ class data_generator():
 
             pickle.dump(data,
                         open(full_file_name, 'wb'), 
-                        protocol = self.config['pickleprotocol'])
+                        protocol = self.generator_config['pickleprotocol'])
             return 'Dataset completed'
         
         else:
@@ -439,7 +439,7 @@ class data_generator():
 
             pickle.dump(data,
                         open(full_file_name, 'wb'), 
-                        protocol = self.config['pickleprotocol'])
+                        protocol = self.generator_config['pickleprotocol'])
             return 'Dataset completed'
         
         else:
@@ -532,36 +532,34 @@ class data_generator():
     def generate_rejected_parameterizations(self, 
                                             save = False):
 
-        seeds = np.random.choice(400000000, size = self.config['n_paramseter_sets_rejected'])
+        seeds = np.random.choice(400000000, size = self.generator_config['n_paramseter_sets_rejected'])
 
         # Get Simulations 
-        with Pool(processes = self.config['n_cpus']) as pool:
+        with Pool(processes = self.generator_config['n_cpus']) as pool:
             rejected_parameterization_list = pool.map(self._get_rejected_parameter_setups, 
                                                       seeds)
         rejected_parameterization_list = np.concatenate([l for l in rejected_parameterization_list if len(l) > 0])
 
         if save:
-            training_data_folder = self.config['method_folder'] + \
+            training_data_folder = self.generator_config['method_folder'] + \
                                   'training_data_binned_' + \
-                                  str(int(self.config['binned'])) + \
-                                  '_nbins_' + str(self.config['nbins']) + \
-                                  '_n_' + str(self.config['n_samples'])
+                                  str(int(self.generator_config['binned'])) + \
+                                  '_nbins_' + str(self.generator_config['nbins']) + \
+                                  '_n_' + str(self.generator_config['n_samples'])
 
             if not os.path.exists(training_data_folder):
                 os.makedirs(training_data_folder)
 
             full_file_name = training_data_folder + '/' + \
                              'rejected_parameterizations_' + \
-                             self.config['file_id'] + '.pickle'
+                             self.generator_config['file_id'] + '.pickle'
 
             print('Writing to file: ', full_file_name)
 
             pickle.dump(np.float32(rejected_parameterization_list),
                         open(full_file_name, 'wb'), 
-                        protocol = self.config['pickleprotocol'])
-
+                        protocol = self.generator_config['pickleprotocol'])
             return 'Dataset completed'
-
         else:
             return data_grid
 
