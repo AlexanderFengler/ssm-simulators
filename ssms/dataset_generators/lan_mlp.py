@@ -307,7 +307,7 @@ class data_generator():
                                   'training_data_' + \
                                   binned + \
                                   '_nbins_' + str(self.generator_config['nbins']) + \
-                                  '_n_' + str(self.generator_config['nsamples'])
+                                  '_n_' + str(self.generator_config['n_samples'])
             
             if not os.path.exists(training_data_folder):
                 os.makedirs(training_data_folder)
@@ -518,7 +518,7 @@ class data_generator():
                         unique_tag + \
                         binned + \
                         '_nbins_' + str(self.generator_config['nbins']) + \
-                        '_n_' + str(self.generator_config['nsamples'])
+                        '_n_' + str(self.generator_config['n_samples'])
         
         if not os.path.exists(training_data_folder):
             os.makedirs(training_data_folder)
@@ -545,7 +545,7 @@ class data_generator():
                                   'training_data_binned_' + \
                                   str(int(self.config['binned'])) + \
                                   '_nbins_' + str(self.config['nbins']) + \
-                                  '_n_' + str(self.config['nsamples'])
+                                  '_n_' + str(self.config['n_samples'])
 
             if not os.path.exists(training_data_folder):
                 os.makedirs(training_data_folder)
