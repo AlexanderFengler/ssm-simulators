@@ -23,7 +23,7 @@ setup(
         packages= ['ssms', 'ssms.basic_simulators', 'ssms.config', 'ssms.dataset_generators', 'ssms.support_utils'],
         description='SSMS is a package collecting simulators and training data generators for a bunch of generative models of interest in the cognitive science / neuroscience and approximate bayesian computation communities',
         install_requires= ['NumPy >= 1.17.0', 'SciPy >= 1.6.3', 'cython >= 0.29.23', 'pandas >= 1.2.4', 'scikit-learn >= 0.24.0', 'psutil >= 5.0.0'],
-        setup_requires= ['NumPy >= 1.17.0', 'SciPy >= 1.6.3', 'cython >= 0.29.23', 'pandas >= 1.2.4', 'scikit-learn >= 0.24.0', 'psutil >- 5.0.0'],
+        setup_requires= ['NumPy >= 1.17.0', 'SciPy >= 1.6.3', 'cython >= 0.29.23', 'pandas >= 1.2.4', 'scikit-learn >= 0.24.0', 'psutil >= 5.0.0'],
         include_dirs = [numpy.get_include()] ,
         ext_modules = ext_modules ,
         classifiers=[ 'Development Status :: 1 - Planning', 
