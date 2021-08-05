@@ -1455,12 +1455,7 @@ def ddm_flexbound_seq2(np.ndarray[float, ndim = 1] v_h,
     cdef float[:] z_h_view = z_h
     cdef float[:] z_l_1_view = z_l_1
     cdef float[:] z_l_2_view = z_l_2
-    cdef float[:] t_view = t
-
-    # Trajectory
-    traj = np.zeros((int(max_t / delta_t) + 1, 3), dtype = DTYPE)
-    traj[:, :] = -999 
-    cdef float[:, :] traj_view = traj    
+    cdef float[:] t_view = t 
 
     rts = np.zeros((n_samples, n_trials, 1), dtype = DTYPE)
     choices = np.zeros((n_samples, n_trials, 1), dtype = np.intc)
@@ -1480,7 +1475,7 @@ def ddm_flexbound_seq2(np.ndarray[float, ndim = 1] v_h,
     cdef float y_h, t_particle, y_l
     cdef Py_ssize_t n, ix, k
     cdef Py_ssize_t m = 0
-    cdef Py_ssize_t traj_id
+    #cdef Py_ssize_t traj_id
     cdef float[:] gaussian_values = draw_gaussian(num_draws)
 
     for k in range(n_trials):
@@ -1502,10 +1497,6 @@ def ddm_flexbound_seq2(np.ndarray[float, ndim = 1] v_h,
 
             # Random walker 1
             y_h = (-1) * boundary_view[0] + (z_h_view[k] * 2 * (boundary_view[0]))  # reset starting position 
-
-            if n == 0:
-                if k == 0:
-                    traj_view[0, 0] = y_h
             
             while y_h >= (-1) * boundary_view[ix] and y_h <= boundary_view[ix] and t_particle <= max_t:
                 y_h += (v_h_view[k] * delta_t) + (sqrt_st * gaussian_values[m])
@@ -1516,12 +1507,9 @@ def ddm_flexbound_seq2(np.ndarray[float, ndim = 1] v_h,
                 if m == num_draws:
                     gaussian_values = draw_gaussian(num_draws)
                     m = 0
-
-                if n == 0:
-                    traj_view[ix, 0] = y_h
     
             # If we are already at maximum t, to generate a choice we just sample from a bernoulli
-            if t >= max_t:
+            if t_particle >= max_t:
                 if random_uniform() > 0.5:
                     choices_view[n, k, 0] = choices_view[n, k, 0] + 1
             else:
@@ -1535,7 +1523,6 @@ def ddm_flexbound_seq2(np.ndarray[float, ndim = 1] v_h,
                     else:
                         y_l = (-1) * boundary_view[ix] + (z_l_1_view[k] * 2 * (boundary_view[ix])) 
                         v_l = v_l_1_view[k]
-                        traj_id = 1
                 else:
                     choices_view[n, k, 0] = 2
                     
@@ -1546,10 +1533,9 @@ def ddm_flexbound_seq2(np.ndarray[float, ndim = 1] v_h,
                     else:
                         y_l = (-1) * boundary_view[ix] + (z_l_2_view[k] * 2 * (boundary_view[ix])) 
                         v_l = v_l_2_view[k]
-                        traj_id = 2
 
             # Random walker 2
-            while y_l >= (-1) * boundary_view[ix] and y_l <= boundary_view[ix] and t <= max_t:
+            while y_l >= (-1) * boundary_view[ix] and y_l <= boundary_view[ix] and t_particle <= max_t:
                 y_l += (v_l * delta_t) + (sqrt_st * gaussian_values[m])
                 t_particle += delta_t
                 ix += 1
@@ -1557,10 +1543,6 @@ def ddm_flexbound_seq2(np.ndarray[float, ndim = 1] v_h,
                 if m == num_draws:
                     gaussian_values = draw_gaussian(num_draws)
                     m = 0
-                
-                if n == 0:
-                    if k == 0:
-                        traj_view[ix, traj_id] = y_l
 
             rts_view[n, k, 0] = t_particle + t_view[k]
             if sign(y_l) >= 0: # store choice update
@@ -1581,8 +1563,8 @@ def ddm_flexbound_seq2(np.ndarray[float, ndim = 1] v_h,
                                                          'n_samples': n_samples,
                                                          'simulator': 'ddm_flexbound',
                                                          'boundary_fun_type': boundary_fun.__name__,
+                                                         'trajectory': 'This simulator does not yet allow for trajectory simulation',
                                                          'possible_choices': [0, 1, 2, 3],
-                                                         'trajectory': traj,
                                                          'boundary': boundary}}
 # -----------------------------------------------------------------------------------------------
 
@@ -1637,23 +1619,6 @@ def ddm_flexbound_par2(np.ndarray[float, ndim = 1] v_h,
     boundary = np.zeros(t_s.shape, dtype = DTYPE)
     cdef float[:] boundary_view = boundary
 
-    #boundary = np.zeros(num_draws, dtype = DTYPE)
-    #cdef float[:] boundary_view = boundary
-    #cdef int i
-    #cdef float tmp
-#
-    ## Precompute boundary evaluations
-    #if boundary_multiplicative:
-    #    for i in range(num_draws):
-    #        tmp = a * boundary_fun(t = i * delta_t, **boundary_params)
-    #        if tmp > 0:
-    #            boundary_view[i] = tmp
-    #else:
-    #    for i in range(num_draws):
-    #        tmp = a + boundary_fun(t = i * delta_t, **boundary_params)
-    #        if tmp > 0:
-    #            boundary_view[i] = tmp
-#
     cdef float y_h, y_l, v_l, t_h, t_l
     cdef int n, ix
     cdef int m = 0

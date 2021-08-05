@@ -297,6 +297,8 @@ class data_generator():
             data = {}
             data['data'] = np.float32(np.concatenate([x['data'] for x in data_list]))
             data['labels'] = np.float32(np.concatenate([x['labels'] for x in data_list]))
+            data['generator_config'] = self.generator_config
+            data['model_config'] = self.model_config
         
         if save:    
             binned = str(0)
