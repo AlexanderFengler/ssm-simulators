@@ -297,10 +297,12 @@ class data_generator():
             data = {}
             data['data'] = np.float32(np.concatenate([x['data'] for x in data_list]))
             data['labels'] = np.float32(np.concatenate([x['labels'] for x in data_list]))
-            data['generator_config'] = self.generator_config
-            data['model_config'] = self.model_config
         
-        if save:    
+        # Add metadata to training_data
+        data['generator_config'] = self.generator_config
+        data['model_config'] = self.model_config
+        
+        if save:
             binned = str(0)
             if self.generator_config['nbins'] > 0:
                 binned = str(1)
@@ -530,7 +532,6 @@ class data_generator():
                              uuid.uuid1().hex + '.pickle'
         return full_file_name
         
-  
     def generate_rejected_parameterizations(self, 
                                             save = False):
 
