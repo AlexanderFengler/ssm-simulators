@@ -369,7 +369,7 @@ def simulator(theta,
     else:
         s = np.tile(np.array([1.0, 1.0, 1.0], dtype = np.float32), (n_trials, 1))
 
-    if model == 'race_model_3':
+    if model == 'race_3':
         x = cssm.race_model(v = theta[:, :3],
                             a = theta[:, 3],
                             z = theta[:, 4:7],
@@ -383,7 +383,7 @@ def simulator(theta,
                             n_trials = n_trials,
                             max_t = max_t)
     
-    if model == 'race_model_no_bias_3':
+    if model == 'race_no_bias_3':
         x = cssm.race_model(v = theta[:, :3],
                             a = theta[:, 3],
                             z = theta[:, 4],
@@ -397,7 +397,7 @@ def simulator(theta,
                             n_trials = n_trials,
                             max_t = max_t)
 
-    if model == 'race_model_no_bias_angle_3':
+    if model == 'race_no_bias_angle_3':
         x = cssm.race_model(v = theta[:, :3],
                             a = theta[:, 3],
                             z = theta[:, 4],
@@ -465,7 +465,7 @@ def simulator(theta,
     else:
         s = np.tile(np.array([1.0, 1.0, 1.0, 0.0], dtype = np.float32), (n_trials, 1))
 
-    if model == 'race_model_4':
+    if model == 'race_4':
         x = cssm.race_model(v = theta[:, :4],
                             a = theta[:, 4],
                             z = theta[:, 5:9],
@@ -479,7 +479,7 @@ def simulator(theta,
                             n_trials = n_trials,
                             max_t = max_t)
 
-    if model == 'race_model_no_bias_4':
+    if model == 'race_no_bias_4':
         x = cssm.race_model(v = theta[:, :4],
                             a = theta[:, 4],
                             z = theta[:, 5],
@@ -493,7 +493,7 @@ def simulator(theta,
                             n_trials = n_trials,
                             max_t = max_t)
 
-    if model == 'race_model_no_bias_angle_4':
+    if model == 'race_no_bias_angle_4':
         x = cssm.race_model(v = theta[:, :4],
                             a = theta[:, 4],
                             z = theta[:, 5],
