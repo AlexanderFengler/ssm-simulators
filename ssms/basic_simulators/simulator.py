@@ -229,7 +229,6 @@ def simulator(theta,
     else: 
         s = 1.0
 
-
     if model == 'glob':
         x = cssm.glob_flexbound(v = theta[:, 0], 
                                 a = theta[:, 1],
@@ -372,9 +371,9 @@ def simulator(theta,
 
     if model == 'race_model_3':
         x = cssm.race_model(v = theta[:, :3],
-                            a = theta[:, [3]],
+                            a = theta[:, 3],
                             z = theta[:, 4:7],
-                            t = theta[:, [7]],
+                            t = theta[:, 7],
                             s = s,
                             boundary_fun = bf.constant,
                             boundary_multiplicative = True,
@@ -383,18 +382,78 @@ def simulator(theta,
                             n_samples = n_samples,
                             n_trials = n_trials,
                             max_t = max_t)
+    
+    if model == 'race_model_no_bias_3':
+        x = cssm.race_model(v = theta[:, :3],
+                            a = theta[:, 3],
+                            z = theta[:, 4],
+                            t = theta[:, 5],
+                            s = s,
+                            boundary_fun = bf.constant,
+                            boundary_multiplicative = True,
+                            boundary_params = {},
+                            delta_t = delta_t,
+                            n_samples = n_samples,
+                            n_trials = n_trials,
+                            max_t = max_t)
+
+    if model == 'race_model_no_bias_angle_3':
+        x = cssm.race_model(v = theta[:, :3],
+                            a = theta[:, 3],
+                            z = theta[:, 4],
+                            t = theta[:, 5],
+                            s = s,
+                            boundary_fun = bf.angle,
+                            boundary_multiplicative = True,
+                            boundary_params = {'theta': theta[:, 6]},
+                            delta_t = delta_t,
+                            n_samples = n_samples,
+                            n_trials = n_trials,
+                            max_t = max_t)
         
     if model == 'lca_3':
         x = cssm.lca(v = theta[:, :3],
-                     a = theta[:, [4]],
+                     a = theta[:, 3],
                      z = theta[:, 4:7],
-                     g = theta[:, [7]],
-                     b = theta[:, [8]],
-                     t = theta[:, [9]],
+                     g = theta[:, 7],
+                     b = theta[:, 8],
+                     t = theta[:, 9],
                      s = s,
                      boundary_fun = bf.constant,
                      boundary_multiplicative = True,
                      boundary_params = {},
+                     delta_t = delta_t,
+                     n_samples = n_samples,
+                     n_trials = n_trials,
+                     max_t = max_t)
+
+    if model == 'lca_no_bias_3':
+        x = cssm.lca(v = theta[:, :3],
+                     a = theta[:, 3],
+                     z = theta[:, 4],
+                     g = theta[:, 5],
+                     b = theta[:, 6],
+                     t = theta[:, 7],
+                     s = s,
+                     boundary_fun = bf.constant,
+                     boundary_multiplicative = True,
+                     boundary_params = {},
+                     delta_t = delta_t,
+                     n_samples = n_samples,
+                     n_trials = n_trials,
+                     max_t = max_t)
+
+    if model == 'lca_no_bias_angle_3':
+        x = cssm.lca(v = theta[:, :3],
+                     a = theta[:, 3],
+                     z = theta[:, 4],
+                     g = theta[:, 5],
+                     b = theta[:, 6],
+                     t = theta[:, 7],
+                     s = s,
+                     boundary_fun = bf.angle,
+                     boundary_multiplicative = True,
+                     boundary_params = {'theta': theta[:, 8]},
                      delta_t = delta_t,
                      n_samples = n_samples,
                      n_trials = n_trials,
@@ -408,9 +467,9 @@ def simulator(theta,
 
     if model == 'race_model_4':
         x = cssm.race_model(v = theta[:, :4],
-                            a = theta[:, [4]],
+                            a = theta[:, 4],
                             z = theta[:, 5:9],
-                            t = theta[:, [9]],
+                            t = theta[:, 9],
                             s = s,
                             boundary_fun = bf.constant,
                             boundary_multiplicative = True,
@@ -419,18 +478,78 @@ def simulator(theta,
                             n_samples = n_samples,
                             n_trials = n_trials,
                             max_t = max_t)
+
+    if model == 'race_model_no_bias_4':
+        x = cssm.race_model(v = theta[:, :4],
+                            a = theta[:, 4],
+                            z = theta[:, 5],
+                            t = theta[:, 6],
+                            s = s,
+                            boundary_fun = bf.constant,
+                            boundary_multiplicative = True,
+                            boundary_params = {},
+                            delta_t = delta_t,
+                            n_samples = n_samples,
+                            n_trials = n_trials,
+                            max_t = max_t)
+
+    if model == 'race_model_no_bias_angle_4':
+        x = cssm.race_model(v = theta[:, :4],
+                            a = theta[:, 4],
+                            z = theta[:, 5],
+                            t = theta[:, 6],
+                            s = s,
+                            boundary_fun = bf.angle,
+                            boundary_multiplicative = True,
+                            boundary_params = {'theta': theta[:, 7]},
+                            delta_t = delta_t,
+                            n_samples = n_samples,
+                            n_trials = n_trials,
+                            max_t = max_t)
         
     if model == 'lca_4':
         x = cssm.lca(v = theta[:, :4],
-                     a = theta[:, [4]],
+                     a = theta[:, 4],
                      z = theta[:, 5:9],
-                     g = theta[:, [9]],
-                     b = theta[:, [10]],
-                     t = theta[:, [11]],
+                     g = theta[:, 9],
+                     b = theta[:, 10],
+                     t = theta[:, 11],
                      s = s,
                      boundary_fun = bf.constant,
                      boundary_multiplicative = True,
                      boundary_params = {},
+                     delta_t = delta_t,
+                     n_samples = n_samples,
+                     n_trials = n_trials,
+                     max_t = max_t)
+
+    if model == 'lca_no_bias_4':
+        x = cssm.lca(v = theta[:, :4],
+                     a = theta[:, 4],
+                     z = theta[:, 5],
+                     g = theta[:, 6],
+                     b = theta[:, 7],
+                     t = theta[:, 8],
+                     s = s,
+                     boundary_fun = bf.constant,
+                     boundary_multiplicative = True,
+                     boundary_params = {},
+                     delta_t = delta_t,
+                     n_samples = n_samples,
+                     n_trials = n_trials,
+                     max_t = max_t)
+
+    if model == 'lca_no_bias_angle_4':
+        x = cssm.lca(v = theta[:, :4],
+                     a = theta[:, 4],
+                     z = theta[:, 5],
+                     g = theta[:, 6],
+                     b = theta[:, 7],
+                     t = theta[:, 8],
+                     s = s,
+                     boundary_fun = bf.angle,
+                     boundary_multiplicative = True,
+                     boundary_params = {'theta': theta[:, 9]},
                      delta_t = delta_t,
                      n_samples = n_samples,
                      n_trials = n_trials,
