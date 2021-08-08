@@ -467,9 +467,9 @@ def simulator(theta,
 
     if model == 'race_4':
         x = cssm.race_model(v = theta[:, :4],
-                            a = theta[:, 4],
+                            a = theta[:, [4]],
                             z = theta[:, 5:9],
-                            t = theta[:, 9],
+                            t = theta[:, [9]],
                             s = s,
                             boundary_fun = bf.constant,
                             boundary_multiplicative = True,
