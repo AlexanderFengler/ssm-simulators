@@ -1396,7 +1396,7 @@ def lca(np.ndarray[float, ndim = 2] v, # drift parameters (np.array expect: one 
                         for i in range(n_particles):
                             traj_view[ix, i] = particles[i]
         
-            choices_view[n, k, 0] = particles.argmax() # store choices for sample n
+            choices_view[n, k, 0] = np.argmax(particles) # store choices for sample n
             rts_view[n, k, 0] = t_particle + t_view[k, 0] # t[choices_view[n, 0]] # store reaction time for sample n
         
     # Create some dics
