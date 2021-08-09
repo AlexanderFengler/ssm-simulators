@@ -1144,19 +1144,19 @@ cdef bint check_finished(float[:] particles, float boundary, int n):
             return True
     return False
 
-def test_check():
-    # Quick sanity check for the check_finished function
-    temp = np.random.normal(0,1, 10).astype(DTYPE)
-    cdef float[:] temp_view = temp
-    start = time()
-    [check_finished(temp_view, 3) for _ in range(1000000)]
-    print(check_finished(temp_view, 3))
-    end = time()
-    print("cython check: {}".format(start - end))
-    start = time()
-    [(temp > 3).any() for _ in range(1000000)]
-    end = time()
-    print("numpy check: {}".format(start - end))
+#def test_check():
+#    # Quick sanity check for the check_finished function
+#    temp = np.random.normal(0,1, 10).astype(DTYPE)
+#    cdef float[:] temp_view = temp
+#    start = time()
+#    [check_finished(temp_view, 3) for _ in range(1000000)]
+#    print(check_finished(temp_view, 3))
+#    end = time()
+#    print("cython check: {}".format(start - end))
+#    start = time()
+#    [(temp > 3).any() for _ in range(1000000)]
+#    end = time()
+#    print("numpy check: {}".format(start - end))
 
 # @cythonboundscheck(False)
 # @cythonwraparound(False)
