@@ -1136,9 +1136,9 @@ def ornstein_uhlenbeck(np.ndarray[float, ndim = 1] v, # drift parameter
 # @cythonwraparound(False)
 
 # Function that checks boundary crossing of particles
-cdef bint check_finished(float[:] particles, float boundary):
-    cdef int i,n
-    n = particles.shape[0]
+cdef bint check_finished(float[:] particles, float boundary, int n):
+    cdef int i # ,n
+    #n = particles.shape[0]
     for i in range(n):
         if particles[i] > boundary:
             return True
@@ -1238,7 +1238,7 @@ def race_model(np.ndarray[float, ndim = 2] v,  # np.array expected, one column o
                         traj_view[0, j] = particles[j]
 
             # Random walker
-            while not check_finished(particles_view, boundary_view[ix]) and t_particle <= max_t:
+            while not check_finished(particles_view, boundary_view[ix], n_particles) and t_particle <= max_t:
                 for j in range(n_particles):
                     particles_view[j] += (v_view[k, j] * delta_t) + sqrt_st_view[k, j] * gaussian_values[m]
                     m += 1
@@ -1372,7 +1372,7 @@ def lca(np.ndarray[float, ndim = 2] v, # drift parameters (np.array expect: one 
                     for i in range(n_particles):
                         traj_view[0, i] = particles[i]
 
-            while not check_finished(particles_view, boundary_view[ix]) and t_particle <= max_t:
+            while not check_finished(particles_view, boundary_view[ix], n_particles) and t_particle <= max_t:
                 # calculate current sum over particle positions
                 particles_sum = csum(particles_view)
                 
