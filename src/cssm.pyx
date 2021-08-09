@@ -1241,6 +1241,7 @@ def race_model(np.ndarray[float, ndim = 2] v,  # np.array expected, one column o
             while not check_finished(particles_view, boundary_view[ix], n_particles) and t_particle <= max_t:
                 for j in range(n_particles):
                     particles_view[j] += (v_view[k, j] * delta_t) + sqrt_st_view[k, j] * gaussian_values[m]
+                    particles_view[j] = fmax(0.0, particles_view[i]) # Cut off particles at 0
                     m += 1
                     if m == num_draws:
                         m = 0
