@@ -1380,8 +1380,8 @@ def lca(np.ndarray[float, ndim = 2] v, # drift parameters (np.array expect: one 
                 # update particle positions 
                 for i in range(n_particles):
                     particles_reduced_sum_view[i] = (- 1) * particles_view[i] + particles_sum
-                    particles_view[i] += ((v_view[k, i] - (g_view[k, i] * particles_view[i]) - \
-                            (b_view[k, i] * particles_reduced_sum_view[i])) * delta_t) + (sqrt_st_view[k, i] * gaussian_values[m])
+                    particles_view[i] += ((v_view[k, i] - (g_view[k, 0] * particles_view[i]) - \
+                            (b_view[k, 0] * particles_reduced_sum_view[i])) * delta_t) + (sqrt_st_view[k, i] * gaussian_values[m])
                     particles_view[i] = fmax(0.0, particles_view[i])
                     m += 1
 
