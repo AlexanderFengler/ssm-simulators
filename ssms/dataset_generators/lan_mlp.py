@@ -214,9 +214,10 @@ class data_generator():
             
             simulations = self.get_simulations(theta = theta)
             print(theta)
-            print(keep)
+            
             #print(simulations)
             keep, stats = self._filter_simulations(simulations)
+            print(keep)
             #print(keep)
 
         data = self._make_kde_data(simulations = simulations,
