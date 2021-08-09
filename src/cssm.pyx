@@ -1316,7 +1316,7 @@ def lca(np.ndarray[float, ndim = 2] v, # drift parameters (np.array expect: one 
     cdef int n_particles = v.shape[1]
     traj = np.zeros((int(max_t / delta_t) + 1, n_particles), dtype = DTYPE)
     traj[:, :] = -999 
-    cdef float[:, :] traj_view = traj    
+    cdef float[:, :] traj_view = traj
 
     rts = np.zeros((n_samples, n_trials, 1), dtype = DTYPE)
     cdef float[:, :, :] rts_view = rts
