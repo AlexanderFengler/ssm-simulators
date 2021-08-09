@@ -386,7 +386,7 @@ def simulator(theta,
     if model == 'race_no_bias_3':
         x = cssm.race_model(v = theta[:, :3],
                             a = theta[:, [3]],
-                            z = theta[:, [4]],
+                            z = np.column_stack([theta[:, [4]], theta[:, [4]], theta[:, [4]]]),
                             t = theta[:, [5]],
                             s = s,
                             boundary_fun = bf.constant,
