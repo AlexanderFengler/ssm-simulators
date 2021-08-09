@@ -463,7 +463,7 @@ def simulator(theta,
     if no_noise:
         s = np.tile(np.array([0.0, 0.0, 0.0, 0.0], dtype = np.float32), (n_trials, 1))
     else:
-        s = np.tile(np.array([1.0, 1.0, 1.0, 0.0], dtype = np.float32), (n_trials, 1))
+        s = np.tile(np.array([1.0, 1.0, 1.0, 1.0], dtype = np.float32), (n_trials, 1))
 
     if model == 'race_4':
         x = cssm.race_model(v = theta[:, :4],
