@@ -145,8 +145,6 @@ class data_generator():
             out = np.zeros((n_kde + n_unif_up + n_unif_down, 
                             3 + len(theta)))
         
-
-
         out[:, :len(theta)] = np.tile(theta, (n_kde + n_unif_up + n_unif_down, 1) )
         
         tmp_kde = kde_class.logkde((simulations['rts'],
@@ -208,13 +206,15 @@ class data_generator():
                                           random_seed):
         
         np.random.seed(random_seed)
+        print('random seed: ', random_seed)
         keep = 0
         while not keep:
             theta = np.float32(np.random.uniform(low = self.model_config['param_bounds'][0], 
                                                  high = self.model_config['param_bounds'][1]))
             
             simulations = self.get_simulations(theta = theta)
-            #print(theta)
+            print(theta)
+            print(keep)
             #print(simulations)
             keep, stats = self._filter_simulations(simulations)
             #print(keep)
