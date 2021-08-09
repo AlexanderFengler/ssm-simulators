@@ -121,10 +121,10 @@ class data_generator():
             #  3. Comparator (number to test against)
             
             keep = keep & \
-                   (mode_ != self.generator_config['simulation_filters']['mode']) & \
-                   (mean_ < self.generator_config['simulation_filters']['mean_rt']) & \
+                   (mode_ < self.generator_config['simulation_filters']['mode']) & \
+                   (mean_ <= self.generator_config['simulation_filters']['mean_rt']) & \
                    (std_ > self.generator_config['simulation_filters']['std']) & \
-                   (mode_cnt_rel_ < self.generator_config['simulation_filters']['mode_cnt_rel']) & \
+                   (mode_cnt_rel_ <= self.generator_config['simulation_filters']['mode_cnt_rel']) & \
                    (tmp_n_c > self.generator_config['simulation_filters']['choice_cnt'])
         return keep, np.array([mode_, mean_, std_, mode_cnt_rel_, tmp_n_c, n_sim], dtype = np.float32)
              
@@ -205,19 +205,21 @@ class data_generator():
     def _mlp_get_processed_data_for_theta(self,
                                           random_seed):
         
-        np.random.seed(random_seed)
-        print('random seed: ', random_seed)
+        np.random.seed(random_seed[0])
         keep = 0
         while not keep:
             theta = np.float32(np.random.uniform(low = self.model_config['param_bounds'][0], 
                                                  high = self.model_config['param_bounds'][1]))
             
             simulations = self.get_simulations(theta = theta)
-            print(theta)
+
             
             #print(simulations)
             keep, stats = self._filter_simulations(simulations)
+            print('random seed with id: ', random_seed)
+            print(theta)
             print(keep)
+            print(stats)
             #print(keep)
 
         data = self._make_kde_data(simulations = simulations,
@@ -256,6 +258,8 @@ class data_generator():
                                        save = False):
         
         seeds = np.random.choice(400000000, size = self.generator_config['n_parameter_sets'])
+        #seed_ids = np.arange(0, self.generator_config['n_parameter_sets'], 1)
+        seed_args = [[seeds[i], i + 1] for i in np.arange(0, self.generator_config['n_parameter_sets'], 1)]
         
         # Inits
         subrun_n = self.generator_config['n_parameter_sets'] // self.generator_config['n_subruns']
@@ -269,8 +273,10 @@ class data_generator():
             for i in range(self.generator_config['n_subruns']):
                 print('simulation round:', i + 1 , ' of', self.generator_config['n_subruns'])
                 with Pool(processes = self.generator_config['n_cpus']) as pool:
+
                     data_tmp[(i * subrun_n * samples_by_param_set):((i + 1) * subrun_n * samples_by_param_set), :] = np.concatenate(pool.map(self._mlp_get_processed_data_for_theta, 
-                                                                                                              [j for j in seeds[(i * subrun_n):((i + 1) * subrun_n)]]))
+                                                                                                               [k for k in seed_args[(i * subrun_n):((i + 1) * subrun_n)]]))
+                                                                                                              #[j for j in seeds[(i * subrun_n):((i + 1) * subrun_n)]]))
                 
             data_tmp = np.float32(data_tmp)
             

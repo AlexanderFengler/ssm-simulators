@@ -237,10 +237,10 @@ model_config['full_ddm2'] = model_config['full_ddm'].copy()
 #### DATASET GENERATOR CONFIGS ----------------------------------------------------------------
 
 kde_simulation_filters = {'mode': 20, # != (if mode is max_rt)
-                          'choice_cnt': 10, # > (each choice receive at least 10 samples in simulator)
+                          'choice_cnt': 5, # > (each choice receive at least 10 samples in simulator)
                           'mean_rt': 15, # < (mean_rt is smaller than specified value
                           'std': 0, # > (std is positive for each choice)
-                          'mode_cnt_rel': 0.5  # < (mode does not receive more than a proportion of samples for each choice)
+                          'mode_cnt_rel': 0.6  # < (mode does not receive more than a proportion of samples for each choice)
                          }
 
 data_generator_config = {'lan': {'mlp': {'output_folder': 'data/lan_mlp/',
