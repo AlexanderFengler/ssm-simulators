@@ -54,7 +54,7 @@ class data_generator():
     def _get_ncpus(self):
         # Sepfic
         if self.generator_config['n_cpus'] == 'all':
-            n_cpus = psutil.cpu_count(logical = False) - 2
+            n_cpus = psutil.cpu_count(logical = False)
             print('n_cpus used: ', n_cpus)
         else:
             n_cpus = self.generator_config['n_cpus']

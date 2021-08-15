@@ -203,7 +203,7 @@ def simulator(theta,
 
     # Useful for sbi
     if type(theta) == list:
-        print('theta is supplied as list --> simulator assumes n_trials = 1')
+        #print('theta is supplied as list --> simulator assumes n_trials = 1')
         theta = np.asarray(theta).astype(np.float32)
     elif type(theta) == np.ndarray:
         theta = theta.astype(np.float32)
@@ -580,6 +580,43 @@ def simulator(theta,
                                     boundary_multiplicative = True,
                                     boundary_params = {})
 
+    if model == 'ddm_seq2_no_bias':
+        x = cssm.ddm_flexbound_seq2(v_h = theta[:, [0]],
+                                    v_l_1 = theta[:, [1]],
+                                    v_l_2 = theta[:, [2]],
+                                    a = theta[:, [3]],
+                                    z_h = np.array([0.5]),
+                                    z_l_1 = np.array([0.5]),
+                                    z_l_2 = np.array([0.5]),
+                                    t = theta[:, [4]],
+                                    s = s,
+                                    n_samples = n_samples,
+                                    n_trials = n_trials,
+                                    delta_t = delta_t,
+                                    max_t = max_t,
+                                    boundary_fun = bf.constant,
+                                    boundary_multiplicative = True,
+                                    boundary_params = {})
+
+    if model == 'ddm_seq2_angle_no_bias':
+        x = cssm.ddm_flexbound_seq2(v_h = theta[:, [0]],
+                                    v_l_1 = theta[:, [1]],
+                                    v_l_2 = theta[:, [2]],
+                                    a = theta[:, [3]],
+                                    z_h = np.array([0.5]),
+                                    z_l_1 = np.array([0.5]),
+                                    z_l_2 = np.array([0.5]),
+                                    t = theta[:, [4]],
+                                    s = s,
+                                    n_samples = n_samples,
+                                    n_trials = n_trials,
+                                    delta_t = delta_t,
+                                    max_t = max_t,
+                                    boundary_fun = bf.angle,
+                                    boundary_multiplicative = True,
+                                    boundary_params = {'theta': theta[:, [5]]})
+
+
     if model == 'ddm_par2':
         x = cssm.ddm_flexbound_par2(v_h = theta[:, [0]],
                                     v_l_1 = theta[:, [1]],
@@ -597,6 +634,42 @@ def simulator(theta,
                                     boundary_fun = bf.constant,
                                     boundary_multiplicative = True,
                                     boundary_params = {})
+    
+    if model == 'ddm_par2_no_bias':
+        x = cssm.ddm_flexbound_par2(v_h = theta[:, [0]],
+                                    v_l_1 = theta[:, [1]],
+                                    v_l_2 = theta[:, [2]],
+                                    a = theta[:, [3]],
+                                    z_h = np.array([0.5]),
+                                    z_l_1 = np.array([0.5]),
+                                    z_l_2 = np.array([0.5]),
+                                    t = theta[:, [4]],
+                                    s = s,
+                                    n_samples = n_samples,
+                                    n_trials = n_trials,
+                                    delta_t = delta_t,
+                                    max_t = max_t,
+                                    boundary_fun = bf.constant,
+                                    boundary_multiplicative = True,
+                                    boundary_params = {})
+
+    if model == 'ddm_par2_angle_no_bias':
+        x = cssm.ddm_flexbound_par2(v_h = theta[:, [0]],
+                                    v_l_1 = theta[:, [1]],
+                                    v_l_2 = theta[:, [2]],
+                                    a = theta[:, [3]],
+                                    z_h = np.array([0.5]),
+                                    z_l_1 = np.array([0.5]),
+                                    z_l_2 = np.array([0.5]),
+                                    t = theta[:, [4]],
+                                    s = s,
+                                    n_samples = n_samples,
+                                    n_trials = n_trials,
+                                    delta_t = delta_t,
+                                    max_t = max_t,
+                                    boundary_fun = bf.angle,
+                                    boundary_multiplicative = True,
+                                    boundary_params = {'theta': theta[:, [5]]})
 
     if model == 'ddm_mic2':
         x = cssm.ddm_flexbound_mic2(v_h = theta[:, [0]],
@@ -616,6 +689,44 @@ def simulator(theta,
                                     boundary_fun = bf.constant,
                                     boundary_multiplicative = True,
                                     boundary_params = {})
+    
+    if model == 'ddm_mic2_no_bias':
+        x = cssm.ddm_flexbound_mic2(v_h = theta[:, [0]],
+                                    v_l_1 = theta[:, [1]],
+                                    v_l_2 = theta[:, [2]],
+                                    a = theta[:, [3]],
+                                    z_h = np.array([0.5]),
+                                    z_l_1 = np.array([0.5]),
+                                    z_l_2 = np.array([0.5]),
+                                    d = theta[:, [4]],
+                                    t = theta[:, [5]],
+                                    s = s,
+                                    n_samples = n_samples,
+                                    n_trials = n_trials,
+                                    delta_t = delta_t,
+                                    max_t = max_t,
+                                    boundary_fun = bf.constant,
+                                    boundary_multiplicative = True,
+                                    boundary_params = {})
+
+    if model == 'ddm_mic2_angle_no_bias':
+        x = cssm.ddm_flexbound_mic2(v_h = theta[:, [0]],
+                                    v_l_1 = theta[:, [1]],
+                                    v_l_2 = theta[:, [2]],
+                                    a = theta[:, [3]],
+                                    z_h = np.array([0.5]),
+                                    z_l_1 = np.array([0.5]),
+                                    z_l_2 = np.array([0.5]),
+                                    d = theta[:, [4]],
+                                    t = theta[:, [5]],
+                                    s = s,
+                                    n_samples = n_samples,
+                                    n_trials = n_trials,
+                                    delta_t = delta_t,
+                                    max_t = max_t,
+                                    boundary_fun = bf.angle,
+                                    boundary_multiplicative = True,
+                                    boundary_params = {'theta': theta[:, [6]]})
     
     # Output compatibility
     if n_trials == 1:
