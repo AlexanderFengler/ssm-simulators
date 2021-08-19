@@ -1807,7 +1807,7 @@ def ddm_flexbound_mic2(np.ndarray[float, ndim = 1] v_h,
                 # We need to reverse the bias if we took the lower choice
                 ix_tmp = 0 
                 while ix_tmp < num_draws:
-                    bias_trace_view[ix_tmp] = 1 - bias_trace_view[ix_tmp]
+                    bias_trace_view[ix_tmp] = 1.0 - bias_trace_view[ix_tmp]
                     ix_tmp += 1
 
             else:
