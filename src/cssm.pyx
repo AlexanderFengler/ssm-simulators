@@ -1514,27 +1514,25 @@ def ddm_flexbound_seq2(np.ndarray[float, ndim = 1] v_h,
             else:
                 if sign(y_h) < 0: # Store intermediate choice
                     choices_view[n, k, 0] = 0 
-                    
+                    y_l = (-1) * boundary_view[ix] + (z_l_1_view[k] * 2 * (boundary_view[ix])) 
+                    v_l = v_l_1_view[k]
                     # In case boundary is negative already, we flip a coin with bias determined by w_l_ parameter
-                    if boundary_view[ix] <= 0:
+                    if (y_l >= boundary_view[ix]) or (y_l <= ((-1) * boundary_view[ix])):
                         if random_uniform() < z_l_1_view[k]:
                             choices_view[n, k, 0] += 1
-                    else:
-                        y_l = (-1) * boundary_view[ix] + (z_l_1_view[k] * 2 * (boundary_view[ix])) 
-                        v_l = v_l_1_view[k]
+
                 else:
                     choices_view[n, k, 0] = 2
+                    y_l = (-1) * boundary_view[ix] + (z_l_2_view[k] * 2 * (boundary_view[ix])) 
+                    v_l = v_l_2_view[k]
                     
                     # In case boundary is negative already, we flip a coin with bias determined by w_l_ parameter
-                    if boundary_view[ix] <= 0:
+                    if (y_l >= boundary_view[ix]) or (y_l <= ((-1) * boundary_view[ix])):
                         if random_uniform() < z_l_2_view[k]:
                             choices_view[n, k, 0] += 1
-                    else:
-                        y_l = (-1) * boundary_view[ix] + (z_l_2_view[k] * 2 * (boundary_view[ix])) 
-                        v_l = v_l_2_view[k]
 
             # Random walker 2
-            while y_l >= (-1) * boundary_view[ix] and y_l <= boundary_view[ix] and t_particle <= max_t:
+            while (y_l >= ((-1) * boundary_view[ix])) and (y_l <= boundary_view[ix]) and (t_particle <= max_t):
                 y_l += (v_l * delta_t) + (sqrt_st * gaussian_values[m])
                 t_particle += delta_t
                 ix += 1

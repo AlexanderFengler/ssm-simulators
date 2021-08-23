@@ -613,7 +613,7 @@ def simulator(theta,
                                     delta_t = delta_t,
                                     max_t = max_t,
                                     boundary_fun = bf.angle,
-                                    boundary_multiplicative = True,
+                                    boundary_multiplicative = False,
                                     boundary_params = {'theta': theta[:, 5]})
 
 
@@ -668,7 +668,7 @@ def simulator(theta,
                                     delta_t = delta_t,
                                     max_t = max_t,
                                     boundary_fun = bf.angle,
-                                    boundary_multiplicative = True,
+                                    boundary_multiplicative = False,
                                     boundary_params = {'theta': theta[:, 5]})
 
     if model == 'ddm_mic2':
@@ -725,7 +725,7 @@ def simulator(theta,
                                     delta_t = delta_t,
                                     max_t = max_t,
                                     boundary_fun = bf.angle,
-                                    boundary_multiplicative = True,
+                                    boundary_multiplicative = False,
                                     boundary_params = {'theta': theta[:, 6]})
     
     # Output compatibility

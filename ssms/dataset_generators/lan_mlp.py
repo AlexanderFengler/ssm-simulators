@@ -217,9 +217,9 @@ class data_generator():
             #print(simulations)
             keep, stats = self._filter_simulations(simulations)
             print('random seed with id: ', random_seed)
-            print(theta)
-            print(keep)
-            print(stats)
+            #print(theta)
+            #print(keep)
+            #print(stats)
             #print(keep)
 
         data = self._make_kde_data(simulations = simulations,
