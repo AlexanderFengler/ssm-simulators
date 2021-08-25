@@ -616,6 +616,24 @@ def simulator(theta,
                                     boundary_multiplicative = False,
                                     boundary_params = {'theta': theta[:, 5]})
 
+    if model == 'ddm_seq2_weibull_no_bias':
+        x = cssm.ddm_flexbound_seq2(v_h = theta[:, 0],
+                                    v_l_1 = theta[:, 1],
+                                    v_l_2 = theta[:, 2],
+                                    a = theta[:, 3],
+                                    z_h = np.array([0.5], dtype = np.float32),
+                                    z_l_1 = np.array([0.5], dtype = np.float32),
+                                    z_l_2 = np.array([0.5], dtype = np.float32),
+                                    t = theta[:, 4],
+                                    s = s,
+                                    n_samples = n_samples,
+                                    n_trials = n_trials,
+                                    delta_t = delta_t,
+                                    max_t = max_t,
+                                    boundary_fun = bf.weibull_cdf,
+                                    boundary_multiplicative = True,
+                                    boundary_params = {'alpha': theta[:, 5],
+                                                       'beta': theta[:, 6]})
 
     if model == 'ddm_par2':
         x = cssm.ddm_flexbound_par2(v_h = theta[:, 0],
@@ -670,6 +688,25 @@ def simulator(theta,
                                     boundary_fun = bf.angle,
                                     boundary_multiplicative = False,
                                     boundary_params = {'theta': theta[:, 5]})
+
+    if model == 'ddm_par2_weibull_no_bias':
+        x = cssm.ddm_flexbound_par2(v_h = theta[:, 0],
+                                    v_l_1 = theta[:, 1],
+                                    v_l_2 = theta[:, 2],
+                                    a = theta[:, 3],
+                                    z_h = np.array([0.5], dtype = np.float32),
+                                    z_l_1 = np.array([0.5], dtype = np.float32),
+                                    z_l_2 = np.array([0.5], dtype = np.float32),
+                                    t = theta[:, 4],
+                                    s = s,
+                                    n_samples = n_samples,
+                                    n_trials = n_trials,
+                                    delta_t = delta_t,
+                                    max_t = max_t,
+                                    boundary_fun = bf.weibull_cdf,
+                                    boundary_multiplicative = True,
+                                    boundary_params = {'alpha': theta[:, 5],
+                                                       'beta': theta[:, 6]})
 
     if model == 'ddm_mic2':
         x = cssm.ddm_flexbound_mic2(v_h = theta[:, 0],
@@ -727,6 +764,26 @@ def simulator(theta,
                                     boundary_fun = bf.angle,
                                     boundary_multiplicative = False,
                                     boundary_params = {'theta': theta[:, 6]})
+
+    if model == 'ddm_mic2_weibull_no_bias':
+        x = cssm.ddm_flexbound_mic2(v_h = theta[:, 0],
+                                    v_l_1 = theta[:, 1],
+                                    v_l_2 = theta[:, 2],
+                                    a = theta[:, 3],
+                                    z_h = np.array([0.5], dtype = np.float32),
+                                    z_l_1 = np.array([0.5], dtype = np.float32),
+                                    z_l_2 = np.array([0.5], dtype = np.float32),
+                                    d = theta[:, 4],
+                                    t = theta[:, 5],
+                                    s = s,
+                                    n_samples = n_samples,
+                                    n_trials = n_trials,
+                                    delta_t = delta_t,
+                                    max_t = max_t,
+                                    boundary_fun = bf.weibull_cdf,
+                                    boundary_multiplicative = True,
+                                    boundary_params = {'alpha': theta[:, 6],
+                                                       'beta': theta[:, 7]})
     
     # Output compatibility
     if n_trials == 1:
