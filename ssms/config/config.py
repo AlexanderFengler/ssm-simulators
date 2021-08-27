@@ -287,7 +287,7 @@ model_config = {'ddm': {'name': 'ddm',
                         'default_params': [0.0, 1.0, 0.5, 2.0, 0.0, 1.0, 2.5, 3.5],
                         'hddm_include': ['z', 'alphar', 'g', 'theta'],
                         'nchoices': 2,
-                        'boundary_multiplicative': False
+                        'boundary_multiplicative': False,
                         'components': {'names': ['g', 'alphar', 'theta'],
                                         'off_values': np.float32(np.array([0, 1, 0])),
                                         'probabilities': np.array([1/3, 1/3, 1/3]),

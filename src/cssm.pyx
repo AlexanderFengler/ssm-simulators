@@ -1510,7 +1510,11 @@ def ddm_flexbound_seq2(np.ndarray[float, ndim = 1] v_h,
             # If we are already at maximum t, to generate a choice we just sample from a bernoulli
             if t_particle >= max_t:
                 if random_uniform() > 0.5:
+                    choices_view[n, k, 0] = choices_view[n, k, 0] + 2
+                if random_uniform() > 0.5:
                     choices_view[n, k, 0] = choices_view[n, k, 0] + 1
+                rts_view[n, k, 0] = t_particle
+
             else:
                 if sign(y_h) < 0: # Store intermediate choice
                     choices_view[n, k, 0] = 0 
@@ -1531,19 +1535,19 @@ def ddm_flexbound_seq2(np.ndarray[float, ndim = 1] v_h,
                         if random_uniform() < z_l_2_view[k]:
                             choices_view[n, k, 0] += 1
 
-            # Random walker 2
-            while (y_l >= ((-1) * boundary_view[ix])) and (y_l <= boundary_view[ix]) and (t_particle <= max_t):
-                y_l += (v_l * delta_t) + (sqrt_st * gaussian_values[m])
-                t_particle += delta_t
-                ix += 1
-                m += 1
-                if m == num_draws:
-                    gaussian_values = draw_gaussian(num_draws)
-                    m = 0
+                # Random walker 2
+                while (y_l >= ((-1) * boundary_view[ix])) and (y_l <= boundary_view[ix]) and (t_particle <= max_t):
+                    y_l += (v_l * delta_t) + (sqrt_st * gaussian_values[m])
+                    t_particle += delta_t
+                    ix += 1
+                    m += 1
+                    if m == num_draws:
+                        gaussian_values = draw_gaussian(num_draws)
+                        m = 0
 
-            rts_view[n, k, 0] = t_particle + t_view[k]
-            if sign(y_l) >= 0: # store choice update
-                choices_view[n, k, 0] += 1
+                rts_view[n, k, 0] = t_particle + t_view[k]
+                if sign(y_l) >= 0: # store choice update
+                    choices_view[n, k, 0] += 1
 
     return {'rts': rts, 'choices': choices, 'metadata': {'vh': v_h,
                                                          'vl1': v_l_1,
@@ -1586,7 +1590,6 @@ def ddm_flexbound_par2(np.ndarray[float, ndim = 1] v_h,
                        boundary_multiplicative = True,
                        boundary_params = {}
                        ):
-
 
     # Param views
     cdef float[:] v_h_view = v_h
