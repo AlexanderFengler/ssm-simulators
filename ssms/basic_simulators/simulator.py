@@ -272,6 +272,17 @@ def simulator(theta,
                                boundary_fun = bf.constant,
                                boundary_multiplicative = True,
                                max_t = max_t)
+
+    if model == 'ddm_legacy':
+        x = cssm.ddm(v = theta[:, 0],
+                     a = theta[:, 1], 
+                     z = theta[:, 2],
+                     t = theta[:, 3],
+                     s = s,
+                     n_samples = n_samples,
+                     n_trials = n_trials,
+                     delta_t = delta_t,
+                     max_t = max_t)
     
     if model == 'angle' or model == 'angle2':
         x = cssm.ddm_flexbound(v = theta[:, 0], 
