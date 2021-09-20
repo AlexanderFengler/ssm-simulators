@@ -1951,7 +1951,9 @@ def ddm_flexbound_mic2_adj(np.ndarray[float, ndim = 1] v_h,
             while ix_tmp < num_draws:
                     bias_trace_view[ix_tmp] = 1.0
                     ix_tmp += 1
-
+            
+            print('old bias trace', bias_trace_view)
+            
             if sign(y_h) > 0:
                 choices_view[n, k, 0] = 0
                 y_l = (- 1) * boundary_view[0] + (z_l_2_view[k] * 2 * (boundary_view[0])) 
@@ -1970,6 +1972,7 @@ def ddm_flexbound_mic2_adj(np.ndarray[float, ndim = 1] v_h,
                     bias_trace_view[ix_tmp] = 1.0 - bias_trace_view[ix_tmp]
                     ix_tmp += 1
 
+                print('new bias_trace: ', bias_trace_view)
             # Random walks until the y_l corresponding to y_h hits bound
             ix = 0
             while (y_l >= ((-1) * boundary_view[ix])) and (y_l <= boundary_view[ix]) and (t_l <= max_t):
