@@ -1956,7 +1956,6 @@ def ddm_flexbound_mic2_adj(np.ndarray[float, ndim = 1] v_h,
                 choices_view[n, k, 0] = 0
                 y_l = (- 1) * boundary_view[0] + (z_l_2_view[k] * 2 * (boundary_view[0])) 
                 v_l = v_l_2_view[k]
-
             else: # Store intermediate choice
                 choices_view[n, k, 0] = 2
                 y_l = (- 1) * boundary_view[0] + (z_l_1_view[k] * 2 * (boundary_view[0])) 
@@ -1971,7 +1970,7 @@ def ddm_flexbound_mic2_adj(np.ndarray[float, ndim = 1] v_h,
             # Random walks until the y_l corresponding to y_h hits bound
             ix = 0
             while (y_l >= ((-1) * boundary_view[ix])) and (y_l <= boundary_view[ix]) and (t_l <= max_t):
-                if (bias_trace_view[ix] < 1):
+                if (bias_trace_view[ix] < 1) and (bias_trace_view[ix] > 0):
                     y_l += ((v_l * bias_trace_view[ix] * d_view[k]) * delta_t)
                 else:
                     y_l += (v_l * delta_t)
