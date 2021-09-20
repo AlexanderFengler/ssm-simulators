@@ -1953,12 +1953,12 @@ def ddm_flexbound_mic2_adj(np.ndarray[float, ndim = 1] v_h,
                     ix_tmp += 1
 
             if sign(y_h) > 0:
-                choices_view[n, k, 0] = 2
+                choices_view[n, k, 0] = 0
                 y_l = (- 1) * boundary_view[0] + (z_l_2_view[k] * 2 * (boundary_view[0])) 
                 v_l = v_l_2_view[k]
 
             else: # Store intermediate choice
-                choices_view[n, 0] = 0 
+                choices_view[n, 0] = 2
                 y_l = (- 1) * boundary_view[0] + (z_l_1_view[k] * 2 * (boundary_view[0])) 
                 v_l = v_l_1_view[k]
 
@@ -1986,7 +1986,10 @@ def ddm_flexbound_mic2_adj(np.ndarray[float, ndim = 1] v_h,
 
             rts_view[n, k, 0] = fmax(t_h, t_l) + t_view[k]
 
-            if random_uniform() < (y_l + boundary_view[ix] / (2 * boundary_view[ix])):
+            # The probability of making a 'mistake' 1 - (relative y position)
+            # y at upper bound --> choices_view[n, k, 0] stays the same
+            # y at lower bound --> choice_view[n, k, 0] adds one deterministically
+            if random_uniform() > (y_l + boundary_view[ix] / (2 * boundary_view[ix])):
                 choices_view[n, k, 0] += 1
 
     return {'rts': rts, 'choices': choices, 'metadata': {'vh': v_h,
