@@ -1936,7 +1936,7 @@ def ddm_flexbound_mic2_adj(np.ndarray[float, ndim = 1] v_h,
             bias_trace_view[0] = ((y_h + boundary_view[0]) / (2 * boundary_view[0]))
 
             # Random walks until y_h hits bound
-            while y_h >= (-1) * boundary_view[ix] and y_h <= boundary_view[ix] and t_h <= max_t:
+            while (y_h >= ((-1) * boundary_view[ix])) and ((y_h <= boundary_view[ix])) and (t_h <= max_t):
                 y_h += (v_h_view[k] * delta_t) + (sqrt_st * gaussian_values[m])
                 bias_trace_view[ix] = ((y_h + boundary_view[ix]) / (2 * boundary_view[ix]))
                 t_h += delta_t
@@ -1958,7 +1958,7 @@ def ddm_flexbound_mic2_adj(np.ndarray[float, ndim = 1] v_h,
                 v_l = v_l_2_view[k]
 
             else: # Store intermediate choice
-                choices_view[n, 0] = 2
+                choices_view[n, k, 0] = 2
                 y_l = (- 1) * boundary_view[0] + (z_l_1_view[k] * 2 * (boundary_view[0])) 
                 v_l = v_l_1_view[k]
 
@@ -1970,8 +1970,8 @@ def ddm_flexbound_mic2_adj(np.ndarray[float, ndim = 1] v_h,
 
             # Random walks until the y_l corresponding to y_h hits bound
             ix = 0
-            while y_l >= (-1) * boundary_view[ix] and y_l <= boundary_view[ix] and t_l <= max_t:
-                if bias_trace_view[ix] < 1:
+            while (y_l >= ((-1) * boundary_view[ix])) and (y_l <= boundary_view[ix]) and (t_l <= max_t):
+                if (bias_trace_view[ix] < 1):
                     y_l += ((v_l * bias_trace_view[ix] * d_view[k]) * delta_t)
                 else:
                     y_l += (v_l * delta_t)
