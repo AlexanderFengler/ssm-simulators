@@ -1969,8 +1969,8 @@ def ddm_flexbound_mic2_adj(np.ndarray[float, ndim = 1] v_h,
                 y_l = (- 1) * boundary_view[0] + (z_l_1_view[k] * 2 * (boundary_view[0])) 
                 v_l = v_l_1_view[k]
 
-                print('came through')
-                print('v_l: ', v_l)
+                #print('came through')
+                #print('v_l: ', v_l)
 
                 # Fill bias trace until max_rt reached
                 ix_tmp = ix + 1
@@ -1984,7 +1984,7 @@ def ddm_flexbound_mic2_adj(np.ndarray[float, ndim = 1] v_h,
                     bias_trace_view[ix_tmp] = 1.0 - bias_trace_view[ix_tmp]
                     ix_tmp += 1
 
-                print('new bias_trace: ', bias_trace)
+                #print('new bias_trace: ', bias_trace)
             
             # Random walks until the y_l corresponding to y_h hits bound
             ix = 0
