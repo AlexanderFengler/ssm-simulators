@@ -795,6 +795,64 @@ def simulator(theta,
                                     boundary_multiplicative = True,
                                     boundary_params = {'alpha': theta[:, 6],
                                                        'beta': theta[:, 7]})
+
+    if model == 'ddm_mic2_adj_no_bias':
+        x = cssm.ddm_flexbound_mic2_adj(v_h = theta[:, 0],
+                                        v_l_1 = theta[:, 1],
+                                        v_l_2 = theta[:, 2],
+                                        a = theta[:, 3],
+                                        z_h = np.array([0.5], dtype = np.float32),
+                                        z_l_1 = np.array([0.5], dtype = np.float32),
+                                        z_l_2 = np.array([0.5], dtype = np.float32),
+                                        d = theta[:, 4],
+                                        t = theta[:, 5],
+                                        s = s,
+                                        n_samples = n_samples,
+                                        n_trials = n_trials,
+                                        delta_t = delta_t,
+                                        max_t = max_t,
+                                        boundary_fun = bf.constant,
+                                        boundary_multiplicative = True,
+                                        boundary_params = {})
+
+    if model == 'ddm_mic2_adj_angle_no_bias':
+        x = cssm.ddm_flexbound_mic2_adj(v_h = theta[:, 0],
+                                        v_l_1 = theta[:, 1],
+                                        v_l_2 = theta[:, 2],
+                                        a = theta[:, 3],
+                                        z_h = np.array([0.5], dtype = np.float32),
+                                        z_l_1 = np.array([0.5], dtype = np.float32),
+                                        z_l_2 = np.array([0.5], dtype = np.float32),
+                                        d = theta[:, 4],
+                                        t = theta[:, 5],
+                                        s = s,
+                                        n_samples = n_samples,
+                                        n_trials = n_trials,
+                                        delta_t = delta_t,
+                                        max_t = max_t,
+                                        boundary_fun = bf.angle,
+                                        boundary_multiplicative = False,
+                                        boundary_params = {'theta': theta[:, 6]})
+
+    if model == 'ddm_mic2_adj_weibull_no_bias':
+        x = cssm.ddm_flexbound_mic2_adj(v_h = theta[:, 0],
+                                        v_l_1 = theta[:, 1],
+                                        v_l_2 = theta[:, 2],
+                                        a = theta[:, 3],
+                                        z_h = np.array([0.5], dtype = np.float32),
+                                        z_l_1 = np.array([0.5], dtype = np.float32),
+                                        z_l_2 = np.array([0.5], dtype = np.float32),
+                                        d = theta[:, 4],
+                                        t = theta[:, 5],
+                                        s = s,
+                                        n_samples = n_samples,
+                                        n_trials = n_trials,
+                                        delta_t = delta_t,
+                                        max_t = max_t,
+                                        boundary_fun = bf.weibull_cdf,
+                                        boundary_multiplicative = True,
+                                        boundary_params = {'alpha': theta[:, 6],
+                                                           'beta': theta[:, 7]})
     
     # Output compatibility
     if n_trials == 1:
