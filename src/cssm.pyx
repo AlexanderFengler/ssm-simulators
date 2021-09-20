@@ -1961,6 +1961,9 @@ def ddm_flexbound_mic2_adj(np.ndarray[float, ndim = 1] v_h,
                 y_l = (- 1) * boundary_view[0] + (z_l_1_view[k] * 2 * (boundary_view[0])) 
                 v_l = v_l_1_view[k]
 
+                print('came through')
+                print('v_l: ', v_l)
+
                 #We need to reverse the bias_trace if we took the lower choice
                 ix_tmp = 0 
                 while ix_tmp < num_draws:
