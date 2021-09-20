@@ -1927,6 +1927,7 @@ def ddm_flexbound_mic2_adj(np.ndarray[float, ndim = 1] v_h,
     
         # Loop over samples
         for n in range(n_samples):
+            choices_view[n, k, 0] = 0 # reset choice
             t_h = 0 # reset time high dimension
             t_l = 0 # reset time low dimension
             ix = 0 # reset boundary index
@@ -1946,25 +1947,36 @@ def ddm_flexbound_mic2_adj(np.ndarray[float, ndim = 1] v_h,
                     gaussian_values = draw_gaussian(num_draws)
                     m = 0
 
-            # Fill bias trace until max_rt reached
-            ix_tmp = ix + 1
-            while ix_tmp < num_draws:
-                    bias_trace_view[ix_tmp] = 1.0
-                    ix_tmp += 1
-            
-            print('old bias trace', bias_trace)
-            
-            if sign(y_h) > 0:
-                choices_view[n, k, 0] = 0
+            # The probability of making a 'mistake' 1 - (relative y position)
+            # y at upper bound --> choices_view[n, k, 0] stays the same
+            # y at lower bound --> choice_view[n, k, 0] adds one deterministically
+            if random_uniform() > (y_h + boundary_view[ix] / (2 * boundary_view[ix])):
+                choices_view[n, k, 0] += 2
+           
+            if choices_view[n, k, 0] == 0:
+                #choices_view[n, k, 0] = 0
                 y_l = (- 1) * boundary_view[0] + (z_l_2_view[k] * 2 * (boundary_view[0])) 
                 v_l = v_l_2_view[k]
+
+                # Fill bias trace until max_rt reached
+                ix_tmp = ix + 1
+                while ix_tmp < num_draws:
+                    bias_trace_view[ix_tmp] = 1.0
+                    ix_tmp += 1
+
             else: # Store intermediate choice
-                choices_view[n, k, 0] = 2
+                #choices_view[n, k, 0] = 2
                 y_l = (- 1) * boundary_view[0] + (z_l_1_view[k] * 2 * (boundary_view[0])) 
                 v_l = v_l_1_view[k]
 
                 print('came through')
                 print('v_l: ', v_l)
+
+                # Fill bias trace until max_rt reached
+                ix_tmp = ix + 1
+                while ix_tmp < num_draws:
+                    bias_trace_view[ix_tmp] = 0.0
+                    ix_tmp += 1
 
                 #We need to reverse the bias_trace if we took the lower choice
                 ix_tmp = 0 
@@ -1973,6 +1985,7 @@ def ddm_flexbound_mic2_adj(np.ndarray[float, ndim = 1] v_h,
                     ix_tmp += 1
 
                 print('new bias_trace: ', bias_trace)
+            
             # Random walks until the y_l corresponding to y_h hits bound
             ix = 0
             while (y_l >= ((-1) * boundary_view[ix])) and (y_l <= boundary_view[ix]) and (t_l <= max_t):
