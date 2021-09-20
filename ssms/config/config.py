@@ -317,6 +317,10 @@ model_config = {'ddm': {'name': 'ddm',
 
 model_config['weibull_cdf'] = model_config['weibull'].copy()
 model_config['full_ddm2'] = model_config['full_ddm'].copy()
+model_config['ddm_mic2_adj'] = model_config['ddm_mic2'].copy()
+model_config['ddm_mic2_adj_no_bias'] = model_config['ddm_mic2_no_bias'].copy()
+model_config['ddm_mic2_adj_no_bias_angle'] = model_config['ddm_mic2_no_bias_angle'].copy()
+model_config['ddm_mic2_adj_no_bias_weibull'] = model_config['ddm_mic2_no_bias_weibull'].copy()
 
 
 #### DATASET GENERATOR CONFIGS ----------------------------------------------------------------
