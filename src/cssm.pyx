@@ -1950,7 +1950,7 @@ def ddm_flexbound_mic2_adj(np.ndarray[float, ndim = 1] v_h,
             # The probability of making a 'mistake' 1 - (relative y position)
             # y at upper bound --> choices_view[n, k, 0] stays the same
             # y at lower bound --> choice_view[n, k, 0] adds one deterministically
-            if random_uniform() > (y_h + boundary_view[ix] / (2 * boundary_view[ix])):
+            if random_uniform() > ((y_h + boundary_view[ix]) / (2 * boundary_view[ix])):
                 choices_view[n, k, 0] += 2
            
             if choices_view[n, k, 0] == 0:
@@ -2007,7 +2007,7 @@ def ddm_flexbound_mic2_adj(np.ndarray[float, ndim = 1] v_h,
             # The probability of making a 'mistake' 1 - (relative y position)
             # y at upper bound --> choices_view[n, k, 0] stays the same
             # y at lower bound --> choice_view[n, k, 0] adds one deterministically
-            if random_uniform() > (y_l + boundary_view[ix] / (2 * boundary_view[ix])):
+            if random_uniform() > ((y_l + boundary_view[ix]) / (2 * boundary_view[ix])):
                 choices_view[n, k, 0] += 1
 
     return {'rts': rts, 'choices': choices, 'metadata': {'vh': v_h,
@@ -2024,7 +2024,7 @@ def ddm_flexbound_mic2_adj(np.ndarray[float, ndim = 1] v_h,
                                                          'delta_t': delta_t,
                                                          'max_t': max_t,
                                                          'n_samples': n_samples,
-                                                         'simulator': 'ddm_flexbound',
+                                                         'simulator': 'ddm_flexbound_mic2_adj',
                                                          'boundary_fun_type': boundary_fun.__name__,
                                                          'possible_choices': [0, 1, 2, 3],
                                                          'trajectory': 'This simulator does not yet allow for trajectory simulation',
