@@ -1643,7 +1643,7 @@ def ddm_flexbound_par2(np.ndarray[float, ndim = 1] v_h,
             ix = 0 # reset boundary index
 
             # Initialize walkers
-            y_h = (-1) * boundary_view[0] + (z_h * 2 * (boundary_view[0])) 
+            y_h = (-1) * boundary_view[0] + (z_h_view[k] * 2 * (boundary_view[0])) 
 
             # Random walks until y_h hits bound
             while y_h >= (-1) * boundary_view[ix] and y_h <= boundary_view[ix] and t_h <= max_t:

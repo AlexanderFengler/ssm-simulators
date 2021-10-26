@@ -666,14 +666,14 @@ def simulator(theta,
                                     boundary_params = {})
     
     if model == 'ddm_par2_no_bias':
-        print('v_h: ', theta[:, 0].shape)
-        print('v_l_1: ', theta[:, 1].shape)
-        print('v_l_2: ', theta[:, 2].shape)
-        print('a: ', theta[:, 3].shape)
-        print('z_h: ', z_vec.shape)
-        print('t: ', theta[:, 4])
-        print('n_samples: ', n_samples)
-        print('n_trials: ', n_trials)
+        # print('v_h: ', theta[:, 0].shape)
+        # print('v_l_1: ', theta[:, 1].shape)
+        # print('v_l_2: ', theta[:, 2].shape)
+        # print('a: ', theta[:, 3].shape)
+        # print('z_h: ', z_vec.shape)
+        # print('t: ', theta[:, 4].shape)
+        # print('n_samples: ', n_samples)
+        # print('n_trials: ', n_trials)
 
         x = cssm.ddm_flexbound_par2(v_h = theta[:, 0],
                                     v_l_1 = theta[:, 1],
