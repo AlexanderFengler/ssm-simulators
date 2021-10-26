@@ -250,7 +250,7 @@ model_config = {'ddm': {'name': 'ddm',
                              'hddm_include': ['vh', 'vl1', 'vl2', 'a', 't', 'alpha', 'beta'],
                              'nchoices': 4,
                             },
-                'ddm_mic2': {'name': 'ddm_mic2',
+                'ddm_mic2_adj': {'name': 'ddm_mic2_adj',
                              'params': ["vh", "vl1", "vl2", "a", "zh", "zl1", "zl2", "d", "t"],
                              'param_bounds': [[-2.5, -2.5, -2.5, 0.3, 0.2, 0.2, 0.2, 0.0, 0.0], [2.5, 2.5, 2.5, 2.0, 0.8, 0.8, 0.8, 1.0, 2.0]],
                              'boundary': bf.constant,
@@ -259,7 +259,7 @@ model_config = {'ddm': {'name': 'ddm',
                              'hddm_include': ["vh", "vl1", "vl2", "a", "zh", "zl1", "zl2", "d", "t"],
                              'nchoices': 4,
                             },
-                'ddm_mic2_no_bias': {'name': 'ddm_mic2_no_bias',
+                'ddm_mic2_adj_no_bias': {'name': 'ddm_mic2_adj_no_bias',
                              'params': ["vh", "vl1", "vl2", "a", "d", "t"],
                              'param_bounds': [[-2.5, -2.5, -2.5, 0.3, 0.0, 0.0], [2.5, 2.5, 2.5, 2.0, 1.0, 2.0]],
                              'boundary': bf.constant,
@@ -268,7 +268,7 @@ model_config = {'ddm': {'name': 'ddm',
                              'hddm_include': ["vh", "vl1", "vl2", "a", "zh", "zl1", "zl2", "d", "t"],
                              'nchoices': 4,
                             },
-                'ddm_mic2_angle_no_bias': {'name': 'ddm_mic2_angle_no_bias',
+                'ddm_mic2_adj_angle_no_bias': {'name': 'ddm_mic2_adj_angle_no_bias',
                              'params': ["vh", "vl1", "vl2", "a", "d", "t", 'theta'],
                              'param_bounds': [[-2.5, -2.5, -2.5, 0.3, 0.0, 0.0, -0.1], [2.5, 2.5, 2.5, 2.0, 1.0, 2.0, 1.0]],
                              'boundary': bf.angle,
@@ -278,7 +278,7 @@ model_config = {'ddm': {'name': 'ddm',
                              'hddm_include': ["vh", "vl1", "vl2", "a", "zh", "zl1", "zl2", "d", "t", "theta"],
                              'nchoices': 4,
                             },
-                'ddm_mic2_weibull_no_bias': {'name': 'ddm_mic2_weibull_no_bias',
+                'ddm_mic2_adj_weibull_no_bias': {'name': 'ddm_mic2_adj_weibull_no_bias',
                              'params': ["vh", "vl1", "vl2", "a", "d", "t", "alpha", "beta"],
                              'param_bounds': [[-2.5, -2.5, -2.5, 0.3, 0.0, 0.0, 0.31, 0.31], [2.5, 2.5, 2.5, 2.0, 1.0, 2.0, 4.99, 6.99]],
                              'boundary': bf.weibull_cdf,
@@ -317,14 +317,6 @@ model_config = {'ddm': {'name': 'ddm',
 
 model_config['weibull_cdf'] = model_config['weibull'].copy()
 model_config['full_ddm2'] = model_config['full_ddm'].copy()
-model_config['ddm_mic2_adj'] = model_config['ddm_mic2'].copy()
-model_config['ddm_mic2_adj']['name'] = 'ddm_mic2_adj'
-model_config['ddm_mic2_adj_no_bias'] = model_config['ddm_mic2_no_bias'].copy()
-model_config['ddm_mic2_adj_no_bias']['name'] = 'ddm_mic2_adj_no_bias'
-model_config['ddm_mic2_adj_angle_no_bias'] = model_config['ddm_mic2_angle_no_bias'].copy()
-model_config['ddm_mic2_adj_angle_no_bias']['name'] = 'ddm_mic2_adj_angle_no_bias'
-model_config['ddm_mic2_adj_weibull_no_bias'] = model_config['ddm_mic2_weibull_no_bias'].copy()
-model_config['ddm_mic2_adj_weibull_no_bias']['name'] = 'ddm_mic2_adj_weibull_no_bias'
 
 #### DATASET GENERATOR CONFIGS ----------------------------------------------------------------
 
