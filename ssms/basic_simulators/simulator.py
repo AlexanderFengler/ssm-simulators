@@ -806,6 +806,7 @@ def simulator(theta,
 
     x['metadata']['model'] = model
 
+
     if bin_dim == 0 or bin_dim == None:
         return x
     elif bin_dim > 0 and n_trials == 1 and not bin_pointwise:
