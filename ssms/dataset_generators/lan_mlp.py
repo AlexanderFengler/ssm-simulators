@@ -11,6 +11,7 @@ import sys
 from datetime import datetime
 from scipy.stats import truncnorm
 from scipy.stats import mode
+from copy import deepcopy
 
 import multiprocessing as mp
 from multiprocessing import Process

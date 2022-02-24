@@ -1812,7 +1812,6 @@ def ddm_flexbound_mic2_adj(np.ndarray[float, ndim = 1] v_h,
                 y_l = (- 1) * boundary_view[0] + (z_l_1_view[k] * 2 * (boundary_view[0])) 
                 v_l = v_l_1_view[k]
 
-
                 # Fill bias trace until max_rt reached
                 ix_tmp = ix + 1
                 while ix_tmp < num_draws:
