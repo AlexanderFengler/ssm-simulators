@@ -8,7 +8,7 @@ from sklearn.neighbors import KernelDensity
 # Generate class for log_kdes
 class logkde():
     def __init__(self,
-                 simulator_data, # Simulator_data is the kind of data returned by the simulators in ddm_data_simulatoin.py
+                 simulator_data, # Simulator_data is the kind of data returned by the simulators in ddm_data_simulation.py
                  bandwidth_type = 'silverman',
                  auto_bandwidth = True):
 
@@ -32,7 +32,6 @@ class logkde():
                     if bandwidth_tmp > 0:
                         self.bandwidths.append(bandwidth_tmp)
                     else:
-                        #print(self.data['rts'][i])
                         self.bandwidths.append('no_base_data')
 
     # Function to generate basic kdes
@@ -51,7 +50,6 @@ class logkde():
         for i in range(0, len(self.data['choices']), 1):
             if self.bandwidths[i] == 'no_base_data':
                 self.base_kdes.append('no_base_data')
-                #print('no_base_data reported')
             else: 
                 self.base_kdes.append(KernelDensity(kernel = 'gaussian',
                                                     bandwidth = self.bandwidths[i]).fit(np.log(self.data['rts'][i])))
@@ -65,8 +63,6 @@ class logkde():
         log_rts = np.log(data[0])
         log_kde_eval = np.log(data[0])
         choices = np.unique(data[1])
-        #print('choices to iterate:', choices)
-        #print('choices from kde:', self.data['choices'])
         
         # Main loop
         for c in choices:
@@ -76,7 +72,7 @@ class logkde():
             
             # Main step: Evaluate likelihood for rts corresponding to choice == c
             if self.base_kdes[self.data['choices'].index(c)] == 'no_base_data':
-                log_kde_eval[choice_idx_tmp] = -66.77497 # the number corresponds to log(1e-29) # --> log(1 / n) + log(1 / 20)
+                log_kde_eval[choice_idx_tmp] = np.log(1 / self.data['n_trials']) + np.log(1 / self.simulator_info['max_t']) # -66.77497 # the number corresponds to log(1e-29) # --> should rather be log(1 / n) + log(1 / 20)
             else:
                 log_kde_eval[choice_idx_tmp] = np.log(self.data['choice_proportions'][self.data['choices'].index(c)]) + \
                 self.base_kdes[self.data['choices'].index(c)].score_samples(np.expand_dims(log_rts[choice_idx_tmp], 1)) - \
@@ -112,22 +108,18 @@ class logkde():
             n_by_choice[np.argmax(n_by_choice)] -= 1
         elif sum(n_by_choice) < n_samples:
             n_by_choice[np.argmax(n_by_choice)] += 1
-            #print('rounding error catched')
             choices[n_samples - 1, 0] = np.random.choice(self.data['choices'])
-            #print('resolution: ', choices[n_samples - 1, 0])
-            #print('choices allowed: ', self.data['choices'])
             
         # Get samples
         cnt_low = 0
         for i in range(0, len(self.data['choices']), 1):
             if n_by_choice[i] > 0:
-                #print('sum of n_by_choice:', sum(n_by_choice))
                 cnt_high = cnt_low + n_by_choice[i]
                 
                 if self.base_kdes[i] != 'no_base_data':
                     rts[cnt_low:cnt_high] = np.exp(self.base_kdes[i].sample(n_samples = n_by_choice[i]))
                 else:
-                    rts[cnt_low:cnt_high, 0] = np.random.uniform(low = 0, high = 20, size = n_by_choice[i])
+                    rts[cnt_low:cnt_high, 0] = np.random.uniform(low = 0, high = self.simulator_info['max_t'], size = n_by_choice[i])
                 
                 choices[cnt_low:cnt_high, 0] = np.repeat(self.data['choices'][i], n_by_choice[i])
                 cnt_low = cnt_high
@@ -153,21 +145,23 @@ class logkde():
             prop_tmp = len(rts_tmp) / n
             self.data['rts'].append(rts_tmp)
             self.data['choice_proportions'].append(prop_tmp)
-            
+        
+        self.data['n_trials'] = simulator_data[0].shape[0]
 
 # Support functions (accessible from outside the main class defined in script)
 def bandwidth_silverman(sample = [0,0,0], 
                         std_cutoff = 1e-3, 
                         std_proc = 'restrict', # options 'kill', 'restrict'
-                        std_n_1 = 1e-1 # HERE WE CAN ALLOW FOR SOMETHING MORE INTELLIGENT
+                        std_n_1 = 10 # HERE WE CAN ALLOW FOR SOMETHING MORE INTELLIGENT
                        ): 
     
-    # Compute sample std and number of samples
-    std = np.std(sample)
+    # Compute number of samples
     n = len(sample)
     
     # Deal with very small stds and n = 1 case
     if n > 1:
+        # Compute std of sample
+        std = np.std(sample)
         if std < std_cutoff:
             if std_proc == 'restrict':
                 std = std_cutoff

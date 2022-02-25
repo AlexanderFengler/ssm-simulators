@@ -73,23 +73,7 @@ class data_generator():
         
         out = self.simulator(theta  = theta, 
                              model = self.model_config['name']) # AF-TODO Want to change this so that we accept 
-        
-        #print(self.config['nbins'])
         return out
-        # if self.generator_config['nbins'] == 0:
-        #     return out
-        
-        # elif self.generator_config['nbins'] > 0 and not self.generator_config['bin_pointwise']:
-        #     #print('passed')
-        #     #print(out['rts'])
-        #     return bs.bin_simulator_output(out = out,
-        #                                    nbins = self.generator_config['nbins'],
-        #                                    max_t = self.generator_config['max_t'])
-        #     # return self._bin_simulator_output(simulations = out)
-        # elif self.generator_config['nbins'] > 0 and self.generator_config['bin_pointwise']:
-        #     pass # AF-TODO: Here return pointwise binned data
-        # else:
-        #     return 'number bins not accurately specified --> returning from simulator without output'
 
     def _filter_simulations(self,
                             simulations = None,
@@ -101,20 +85,21 @@ class data_generator():
         for choice_tmp in simulations['metadata']['possible_choices']:
             tmp_rts = simulations['rts'][simulations['choices'] == choice_tmp]
             tmp_n_c = len(tmp_rts)
-            #print('tmp_n_c')
-            #print(tmp_n_c)
-            #debug_tmp_n_c_min = np.minimum(debug_tmp_n_c_min, tmp_n_c)
             if tmp_n_c > 0:
                 mode_, mode_cnt_ = mode(tmp_rts)
                 std_ = np.std(tmp_rts)
                 mean_ = np.mean(tmp_rts)
-                mode_cnt_rel_ = mode_cnt_ / tmp_n_c
+                if tmp_n_c < 5:
+                    mode_cnt_rel_ = 0
+                else:
+                    mode_cnt_rel_ = mode_cnt_ / tmp_n_c
+                
             else:
                 mode_ = -1
                 mode_cnt_ = 0
                 mean_ = -1
-                std_ = -1
-                mode_cnt_rel_ = 1
+                std_ = 1
+                mode_cnt_rel_ = 0
             
             # AF-TODO: More flexible way with list of filter objects that provides for each filter 
             #  1. Function to compute statistic (e.g. mode)
@@ -218,10 +203,6 @@ class data_generator():
             #print(simulations)
             keep, stats = self._filter_simulations(simulations)
             print('random seed with id: ', random_seed)
-            #print(theta)
-            #print(keep)
-            #print(stats)
-            #print(keep)
 
         data = self._make_kde_data(simulations = simulations,
                                    theta = theta)
