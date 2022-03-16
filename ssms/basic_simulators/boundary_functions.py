@@ -28,6 +28,35 @@ def weibull_cdf(t = 1,
                 beta = 1):
     return np.exp( - np.power(np.divide(t, beta), alpha))
 
+def conflict_gamma_bound(a = 0.5,
+                         theta = 0.5,
+                         scale = 1,
+                         alpha_gamma = 1.01,
+                         scale_gamma = 0.3,
+                         t = np.arange(0, 20, 0.1)):
+    """conflict bound that allows initial divergence then collapse
+
+    :Arguments:
+        t: np.array or float <default = 1>
+            Time/s (with arbitrary measure, but in HDDM it is used as seconds) at which to evaluate the bound.
+        theta: float <default = 0.5>
+            Collapse angle
+        scale: float <default = 1.0>
+            Scaling the gamma distribution of the boundary (since bound does not have to integrate to one)
+        a: float <default = 0.5>
+            Initial boundary separation
+        alpha_gamma: float <default = 1.01>
+            alpha parameter for a gamma in scale shape parameterization
+        scale_gamma: float <default = 0.3>
+            scale parameter for a gamma in scale shape paraemterization
+            
+    """
+
+    return np.maximum(a + scale * gamma.pdf(t, a = alpha_gamma, 
+                                            loc = 0, 
+                                            scale = scale_gamma) + \
+                      np.multiply(t, (-np.sin(theta) / np.cos(theta))), 0)
+
 # # Gamma shape: (additive)
 # def gamma_bnd(t = 1,
 #               node = 1,
