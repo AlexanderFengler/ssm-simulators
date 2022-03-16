@@ -638,7 +638,7 @@ def simulator(theta,
                                     boundary_multiplicative = True,
                                     boundary_params = {})
 
-    if model == 'ddm_seq2_conflict_gamma_no_bias':
+    if model == 'ddm_seq2_gamma_conflict_no_bias':
         x = cssm.ddm_flexbound_seq2(v_h = theta[:, 0],
                                     v_l_1 = theta[:, 1],
                                     v_l_2 = theta[:, 2],
@@ -652,13 +652,14 @@ def simulator(theta,
                                     n_trials = n_trials,
                                     delta_t = delta_t,
                                     max_t = max_t,
-                                    boundary_fun = bf.conflict_gamma_bound,
+                                    boundary_fun = bf.gamma_conflict_bound,
                                     boundary_multiplicative = False,
                                     boundary_params = {'a': theta[:, 4],
                                                        'theta': theta[:, 5],
                                                        'scale': theta[:, 6],
                                                        'alpha_gamma': theta[:, 7],
                                                        'scale_gamma': theta[:, 8]})
+        print(x)
 
     if model == 'ddm_seq2_angle_no_bias':
         x = cssm.ddm_flexbound_seq2(v_h = theta[:, 0],
@@ -733,7 +734,7 @@ def simulator(theta,
                                     boundary_multiplicative = True,
                                     boundary_params = {})
 
-    if model == 'ddm_par2_conflict_gamma_no_bias':
+    if model == 'ddm_par2_gamma_conflict_no_bias':
         x = cssm.ddm_flexbound_par2(v_h = theta[:, 0],
                                     v_l_1 = theta[:, 1],
                                     v_l_2 = theta[:, 2],
@@ -747,7 +748,7 @@ def simulator(theta,
                                     n_trials = n_trials,
                                     delta_t = delta_t,
                                     max_t = max_t,
-                                    boundary_fun = bf.conflict_gamma_bound,
+                                    boundary_fun = bf.gamma_conflict_bound,
                                     boundary_multiplicative = False,
                                     boundary_params = {'a': theta[:, 4],
                                                        'theta': theta[:, 5],
@@ -830,7 +831,7 @@ def simulator(theta,
                                         boundary_multiplicative = True,
                                         boundary_params = {})
 
-    if model == 'ddm_mic2_adj_conflict_gamma_no_bias':
+    if model == 'ddm_mic2_adj_gamma_conflict_no_bias':
         x = cssm.ddm_flexbound_mic2_adj(v_h = theta[:, 0],
                                         v_l_1 = theta[:, 1],
                                         v_l_2 = theta[:, 2],
@@ -845,7 +846,7 @@ def simulator(theta,
                                         n_trials = n_trials,
                                         delta_t = delta_t,
                                         max_t = max_t,
-                                        boundary_fun = bf.conflict_gamma_bound,
+                                        boundary_fun = bf.gamma_conflict_bound,
                                         boundary_multiplicative = False,
                                         boundary_params = {'a': theta[:, 5],
                                                            'theta': theta[:, 6],
