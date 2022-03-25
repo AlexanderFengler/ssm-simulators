@@ -659,7 +659,6 @@ def simulator(theta,
                                                        'scale': theta[:, 6],
                                                        'alpha_gamma': theta[:, 7],
                                                        'scale_gamma': theta[:, 8]})
-        print(x)
 
     if model == 'ddm_seq2_angle_no_bias':
         x = cssm.ddm_flexbound_seq2(v_h = theta[:, 0],
