@@ -602,9 +602,6 @@ def simulator(theta,
     z_vec = np.tile(np.array([0.5], dtype = np.float32), reps = n_trials)
     a_zero_vec = np.tile(np.array([0.0], dtype = np.float32), reps = n_trials)
     
-    print(model)
-    print(model)
-    print(model)
     if model == 'ddm_seq2':
         x = cssm.ddm_flexbound_seq2(v_h = theta[:, 0],
                                     v_l_1 = theta[:, 1],
