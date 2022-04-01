@@ -254,7 +254,7 @@ class data_generator():
         # Get Simulations 
             for i in range(self.generator_config['n_subruns']):
                 print('simulation round:', i + 1 , ' of', self.generator_config['n_subruns'])
-                with Pool(processes = self.generator_config['n_cpus']) as pool:
+                with Pool(processes = self.generator_config['n_cpus'] - 1) as pool:
 
                     data_tmp[(i * subrun_n * samples_by_param_set):((i + 1) * subrun_n * samples_by_param_set), :] = np.concatenate(pool.map(self._mlp_get_processed_data_for_theta, 
                                                                                                                [k for k in seed_args[(i * subrun_n):((i + 1) * subrun_n)]]))
@@ -300,7 +300,8 @@ class data_generator():
                                   'training_data_' + \
                                   binned + \
                                   '_nbins_' + str(self.generator_config['nbins']) + \
-                                  '_n_' + str(self.generator_config['n_samples'])
+                                  '_n_' + str(self.generator_config['n_samples']) + \
+                                  '/' + self.model_config["name"]
             
             if not os.path.exists(training_data_folder):
                 os.makedirs(training_data_folder)
