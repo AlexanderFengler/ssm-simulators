@@ -11,6 +11,8 @@ The `ssms` package serves two purposes.
 
 We provide two minimal examples here to illustrate how to use each of the two capabilities.
 
+#### Install
+
 Let's start with *installing* the `ssms` package.
 
 You can do so by typing,
@@ -19,7 +21,9 @@ You can do so by typing,
 
 in your terminal.
 
+Below you find a basic tutorial on how to use the package.
 
+#### Tutorial
 
 ```python
 # Import necessary packages
