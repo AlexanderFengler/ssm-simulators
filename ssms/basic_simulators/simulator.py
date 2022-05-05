@@ -1,5 +1,6 @@
 import ssms.config as config
 from . import boundary_functions as bf
+from . import drift_functions as df
 import numpy as np
 #import pandas as pd
 import sys
@@ -400,6 +401,38 @@ def simulator(theta,
                                     n_samples = n_samples,
                                     n_trials = n_trials,
                                     max_t = max_t)
+
+    if model == 'gamma_drift':
+        x = cssm.ddm_flex(v = theta[:, 0],
+                          a = theta[:, 1],
+                          z = theta[:, 2],
+                          t = theta[:, 3],
+                          s = s,
+                          boundary_fun = bf.constant,
+                          drift_fun = df.gamma_drift,
+                          boundary_multiplicative = True,
+                          boundary_params = {},
+                          drift_params = {'shape': theta[:, 4], 'scale': theta[:, 5], 'c': theta[:, 6]},
+                          delta_t = delta_t,
+                          n_samples = n_samples,
+                          n_trials = n_trials,
+                          max_t = max_t)
+
+    if model == 'gamma_drift_angle':
+        x = cssm.ddm_flex(v = theta[:, 0],
+                          a = theta[:, 1],
+                          z = theta[:, 2],
+                          t = theta[:, 3],
+                          s = s,
+                          boundary_fun = bf.angle,
+                          drift_fun = df.gamma_drift,
+                          boundary_multiplicative = False,
+                          boundary_params = {'theta': theta[:, 4]},
+                          drift_params = {'shape': theta[:, 5], 'scale': theta[:, 6], 'c': theta[:, 7]},
+                          delta_t = delta_t,
+                          n_samples = n_samples,
+                          n_trials = n_trials,
+                          max_t = max_t)
 
     # 3 Choice models
     if no_noise:
@@ -891,6 +924,87 @@ def simulator(theta,
                                         boundary_multiplicative = True,
                                         boundary_params = {'alpha': theta[:, 6],
                                                            'beta': theta[:, 7]})
+
+    if model == 'tradeoff_no_bias':
+        x = cssm.ddm_flexbound_tradeoff(v_h = theta[:, 0],
+                                        v_l_1 = theta[:, 1],
+                                        v_l_2 = theta[:, 2],
+                                        a = theta[:, 3],
+                                        z_h = z_vec, #np.array([0.5], dtype = np.float32),
+                                        z_l_1 = z_vec, #np.array([0.5], dtype = np.float32),
+                                        z_l_2 = z_vec, #np.array([0.5], dtype = np.float32),
+                                        d = theta[:, 4],
+                                        t = theta[:, 5],
+                                        s = s,
+                                        n_samples = n_samples,
+                                        n_trials = n_trials,
+                                        delta_t = delta_t,
+                                        max_t = max_t,
+                                        boundary_fun = bf.constant,
+                                        boundary_multiplicative = True,
+                                        boundary_params = {})
+
+    if model == 'tradeoff_angle_no_bias':
+        x = cssm.ddm_flexbound_tradeoff(v_h = theta[:, 0],
+                                        v_l_1 = theta[:, 1],
+                                        v_l_2 = theta[:, 2],
+                                        a = theta[:, 3],
+                                        z_h = z_vec, #np.array([0.5], dtype = np.float32),
+                                        z_l_1 = z_vec, #np.array([0.5], dtype = np.float32),
+                                        z_l_2 = z_vec, #np.array([0.5], dtype = np.float32),
+                                        d = theta[:, 4],
+                                        t = theta[:, 5],
+                                        s = s,
+                                        n_samples = n_samples,
+                                        n_trials = n_trials,
+                                        delta_t = delta_t,
+                                        max_t = max_t,
+                                        boundary_fun = bf.angle,
+                                        boundary_multiplicative = False,
+                                        boundary_params = {'theta': theta[:, 6]})
+
+    if model == 'tradeoff_weibull_no_bias':
+        x = cssm.ddm_flexbound_tradeoff(v_h = theta[:, 0],
+                                        v_l_1 = theta[:, 1],
+                                        v_l_2 = theta[:, 2],
+                                        a = theta[:, 3],
+                                        z_h = z_vec, #np.array([0.5], dtype = np.float32),
+                                        z_l_1 = z_vec, #np.array([0.5], dtype = np.float32),
+                                        z_l_2 = z_vec, #np.array([0.5], dtype = np.float32),
+                                        d = theta[:, 4],
+                                        t = theta[:, 5],
+                                        s = s,
+                                        n_samples = n_samples,
+                                        n_trials = n_trials,
+                                        delta_t = delta_t,
+                                        max_t = max_t,
+                                        boundary_fun = bf.weibull_cdf,
+                                        boundary_multiplicative = True,
+                                        boundary_params = {'alpha': theta[:, 6],
+                                                           'beta': theta[:, 7]})
+
+    if model == 'tradeoff_gamma_conflict_no_bias':
+        x = cssm.ddm_flexbound_tradeoff(v_h = theta[:, 0],
+                                        v_l_1 = theta[:, 1],
+                                        v_l_2 = theta[:, 2],
+                                        a = a_zero_vec,
+                                        z_h = z_vec, #np.array([0.5], dtype = np.float32),
+                                        z_l_1 = z_vec, #np.array([0.5], dtype = np.float32),
+                                        z_l_2 = z_vec, #np.array([0.5], dtype = np.float32),
+                                        d = theta[:, 3],
+                                        t = theta[:, 4],
+                                        s = s,
+                                        n_samples = n_samples,
+                                        n_trials = n_trials,
+                                        delta_t = delta_t,
+                                        max_t = max_t,
+                                        boundary_fun = bf.gamma_conflict_bound,
+                                        boundary_multiplicative = False,
+                                        boundary_params = {'a': theta[:, 5],
+                                                           'theta': theta[:, 6],
+                                                           'scale': theta[:, 7],
+                                                           'alpha_gamma': theta[:, 8],
+                                                           'scale_gamma': theta[:, 9]})
     
     # Output compatibility
     if n_trials == 1:

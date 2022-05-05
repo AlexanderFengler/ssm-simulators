@@ -1,23 +1,13 @@
 import ssms.basic_simulators as bs
-#import ssms.config as config
 from ssms.support_utils import kde_class
-import pandas as pd
 import numpy as np
-#from itertools import product
 import pickle
 import uuid
 import os 
-import sys
-from datetime import datetime
-from scipy.stats import truncnorm
 from scipy.stats import mode
-from copy import deepcopy
-
-import multiprocessing as mp
-from multiprocessing import Process
 from multiprocessing import Pool
 import psutil
-#import basic_simulators
+
 from functools import partial
 
 class data_generator():
@@ -240,7 +230,6 @@ class data_generator():
                                        save = False):
         
         seeds = np.random.choice(400000000, size = self.generator_config['n_parameter_sets'])
-        #seed_ids = np.arange(0, self.generator_config['n_parameter_sets'], 1)
         seed_args = [[seeds[i], i + 1] for i in np.arange(0, self.generator_config['n_parameter_sets'], 1)]
         
         # Inits
@@ -331,11 +320,8 @@ class data_generator():
         components_to_exclude = np.random.choice(self.model_config['components']['n_components'], size = n_components_to_exclude, replace = False)
         
         label_tmp = np.array([1 for i in range(self.model_config['components']['n_components'])])
-        #print('initial label')
-        #print(label_tmp)
+
         for component_tmp in components_to_exclude:
-            #print('label_tmp')
-            #print(label_tmp)
             # Get component name
             component_name = self.model_config['components']['names'][component_tmp]
             # Get index number in list of all model parameters
@@ -382,8 +368,6 @@ class data_generator():
                 data_tmp_dict['label_parameters'] = np.float32(np.concatenate([np.expand_dims(x['label_parameters'], axis = 0) for x in data_tmp]))
                 data_list.append(data_tmp_dict)
 
-                #print(data_tmp_dict['data'].shape)
-        
         data = {}
 
         data['data'] = np.float32(np.concatenate([x['data'] for x in data_list]))
@@ -414,13 +398,6 @@ class data_generator():
         with Pool(processes = self.generator_config['n_cpus']) as pool:
             data_tmp = pool.map(self._ratio_estimator_get_processed_data, list(seeds))
                 
-        # data_tmp_dict = {}
-        # data_tmp_dict['data'] = np.float32(np.concatenate([x['data'] for x in data_tmp]))
-        # data_tmp_dict['labels'] = np.float32(np.concatenate([np.expand_dims(x['labels'], axis = 0) for x in data_tmp]))
-        # data_list.append(data_tmp_dict)
-
-        # print(data_tmp_dict['data'].shape)
-        
         data = {}
         data['data'] = np.float32(np.concatenate([x['data'] for x in data_tmp]))
         data['labels'] = np.float32(np.concatenate([x['labels'] for x in data_tmp]))
@@ -468,7 +445,7 @@ class data_generator():
                 rejected_thetas.append(theta)
                 stats_rej.append(stats)
                 rej_cnt += 1
-            elif acc_cnt < max_cnt and keep == 1:
+            elif acc_cnt < cnt_max and keep == 1:
                     accepted_thetas.append(theta)
                     stats_acc.append(stats)
                     acc_cnt += 1
@@ -555,210 +532,3 @@ class data_generator():
             return 'Dataset completed'
         else:
             return data_grid
-
-    # AF-TD Get accepted parameterizations
-    # def generate_accepted_parameterizations(self, )
-
-
-    # AF-TD Get keep / not keep data-set
-   # ----------------------------------------------------
-
-    # def _make_param_grid_hierarchical(self):
-        
-    #     # Initialize global parameters
-    #     params_ranges_half = (np.array(self.model_config['param_bounds'][1]) - np.array(self.model_config['param_bounds'][0])) / 2
-        
-    #     # Sample global parameters from cushioned parameter space
-    #     global_stds = np.random.uniform(low = 0.001,
-    #                                     high = params_ranges_half / 10,
-    #                                     size = (self.generator_config['n_paramseter_sets'], self.generator_config['nparams']))
-    #     global_means = np.random.uniform(low = self.model_config['param_bounds'][0] + (params_ranges_half / 5),
-    #                                      high = self.model_config['param_bounds'][1] - (params_ranges_half / 5),
-    #                                      size = (self.generator_config['n_paramseter_sets'], self.generator_config['nparams']))
-
-    #     # Initialize local parameters (by condition)
-    #     subject_param_grid = np.float32(np.zeros((self.generator_config['n_paramseter_sets'], self.generator_config['nsubjects'], self.generator_config['nparams'])))
-        
-    #     # Sample by subject parameters from global setup (truncate to never go out of allowed parameter space)
-    #     for n in range(self.generator_config['n_paramseter_sets']):
-    #         for i in range(self.genrator_config['nsubjects']):
-    #             a, b = (self.generator_config['param_bounds'][0] - global_means[n]) / global_stds[n], (self.config['param_bounds'][1] - global_means[n]) / global_stds[n]
-    #             subject_param_grid[n, i, :] = np.float32(global_means[n] + truncnorm.rvs(a, b, size = global_stds.shape[1]) * global_stds[n])
-
-    #     return subject_param_grid, global_stds, global_means
-
-    # def generate_data_training_uniform_cnn_mlp(self, 
-    #                                            save = False):
-
-    #     seeds = np.random.choice(400000000, size = self.config['n_paramseter_sets'])
-        
-    #     # Inits
-    #     subrun_n = self.config['n_paramseter_sets'] // self.config['n_subruns']
-        
-    #     data_grid = {'mlp': np.zeros((int(self.config['n_paramseter_sets'] * 1000), 
-    #                                   len(self.config['param_bounds'][0]) + 3)),
-    #                  'cnn': np.zeros((int(self.config['n_paramseter_sets']), 
-    #                                   self.config['nbins'], 
-    #                                   self.config['nchoices']))}
-
-    #     # Get Simulations 
-    #     for i in range(self.config['n_subruns']):
-    #         print('simulation round:', i + 1 , ' of', self.config['n_subruns'])
-    #         with Pool(processes = self.config['n_cpus']) as pool:
-    #             data_grid[(i * subrun_n * 1000):((i + 1) * subrun_n * 1000), :] = np.concatenate(pool.map(self._mlp_get_processed_data_for_theta, 
-    #                                                                                                     [j for j in seeds[(i * subrun_n):((i + 1) * subrun_n)]]))
-    #     else:
-    #         data_grid = np.zeros((int(self.config['n_paramseter_sets'], self.config['nbins'], self.config['nchoices'])))
-            
-    #         for i in range(self.config['n_subruns']):
-    #             print('simulation round: ', i + 1, ' of', self.config['n_subruns'])
-    #             with Pool(processes = self.config['n_cpus']) as pool:
-    #                 data_grid[(i * subrun_n): ((i + 1) * subrun_n), :, :] = np.concatenate(pool.map(self._cnn_get_processed_data_for_theta,
-    #                                                                                                 [j for j in seeds[(i * subrun_n):((i + 1) * subrun_n)]]))
-        
-    #     if save:
-    #         training_data_folder = self.config['method_folder'] + \
-    #                               'training_data_binned_' + \
-    #                               str(int(self.config['binned'])) + \
-    #                               '_nbins_' + str(self.config['nbins']) + \
-    #                               '_n_' + str(self.config['nsamples'])
-
-    #         if not os.path.exists(training_data_folder):
-    #             os.makedirs(training_data_folder)
-
-    #         full_file_name = training_data_folder + '/' + \
-    #                          'data_' + \
-    #                          self.config['file_id'] + '.pickle'
-    #         print('Writing to file: ', full_file_name)
-
-    #         pickle.dump(np.float32(data_grid),
-    #                     open(full_file_name, 'wb'), 
-    #                     protocol = self.config['pickleprotocol'])
-    #         return 'Dataset completed'
-        
-    #     else:
-    #         return data_grid
-         
-
-   
-    # def generate_data_hierarchical(self, save = False):
-        
-    #     subject_param_grid, global_stds, global_means = self._make_param_grid_hierarchical()
-    #     subject_param_grid_adj_sim = np.reshape(subject_param_grid, (-1, self.config['nparams'])).tolist()
-    #     subject_param_grid_adj_sim = tuple([(np.array(i),) for i in subject_param_grid_adj_sim])
-        
-    #     with Pool(processes = self.config['n_cpus']) as pool:
-    #         data_grid = np.array(pool.starmap(self.get_simulations, subject_param_grid_adj_sim))
-            
-    #     if save:
-    #         training_data_folder = self.config['method_folder'] + 'parameter_recovery_hierarchical_data_binned_' + str(int(self.config['binned'])) + \
-    #                                '_nbins_' + str(self.config['nbins']) + \
-    #                                '_n_' + str(self.config['nsamples'])
-            
-    #         full_file_name = training_data_folder + '/' + \
-    #                          self.config['method'] + \
-    #                          '_nchoices_' + str(self.config['nchoices']) + \
-    #                          '_parameter_recovery_hierarchical_' + \
-    #                          'binned_' + str(int(self.config['binned'])) + \
-    #                          '_nbins_' + str(self.config['nbins']) + \
-    #                          '_nreps_' + str(self.config['nreps']) + \
-    #                          '_n_' + str(self.config['nsamples']) + \
-    #                          '_nsubj_' + str(self.config['nsubjects']) + \
-    #                          '.pickle'
-            
-    #         if not os.path.exists(training_data_folder):
-    #             os.makedirs(training_data_folder)
-            
-    #         print('saving dataset as ', full_file_name)
-            
-    #         pickle.dump(([subject_param_grid, global_stds, global_means], 
-    #                       np.expand_dims(data_grid, axis = 0),
-    #                       self.config['meta']), 
-    #                     open(full_file_name, 'wb'), 
-    #                     protocol = self.config['pickleprotocol'])
-            
-    #         return 'Dataset completed'
-    #     else:
-    #         return ([subject_param_grid, global_stds, global_means], data_grid, meta)
-
-
-
-
-        # def generate_data_parameter_recovery(self, save = False):
-        
-    #     # Make parameters
-    #     theta_list = [np.float32(np.random.uniform(low = self.config['param_bounds'][0], 
-    #                                                 high = self.config['param_bounds'][1])) for i in range(self.config['n_paramseter_sets'])]
-        
-    #     # Get simulations
-    #     with Pool(processes = self.config['n_cpus']) as pool:
-    #         data_grid = np.array(pool.map(self.get_simulations_param_recov, theta_list))
-
-    #     print('data_grid shape: ', data_grid.shape)
-    #     #data_grid = np.expand_dims(data_grid, axis = 0)
-        
-    #     # Add the binned versions
-    #     binned_tmp_256 = np.zeros((self.config['n_paramseter_sets'], 256, 2))
-    #     binned_tmp_512 = np.zeros((self.config['n_paramseter_sets'], 512, 2))
-
-    #     for i in range(self.config['n_paramseter_sets']):
-    #         print('subset shape: ', data_grid[i, :, 0].shape)
-    #         data_tmp = (np.expand_dims(data_grid[i, :, 0], axis = 1),
-    #                     np.expand_dims(data_grid[i, :, 1], axis = 1),
-    #                     config['meta'])
-            
-    #         binned_tmp_256[i, :, :] = bs.bin_simulator_output(out = data_tmp,
-    #                                                              nbins = 256,
-    #                                                              max_t = self.config['binned_max_t'])
-            
-    #         binned_tmp_512[i, :, :] = bs.bin_simulator_output(out = data_tmp,
-    #                                                              nbins = 512,
-    #                                                              max_t = self.config['binned_max_t'])
-
-    #         # AF-TODO: Add binned pointwise
-
-    #     # Save to correct destination
-    #     if save:
-    #         binned_tmp = ['0', '1', '1']
-    #         bins_tmp = ['0', '256', '512']
-    #         data_arrays = [data_grid, binned_tmp_256, binned_tmp_512]
-            
-    #         for k in range(len(binned_tmp)):
-    #             # Make folder unbinnend
-    #             data_folder = self.config['output_folder'] + \
-    #                                   'parameter_recovery_data_binned_' + \
-    #                                   binned_tmp[k] + \
-    #                                   '_nbins_' + bins_tmp[k] + \
-    #                                   '_n_' + str(self.config['nsamples'])
-
-    #             if not os.path.exists(data_folder):
-    #                 os.makedirs(data_folder)
-
-    #             full_file_name = data_folder + '/' + \
-    #                              self.model_config['method'] + \
-    #                              '_parameter_recovery_binned_' + \
-    #                              binned_tmp[k] + \
-    #                              '_nbins_' + bins_tmp[k] + \
-    #                              '_nreps_' + str(self.config['nreps']) + \
-    #                              '_n_' + str(self.config['n_samples']) + \
-    #                              '.pickle'
-
-    #             print('Writing to file: ', full_file_name)
-                
-    #             pickle.dump({'parameters': np.float32(np.stack(theta_list)), 
-    #                          'data': np.float32(data_arrays[k]),
-    #                          'metadata': self.config['meta']}, # AF-TD: Need better way, I don't want to use config['meta']!
-    #                          open(full_file_name, 'wb'), 
-    #                          protocol = self.config['pickleprotocol'])
-            
-    #         return 'Dataset completed and stored'
-        
-    #     # Or else return the data
-    #     else:
-    #         return {'labels': np.float32(np.stack(theta_list)), 'data': np.float32(data_grid)}
-
-    # def get_simulations_param_recov(self, 
-    #                                 theta = None):
-        
-    #     simulations = self.get_simulations(theta = theta)
-    #     return np.concatenate([simulations['rts'], simulations[1]], axis = 1)
