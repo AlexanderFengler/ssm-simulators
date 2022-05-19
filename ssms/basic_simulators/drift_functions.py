@@ -32,34 +32,74 @@ def gamma_drift(t = np.arange(0, 20, 0.1),
     div_ = np.power(shape - 1, shape - 1) * np.power(scale, shape - 1) * np.exp(- (shape - 1))
     return c * np.divide(num_, div_)
 
-    """Basic data simulator for the models included in HDDM. 
+def ds_support_analytic(t = np.arange(0, 10, 0.001),
+                        init_p = 0,
+                        fix_point = 1,
+                        slope = 2):
 
+    """Solution to differential equation of the form: x' = slope*(fix_point - x), with initial
+       condition init_p. The solution takes the form: (init_p - fix_point) * exp(-slope * t) + fix_point
 
     :Arguments:
-        theta : list or numpy.array
-            Parameters of the simulator. If 2d array, each row is treated as a 'trial' 
-            and the function runs n_sample * n_trials simulations.
-        model: str <default='angle'>
-            Determines the model that will be simulated.
-        n_samples: int <default=1000>
-            Number of simulation runs (for each trial if supplied n_trials > 1)
-        n_trials: int <default=1>
-            Number of trials in a simulations run (this specifically addresses trial by trial parameterizations)
-        delta_t: float
-            Size fo timesteps in simulator (conceptually measured in seconds)
-        max_t: float
-            Maximum reaction the simulator can reach
-        no_noise: bool <default=False>
-            Turn noise of (useful for plotting purposes mostly)
-        bin_dim: int <default=None>
-            Number of bins to use (in case the simulator output is supposed to come out as a count histogram)
-        bin_pointwise: bool <default=False>
-            Wheter or not to bin the output data pointwise. If true the 'RT' part of the data is now specifies the
-            'bin-number' of a given trial instead of the 'RT' directly. You need to specify bin_dim as some number for this to work.
-    
-    :Return: tuple 
-        can be (rts, responses, metadata)
-        or     (rt-response histogram, metadata)
-        or     (rts binned pointwise, responses, metadata)
+        t: np.ndarray <default=np.arange(0, 20, 0.1)>
+            Timepoints at which to evaluate the drift. Usually np.arange() of some sort. 
+        init_p: float <default=0>
+            Initial condition of dynamical system
+        fix_point: float <default=1>
+            Fixed point of dynamical system
+        slope: float <default=0.01>
+            Coefficient in exponent of the solution.
+    :Return: np.ndarray
+         The gamma drift evaluated at the supplied timepoints t.
 
     """
+    
+    return (init_p - fix_point)*np.exp(- (slope * t)) + fix_point
+
+def ds_conflict_drift(t = np.arange(0, 10, 0.001),
+                      init_p_t = 0,
+                      init_p_d = 0,
+                      slope_t = 1,
+                      slope_d = 1,
+                      fixed_p_t = 1,
+                      coherence_t = 1.5,
+                      coherence_d = 1.5):
+    """This drift is inspired by a conflict task which involves a target and a distractor stimuli both presented
+       simultaneously. Two drift timecourses are linearly combined weighted by the coherence in the respective target 
+       and distractor stimuli. Each timecourse follows a dynamical system as described in the ds_support_analytic() function.
+
+    :Arguments:
+        t: np.ndarray <default=np.arange(0, 20, 0.1)>
+            Timepoints at which to evaluate the drift. Usually np.arange() of some sort. 
+        init_p_t: float <default=0>
+            Initial condition of target drift timecourse
+        init_p_d: float <default=0>
+            Initial condition of distractor drift timecourse
+        slope_t: float <default=1>
+            Slope parameter for target drift timecourse
+        slope_d: float <default=1>
+            Slope parameter for distractor drift timecourse
+        fixed_p_t: float <default=1>
+            Fixed point for target drift timecourse
+        coherence_t: float <default=1.0>
+            Coefficient for the target drift timecourse 
+        coherence_d: float <default=-1.0>
+            Coefficient for the distractor drift timecourse
+    :Return: np.ndarray
+         The full drift timecourse evaluated at the supplied timepoints t.
+
+    """
+
+    w_t = ds_support_analytic(t = t,
+                              init_p = init_p_t,
+                              fix_point = fixed_p_t,
+                              slope = slope_t)
+    
+    w_d = ds_support_analytic(t = t,
+                              init_p = init_p_d,
+                              fix_point = 0,
+                              slope = slope_d)
+    
+    v_t = (w_t * coherence_t) + (w_d * coherence_d)
+    
+    return v_t #, w_t, w_d

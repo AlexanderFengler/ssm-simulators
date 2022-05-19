@@ -434,6 +434,48 @@ def simulator(theta,
                           n_trials = n_trials,
                           max_t = max_t)
 
+    if model == 'ds_conflict_drift':
+        x = cssm.ddm_flex(v = np.tile(np.array([0], dtype = np.float32), n_trials),
+                          a = theta[:, 0],
+                          z = theta[:, 1],
+                          t = theta[:, 2],
+                          s = s,
+                          boundary_fun = bf.constant,
+                          drift_fun = df.ds_conflict_drift,
+                          boundary_params = {},
+                          drift_params = {'init_p_t': theta[:, 3],
+                                          'init_p_d': theta[:, 4],
+                                          'slope_t': theta[:, 5],
+                                          'slope_d': theta[:, 6],
+                                          'fixed_p_t': theta[:, 7],
+                                          'coherence_t': theta[:, 8], 
+                                          'coherence_d': theta[:, 9]},
+                        delta_t = delta_t,
+                        n_samples = n_samples,
+                        n_trials = n_trials,
+                        max_t = max_t)
+
+    if model == 'ds_conflict_drift_angle':
+        x = cssm.ddm_flex(v = np.tile(np.array([0], dtype = np.float32), n_trials),
+                          a = theta[:, 0],
+                          z = theta[:, 1],
+                          t = theta[:, 2],
+                          s = s,
+                          boundary_fun = bf.angle,
+                          drift_fun = df.ds_conflict_drift,
+                          boundary_params = {'theta': theta[:, 10]},
+                          drift_params = {'init_p_t': theta[:, 3],
+                                          'init_p_d': theta[:, 4],
+                                          'slope_t': theta[:, 5],
+                                          'slope_d': theta[:, 6],
+                                          'fixed_p_t': theta[:, 7],
+                                          'coherence_t': theta[:, 8], 
+                                          'coherence_d': theta[:, 9]},
+                        delta_t = delta_t,
+                        n_samples = n_samples,
+                        n_trials = n_trials,
+                        max_t = max_t)
+
     # 3 Choice models
     if no_noise:
         s = np.tile(np.array([0.0, 0.0, 0.0], dtype = np.float32), (n_trials, 1))
