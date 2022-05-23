@@ -527,5 +527,16 @@ data_generator_config = {'lan': {'mlp': {'output_folder': 'data/lan_mlp/',
                                              'bin_pointwise': False,
                                              'separate_response_channels': False,
                                              },
-}
+                        'snpe': {'output_folder': 'data/snpe_training/',
+                                 'dgp_list': 'ddm', # should be ['ddm'],
+                                 'n_samples': 5000,  # eventually should be {'low': 100000, 'high': 100000},
+                                 'n_parameter_sets': 10000,
+                                 'max_t': 20.0,
+                                 'delta_t': 0.001,
+                                 'pickleprotocol': 4,
+                                 'n_cpus': 'all',
+                                 'n_subruns': 10,
+                                 'separate_response_channels': False
+                                 },
+                        }
 ##### -------------------------------------------------------------------------------------------
