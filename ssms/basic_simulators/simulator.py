@@ -9,7 +9,8 @@ import cssm
 # Basic simulators and basic preprocessing
 def bin_simulator_output_pointwise(out = [0, 0],
                                    bin_dt = 0.04,
-                                   nbins = 0): # ['v', 'a', 'w', 't', 'angle']
+                                   nbins = 0,
+                                   random_number:int = 42): # ['v', 'a', 'w', 't', 'angle']
     """Turns RT part of simulator output into bin-identifier by trial
 
     :Arguments:
@@ -25,7 +26,7 @@ def bin_simulator_output_pointwise(out = [0, 0],
     :Returns: 
         2d array. The first columns collects bin-identifiers by trial, the second column lists the corresponding choices.
     """
-    
+    np.random.seed(random_number)
     out_copy = deepcopy(out)
 
     # Generate bins
@@ -59,7 +60,8 @@ def bin_simulator_output(out = None,
                          bin_dt = 0.04,
                          nbins = 0,
                          max_t = -1,
-                         freq_cnt = False): # ['v', 'a', 'w', 't', 'angle']
+                         freq_cnt = False,
+                         random_number:int = 42): # ['v', 'a', 'w', 't', 'angle']
     """Turns RT part of simulator output into bin-identifier by trial
 
     :Arguments:
@@ -85,6 +87,7 @@ def bin_simulator_output(out = None,
     #print(out)
     #print('passed')
     #print(out.keys())
+    np.random.seed(random_number)
     if max_t == -1:
         max_t = out['metadata']['max_t']
     
@@ -116,7 +119,8 @@ def bin_arbitrary_fptd(out = None,
                        nbins = 256,
                        nchoices = 2,
                        choice_codes = [-1.0, 1.0],
-                       max_t = 10.0): # ['v', 'a', 'w', 't', 'angle']
+                       max_t = 10.0,
+                       random_number:int = 42): # ['v', 'a', 'w', 't', 'angle']
 
     """Takes in simulator output and returns a histogram of bin counts
     :Arguments:
@@ -138,7 +142,7 @@ def bin_arbitrary_fptd(out = None,
     Returns:
         2d array (nbins, nchoices): A histogram of bin counts
     """
-
+    np.random.seed(random_number)
     # Generate bins
     if nbins == 0:
         nbins = int(max_t / bin_dt)
@@ -166,7 +170,8 @@ def simulator(theta,
               max_t = 20,
               no_noise = False,
               bin_dim = None,
-              bin_pointwise = False):
+              bin_pointwise = False,
+              random_state:int = 42):
     """Basic data simulator for the models included in HDDM. 
 
 
@@ -198,7 +203,7 @@ def simulator(theta,
         or     (rts binned pointwise, responses, metadata)
 
     """
-
+    np.random.seed(random_state)
     # Useful for sbi
     if type(theta) == list:
         #print('theta is supplied as list --> simulator assumes n_trials = 1')
