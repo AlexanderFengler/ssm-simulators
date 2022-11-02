@@ -5,13 +5,14 @@ import numpy as np
 from ssms.support_utils.utils import set_random_state
 #import pandas as pd
 import sys
+from copy import deepcopy
 import cssm
 
 # Basic simulators and basic preprocessing
 def bin_simulator_output_pointwise(out = [0, 0],
                                    bin_dt = 0.04,
                                    nbins = 0,
-                                   random_state = None): # ['v', 'a', 'w', 't', 'angle']
+                                   ): # ['v', 'a', 'w', 't', 'angle']
     """Turns RT part of simulator output into bin-identifier by trial
 
     :Arguments:
@@ -27,7 +28,6 @@ def bin_simulator_output_pointwise(out = [0, 0],
     :Returns: 
         2d array. The first columns collects bin-identifiers by trial, the second column lists the corresponding choices.
     """
-    random_state = set_random_state(random_state)
     out_copy = deepcopy(out)
 
     # Generate bins
@@ -62,7 +62,7 @@ def bin_simulator_output(out = None,
                          nbins = 0,
                          max_t = -1,
                          freq_cnt = False,
-                         random_state=None): # ['v', 'a', 'w', 't', 'angle']
+                        ): # ['v', 'a', 'w', 't', 'angle']
     """Turns RT part of simulator output into bin-identifier by trial
 
     :Arguments:
@@ -88,7 +88,6 @@ def bin_simulator_output(out = None,
     #print(out)
     #print('passed')
     #print(out.keys())
-    random_state = set_random_state(random_state)
     if max_t == -1:
         max_t = out['metadata']['max_t']
     
@@ -121,7 +120,7 @@ def bin_arbitrary_fptd(out = None,
                        nchoices = 2,
                        choice_codes = [-1.0, 1.0],
                        max_t = 10.0,
-                       random_state = None): # ['v', 'a', 'w', 't', 'angle']
+                       ): # ['v', 'a', 'w', 't', 'angle']
 
     """Takes in simulator output and returns a histogram of bin counts
     :Arguments:
@@ -143,7 +142,6 @@ def bin_arbitrary_fptd(out = None,
     Returns:
         2d array (nbins, nchoices): A histogram of bin counts
     """
-    random_state = set_random_state(random_state)
     # Generate bins
     if nbins == 0:
         nbins = int(max_t / bin_dt)
@@ -204,6 +202,7 @@ def simulator(theta,
         or     (rts binned pointwise, responses, metadata)
 
     """
+    random_state = set_random_state(random_state)
     # Useful for sbi
     if type(theta) == list:
         #print('theta is supplied as list --> simulator assumes n_trials = 1')
