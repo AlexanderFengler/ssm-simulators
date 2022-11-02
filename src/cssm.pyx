@@ -118,7 +118,7 @@ def test(np.ndarray[float, ndim = 1] v, # drift by timestep 'delta_t'
          float max_t = 20, # maximum rt allowed
          int n_samples = 20000, # number of samples considered
          int n_trials = 10,
-         random_state = None
+         random_state = None,
          ):
 
     # Param views
@@ -193,7 +193,7 @@ def ddm(np.ndarray[float, ndim = 1] v, # drift by timestep 'delta_t'
         float max_t = 20, # maximum rt allowed
         int n_samples = 20000, # number of samples considered
         int n_trials = 10,
-        random_state = None):
+        random_state = None,):
 
     # Param views
     cdef float[:] v_view = v
@@ -265,7 +265,7 @@ def ddm_cov(np.ndarray[float, ndim = 1] v, # drift by timestep 'delta_t'
             float max_t = 20, # maximum rt allowed
             int n_samples = 1000, # number of samples considered
             int n_trials = 1,
-            random_state = None
+            random_state = None,
             ):
 
     #cdef int n_trials = np.max([v.size, a.size, w.size, t.size]).astype(int)
@@ -338,7 +338,7 @@ def ddm_flexbound(np.ndarray[float, ndim = 1] v,
                   boundary_fun = None, # function of t (and potentially other parameters) that takes in (t, *args)
                   boundary_multiplicative = True,
                   boundary_params = {},
-                  random_state = None
+                  random_state = None,
                   ):
 
     #cdef int cov_length = np.max([v.size, a.size, w.size, t.size]).astype(int)
@@ -434,7 +434,7 @@ def ddm_flexbound(np.ndarray[float, ndim = 1] v,
                                                           'possible_choices': [-1, 1],
                                                           'trajectory': traj,
                                                           'boundary': boundary,
-                                                          **random_state}}
+                                                          }}
 # ----------------------------------------------------------------------------------------------------
 
 # Simulate (rt, choice) tuples from: DDM WITH FLEXIBLE BOUNDARIES AND FLEXIBLE SLOPE -----------------
@@ -454,7 +454,7 @@ def ddm_flex(np.ndarray[float, ndim = 1] v,
              boundary_multiplicative = True,
              boundary_params = {},
              drift_params = {},
-             random_state = None
+             random_state = None,
              ):
 
     # Param views:
@@ -571,7 +571,7 @@ def ddm_flexbound_max(float v = 0.0,
                       boundary_fun = None, # function of t (and potentially other parameters) that takes in (t, *args)
                       boundary_multiplicative = True,
                       boundary_params = {},
-                      random_state = None
+                      random_state = None,
                       ):
 
     rts = np.zeros((n_samples, 1), dtype = DTYPE)
@@ -660,7 +660,7 @@ def glob_flexbound(np.ndarray[float, ndim = 1] v,
                    boundary_fun = None, # function of t (and potentially other parameters) that takes in (t, *args)
                    boundary_multiplicative = True,
                    boundary_params = {},
-                   random_state = None
+                   random_state = None,
                    ):
 
     #cdef int cov_length = np.max([v.size, a.size, w.size, t.size]).astype(int)
@@ -772,7 +772,7 @@ def levy_flexbound(np.ndarray[float, ndim = 1] v,
                    boundary_fun = None, # function of t (and potentially other parameters) that takes in (t, *args)
                    boundary_multiplicative = True,
                    boundary_params = {},
-                   random_state = None
+                   random_state = None,
                    ):
 
     #cdef int cov_length = np.max([v.size, a.size, w.size, t.size]).astype(int)
@@ -883,7 +883,7 @@ def full_ddm(np.ndarray[float, ndim = 1] v, # = 0,
              boundary_fun = None, # function of t (and potentially other parameters) that takes in (t, *args)
              boundary_multiplicative = True,
              boundary_params = {},
-             random_state = None):
+             random_state = None,):
 
     # cdef int cov_length = np.max([v.size, a.size, w.size, t.size]).astype(int)
     # Param views
@@ -1011,7 +1011,7 @@ def ddm_sdv(np.ndarray[float, ndim = 1] v,
             boundary_fun = None, # function of t (and potentially other parameters) that takes in (t, *args)
             boundary_multiplicative = True,
             boundary_params = {},
-            random_state = None
+            random_state = None,
             ):
 
     # Data-structs for trajectory storage
@@ -1139,7 +1139,7 @@ def ornstein_uhlenbeck(np.ndarray[float, ndim = 1] v, # drift parameter
                        boundary_fun = None, # function of t (and potentially other parameters) that takes in (t, *args)
                        boundary_multiplicative = True,
                        boundary_params = {},
-                       random_state = None
+                       random_state = None,
                       ):
 
     # Data-structs for trajectory storage
@@ -1275,7 +1275,7 @@ def race_model(np.ndarray[float, ndim = 2] v,  # np.array expected, one column o
                boundary_fun = None,
                boundary_multiplicative = True,
                boundary_params = {},
-               random_state = None):
+               random_state = None,):
 
     # Param views
     cdef float[:, :] v_view = v
@@ -1403,7 +1403,7 @@ def lca(np.ndarray[float, ndim = 2] v, # drift parameters (np.array expect: one 
         boundary_fun = None, # function of t (and potentially other parameters) that takes in (t, *args)
         boundary_multiplicative = True,
         boundary_params = {},
-        random_state = None):
+        random_state = None,):
 
     # Param views
     cdef float[:, :] v_view = v
@@ -1548,7 +1548,7 @@ def ddm_flexbound_seq2(np.ndarray[float, ndim = 1] v_h,
                        boundary_fun = None, # function of t (and potentially other parameters) that takes in (t, *args)
                        boundary_multiplicative = True,
                        boundary_params = {},
-                       random_state = None
+                       random_state = None,
                        ):
 
     # Param views
@@ -1693,7 +1693,7 @@ def ddm_flexbound_par2(np.ndarray[float, ndim = 1] v_h,
                        boundary_fun = None, # function of t (and potentially other parameters) that takes in (t, *args)
                        boundary_multiplicative = True,
                        boundary_params = {},
-                       random_state = None
+                       random_state = None,
                        ):
 
     # Param views
@@ -1827,7 +1827,7 @@ def ddm_flexbound_mic2_adj(np.ndarray[float, ndim = 1] v_h,
                            boundary_fun = None, # function of t (and potentially other parameters) that takes in (t, *args)
                            boundary_multiplicative = True,
                            boundary_params = {},
-                           random_state = None
+                           random_state = None,
                            ):
 
     # Param views
@@ -1999,7 +1999,7 @@ def ddm_flexbound_tradeoff(np.ndarray[float, ndim = 1] v_h,
                            boundary_fun = None, # function of t (and potentially other parameters) that takes in (t, *args)
                            boundary_multiplicative = True,
                            boundary_params = {},
-                           random_state = None
+                           random_state = None,
                            ):
 
     # Param views
