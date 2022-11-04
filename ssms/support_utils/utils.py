@@ -19,7 +19,7 @@ def set_random_state(seed):
     if seed is None or seed is np.random:
         return np.random.mtrand._rand
     if isinstance(seed, numbers.Integral):
-        return np.random.RandomState(seed)
+        return np.random.seed(seed)
     if isinstance(seed, np.random.RandomState):
         return seed
     raise ValueError(

@@ -202,7 +202,7 @@ def simulator(theta,
         or     (rts binned pointwise, responses, metadata)
 
     """
-    random_state = set_random_state(random_state)
+    set_random_state(random_state)
     # Useful for sbi
     if type(theta) == list:
         #print('theta is supplied as list --> simulator assumes n_trials = 1')
