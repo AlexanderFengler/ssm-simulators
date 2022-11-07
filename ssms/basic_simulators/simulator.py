@@ -2,8 +2,6 @@ import ssms.config as config
 from . import boundary_functions as bf
 from . import drift_functions as df
 import numpy as np
-from ssms.support_utils.utils import set_random_state
-#import pandas as pd
 import sys
 from copy import deepcopy
 import cssm
@@ -202,7 +200,6 @@ def simulator(theta,
         or     (rts binned pointwise, responses, metadata)
 
     """
-    set_random_state(random_state)
     # Useful for sbi
     if type(theta) == list:
         #print('theta is supplied as list --> simulator assumes n_trials = 1')

@@ -12,26 +12,31 @@ from libc.time cimport time
 
 import numpy as np
 cimport numpy as np
+import numbers
 #import pandas as pd
-from ssms.support_utils.utils import set_random_state
 
 DTYPE = np.float32
 
+cdef set_seed(random_state):
+    if random_state is None:
+        return srand(time(NULL))
+    if isinstance(random_state, numbers.Integral):
+        return srand(random_state)
+
 # Method to draw random samples from a gaussian
-cdef float random_uniform(random_state):
-    srand(random_state)
+cdef float random_uniform():
     cdef float r = rand()
     return r / RAND_MAX
 
-cdef float random_exponential(random_state):
-    return - log(random_uniform(random_state))
+cdef float random_exponential():
+    return - log(random_uniform())
 
-cdef float random_stable(float alpha_diff, random_state):
+cdef float random_stable(float alpha_diff):
     cdef float eta, u, w, x
     # chi = - tan(M_PI_2 * alpha_diff)
 
-    u = M_PI * (random_uniform(random_state) - 0.5)
-    w = random_exponential(random_state)
+    u = M_PI * (random_uniform() - 0.5)
+    w = random_exponential()
 
     if alpha_diff == 1.0:
         eta = M_PI_2 # useless but kept to remain faithful to wikipedia entry
@@ -45,22 +50,22 @@ cdef float random_stable(float alpha_diff, random_state):
         #        pow(cos(u - (alpha_diff * (u + eta))) / w, (1.0 - alpha_diff) / alpha_diff)
     return x
 
-cdef float[:] draw_random_stable(int n, float alpha_diff, random_state):
+cdef float[:] draw_random_stable(int n, float alpha_diff):
 
     cdef int i
     cdef float[:] result = np.zeros(n, dtype = DTYPE)
 
     for i in range(n):
-        result[i] = random_stable(alpha_diff, random_state)
+        result[i] = random_stable(alpha_diff)
     return result
 
-cdef float random_gaussian(random_state):
+cdef float random_gaussian():
     cdef float x1, x2, w
     w = 2.0
 
     while(w >= 1.0):
-        x1 = 2.0 * random_uniform(random_state) - 1.0
-        x2 = 2.0 * random_uniform(random_state) - 1.0
+        x1 = 2.0 * random_uniform() - 1.0
+        x2 = 2.0 * random_uniform() - 1.0
         w = x1 * x1 + x2 * x2
 
     w = ((-2.0 * log(w)) / w) ** 0.5
@@ -80,13 +85,13 @@ cdef float csum(float[:] x):
     return total
 
 ## @cythonboundscheck(False)
-cdef void assign_random_gaussian_pair(float[:] out, int assign_ix, random_state):
+cdef void assign_random_gaussian_pair(float[:] out, int assign_ix):
     cdef float x1, x2, w
     w = 2.0
 
     while(w >= 1.0):
-        x1 = (2.0 * random_uniform(random_state)) - 1.0
-        x2 = (2.0 * random_uniform(random_state)) - 1.0
+        x1 = (2.0 * random_uniform()) - 1.0
+        x2 = (2.0 * random_uniform()) - 1.0
         w = (x1 * x1) + (x2 * x2)
 
     w = ((-2.0 * log(w)) / w) ** 0.5
@@ -94,15 +99,15 @@ cdef void assign_random_gaussian_pair(float[:] out, int assign_ix, random_state)
     out[assign_ix + 1] = x2 * w # this was x2 * 2 ..... :0 
 
 # @cythonboundscheck(False)
-cdef float[:] draw_gaussian(int n, random_state):
+cdef float[:] draw_gaussian(int n):
     # Draws standard normal variables - need to have the variance rescaled
-
     cdef int i
     cdef float[:] result = np.zeros(n, dtype=DTYPE)
     for i in range(n // 2):
-        assign_random_gaussian_pair(result, i * 2, random_state)
+
+        assign_random_gaussian_pair(result, i * 2)
     if n % 2 == 1:
-        result[n - 1] = random_gaussian(random_state)
+        result[n - 1] = random_gaussian()
     return result
 
 # DUMMY TEST SIMULATOR ------------------------------------------------------------------------
@@ -124,7 +129,8 @@ def test(np.ndarray[float, ndim = 1] v, # drift by timestep 'delta_t'
          int n_trials = 10,
          random_state = None,
          ):
-    set_random_state(random_state)
+
+    cdef rand = set_seed(random_state)
     # Param views
     cdef float[:] v_view = v
     cdef float[:] a_view = a
@@ -145,7 +151,7 @@ def test(np.ndarray[float, ndim = 1] v, # drift by timestep 'delta_t'
     cdef Py_ssize_t n, k
     cdef int m = 0
     cdef int num_draws = int(max_t / delta_t + 1)
-    cdef float[:] gaussian_values = draw_gaussian(num_draws, random_state)
+    cdef float[:] gaussian_values = draw_gaussian(num_draws)
     
     for k in range(n_trials):
         # Loop over samples
@@ -159,7 +165,7 @@ def test(np.ndarray[float, ndim = 1] v, # drift by timestep 'delta_t'
                 t_particle += delta_t
                 m += 1
                 if m == num_draws:
-                    gaussian_values = draw_gaussian(num_draws, random_state)
+                    gaussian_values = draw_gaussian(num_draws)
                     m = 0
 
             # Note that for purposes of consistency with Navarro and Fuss, 
@@ -199,7 +205,7 @@ def ddm(np.ndarray[float, ndim = 1] v, # drift by timestep 'delta_t'
         int n_trials = 10,
         random_state = None,):
 
-    set_random_state(random_state)
+    cdef rand = set_seed(random_state)
     # Param views
     cdef float[:] v_view = v
     cdef float[:] a_view = a
@@ -220,7 +226,7 @@ def ddm(np.ndarray[float, ndim = 1] v, # drift by timestep 'delta_t'
     cdef Py_ssize_t n, k
     cdef int m = 0
     cdef int num_draws = int(max_t / delta_t + 1)
-    cdef float[:] gaussian_values = draw_gaussian(num_draws, random_state)
+    cdef float[:] gaussian_values = draw_gaussian(num_draws)
     
     for k in range(n_trials):
         # Loop over samples
@@ -234,7 +240,7 @@ def ddm(np.ndarray[float, ndim = 1] v, # drift by timestep 'delta_t'
                 t_particle += delta_t
                 m += 1
                 if m == num_draws:
-                    gaussian_values = draw_gaussian(num_draws, random_state)
+                    gaussian_values = draw_gaussian(num_draws)
                     m = 0
 
             # Note that for purposes of consistency with Navarro and Fuss, 
@@ -273,7 +279,7 @@ def ddm_cov(np.ndarray[float, ndim = 1] v, # drift by timestep 'delta_t'
             random_state = None,
             ):
 
-    set_random_state(random_state)
+    cdef rand = set_seed(random_state)
     #cdef int n_trials = np.max([v.size, a.size, w.size, t.size]).astype(int)
     rts = np.zeros((n_samples, n_trials, 1), dtype = DTYPE)
     choices = np.zeros((n_samples, n_trials, 1), dtype = np.intc)
@@ -295,7 +301,7 @@ def ddm_cov(np.ndarray[float, ndim = 1] v, # drift by timestep 'delta_t'
     cdef Py_ssize_t k
     cdef int m = 0
     cdef int num_draws = int(max_t / delta_t + 1)
-    cdef float[:] gaussian_values = draw_gaussian(num_draws, random_state)
+    cdef float[:] gaussian_values = draw_gaussian(num_draws)
 
     # Loop over samples
     for n in range(n_samples):
@@ -309,7 +315,7 @@ def ddm_cov(np.ndarray[float, ndim = 1] v, # drift by timestep 'delta_t'
                 t_particle += delta_t
                 m += 1
                 if m == num_draws:
-                    gaussian_values = draw_gaussian(num_draws, random_state)
+                    gaussian_values = draw_gaussian(num_draws)
                     m = 0
 
             # Note that for purposes of consistency with Navarro and Fuss, 
@@ -347,7 +353,7 @@ def ddm_flexbound(np.ndarray[float, ndim = 1] v,
                   random_state = None,
                   ):
 
-    set_random_state(random_state)
+    cdef rand = set_seed(random_state)
     #cdef int cov_length = np.max([v.size, a.size, w.size, t.size]).astype(int)
     # Param views:
     cdef float[:] v_view  = v
@@ -378,13 +384,12 @@ def ddm_flexbound(np.ndarray[float, ndim = 1] v,
     cdef Py_ssize_t ix
     cdef Py_ssize_t m = 0
     cdef Py_ssize_t k
-    cdef float[:] gaussian_values = draw_gaussian(num_draws, random_state)
+    cdef float[:] gaussian_values = draw_gaussian(num_draws)
     cdef float[:] boundary_view = boundary
 
     #print('boundary shape')
     #print(boundary.shape)
 
-    
     # Loop over samples
     for k in range(n_trials):
         # Precompute boundary evaluations
@@ -421,7 +426,7 @@ def ddm_flexbound(np.ndarray[float, ndim = 1] v,
                 
                 # Can improve with less checks
                 if m == num_draws:
-                    gaussian_values = draw_gaussian(num_draws, random_state)
+                    gaussian_values = draw_gaussian(num_draws)
                     m = 0
 
             rts_view[n, k, 0] = t_particle + t_view[k] # Store rt
@@ -464,7 +469,7 @@ def ddm_flex(np.ndarray[float, ndim = 1] v,
              random_state = None,
              ):
 
-    set_random_state(random_state)
+    cdef rand = set_seed(random_state)
     # Param views:
     cdef float[:] v_view  = v
     cdef float[:] a_view = a
@@ -495,7 +500,7 @@ def ddm_flex(np.ndarray[float, ndim = 1] v,
     cdef Py_ssize_t ix
     cdef Py_ssize_t m = 0
     cdef Py_ssize_t k
-    cdef float[:] gaussian_values = draw_gaussian(num_draws, random_state)
+    cdef float[:] gaussian_values = draw_gaussian(num_draws)
     cdef float[:] boundary_view = boundary
     cdef float[:] drift_view = drift
 
@@ -539,7 +544,7 @@ def ddm_flex(np.ndarray[float, ndim = 1] v,
                 
                 # Can improve with less checks
                 if m == num_draws:
-                    gaussian_values = draw_gaussian(num_draws, random_state)
+                    gaussian_values = draw_gaussian(num_draws)
                     m = 0
 
             rts_view[n, k, 0] = t_particle + t_view[k] # Store rt
@@ -582,7 +587,7 @@ def ddm_flexbound_max(float v = 0.0,
                       random_state = None,
                       ):
 
-    set_random_state(random_state)
+    cdef rand = set_seed(random_state)
     rts = np.zeros((n_samples, 1), dtype = DTYPE)
     choices = np.zeros((n_samples, 1), dtype = np.intc)
 
@@ -603,7 +608,7 @@ def ddm_flexbound_max(float v = 0.0,
     cdef Py_ssize_t ix
     cdef Py_ssize_t m = 0
     cdef Py_ssize_t k
-    cdef float[:] gaussian_values = draw_gaussian(num_draws, random_state)
+    cdef float[:] gaussian_values = draw_gaussian(num_draws)
     cdef float[:] boundary_view = boundary
 
     # Loop over samples
@@ -627,7 +632,7 @@ def ddm_flexbound_max(float v = 0.0,
             
             # Can improve with less checks
             if m == num_draws:
-                gaussian_values = draw_gaussian(num_draws, random_state)
+                gaussian_values = draw_gaussian(num_draws)
                 m = 0
 
         rts_view[n, 0] = t_particle + t # Store rt
@@ -672,7 +677,7 @@ def glob_flexbound(np.ndarray[float, ndim = 1] v,
                    random_state = None,
                    ):
 
-    set_random_state(random_state)
+    cdef rand = set_seed(random_state)
     #cdef int cov_length = np.max([v.size, a.size, w.size, t.size]).astype(int)
     # Param views:
     cdef float[:] v_view  = v
@@ -785,7 +790,7 @@ def levy_flexbound(np.ndarray[float, ndim = 1] v,
                    random_state = None,
                    ):
 
-    set_random_state(random_state)
+    cdef rand = set_seed(random_state)
     #cdef int cov_length = np.max([v.size, a.size, w.size, t.size]).astype(int)
     # Param views:
     cdef float[:] v_view  = v
@@ -853,7 +858,7 @@ def levy_flexbound(np.ndarray[float, ndim = 1] v,
                     if k == 0:
                         traj_view[ix, 0] = y
                 if m == num_draws:
-                    alpha_stable_values = draw_random_stable(num_draws, alpha_diff_view[k], random_state)
+                    alpha_stable_values = draw_random_stable(num_draws, alpha_diff_view[k])
                     m = 0
 
             rts_view[n, k, 0] = t_particle + t_view[k] # Store rt
@@ -896,9 +901,10 @@ def full_ddm(np.ndarray[float, ndim = 1] v, # = 0,
              boundary_params = {},
              random_state = None,):
 
+    cdef rand = set_seed(random_state)
     # cdef int cov_length = np.max([v.size, a.size, w.size, t.size]).astype(int)
     # Param views
-    set_random_state(random_state)
+    #set_random_state(random_state)
     cdef float[:] v_view  = v
     cdef float[:] a_view = a
     cdef float[:] z_view = z
@@ -931,7 +937,7 @@ def full_ddm(np.ndarray[float, ndim = 1] v, # = 0,
     cdef Py_ssize_t n, ix, k
     cdef Py_ssize_t m = 0
     cdef float drift_increment = 0.0
-    cdef float[:] gaussian_values = draw_gaussian(num_draws, random_state)
+    cdef float[:] gaussian_values = draw_gaussian(num_draws)
 
     # Loop over trials
     for k in range(n_trials):
@@ -960,7 +966,7 @@ def full_ddm(np.ndarray[float, ndim = 1] v, # = 0,
             # increment m appropriately
             m += 1
             if m == num_draws:
-                    gaussian_values = draw_gaussian(num_draws, random_state)
+                    gaussian_values = draw_gaussian(num_draws)
                     m = 0
             
             t_particle = 0.0 # reset time
@@ -981,7 +987,7 @@ def full_ddm(np.ndarray[float, ndim = 1] v, # = 0,
                     if k == 0:
                         traj_view[ix, 0] = y
                 if m == num_draws:
-                    gaussian_values = draw_gaussian(num_draws, random_state)
+                    gaussian_values = draw_gaussian(num_draws)
                     m = 0
 
             rts_view[n, k, 0] = t_particle + t_tmp # Store rt
@@ -1026,7 +1032,7 @@ def ddm_sdv(np.ndarray[float, ndim = 1] v,
             random_state = None,
             ):
 
-    set_random_state(random_state)
+    cdef rand = set_seed(random_state)
     # Data-structs for trajectory storage
     traj = np.zeros((int(max_t / delta_t) + 1, 1), dtype = DTYPE)
     traj[:, :] = -999 
@@ -1066,7 +1072,7 @@ def ddm_sdv(np.ndarray[float, ndim = 1] v,
     cdef Py_ssize_t n, ix, k
     cdef Py_ssize_t m = 0
     cdef float drift_increment = 0.0
-    cdef float[:] gaussian_values = draw_gaussian(num_draws, random_state)
+    cdef float[:] gaussian_values = draw_gaussian(num_draws)
 
     for k in range(n_trials):
         # Precompute boundary evaluations
@@ -1088,7 +1094,7 @@ def ddm_sdv(np.ndarray[float, ndim = 1] v,
             # increment m appropriately
             m += 1
             if m == num_draws:
-                    gaussian_values = draw_gaussian(num_draws, random_state)
+                    gaussian_values = draw_gaussian(num_draws)
                     m = 0
             
             t_particle = 0.0 # reset time
@@ -1110,7 +1116,7 @@ def ddm_sdv(np.ndarray[float, ndim = 1] v,
                         traj_view[ix, 0] = y
 
                 if m == num_draws:
-                    gaussian_values = draw_gaussian(num_draws, random_state)
+                    gaussian_values = draw_gaussian(num_draws)
                     m = 0
 
 
@@ -1155,7 +1161,7 @@ def ornstein_uhlenbeck(np.ndarray[float, ndim = 1] v, # drift parameter
                        random_state = None,
                       ):
 
-    set_random_state(random_state)
+    cdef rand = set_seed(random_state)
     # Data-structs for trajectory storage
     traj = np.zeros((int(max_t / delta_t) + 1, 1), dtype = DTYPE)
     traj[:, :] = -999 
@@ -1187,7 +1193,7 @@ def ornstein_uhlenbeck(np.ndarray[float, ndim = 1] v, # drift parameter
     cdef float y, t_particle
     cdef Py_ssize_t n, ix, k
     cdef Py_ssize_t m = 0
-    cdef float[:] gaussian_values = draw_gaussian(num_draws, random_state)
+    cdef float[:] gaussian_values = draw_gaussian(num_draws)
 
     for k in range(n_trials):
         # Precompute boundary evaluations
@@ -1223,7 +1229,7 @@ def ornstein_uhlenbeck(np.ndarray[float, ndim = 1] v, # drift parameter
                         traj_view[ix, 0] = y
 
                 if m == num_draws:
-                    gaussian_values = draw_gaussian(num_draws, random_state)
+                    gaussian_values = draw_gaussian(num_draws)
                     m = 0
 
             rts_view[n, k, 0] = t_particle + t_view[k] 
@@ -1291,7 +1297,7 @@ def race_model(np.ndarray[float, ndim = 2] v,  # np.array expected, one column o
                boundary_params = {},
                random_state = None,):
 
-    set_random_state(random_state)
+    cdef rand = set_seed(random_state)
     # Param views
     cdef float[:, :] v_view = v
     cdef float[:, :] z_view = z
@@ -1330,7 +1336,7 @@ def race_model(np.ndarray[float, ndim = 2] v,  # np.array expected, one column o
     cdef Py_ssize_t m = 0
 
     cdef int num_draws = num_steps * n_particles
-    cdef float[:] gaussian_values = draw_gaussian(num_draws, random_state)
+    cdef float[:] gaussian_values = draw_gaussian(num_draws)
 
     for k in range(n_trials):
         # Precompute boundary evaluations
@@ -1363,7 +1369,7 @@ def race_model(np.ndarray[float, ndim = 2] v,  # np.array expected, one column o
                     m += 1
                     if m == num_draws:
                         m = 0
-                        gaussian_values = draw_gaussian(num_draws, random_state)
+                        gaussian_values = draw_gaussian(num_draws)
                 t_particle += delta_t
                 ix += 1
                 if n == 0:
@@ -1420,7 +1426,7 @@ def lca(np.ndarray[float, ndim = 2] v, # drift parameters (np.array expect: one 
         boundary_params = {},
         random_state = None,):
 
-    set_random_state(random_state)
+    cdef rand = set_seed(random_state)
     # Param views
     cdef float[:, :] v_view = v
     cdef float[:, :] a_view = a
@@ -1464,7 +1470,7 @@ def lca(np.ndarray[float, ndim = 2] v, # drift parameters (np.array expect: one 
     cdef float[:] boundary_view = boundary
 
     cdef int num_draws = num_steps * n_particles
-    cdef float[:] gaussian_values = draw_gaussian(num_draws, random_state)
+    cdef float[:] gaussian_values = draw_gaussian(num_draws)
 
     for k in range(n_trials):
         # Precompute boundary evaluations
@@ -1504,7 +1510,7 @@ def lca(np.ndarray[float, ndim = 2] v, # drift parameters (np.array expect: one 
                     m += 1
 
                     if m == num_draws:
-                        gaussian_values = draw_gaussian(num_draws, random_state)
+                        gaussian_values = draw_gaussian(num_draws)
                         m = 0
                 
                 t_particle += delta_t # increment time
@@ -1567,7 +1573,7 @@ def ddm_flexbound_seq2(np.ndarray[float, ndim = 1] v_h,
                        random_state = None,
                        ):
 
-    set_random_state(random_state)
+    cdef rand = set_seed(random_state)
     # Param views
     cdef float[:] v_h_view = v_h
     cdef float[:] v_l_1_view = v_l_1
@@ -1596,7 +1602,7 @@ def ddm_flexbound_seq2(np.ndarray[float, ndim = 1] v_h,
     cdef Py_ssize_t n, ix, k
     cdef Py_ssize_t m = 0
     #cdef Py_ssize_t traj_id
-    cdef float[:] gaussian_values = draw_gaussian(num_draws, random_state)
+    cdef float[:] gaussian_values = draw_gaussian(num_draws)
 
     for k in range(n_trials):
         # Precompute boundary evaluations
@@ -1625,7 +1631,7 @@ def ddm_flexbound_seq2(np.ndarray[float, ndim = 1] v_h,
                 m += 1
                 
                 if m == num_draws:
-                    gaussian_values = draw_gaussian(num_draws, random_state)
+                    gaussian_values = draw_gaussian(num_draws)
                     m = 0
     
             # If we are already at maximum t, to generate a choice we just sample from a bernoulli
@@ -1663,7 +1669,7 @@ def ddm_flexbound_seq2(np.ndarray[float, ndim = 1] v_h,
                     ix += 1
                     m += 1
                     if m == num_draws:
-                        gaussian_values = draw_gaussian(num_draws, random_state)
+                        gaussian_values = draw_gaussian(num_draws)
                         m = 0
 
                 rts_view[n, k, 0] = t_particle + t_view[k]
@@ -1713,7 +1719,7 @@ def ddm_flexbound_par2(np.ndarray[float, ndim = 1] v_h,
                        random_state = None,
                        ):
 
-    set_random_state(random_state)
+    cdef rand = set_seed(random_state)
     # Param views
     cdef float[:] v_h_view = v_h
     cdef float[:] v_l_1_view = v_l_1
@@ -1745,7 +1751,7 @@ def ddm_flexbound_par2(np.ndarray[float, ndim = 1] v_h,
     cdef float y_h, y_l, v_l, t_h, t_l
     cdef int n, ix
     cdef int m = 0
-    cdef float[:] gaussian_values = draw_gaussian(num_draws, random_state)
+    cdef float[:] gaussian_values = draw_gaussian(num_draws)
 
     for k in range(n_trials):
         # Precompute boundary evaluations
@@ -1775,7 +1781,7 @@ def ddm_flexbound_par2(np.ndarray[float, ndim = 1] v_h,
                 ix += 1
                 m += 1
                 if m == num_draws:
-                    gaussian_values = draw_gaussian(num_draws, random_state)
+                    gaussian_values = draw_gaussian(num_draws)
                     m = 0
 
             if sign(y_h) < 0: # Store intermediate choice
@@ -1796,7 +1802,7 @@ def ddm_flexbound_par2(np.ndarray[float, ndim = 1] v_h,
                 ix += 1
                 m += 1
                 if m == num_draws:
-                    gaussian_values = draw_gaussian(num_draws, random_state)
+                    gaussian_values = draw_gaussian(num_draws)
                     m = 0
 
             rts_view[n, k, 0] = fmax(t_h, t_l) + t_view[k]
@@ -1848,7 +1854,7 @@ def ddm_flexbound_mic2_adj(np.ndarray[float, ndim = 1] v_h,
                            random_state = None,
                            ):
 
-    set_random_state(random_state)
+    cdef rand = set_seed(random_state)
     # Param views
     cdef float[:] v_h_view = v_h
     cdef float[:] v_l_1_view = v_l_1
@@ -1884,7 +1890,7 @@ def ddm_flexbound_mic2_adj(np.ndarray[float, ndim = 1] v_h,
     cdef float y_h, y_l, v_l, t_h, t_l
     cdef Py_ssize_t n, ix, ix_tmp, k
     cdef Py_ssize_t m = 0
-    cdef float[:] gaussian_values = draw_gaussian(num_draws, random_state)
+    cdef float[:] gaussian_values = draw_gaussian(num_draws)
 
     for k in range(n_trials):
         # Precompute boundary evaluations
@@ -1915,7 +1921,7 @@ def ddm_flexbound_mic2_adj(np.ndarray[float, ndim = 1] v_h,
                 ix += 1
                 m += 1
                 if m == num_draws:
-                    gaussian_values = draw_gaussian(num_draws, random_state)
+                    gaussian_values = draw_gaussian(num_draws)
                     m = 0
 
             # The probability of making a 'mistake' 1 - (relative y position)
@@ -1965,7 +1971,7 @@ def ddm_flexbound_mic2_adj(np.ndarray[float, ndim = 1] v_h,
                 ix += 1
                 m += 1
                 if m == num_draws:
-                    gaussian_values = draw_gaussian(num_draws, random_state)
+                    gaussian_values = draw_gaussian(num_draws)
                     m = 0
 
             rts_view[n, k, 0] = fmax(t_h, t_l) + t_view[k]
@@ -2021,7 +2027,7 @@ def ddm_flexbound_tradeoff(np.ndarray[float, ndim = 1] v_h,
                            random_state = None,
                            ):
 
-    set_random_state(random_state)
+    cdef rand = set_seed(random_state)
     # Param views
     cdef float[:] v_h_view = v_h
     cdef float[:] v_l_1_view = v_l_1
@@ -2057,7 +2063,7 @@ def ddm_flexbound_tradeoff(np.ndarray[float, ndim = 1] v_h,
     cdef float y_h, y_l, v_l, t_h, t_l, tmp_pos_dep
     cdef Py_ssize_t n, ix, ix_tmp, k
     cdef Py_ssize_t m = 0
-    cdef float[:] gaussian_values = draw_gaussian(num_draws, random_state)
+    cdef float[:] gaussian_values = draw_gaussian(num_draws)
 
     for k in range(n_trials):
         # Precompute boundary evaluations
@@ -2088,7 +2094,7 @@ def ddm_flexbound_tradeoff(np.ndarray[float, ndim = 1] v_h,
                 ix += 1
                 m += 1
                 if m == num_draws:
-                    gaussian_values = draw_gaussian(num_draws, random_state)
+                    gaussian_values = draw_gaussian(num_draws)
                     m = 0
 
             # The probability of making a 'mistake' 1 - (relative y position)
@@ -2145,7 +2151,7 @@ def ddm_flexbound_tradeoff(np.ndarray[float, ndim = 1] v_h,
                 m += 1 # update rv couter
 
                 if m == num_draws:
-                    gaussian_values = draw_gaussian(num_draws, random_state)
+                    gaussian_values = draw_gaussian(num_draws)
                     m = 0
 
             rts_view[n, k, 0] = fmax(t_h, t_l) + t_view[k]
