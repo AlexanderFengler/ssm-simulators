@@ -373,10 +373,10 @@ class data_generator():
             # data['labels'] = data_tmp[:, -1]
 
             data = {}
-            data['data'] = np.concatenate(out_list[k]['data'] for k in range(len(out_list))).astype(np.float32)
-            data['labels'] = np.concatenate(out_list[k]['labels'] for k in range(len(out_list))).astype(np.float32)
-            data['choice_p'] = np.concatenate(out_list[k]['choice_p'] for k in range(len(out_list))).astype(np.float32)
-            data['theta'] = np.concatenate(out_list[k]['theta'] for k in range(len(out_list))).astype(np.float32)
+            data['data'] = np.concatenate([out_list[k]['data'] for k in range(len(out_list))]).astype(np.float32)
+            data['labels'] = np.concatenate([out_list[k]['labels'] for k in range(len(out_list))]).astype(np.float32)
+            data['choice_p'] = np.concatenate([out_list[k]['choice_p'] for k in range(len(out_list))]).astype(np.float32)
+            data['thetas'] = np.concatenate([out_list[k]['theta'] for k in range(len(out_list))]).astype(np.float32)
             #data['data'] = out_list
     
         else:
