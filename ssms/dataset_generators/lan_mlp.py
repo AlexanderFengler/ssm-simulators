@@ -364,7 +364,7 @@ class data_generator():
                     #                                                                                            [k for k in seed_args[(i * subrun_n):((i + 1) * subrun_n)]]))
                     #                                                                                           #[j for j in seeds[(i * subrun_n):((i + 1) * subrun_n)]]))
 
-                    out_list.append(pool.map(self._mlp_get_processed_data_for_theta_test))
+                    out_list.append(pool.map(self._mlp_get_processed_data_for_theta_test, [k for k in seed_args[(i * subrun_n):((i + 1) * subrun_n)]]))
 
 
 
