@@ -226,7 +226,7 @@ class data_generator():
 
             #         data['data'] = data_tmp[:, :-1]
             # data['labels'] = data_tmp[:, -1]
-        return 
+        return data, choice_p
 
                      
     def _cnn_get_processed_data_for_theta(self,
