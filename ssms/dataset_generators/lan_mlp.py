@@ -197,6 +197,37 @@ class data_generator():
         data = self._make_kde_data(simulations = simulations,
                                    theta = theta)
         return data
+
+
+    def _mlp_get_processed_data_for_theta_test(self,
+                                               random_seed):
+        
+        np.random.seed(random_seed[0])
+        keep = 0
+        while not keep:
+            theta = np.float32(np.random.uniform(low = self.model_config['param_bounds'][0], 
+                                                 high = self.model_config['param_bounds'][1]))
+            
+            simulations = self.get_simulations(theta = theta)
+
+            
+            #print(simulations)
+            keep, stats = self._filter_simulations(simulations)
+            # print('random seed with id: ', random_seed)
+
+        data = self._make_kde_data(simulations = simulations,
+                                   theta = theta)
+        choice_p = np.array([(simulations['choices'] == 1.).sum() / simulations['choices'].flatten().shape[0]])
+
+        data_dict = {}
+        data_dict = {'data_kde': data[:, :-1],
+                     'labels_kde': data[:, -1],
+                     'labels_choice_p': choice_p}
+
+            #         data['data'] = data_tmp[:, :-1]
+            # data['labels'] = data_tmp[:, -1]
+        return 
+
                      
     def _cnn_get_processed_data_for_theta(self,
                                           random_seed):
@@ -325,19 +356,26 @@ class data_generator():
                                   len(self.model_config['param_bounds'][0]) + 3))
 
         # Get Simulations 
+            out_list = []
             for i in range(self.generator_config['n_subruns']):
                 print('simulation round:', i + 1 , ' of', self.generator_config['n_subruns'])
                 with Pool(processes = self.generator_config['n_cpus'] - 1) as pool:
+                    # data_tmp[(i * subrun_n * samples_by_param_set):((i + 1) * subrun_n * samples_by_param_set), :] = np.concatenate(pool.map(self._mlp_get_processed_data_for_theta_test, 
+                    #                                                                                            [k for k in seed_args[(i * subrun_n):((i + 1) * subrun_n)]]))
+                    #                                                                                           #[j for j in seeds[(i * subrun_n):((i + 1) * subrun_n)]]))
 
-                    data_tmp[(i * subrun_n * samples_by_param_set):((i + 1) * subrun_n * samples_by_param_set), :] = np.concatenate(pool.map(self._mlp_get_processed_data_for_theta, 
-                                                                                                               [k for k in seed_args[(i * subrun_n):((i + 1) * subrun_n)]]))
-                                                                                                              #[j for j in seeds[(i * subrun_n):((i + 1) * subrun_n)]]))
+                    out_list.append(pool.map(self._mlp_get_processed_data_for_theta_test))
+
+
+
                 
-            data_tmp = np.float32(data_tmp)
+            # data_tmp = np.float32(data_tmp)
             
+            # data = {}
+            # data['data'] = data_tmp[:, :-1]
+            # data['labels'] = data_tmp[:, -1]
             data = {}
-            data['data'] = data_tmp[:, :-1]
-            data['labels'] = data_tmp[:, -1]
+            data['data'] = out_list
     
         else:
             #data_grid = np.zeros((self.generator_config['n_parameter_sets'], self.generator_config['nbins'], self.model_config['nchoices']))
