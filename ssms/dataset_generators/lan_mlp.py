@@ -309,6 +309,90 @@ class data_generator():
         else:
             return data
 
+
+    def generate_data_training_uniform_test(self, 
+                                            save = False):
+        
+        seeds = np.random.choice(400000000, size = self.generator_config['n_parameter_sets'])
+        seed_args = [[seeds[i], i + 1] for i in np.arange(0, self.generator_config['n_parameter_sets'], 1)]
+        
+        # Inits
+        subrun_n = self.generator_config['n_parameter_sets'] // self.generator_config['n_subruns']
+        samples_by_param_set = self.generator_config['n_training_samples_by_parameter_set']
+        
+        if self.generator_config['nbins'] == 0:
+            data_tmp = np.zeros((int(self.generator_config['n_parameter_sets'] * self.generator_config['n_training_samples_by_parameter_set']), 
+                                  len(self.model_config['param_bounds'][0]) + 3))
+
+        # Get Simulations 
+            for i in range(self.generator_config['n_subruns']):
+                print('simulation round:', i + 1 , ' of', self.generator_config['n_subruns'])
+                with Pool(processes = self.generator_config['n_cpus'] - 1) as pool:
+
+                    data_tmp[(i * subrun_n * samples_by_param_set):((i + 1) * subrun_n * samples_by_param_set), :] = np.concatenate(pool.map(self._mlp_get_processed_data_for_theta, 
+                                                                                                               [k for k in seed_args[(i * subrun_n):((i + 1) * subrun_n)]]))
+                                                                                                              #[j for j in seeds[(i * subrun_n):((i + 1) * subrun_n)]]))
+                
+            data_tmp = np.float32(data_tmp)
+            
+            data = {}
+            data['data'] = data_tmp[:, :-1]
+            data['labels'] = data_tmp[:, -1]
+    
+        else:
+            #data_grid = np.zeros((self.generator_config['n_parameter_sets'], self.generator_config['nbins'], self.model_config['nchoices']))
+            data_list = []
+            for i in range(self.generator_config['n_subruns']):
+                print('simulation round: ', i + 1, ' of', self.generator_config['n_subruns'])
+                
+                with Pool(processes = self.generator_config['n_cpus']) as pool:
+                    # data_grid[(i * subrun_n): ((i + 1) * subrun_n), :, :] = np.concatenate(pool.map(self._cnn_get_processed_data_for_theta,
+                    #                                                                                 [j for j in seeds[(i * subrun_n):((i + 1) * subrun_n)]]))
+                    data_tmp = pool.map(self._cnn_get_processed_data_for_theta,
+                                          [j for j in seeds[(i * subrun_n):((i + 1) * subrun_n)]])
+                    
+                    data_tmp_dict = {}
+                    data_tmp_dict['data'] = np.float32(np.concatenate([x['data'] for x in data_tmp]))
+                    data_tmp_dict['labels'] = np.float32(np.concatenate([np.expand_dims(x['label'], axis = 0) for x in data_tmp]))
+                    data_list.append(data_tmp_dict)
+            
+            data = {}
+            data['data'] = np.float32(np.concatenate([x['data'] for x in data_list]))
+            data['labels'] = np.float32(np.concatenate([x['labels'] for x in data_list]))
+        
+        # Add metadata to training_data
+        data['generator_config'] = self.generator_config
+        data['model_config'] = self.model_config
+        
+        if save:
+            binned = str(0)
+            if self.generator_config['nbins'] > 0:
+                binned = str(1)
+
+            training_data_folder = self.generator_config['output_folder'] + \
+                                  'training_data_' + \
+                                  binned + \
+                                  '_nbins_' + str(self.generator_config['nbins']) + \
+                                  '_n_' + str(self.generator_config['n_samples']) + \
+                                  '/' + self.model_config["name"]
+            
+            if not os.path.exists(training_data_folder):
+                os.makedirs(training_data_folder)
+
+            full_file_name = training_data_folder + '/' + \
+                             'training_data_' + self.model_config['name'] + '_' + \
+                             uuid.uuid1().hex + '.pickle'
+
+            print('Writing to file: ', full_file_name)
+
+            pickle.dump(data,
+                        open(full_file_name, 'wb'), 
+                        protocol = self.generator_config['pickleprotocol'])
+            return 'Dataset completed'
+        
+        else:
+            return data
+
     def _nested_get_processed_data(self,
                                    random_seed):
         
