@@ -226,8 +226,10 @@ class data_generator():
 
             #         data['data'] = data_tmp[:, :-1]
             # data['labels'] = data_tmp[:, -1]
-        return data, choice_p
-
+        return {'data': data[:, :-1], 
+                'labels': data[:, -1],
+                'choice_p': choice_p, 
+                'theta': theta}
                      
     def _cnn_get_processed_data_for_theta(self,
                                           random_seed):
@@ -360,22 +362,22 @@ class data_generator():
             for i in range(self.generator_config['n_subruns']):
                 print('simulation round:', i + 1 , ' of', self.generator_config['n_subruns'])
                 with Pool(processes = self.generator_config['n_cpus'] - 1) as pool:
-                    # data_tmp[(i * subrun_n * samples_by_param_set):((i + 1) * subrun_n * samples_by_param_set), :] = np.concatenate(pool.map(self._mlp_get_processed_data_for_theta_test, 
-                    #                                                                                            [k for k in seed_args[(i * subrun_n):((i + 1) * subrun_n)]]))
-                    #                                                                                           #[j for j in seeds[(i * subrun_n):((i + 1) * subrun_n)]]))
-
                     out_list += pool.map(self._mlp_get_processed_data_for_theta_test, [k for k in seed_args[(i * subrun_n):((i + 1) * subrun_n)]])
+            
+            data_tmp = np.concatenate()
 
-
-
-                
             # data_tmp = np.float32(data_tmp)
             
             # data = {}
             # data['data'] = data_tmp[:, :-1]
             # data['labels'] = data_tmp[:, -1]
+
             data = {}
-            data['data'] = out_list
+            data['data'] = np.concatenate(out_list[k]['data'] for k in range(len(out_list))).astype(np.float32)
+            data['labels'] = np.concatenate(out_list[k]['labels'] for k in range(len(out_list))).astype(np.float32)
+            data['choice_p'] = np.concatenate(out_list[k]['choice_p'] for k in range(len(out_list))).astype(np.float32)
+            data['theta'] = np.concatenate(out_list[k]['theta'] for k in range(len(out_list))).astype(np.float32)
+            #data['data'] = out_list
     
         else:
             #data_grid = np.zeros((self.generator_config['n_parameter_sets'], self.generator_config['nbins'], self.model_config['nchoices']))
