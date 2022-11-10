@@ -207,8 +207,8 @@ class data_generator():
         while not keep:
             theta = np.float32(np.random.uniform(low = self.model_config['param_bounds'][0], 
                                                  high = self.model_config['param_bounds'][1]))
-            print('theta before')
-            print(theta.shape)
+            #print('theta before')
+            #print(theta.shape)
             
             simulations = self.get_simulations(theta = theta)
 
@@ -220,8 +220,8 @@ class data_generator():
         data = self._make_kde_data(simulations = simulations,
                                    theta = theta)
 
-        print('theta after')
-        print(theta.shape)
+        #print('theta after')
+        #print(theta.shape)
         choice_p = np.array([(simulations['choices'] == 1.).sum() / simulations['choices'].flatten().shape[0]])
 
         data_dict = {}
@@ -373,6 +373,7 @@ class data_generator():
             data['labels'] = np.concatenate([out_list[k]['labels'] for k in range(len(out_list))]).astype(np.float32)
             data['choice_p'] = np.concatenate([out_list[k]['choice_p'] for k in range(len(out_list))]).astype(np.float32)
             data['thetas'] = np.concatenate([out_list[k]['theta'] for k in range(len(out_list))]).astype(np.float32)
+            data['test'] = out_list
             #data['data'] = out_list
     
         else:
