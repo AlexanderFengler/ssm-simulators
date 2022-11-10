@@ -207,6 +207,8 @@ class data_generator():
         while not keep:
             theta = np.float32(np.random.uniform(low = self.model_config['param_bounds'][0], 
                                                  high = self.model_config['param_bounds'][1]))
+            print('theta before')
+            print(theta.shape)
             
             simulations = self.get_simulations(theta = theta)
 
@@ -217,6 +219,9 @@ class data_generator():
 
         data = self._make_kde_data(simulations = simulations,
                                    theta = theta)
+
+        print('theta after')
+        print(theta.shape)
         choice_p = np.array([(simulations['choices'] == 1.).sum() / simulations['choices'].flatten().shape[0]])
 
         data_dict = {}
@@ -351,7 +356,6 @@ class data_generator():
         
         # Inits
         subrun_n = self.generator_config['n_parameter_sets'] // self.generator_config['n_subruns']
-        samples_by_param_set = self.generator_config['n_training_samples_by_parameter_set']
         
         if self.generator_config['nbins'] == 0:
             data_tmp = np.zeros((int(self.generator_config['n_parameter_sets'] * self.generator_config['n_training_samples_by_parameter_set']), 
