@@ -43,7 +43,7 @@ class data_generator():
                 os.makedirs(folder_partial)
     
     def _get_ncpus(self):
-        # Sepfic
+        # Get number of cpus
         if self.generator_config['n_cpus'] == 'all':
             n_cpus = psutil.cpu_count(logical = False)
             print('n_cpus used: ', n_cpus)
@@ -178,6 +178,26 @@ class data_generator():
 
         return out.astype(np.float)
     
+    # def _mlp_get_processed_data_for_theta(self,
+    #                                       random_seed):
+        
+    #     np.random.seed(random_seed[0])
+    #     keep = 0
+    #     while not keep:
+    #         theta = np.float32(np.random.uniform(low = self.model_config['param_bounds'][0], 
+    #                                              high = self.model_config['param_bounds'][1]))
+            
+    #         simulations = self.get_simulations(theta = theta)
+
+            
+    #         #print(simulations)
+    #         keep, stats = self._filter_simulations(simulations)
+    #         # print('random seed with id: ', random_seed)
+
+    #     data = self._make_kde_data(simulations = simulations,
+    #                                theta = theta)
+    #     return data
+
     def _mlp_get_processed_data_for_theta(self,
                                           random_seed):
         
@@ -186,51 +206,14 @@ class data_generator():
         while not keep:
             theta = np.float32(np.random.uniform(low = self.model_config['param_bounds'][0], 
                                                  high = self.model_config['param_bounds'][1]))
-            
-            simulations = self.get_simulations(theta = theta)
 
-            
-            #print(simulations)
+            simulations = self.get_simulations(theta = theta)
             keep, stats = self._filter_simulations(simulations)
-            # print('random seed with id: ', random_seed)
 
         data = self._make_kde_data(simulations = simulations,
-                                   theta = theta)
-        return data
-
-
-    def _mlp_get_processed_data_for_theta_test(self,
-                                               random_seed):
-        
-        np.random.seed(random_seed[0])
-        keep = 0
-        while not keep:
-            theta = np.float32(np.random.uniform(low = self.model_config['param_bounds'][0], 
-                                                 high = self.model_config['param_bounds'][1]))
-            #print('theta before')
-            #print(theta.shape)
-            
-            simulations = self.get_simulations(theta = theta)
-
-            
-            #print(simulations)
-            keep, stats = self._filter_simulations(simulations)
-            # print('random seed with id: ', random_seed)
-
-        data = self._make_kde_data(simulations = simulations,
-                                   theta = theta)
-
-        #print('theta after')
-        #print(theta.shape)
+                                    theta = theta)
         choice_p = np.array([(simulations['choices'] == 1.).sum() / simulations['choices'].flatten().shape[0]])
 
-        data_dict = {}
-        data_dict = {'data_kde': data[:, :-1],
-                     'labels_kde': data[:, -1],
-                     'labels_choice_p': choice_p}
-
-            #         data['data'] = data_tmp[:, :-1]
-            # data['labels'] = data_tmp[:, -1]
         return {'data': data[:, :-1], 
                 'labels': data[:, -1],
                 'choice_p': choice_p, 
@@ -264,92 +247,91 @@ class data_generator():
 
         return rejected_thetas
           
+    # def generate_data_training_uniform(self, 
+    #                                    save = False):
+        
+    #     seeds = np.random.choice(400000000, size = self.generator_config['n_parameter_sets'])
+    #     seed_args = [[seeds[i], i + 1] for i in np.arange(0, self.generator_config['n_parameter_sets'], 1)]
+        
+    #     # Inits
+    #     subrun_n = self.generator_config['n_parameter_sets'] // self.generator_config['n_subruns']
+    #     samples_by_param_set = self.generator_config['n_training_samples_by_parameter_set']
+        
+    #     if self.generator_config['nbins'] == 0:
+    #         data_tmp = np.zeros((int(self.generator_config['n_parameter_sets'] * self.generator_config['n_training_samples_by_parameter_set']), 
+    #                               len(self.model_config['param_bounds'][0]) + 3))
+
+    #     # Get Simulations 
+    #         for i in range(self.generator_config['n_subruns']):
+    #             print('simulation round:', i + 1 , ' of', self.generator_config['n_subruns'])
+    #             with Pool(processes = self.generator_config['n_cpus'] - 1) as pool:
+
+    #                 data_tmp[(i * subrun_n * samples_by_param_set):((i + 1) * subrun_n * samples_by_param_set), :] = np.concatenate(pool.map(self._mlp_get_processed_data_for_theta, 
+    #                                                                                                            [k for k in seed_args[(i * subrun_n):((i + 1) * subrun_n)]]))
+                
+    #         data_tmp = np.float32(data_tmp)
+            
+    #         data = {}
+    #         data['data'] = data_tmp[:, :-1]
+    #         data['labels'] = data_tmp[:, -1]
+    
+    #     else:
+    #         #data_grid = np.zeros((self.generator_config['n_parameter_sets'], self.generator_config['nbins'], self.model_config['nchoices']))
+    #         data_list = []
+    #         for i in range(self.generator_config['n_subruns']):
+    #             print('simulation round: ', i + 1, ' of', self.generator_config['n_subruns'])
+                
+    #             with Pool(processes = self.generator_config['n_cpus']) as pool:
+    #                 # data_grid[(i * subrun_n): ((i + 1) * subrun_n), :, :] = np.concatenate(pool.map(self._cnn_get_processed_data_for_theta,
+    #                 #                                                                                 [j for j in seeds[(i * subrun_n):((i + 1) * subrun_n)]]))
+    #                 data_tmp = pool.map(self._cnn_get_processed_data_for_theta,
+    #                                       [j for j in seeds[(i * subrun_n):((i + 1) * subrun_n)]])
+                    
+    #                 data_tmp_dict = {}
+    #                 data_tmp_dict['data'] = np.float32(np.concatenate([x['data'] for x in data_tmp]))
+    #                 data_tmp_dict['labels'] = np.float32(np.concatenate([np.expand_dims(x['label'], axis = 0) for x in data_tmp]))
+    #                 data_list.append(data_tmp_dict)
+            
+    #         data = {}
+    #         data['data'] = np.float32(np.concatenate([x['data'] for x in data_list]))
+    #         data['labels'] = np.float32(np.concatenate([x['labels'] for x in data_list]))
+        
+    #     # Add metadata to training_data
+    #     data['generator_config'] = self.generator_config
+    #     data['model_config'] = self.model_config
+        
+    #     if save:
+    #         binned = str(0)
+    #         if self.generator_config['nbins'] > 0:
+    #             binned = str(1)
+
+    #         training_data_folder = self.generator_config['output_folder'] + \
+    #                               'training_data_' + \
+    #                               binned + \
+    #                               '_nbins_' + str(self.generator_config['nbins']) + \
+    #                               '_n_' + str(self.generator_config['n_samples']) + \
+    #                               '/' + self.model_config["name"]
+            
+    #         if not os.path.exists(training_data_folder):
+    #             os.makedirs(training_data_folder)
+
+    #         full_file_name = training_data_folder + '/' + \
+    #                          'training_data_' + self.model_config['name'] + '_' + \
+    #                          uuid.uuid1().hex + '.pickle'
+
+    #         print('Writing to file: ', full_file_name)
+
+    #         pickle.dump(data,
+    #                     open(full_file_name, 'wb'), 
+    #                     protocol = self.generator_config['pickleprotocol'])
+    #         return 'Dataset completed'
+        
+    #     else:
+    #         return data
+
+
     def generate_data_training_uniform(self, 
                                        save = False):
-        
-        seeds = np.random.choice(400000000, size = self.generator_config['n_parameter_sets'])
-        seed_args = [[seeds[i], i + 1] for i in np.arange(0, self.generator_config['n_parameter_sets'], 1)]
-        
-        # Inits
-        subrun_n = self.generator_config['n_parameter_sets'] // self.generator_config['n_subruns']
-        samples_by_param_set = self.generator_config['n_training_samples_by_parameter_set']
-        
-        if self.generator_config['nbins'] == 0:
-            data_tmp = np.zeros((int(self.generator_config['n_parameter_sets'] * self.generator_config['n_training_samples_by_parameter_set']), 
-                                  len(self.model_config['param_bounds'][0]) + 3))
-
-        # Get Simulations 
-            for i in range(self.generator_config['n_subruns']):
-                print('simulation round:', i + 1 , ' of', self.generator_config['n_subruns'])
-                with Pool(processes = self.generator_config['n_cpus'] - 1) as pool:
-
-                    data_tmp[(i * subrun_n * samples_by_param_set):((i + 1) * subrun_n * samples_by_param_set), :] = np.concatenate(pool.map(self._mlp_get_processed_data_for_theta, 
-                                                                                                               [k for k in seed_args[(i * subrun_n):((i + 1) * subrun_n)]]))
-                                                                                                              #[j for j in seeds[(i * subrun_n):((i + 1) * subrun_n)]]))
-                
-            data_tmp = np.float32(data_tmp)
-            
-            data = {}
-            data['data'] = data_tmp[:, :-1]
-            data['labels'] = data_tmp[:, -1]
-    
-        else:
-            #data_grid = np.zeros((self.generator_config['n_parameter_sets'], self.generator_config['nbins'], self.model_config['nchoices']))
-            data_list = []
-            for i in range(self.generator_config['n_subruns']):
-                print('simulation round: ', i + 1, ' of', self.generator_config['n_subruns'])
-                
-                with Pool(processes = self.generator_config['n_cpus']) as pool:
-                    # data_grid[(i * subrun_n): ((i + 1) * subrun_n), :, :] = np.concatenate(pool.map(self._cnn_get_processed_data_for_theta,
-                    #                                                                                 [j for j in seeds[(i * subrun_n):((i + 1) * subrun_n)]]))
-                    data_tmp = pool.map(self._cnn_get_processed_data_for_theta,
-                                          [j for j in seeds[(i * subrun_n):((i + 1) * subrun_n)]])
-                    
-                    data_tmp_dict = {}
-                    data_tmp_dict['data'] = np.float32(np.concatenate([x['data'] for x in data_tmp]))
-                    data_tmp_dict['labels'] = np.float32(np.concatenate([np.expand_dims(x['label'], axis = 0) for x in data_tmp]))
-                    data_list.append(data_tmp_dict)
-            
-            data = {}
-            data['data'] = np.float32(np.concatenate([x['data'] for x in data_list]))
-            data['labels'] = np.float32(np.concatenate([x['labels'] for x in data_list]))
-        
-        # Add metadata to training_data
-        data['generator_config'] = self.generator_config
-        data['model_config'] = self.model_config
-        
-        if save:
-            binned = str(0)
-            if self.generator_config['nbins'] > 0:
-                binned = str(1)
-
-            training_data_folder = self.generator_config['output_folder'] + \
-                                  'training_data_' + \
-                                  binned + \
-                                  '_nbins_' + str(self.generator_config['nbins']) + \
-                                  '_n_' + str(self.generator_config['n_samples']) + \
-                                  '/' + self.model_config["name"]
-            
-            if not os.path.exists(training_data_folder):
-                os.makedirs(training_data_folder)
-
-            full_file_name = training_data_folder + '/' + \
-                             'training_data_' + self.model_config['name'] + '_' + \
-                             uuid.uuid1().hex + '.pickle'
-
-            print('Writing to file: ', full_file_name)
-
-            pickle.dump(data,
-                        open(full_file_name, 'wb'), 
-                        protocol = self.generator_config['pickleprotocol'])
-            return 'Dataset completed'
-        
-        else:
-            return data
-
-
-    def generate_data_training_uniform_test(self, 
-                                            save = False):
         
         seeds = np.random.choice(400000000, size = self.generator_config['n_parameter_sets'])
         seed_args = [[seeds[i], i + 1] for i in np.arange(0, self.generator_config['n_parameter_sets'], 1)]
@@ -373,18 +355,13 @@ class data_generator():
             data['labels'] = np.concatenate([out_list[k]['labels'] for k in range(len(out_list))]).astype(np.float32)
             data['choice_p'] = np.concatenate([out_list[k]['choice_p'] for k in range(len(out_list))]).astype(np.float32)
             data['thetas'] = np.stack([out_list[k]['theta'] for k in range(len(out_list))]).astype(np.float32)
-            # data['test'] = out_list
-            #data['data'] = out_list
     
         else:
-            #data_grid = np.zeros((self.generator_config['n_parameter_sets'], self.generator_config['nbins'], self.model_config['nchoices']))
             data_list = []
             for i in range(self.generator_config['n_subruns']):
                 print('simulation round: ', i + 1, ' of', self.generator_config['n_subruns'])
                 
                 with Pool(processes = self.generator_config['n_cpus']) as pool:
-                    # data_grid[(i * subrun_n): ((i + 1) * subrun_n), :, :] = np.concatenate(pool.map(self._cnn_get_processed_data_for_theta,
-                    #                                                                                 [j for j in seeds[(i * subrun_n):((i + 1) * subrun_n)]]))
                     data_tmp = pool.map(self._cnn_get_processed_data_for_theta,
                                           [j for j in seeds[(i * subrun_n):((i + 1) * subrun_n)]])
                     
@@ -396,6 +373,8 @@ class data_generator():
             data = {}
             data['data'] = np.float32(np.concatenate([x['data'] for x in data_list]))
             data['labels'] = np.float32(np.concatenate([x['labels'] for x in data_list]))
+            data['choice_p'] = {}
+            data['thetas'] = {}
         
         # Add metadata to training_data
         data['generator_config'] = self.generator_config
@@ -511,9 +490,6 @@ class data_generator():
 
     def generate_data_ratio_estimator(self, save):
         seeds = np.random.choice(400000000, size = self.generator_config['n_subdatasets'])
-        
-        # data_list = []
-        # print('simulation round: ', i + 1, ' of', self.generator_config['n_subdatasets'])
         print('Starting simulations')
         
         with Pool(processes = self.generator_config['n_cpus']) as pool:
