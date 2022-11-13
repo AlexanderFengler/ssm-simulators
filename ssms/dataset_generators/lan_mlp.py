@@ -254,17 +254,17 @@ class data_generator():
         data['model_config'] = self.model_config
         
         if save:
-            training_data_folder = self.generator_config['output_folder'] + \
-                                  'training_data_' + \
-                                  '_n_' + str(self.generator_config['n_samples']) + \
-                                  '/' + self.model_config["name"]
+            # training_data_folder = self.generator_config['output_folder'] 
+            #                     #   + \
+            #                     #   'training_data_n_' + str(self.generator_config['n_samples']) + \
+            #                     #   '/' + self.model_config["name"]
             
-            if not os.path.exists(training_data_folder):
-                os.makedirs(training_data_folder)
+            if not os.path.exists(self.generator_config['output_folder']):
+                os.makedirs(self.generator_config['output_folder'])
 
-            full_file_name = training_data_folder + '/' + \
-                             'training_data_' + self.model_config['name'] + '_' + \
-                             uuid.uuid1().hex + '.pickle'
+            full_file_name = self.generator_config['output_folder'] + '/' + \
+                                'training_data_' + \
+                                    uuid.uuid1().hex + '.pickle'  # self.model_config['name'] + '_' + \
 
             print('Writing to file: ', full_file_name)
 
