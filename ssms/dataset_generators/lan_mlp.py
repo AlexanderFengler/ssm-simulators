@@ -239,7 +239,7 @@ class data_generator():
         for i in range(self.generator_config['n_subruns']):
             print('simulation round:', i + 1 , ' of', self.generator_config['n_subruns'])
             with Pool(processes = self.generator_config['n_cpus'] - 1) as pool:
-                out_list += pool.map(self._mlp_get_processed_data_for_theta_test, [k for k in seed_args[(i * subrun_n):((i + 1) * subrun_n)]])
+                out_list += pool.map(self._mlp_get_processed_data_for_theta, [k for k in seed_args[(i * subrun_n):((i + 1) * subrun_n)]])
         
         data = {}
         data['data'] = np.concatenate([out_list[k]['data'] for k in range(len(out_list))]).astype(np.float32)
