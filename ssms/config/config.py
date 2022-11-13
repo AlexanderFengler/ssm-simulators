@@ -427,18 +427,8 @@ model_config = {'ddm': {'name': 'ddm',
                                         'labels': np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]),
                                         'n_components': 3,
                                         },
-                        # 'components': {'g': {'label_component': np.float32(np.array([1, 0, 0])),
-                        #                      'off_value': 0,
-                        #                      'probability': 1/3},
-                        #                'alphar': {'label_component': np.float32(np.array([0, 1, 0])),
-                        #                           'off_value': 1,
-                        #                           'probability': 1/3},
-                        #                'theta': {'label_component': np.float32(np.array([0, 0, 1])),
-                        #                          'off_value': 0,
-                        #                          'probability': 1/3}
-                        #                }
-                        },
                 }
+}
 
 model_config['weibull_cdf'] = model_config['weibull'].copy()
 model_config['full_ddm2'] = model_config['full_ddm'].copy()
@@ -452,7 +442,7 @@ kde_simulation_filters = {'mode': 20, # != (if mode is max_rt)
                           'mode_cnt_rel': 0.9  # < (mode does not receive more than a proportion of samples for each choice)
                          }
 
-data_generator_config = {'lan': {'mlp': {'output_folder': 'data/lan_mlp/',
+data_generator_config = {'lan': {'output_folder': 'data/lan_mlp/',
                                         'dgp_list': 'ddm', # should be ['ddm'],
                                         'nbins': 0,
                                         'n_samples': 100000,  # eventually should be {'low': 100000, 'high': 100000},
@@ -469,24 +459,6 @@ data_generator_config = {'lan': {'mlp': {'output_folder': 'data/lan_mlp/',
                                         'n_subruns': 10,
                                         'bin_pointwise': False,
                                         'separate_response_channels': False
-                                        },
-                                 'cnn': {'output_folder': 'data/lan_cnn/',
-                                        'dgp_list':'ddm', # should be  ['ddm'],
-                                        'n_samples': 100000, # eventually should be  {'low': 100000, 'high': 100000},
-                                        'n_parameter_sets': 10000,
-                                        'n_parameter_set_rejected': 100, # not used for CNNs
-                                        'n_training_samples_by_parameter_set': 1000, # not necessary for CNNs
-                                        'nbins': 512,
-                                        'max_t': 20.0,
-                                        'delta_t': 0.001,
-                                        'pickleprotocol': 4,
-                                        'n_cpus': 'all',
-                                        'simulation_filters': kde_simulation_filters, # not used for CNNs
-                                        'negative_rt_cutoff': -66.77497,
-                                        'n_subruns': 10,
-                                        'bin_pointwise': False,
-                                        'separate_response_channels': False,
-                                        },
                                  },
                         'ratio_estimator': {'output_folder': 'data/ratio/',
                                             'dgp_list': ['ddm'],

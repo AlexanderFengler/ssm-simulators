@@ -17,7 +17,7 @@ except ImportError:
 
 setup(  
         name = 'SSMS',
-        version='0.0.1',
+        version='0.1.0',
         author = 'Alexander Fenger',
         url = 'https://github.com/AlexanderFengler/ssms',
         packages= ['ssms', 'ssms.basic_simulators', 'ssms.config', 'ssms.dataset_generators', 'ssms.support_utils'],
