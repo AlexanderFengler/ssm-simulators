@@ -76,7 +76,7 @@ class data_generator():
             tmp_rts = simulations['rts'][simulations['choices'] == choice_tmp]
             tmp_n_c = len(tmp_rts)
             if tmp_n_c > 0:
-                mode_, mode_cnt_ = mode(tmp_rts, keepdims=True)
+                mode_, mode_cnt_ = mode(tmp_rts, keepdims=False)
                 std_ = np.std(tmp_rts)
                 mean_ = np.mean(tmp_rts)
                 if tmp_n_c < 5:
