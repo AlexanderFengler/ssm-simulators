@@ -18,6 +18,10 @@ import numbers
 DTYPE = np.float32
 
 cdef set_seed(random_state):
+    """
+    if random state is provided,
+    this function sets a random state globally for the function. 
+    """
     if random_state is None:
         return srand(time(NULL))
     if isinstance(random_state, numbers.Integral):
@@ -130,7 +134,7 @@ def test(np.ndarray[float, ndim = 1] v, # drift by timestep 'delta_t'
          random_state = None,
          ):
 
-    cdef rand = set_seed(random_state)
+    set_seed(random_state)
     # Param views
     cdef float[:] v_view = v
     cdef float[:] a_view = a
@@ -205,7 +209,7 @@ def ddm(np.ndarray[float, ndim = 1] v, # drift by timestep 'delta_t'
         int n_trials = 10,
         random_state = None,):
 
-    cdef rand = set_seed(random_state)
+    set_seed(random_state)
     # Param views
     cdef float[:] v_view = v
     cdef float[:] a_view = a
@@ -279,7 +283,7 @@ def ddm_cov(np.ndarray[float, ndim = 1] v, # drift by timestep 'delta_t'
             random_state = None,
             ):
 
-    cdef rand = set_seed(random_state)
+    set_seed(random_state)
     #cdef int n_trials = np.max([v.size, a.size, w.size, t.size]).astype(int)
     rts = np.zeros((n_samples, n_trials, 1), dtype = DTYPE)
     choices = np.zeros((n_samples, n_trials, 1), dtype = np.intc)
@@ -353,7 +357,7 @@ def ddm_flexbound(np.ndarray[float, ndim = 1] v,
                   random_state = None,
                   ):
 
-    cdef rand = set_seed(random_state)
+    set_seed(random_state)
     #cdef int cov_length = np.max([v.size, a.size, w.size, t.size]).astype(int)
     # Param views:
     cdef float[:] v_view  = v
@@ -469,7 +473,7 @@ def ddm_flex(np.ndarray[float, ndim = 1] v,
              random_state = None,
              ):
 
-    cdef rand = set_seed(random_state)
+    set_seed(random_state)
     # Param views:
     cdef float[:] v_view  = v
     cdef float[:] a_view = a
@@ -587,7 +591,7 @@ def ddm_flexbound_max(float v = 0.0,
                       random_state = None,
                       ):
 
-    cdef rand = set_seed(random_state)
+    set_seed(random_state)
     rts = np.zeros((n_samples, 1), dtype = DTYPE)
     choices = np.zeros((n_samples, 1), dtype = np.intc)
 
@@ -677,7 +681,7 @@ def glob_flexbound(np.ndarray[float, ndim = 1] v,
                    random_state = None,
                    ):
 
-    cdef rand = set_seed(random_state)
+    set_seed(random_state)
     #cdef int cov_length = np.max([v.size, a.size, w.size, t.size]).astype(int)
     # Param views:
     cdef float[:] v_view  = v
@@ -790,7 +794,7 @@ def levy_flexbound(np.ndarray[float, ndim = 1] v,
                    random_state = None,
                    ):
 
-    cdef rand = set_seed(random_state)
+    set_seed(random_state)
     #cdef int cov_length = np.max([v.size, a.size, w.size, t.size]).astype(int)
     # Param views:
     cdef float[:] v_view  = v
@@ -901,7 +905,7 @@ def full_ddm(np.ndarray[float, ndim = 1] v, # = 0,
              boundary_params = {},
              random_state = None,):
 
-    cdef rand = set_seed(random_state)
+    set_seed(random_state)
     # cdef int cov_length = np.max([v.size, a.size, w.size, t.size]).astype(int)
     # Param views
     #set_random_state(random_state)
@@ -1032,7 +1036,7 @@ def ddm_sdv(np.ndarray[float, ndim = 1] v,
             random_state = None,
             ):
 
-    cdef rand = set_seed(random_state)
+    set_seed(random_state)
     # Data-structs for trajectory storage
     traj = np.zeros((int(max_t / delta_t) + 1, 1), dtype = DTYPE)
     traj[:, :] = -999 
@@ -1161,7 +1165,7 @@ def ornstein_uhlenbeck(np.ndarray[float, ndim = 1] v, # drift parameter
                        random_state = None,
                       ):
 
-    cdef rand = set_seed(random_state)
+    set_seed(random_state)
     # Data-structs for trajectory storage
     traj = np.zeros((int(max_t / delta_t) + 1, 1), dtype = DTYPE)
     traj[:, :] = -999 
@@ -1297,7 +1301,7 @@ def race_model(np.ndarray[float, ndim = 2] v,  # np.array expected, one column o
                boundary_params = {},
                random_state = None,):
 
-    cdef rand = set_seed(random_state)
+    set_seed(random_state)
     # Param views
     cdef float[:, :] v_view = v
     cdef float[:, :] z_view = z
@@ -1426,7 +1430,7 @@ def lca(np.ndarray[float, ndim = 2] v, # drift parameters (np.array expect: one 
         boundary_params = {},
         random_state = None,):
 
-    cdef rand = set_seed(random_state)
+    set_seed(random_state)
     # Param views
     cdef float[:, :] v_view = v
     cdef float[:, :] a_view = a
@@ -1573,7 +1577,7 @@ def ddm_flexbound_seq2(np.ndarray[float, ndim = 1] v_h,
                        random_state = None,
                        ):
 
-    cdef rand = set_seed(random_state)
+    set_seed(random_state)
     # Param views
     cdef float[:] v_h_view = v_h
     cdef float[:] v_l_1_view = v_l_1
@@ -1719,7 +1723,7 @@ def ddm_flexbound_par2(np.ndarray[float, ndim = 1] v_h,
                        random_state = None,
                        ):
 
-    cdef rand = set_seed(random_state)
+    set_seed(random_state)
     # Param views
     cdef float[:] v_h_view = v_h
     cdef float[:] v_l_1_view = v_l_1
@@ -1854,7 +1858,7 @@ def ddm_flexbound_mic2_adj(np.ndarray[float, ndim = 1] v_h,
                            random_state = None,
                            ):
 
-    cdef rand = set_seed(random_state)
+    set_seed(random_state)
     # Param views
     cdef float[:] v_h_view = v_h
     cdef float[:] v_l_1_view = v_l_1
@@ -2027,7 +2031,7 @@ def ddm_flexbound_tradeoff(np.ndarray[float, ndim = 1] v_h,
                            random_state = None,
                            ):
 
-    cdef rand = set_seed(random_state)
+    set_seed(random_state)
     # Param views
     cdef float[:] v_h_view = v_h
     cdef float[:] v_l_1_view = v_l_1
