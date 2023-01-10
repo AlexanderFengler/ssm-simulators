@@ -2,14 +2,15 @@ import ssms.config as config
 from . import boundary_functions as bf
 from . import drift_functions as df
 import numpy as np
-#import pandas as pd
 import sys
+from copy import deepcopy
 import cssm
 
 # Basic simulators and basic preprocessing
 def bin_simulator_output_pointwise(out = [0, 0],
                                    bin_dt = 0.04,
-                                   nbins = 0): # ['v', 'a', 'w', 't', 'angle']
+                                   nbins = 0,
+                                   ): # ['v', 'a', 'w', 't', 'angle']
     """Turns RT part of simulator output into bin-identifier by trial
 
     :Arguments:
@@ -25,7 +26,6 @@ def bin_simulator_output_pointwise(out = [0, 0],
     :Returns: 
         2d array. The first columns collects bin-identifiers by trial, the second column lists the corresponding choices.
     """
-    
     out_copy = deepcopy(out)
 
     # Generate bins
@@ -59,7 +59,8 @@ def bin_simulator_output(out = None,
                          bin_dt = 0.04,
                          nbins = 0,
                          max_t = -1,
-                         freq_cnt = False): # ['v', 'a', 'w', 't', 'angle']
+                         freq_cnt = False,
+                        ): # ['v', 'a', 'w', 't', 'angle']
     """Turns RT part of simulator output into bin-identifier by trial
 
     :Arguments:
@@ -116,7 +117,8 @@ def bin_arbitrary_fptd(out = None,
                        nbins = 256,
                        nchoices = 2,
                        choice_codes = [-1.0, 1.0],
-                       max_t = 10.0): # ['v', 'a', 'w', 't', 'angle']
+                       max_t = 10.0,
+                       ): # ['v', 'a', 'w', 't', 'angle']
 
     """Takes in simulator output and returns a histogram of bin counts
     :Arguments:
@@ -138,7 +140,6 @@ def bin_arbitrary_fptd(out = None,
     Returns:
         2d array (nbins, nchoices): A histogram of bin counts
     """
-
     # Generate bins
     if nbins == 0:
         nbins = int(max_t / bin_dt)
@@ -166,7 +167,8 @@ def simulator(theta,
               max_t = 20,
               no_noise = False,
               bin_dim = None,
-              bin_pointwise = False):
+              bin_pointwise = False,
+              random_state = None):
     """Basic data simulator for the models included in HDDM. 
 
 
@@ -198,7 +200,6 @@ def simulator(theta,
         or     (rts binned pointwise, responses, metadata)
 
     """
-
     # Useful for sbi
     if type(theta) == list:
         #print('theta is supplied as list --> simulator assumes n_trials = 1')
@@ -241,7 +242,8 @@ def simulator(theta,
                                 delta_t = delta_t,
                                 n_samples = n_samples,
                                 n_trials = n_trials,
-                                max_t = max_t)
+                                max_t = max_t,
+                                random_state=random_state)
 
     if model == 'test':
         x = cssm.ddm_flexbound(v = theta[:, 0],
@@ -255,7 +257,8 @@ def simulator(theta,
                                boundary_params = {},
                                boundary_fun = bf.constant,
                                boundary_multiplicative = True,
-                               max_t = max_t)
+                               max_t = max_t,
+                               random_state=random_state)
     
     if model == 'ddm' or model == 'ddm_elife' or model == 'ddm_analytic':
         x = cssm.ddm_flexbound(v = theta[:, 0],
@@ -269,7 +272,8 @@ def simulator(theta,
                                boundary_params = {},
                                boundary_fun = bf.constant,
                                boundary_multiplicative = True,
-                               max_t = max_t)
+                               max_t = max_t,
+                               random_state=random_state)
 
     if model == 'ddm_legacy':
         x = cssm.ddm(v = theta[:, 0],
@@ -280,7 +284,8 @@ def simulator(theta,
                      n_samples = n_samples,
                      n_trials = n_trials,
                      delta_t = delta_t,
-                     max_t = max_t)
+                     max_t = max_t,
+                     random_state=random_state)
     
     if model == 'angle' or model == 'angle2':
         x = cssm.ddm_flexbound(v = theta[:, 0], 
@@ -294,7 +299,8 @@ def simulator(theta,
                                delta_t = delta_t,
                                n_samples = n_samples,
                                n_trials = n_trials,
-                               max_t = max_t)
+                               max_t = max_t,
+                               random_state=random_state)
     
     if model == 'weibull_cdf' or model == 'weibull_cdf2' or model == 'weibull_cdf_ext' or model == 'weibull_cdf_concave' or model == 'weibull':
         x = cssm.ddm_flexbound(v = theta[:, 0], 
@@ -308,7 +314,8 @@ def simulator(theta,
                                delta_t = delta_t,
                                n_samples = n_samples,
                                n_trials = n_trials,
-                               max_t = max_t)
+                               max_t = max_t,
+                               random_state=random_state)
     
     if model == 'levy':
         x = cssm.levy_flexbound(v = theta[:, 0], 
@@ -323,7 +330,8 @@ def simulator(theta,
                                 delta_t = delta_t,
                                 n_samples = n_samples,
                                 n_trials = n_trials,
-                                max_t = max_t)
+                                max_t = max_t,
+                                random_state=random_state)
 
     if model == 'levy_angle':
         x = cssm.levy_flexbound(v = theta[:, 0], 
@@ -338,7 +346,8 @@ def simulator(theta,
                                 delta_t = delta_t,
                                 n_samples = n_samples,
                                 n_trials = n_trials,
-                                max_t = max_t)
+                                max_t = max_t,
+                                random_state=random_state)
     
     if model == 'full_ddm' or model == 'full_ddm2':
         x = cssm.full_ddm(v = theta[:, 0],
@@ -355,7 +364,8 @@ def simulator(theta,
                           delta_t = delta_t,
                           n_samples = n_samples,
                           n_trials = n_trials,
-                          max_t = max_t)
+                          max_t = max_t,
+                          random_state=random_state)
 
     if model == 'ddm_sdv':
         x = cssm.ddm_sdv(v = theta[:, 0], 
@@ -370,7 +380,8 @@ def simulator(theta,
                          delta_t = delta_t,
                          n_samples = n_samples,
                          n_trials = n_trials,
-                         max_t = max_t)
+                         max_t = max_t,
+                         random_state=random_state)
         
     if model == 'ornstein' or model == 'ornstein_uhlenbeck':
         x = cssm.ornstein_uhlenbeck(v = theta[:, 0], 
@@ -385,7 +396,8 @@ def simulator(theta,
                                     delta_t = delta_t,
                                     n_samples = n_samples,
                                     n_trials = n_trials,
-                                    max_t = max_t)
+                                    max_t = max_t,
+                                    random_state=random_state)
 
     if model == 'ornstein_angle':
         x = cssm.ornstein_uhlenbeck(v = theta[:, 0], 
@@ -400,7 +412,8 @@ def simulator(theta,
                                     delta_t = delta_t,
                                     n_samples = n_samples,
                                     n_trials = n_trials,
-                                    max_t = max_t)
+                                    max_t = max_t,
+                                    random_state=random_state)
 
     if model == 'gamma_drift':
         x = cssm.ddm_flex(v = theta[:, 0],
@@ -416,7 +429,8 @@ def simulator(theta,
                           delta_t = delta_t,
                           n_samples = n_samples,
                           n_trials = n_trials,
-                          max_t = max_t)
+                          max_t = max_t,
+                          random_state=random_state)
 
     if model == 'gamma_drift_angle':
         x = cssm.ddm_flex(v = theta[:, 0],
@@ -432,7 +446,8 @@ def simulator(theta,
                           delta_t = delta_t,
                           n_samples = n_samples,
                           n_trials = n_trials,
-                          max_t = max_t)
+                          max_t = max_t,
+                          random_state=random_state)
 
     if model == 'ds_conflict_drift':
         x = cssm.ddm_flex(v = np.tile(np.array([0], dtype = np.float32), n_trials),
@@ -453,7 +468,8 @@ def simulator(theta,
                         delta_t = delta_t,
                         n_samples = n_samples,
                         n_trials = n_trials,
-                        max_t = max_t)
+                        max_t = max_t,
+                        random_state=random_state)
 
     if model == 'ds_conflict_drift_angle':
         x = cssm.ddm_flex(v = np.tile(np.array([0], dtype = np.float32), n_trials),
@@ -474,7 +490,8 @@ def simulator(theta,
                         delta_t = delta_t,
                         n_samples = n_samples,
                         n_trials = n_trials,
-                        max_t = max_t)
+                        max_t = max_t,
+                        random_state=random_state)
 
     # 3 Choice models
     if no_noise:
@@ -494,7 +511,8 @@ def simulator(theta,
                             delta_t = delta_t,
                             n_samples = n_samples,
                             n_trials = n_trials,
-                            max_t = max_t)
+                            max_t = max_t,
+                            random_state=random_state)
     
     if model == 'race_no_bias_3':
         x = cssm.race_model(v = theta[:, :3],
@@ -508,7 +526,8 @@ def simulator(theta,
                             delta_t = delta_t,
                             n_samples = n_samples,
                             n_trials = n_trials,
-                            max_t = max_t)
+                            max_t = max_t,
+                            random_state=random_state)
 
     if model == 'race_no_bias_angle_3':
         x = cssm.race_model(v = theta[:, :3],
@@ -522,7 +541,8 @@ def simulator(theta,
                             delta_t = delta_t,
                             n_samples = n_samples,
                             n_trials = n_trials,
-                            max_t = max_t)
+                            max_t = max_t,
+                            random_state=random_state)
         
     if model == 'lca_3':
         x = cssm.lca(v = theta[:, :3],
@@ -538,7 +558,8 @@ def simulator(theta,
                      delta_t = delta_t,
                      n_samples = n_samples,
                      n_trials = n_trials,
-                     max_t = max_t)
+                     max_t = max_t,
+                     random_state=random_state)
 
     if model == 'lca_no_bias_3':
         x = cssm.lca(v = theta[:, :3],
@@ -554,7 +575,8 @@ def simulator(theta,
                      delta_t = delta_t,
                      n_samples = n_samples,
                      n_trials = n_trials,
-                     max_t = max_t)
+                     max_t = max_t,
+                     random_state=random_state)
 
     if model == 'lca_no_bias_angle_3':
         x = cssm.lca(v = theta[:, :3],
@@ -570,7 +592,8 @@ def simulator(theta,
                      delta_t = delta_t,
                      n_samples = n_samples,
                      n_trials = n_trials,
-                     max_t = max_t)
+                     max_t = max_t,
+                     random_state=random_state)
 
     # 4 Choice models
     if no_noise:
@@ -590,7 +613,8 @@ def simulator(theta,
                             delta_t = delta_t,
                             n_samples = n_samples,
                             n_trials = n_trials,
-                            max_t = max_t)
+                            max_t = max_t,
+                            random_state=random_state)
 
     if model == 'race_no_bias_4':
         x = cssm.race_model(v = theta[:, :4],
@@ -604,7 +628,8 @@ def simulator(theta,
                             delta_t = delta_t,
                             n_samples = n_samples,
                             n_trials = n_trials,
-                            max_t = max_t)
+                            max_t = max_t,
+                            random_state=random_state)
 
     if model == 'race_no_bias_angle_4':
         x = cssm.race_model(v = theta[:, :4],
@@ -618,7 +643,8 @@ def simulator(theta,
                             delta_t = delta_t,
                             n_samples = n_samples,
                             n_trials = n_trials,
-                            max_t = max_t)
+                            max_t = max_t,
+                            random_state=random_state)
         
     if model == 'lca_4':
         x = cssm.lca(v = theta[:, :4],
@@ -634,7 +660,8 @@ def simulator(theta,
                      delta_t = delta_t,
                      n_samples = n_samples,
                      n_trials = n_trials,
-                     max_t = max_t)
+                     max_t = max_t,
+                     random_state=random_state)
 
     if model == 'lca_no_bias_4':
         x = cssm.lca(v = theta[:, :4],
@@ -650,7 +677,8 @@ def simulator(theta,
                      delta_t = delta_t,
                      n_samples = n_samples,
                      n_trials = n_trials,
-                     max_t = max_t)
+                     max_t = max_t,
+                     random_state=random_state)
 
     if model == 'lca_no_bias_angle_4':
         x = cssm.lca(v = theta[:, :4],
@@ -666,7 +694,8 @@ def simulator(theta,
                      delta_t = delta_t,
                      n_samples = n_samples,
                      n_trials = n_trials,
-                     max_t = max_t)
+                     max_t = max_t,
+                     random_state=random_state)
 
     # Seq / Parallel models (4 choice)
     if no_noise:
@@ -693,7 +722,8 @@ def simulator(theta,
                                     max_t = max_t,
                                     boundary_fun = bf.constant,
                                     boundary_multiplicative = True,
-                                    boundary_params = {})
+                                    boundary_params = {},
+                                    random_state=random_state)
 
     if model == 'ddm_seq2_no_bias':
         x = cssm.ddm_flexbound_seq2(v_h = theta[:, 0],
@@ -711,7 +741,8 @@ def simulator(theta,
                                     max_t = max_t,
                                     boundary_fun = bf.constant,
                                     boundary_multiplicative = True,
-                                    boundary_params = {})
+                                    boundary_params = {},
+                                    random_state=random_state)
 
     if model == 'ddm_seq2_gamma_conflict_no_bias':
         x = cssm.ddm_flexbound_seq2(v_h = theta[:, 0],
@@ -733,7 +764,8 @@ def simulator(theta,
                                                        'theta': theta[:, 5],
                                                        'scale': theta[:, 6],
                                                        'alpha_gamma': theta[:, 7],
-                                                       'scale_gamma': theta[:, 8]})
+                                                       'scale_gamma': theta[:, 8]},
+                                    random_state=random_state)
 
     if model == 'ddm_seq2_angle_no_bias':
         x = cssm.ddm_flexbound_seq2(v_h = theta[:, 0],
@@ -751,7 +783,8 @@ def simulator(theta,
                                     max_t = max_t,
                                     boundary_fun = bf.angle,
                                     boundary_multiplicative = False,
-                                    boundary_params = {'theta': theta[:, 5]})
+                                    boundary_params = {'theta': theta[:, 5]},
+                                    random_state=random_state)
 
     if model == 'ddm_seq2_weibull_no_bias':
         x = cssm.ddm_flexbound_seq2(v_h = theta[:, 0],
@@ -770,7 +803,8 @@ def simulator(theta,
                                     boundary_fun = bf.weibull_cdf,
                                     boundary_multiplicative = True,
                                     boundary_params = {'alpha': theta[:, 5],
-                                                       'beta': theta[:, 6]})
+                                                       'beta': theta[:, 6]},
+                                    random_state=random_state)
 
     if model == 'ddm_par2':
         x = cssm.ddm_flexbound_par2(v_h = theta[:, 0],
@@ -788,7 +822,8 @@ def simulator(theta,
                                     max_t = max_t,
                                     boundary_fun = bf.constant,
                                     boundary_multiplicative = True,
-                                    boundary_params = {})
+                                    boundary_params = {},
+                                    random_state=random_state)
     
     if model == 'ddm_par2_no_bias':
         x = cssm.ddm_flexbound_par2(v_h = theta[:, 0],
@@ -806,7 +841,8 @@ def simulator(theta,
                                     max_t = max_t,
                                     boundary_fun = bf.constant,
                                     boundary_multiplicative = True,
-                                    boundary_params = {})
+                                    boundary_params = {},
+                                    random_state=random_state)
 
     if model == 'ddm_par2_gamma_conflict_no_bias':
         x = cssm.ddm_flexbound_par2(v_h = theta[:, 0],
@@ -828,7 +864,8 @@ def simulator(theta,
                                                        'theta': theta[:, 5],
                                                        'scale': theta[:, 6],
                                                        'alpha_gamma': theta[:, 7],
-                                                       'scale_gamma': theta[:, 8]})
+                                                       'scale_gamma': theta[:, 8]},
+                                    random_state=random_state)
 
     if model == 'ddm_par2_angle_no_bias':
         x = cssm.ddm_flexbound_par2(v_h = theta[:, 0],
@@ -846,7 +883,8 @@ def simulator(theta,
                                     max_t = max_t,
                                     boundary_fun = bf.angle,
                                     boundary_multiplicative = False,
-                                    boundary_params = {'theta': theta[:, 5]})
+                                    boundary_params = {'theta': theta[:, 5]},
+                                    random_state=random_state)
 
     if model == 'ddm_par2_weibull_no_bias':
         x = cssm.ddm_flexbound_par2(v_h = theta[:, 0],
@@ -865,7 +903,8 @@ def simulator(theta,
                                     boundary_fun = bf.weibull_cdf,
                                     boundary_multiplicative = True,
                                     boundary_params = {'alpha': theta[:, 5],
-                                                       'beta': theta[:, 6]})
+                                                       'beta': theta[:, 6]},
+                                    random_state=random_state)
 
     if model == 'ddm_mic2_adj':
         x = cssm.ddm_flexbound_mic2(v_h = theta[:, 0],
@@ -884,7 +923,8 @@ def simulator(theta,
                                     max_t = max_t,
                                     boundary_fun = bf.constant,
                                     boundary_multiplicative = True,
-                                    boundary_params = {})
+                                    boundary_params = {},
+                                    random_state=random_state)
     
     if model == 'ddm_mic2_adj_no_bias':
         x = cssm.ddm_flexbound_mic2_adj(v_h = theta[:, 0],
@@ -903,7 +943,8 @@ def simulator(theta,
                                         max_t = max_t,
                                         boundary_fun = bf.constant,
                                         boundary_multiplicative = True,
-                                        boundary_params = {})
+                                        boundary_params = {},
+                                        random_state=random_state)
 
     if model == 'ddm_mic2_adj_gamma_conflict_no_bias':
         x = cssm.ddm_flexbound_mic2_adj(v_h = theta[:, 0],
@@ -926,7 +967,8 @@ def simulator(theta,
                                                            'theta': theta[:, 6],
                                                            'scale': theta[:, 7],
                                                            'alpha_gamma': theta[:, 8],
-                                                           'scale_gamma': theta[:, 9]})
+                                                           'scale_gamma': theta[:, 9]},
+                                        random_state=random_state)
 
     if model == 'ddm_mic2_adj_angle_no_bias':
         x = cssm.ddm_flexbound_mic2_adj(v_h = theta[:, 0],
@@ -945,7 +987,8 @@ def simulator(theta,
                                         max_t = max_t,
                                         boundary_fun = bf.angle,
                                         boundary_multiplicative = False,
-                                        boundary_params = {'theta': theta[:, 6]})
+                                        boundary_params = {'theta': theta[:, 6]},
+                                        random_state=random_state)
 
     if model == 'ddm_mic2_adj_weibull_no_bias':
         x = cssm.ddm_flexbound_mic2_adj(v_h = theta[:, 0],
@@ -965,7 +1008,8 @@ def simulator(theta,
                                         boundary_fun = bf.weibull_cdf,
                                         boundary_multiplicative = True,
                                         boundary_params = {'alpha': theta[:, 6],
-                                                           'beta': theta[:, 7]})
+                                                           'beta': theta[:, 7]},
+                                        random_state=random_state)
 
     if model == 'tradeoff_no_bias':
         x = cssm.ddm_flexbound_tradeoff(v_h = theta[:, 0],
@@ -984,7 +1028,8 @@ def simulator(theta,
                                         max_t = max_t,
                                         boundary_fun = bf.constant,
                                         boundary_multiplicative = True,
-                                        boundary_params = {})
+                                        boundary_params = {},
+                                        random_state=random_state)
 
     if model == 'tradeoff_angle_no_bias':
         x = cssm.ddm_flexbound_tradeoff(v_h = theta[:, 0],
@@ -1003,7 +1048,8 @@ def simulator(theta,
                                         max_t = max_t,
                                         boundary_fun = bf.angle,
                                         boundary_multiplicative = False,
-                                        boundary_params = {'theta': theta[:, 6]})
+                                        boundary_params = {'theta': theta[:, 6]},
+                                        random_state=random_state)
 
     if model == 'tradeoff_weibull_no_bias':
         x = cssm.ddm_flexbound_tradeoff(v_h = theta[:, 0],
@@ -1023,7 +1069,8 @@ def simulator(theta,
                                         boundary_fun = bf.weibull_cdf,
                                         boundary_multiplicative = True,
                                         boundary_params = {'alpha': theta[:, 6],
-                                                           'beta': theta[:, 7]})
+                                                           'beta': theta[:, 7]},
+                                        random_state=random_state)
 
     if model == 'tradeoff_gamma_conflict_no_bias':
         x = cssm.ddm_flexbound_tradeoff(v_h = theta[:, 0],
@@ -1046,7 +1093,8 @@ def simulator(theta,
                                                            'theta': theta[:, 6],
                                                            'scale': theta[:, 7],
                                                            'alpha_gamma': theta[:, 8],
-                                                           'scale_gamma': theta[:, 9]})
+                                                           'scale_gamma': theta[:, 9]},
+                                        random_state=random_state)
     
     # Output compatibility
     if n_trials == 1:
