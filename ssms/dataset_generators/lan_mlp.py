@@ -176,7 +176,7 @@ class data_generator():
         out[(n_kde + n_unif_up):, -2] = choice_tmp
         out[(n_kde + n_unif_up):, -1] = self.generator_config['negative_rt_cutoff']
 
-        return out.astype(np.float)
+        return out.astype(np.float32)
     
     def _mlp_get_processed_data_for_theta(self,
                                           random_seed):

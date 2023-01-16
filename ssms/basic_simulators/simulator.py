@@ -169,8 +169,8 @@ def simulator(theta,
               bin_dim = None,
               bin_pointwise = False,
               random_state = None):
-    """Basic data simulator for the models included in HDDM. 
 
+    """Basic data simulator for the models included in HDDM. 
 
     :Arguments:
         theta : list or numpy.array
@@ -193,8 +193,10 @@ def simulator(theta,
         bin_pointwise: bool <default=False>
             Wheter or not to bin the output data pointwise. If true the 'RT' part of the data is now specifies the
             'bin-number' of a given trial instead of the 'RT' directly. You need to specify bin_dim as some number for this to work.
+        random_state: int <default=None>
+            Integer passed to random_seed function in the simulator. Can be used for reproducibility.
     
-    :Return: tuple 
+    :Return: dictionary where keys
         can be (rts, responses, metadata)
         or     (rt-response histogram, metadata)
         or     (rts binned pointwise, responses, metadata)
@@ -243,7 +245,8 @@ def simulator(theta,
                                 n_samples = n_samples,
                                 n_trials = n_trials,
                                 max_t = max_t,
-                                random_state=random_state)
+                                random_state = random_state
+                                )
 
     if model == 'test':
         x = cssm.ddm_flexbound(v = theta[:, 0],
@@ -258,9 +261,10 @@ def simulator(theta,
                                boundary_fun = bf.constant,
                                boundary_multiplicative = True,
                                max_t = max_t,
-                               random_state=random_state)
+                               random_state = random_state
+                               )
     
-    if model == 'ddm' or model == 'ddm_elife' or model == 'ddm_analytic':
+    if model == 'ddm':
         x = cssm.ddm_flexbound(v = theta[:, 0],
                                a = theta[:, 1], 
                                z = theta[:, 2],
@@ -273,9 +277,10 @@ def simulator(theta,
                                boundary_fun = bf.constant,
                                boundary_multiplicative = True,
                                max_t = max_t,
-                               random_state=random_state)
+                               random_state = random_state
+                               )
 
-    if model == 'ddm_legacy':
+    if model == 'ddm_legacy' or model == 'ddm_hddm_base':
         x = cssm.ddm(v = theta[:, 0],
                      a = theta[:, 1], 
                      z = theta[:, 2],
@@ -285,9 +290,10 @@ def simulator(theta,
                      n_trials = n_trials,
                      delta_t = delta_t,
                      max_t = max_t,
-                     random_state=random_state)
+                     random_state = random_state
+                     )
     
-    if model == 'angle' or model == 'angle2':
+    if model == 'angle':
         x = cssm.ddm_flexbound(v = theta[:, 0], 
                                a = theta[:, 1],
                                z = theta[:, 2], 
@@ -300,9 +306,10 @@ def simulator(theta,
                                n_samples = n_samples,
                                n_trials = n_trials,
                                max_t = max_t,
-                               random_state=random_state)
+                               random_state = random_state
+                               )
     
-    if model == 'weibull_cdf' or model == 'weibull_cdf2' or model == 'weibull_cdf_ext' or model == 'weibull_cdf_concave' or model == 'weibull':
+    if model == 'weibull_cdf':
         x = cssm.ddm_flexbound(v = theta[:, 0], 
                                a = theta[:, 1], 
                                z = theta[:, 2], 
@@ -315,7 +322,8 @@ def simulator(theta,
                                n_samples = n_samples,
                                n_trials = n_trials,
                                max_t = max_t,
-                               random_state=random_state)
+                               random_state = random_state
+                               )
     
     if model == 'levy':
         x = cssm.levy_flexbound(v = theta[:, 0], 
@@ -331,7 +339,8 @@ def simulator(theta,
                                 n_samples = n_samples,
                                 n_trials = n_trials,
                                 max_t = max_t,
-                                random_state=random_state)
+                                random_state = random_state
+                                )
 
     if model == 'levy_angle':
         x = cssm.levy_flexbound(v = theta[:, 0], 
@@ -347,9 +356,10 @@ def simulator(theta,
                                 n_samples = n_samples,
                                 n_trials = n_trials,
                                 max_t = max_t,
-                                random_state=random_state)
+                                random_state = random_state
+                                )
     
-    if model == 'full_ddm' or model == 'full_ddm2':
+    if model == 'full_ddm':
         x = cssm.full_ddm(v = theta[:, 0],
                           a = theta[:, 1],
                           z = theta[:, 2], 
@@ -365,7 +375,25 @@ def simulator(theta,
                           n_samples = n_samples,
                           n_trials = n_trials,
                           max_t = max_t,
-                          random_state=random_state)
+                          random_state = random_state
+                          )
+
+    if model == "full_ddm_legacy" or model == "full_ddm_hddm_base":
+        x = cssm.full_ddm_hddm_base(
+                                    v=theta[:, 0],
+                                    a=theta[:, 1],
+                                    z=theta[:, 2],
+                                    t=theta[:, 3],
+                                    sz=theta[:, 4],
+                                    sv=theta[:, 5],
+                                    st=theta[:, 6],
+                                    s=s,
+                                    n_samples=n_samples,
+                                    n_trials=n_trials,
+                                    delta_t=delta_t,
+                                    max_t=max_t,
+                                    random_state = random_state,
+                                    )
 
     if model == 'ddm_sdv':
         x = cssm.ddm_sdv(v = theta[:, 0], 
@@ -381,7 +409,8 @@ def simulator(theta,
                          n_samples = n_samples,
                          n_trials = n_trials,
                          max_t = max_t,
-                         random_state=random_state)
+                         random_state = random_state
+                         )
         
     if model == 'ornstein' or model == 'ornstein_uhlenbeck':
         x = cssm.ornstein_uhlenbeck(v = theta[:, 0], 
@@ -397,7 +426,8 @@ def simulator(theta,
                                     n_samples = n_samples,
                                     n_trials = n_trials,
                                     max_t = max_t,
-                                    random_state=random_state)
+                                    random_state = random_state
+                                    )
 
     if model == 'ornstein_angle':
         x = cssm.ornstein_uhlenbeck(v = theta[:, 0], 
@@ -413,7 +443,8 @@ def simulator(theta,
                                     n_samples = n_samples,
                                     n_trials = n_trials,
                                     max_t = max_t,
-                                    random_state=random_state)
+                                    random_state = random_state
+                                    )
 
     if model == 'gamma_drift':
         x = cssm.ddm_flex(v = theta[:, 0],
@@ -430,7 +461,8 @@ def simulator(theta,
                           n_samples = n_samples,
                           n_trials = n_trials,
                           max_t = max_t,
-                          random_state=random_state)
+                          random_state = random_state
+                          )
 
     if model == 'gamma_drift_angle':
         x = cssm.ddm_flex(v = theta[:, 0],
@@ -1107,7 +1139,6 @@ def simulator(theta,
         #x = (np.squeeze(x['rts'], axis = 0), np.squeeze(x['choices'], axis = 0), x['metadata'])
 
     x['metadata']['model'] = model
-
 
     if bin_dim == 0 or bin_dim == None:
         return x
