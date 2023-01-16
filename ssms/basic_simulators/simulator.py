@@ -214,14 +214,6 @@ def simulator(theta,
     if len(theta.shape) < 2:
         theta = np.expand_dims(theta, axis = 0)
     
-
-    # AF-TD allow for theta pd.DataFrame
-
-    # # Is this necessary ?
-    # if theta.shape[0] != n_trials:
-    #     print('ERROR number of trials does not match first dimension of theta array')
-    #     return
-    
     n_trials = theta.shape[0]
     
     # 2 choice models 
