@@ -335,6 +335,11 @@ def ddm(np.ndarray[float, ndim = 1] v, # drift by timestep 'delta_t'
     cdef float[:] z_view = z
     cdef float[:] t_view = t
 
+    # Data-structs for trajectory storage
+    traj = np.zeros((int(max_t / delta_t) + 1, 1), dtype = DTYPE)
+    traj[:, :] = -999 
+    cdef float[:, :] traj_view = traj
+
     rts = np.zeros((n_samples, n_trials, 1), dtype = DTYPE)
     choices = np.zeros((n_samples, n_trials, 1), dtype = np.intc)
     cdef float[:, :, :] rts_view = rts
@@ -346,7 +351,7 @@ def ddm(np.ndarray[float, ndim = 1] v, # drift by timestep 'delta_t'
     cdef float y, t_particle
 
     #cdef int n
-    cdef Py_ssize_t n, k
+    cdef Py_ssize_t n, ix, k
     cdef int m = 0
     cdef int num_draws = int(max_t / delta_t + 1)
     cdef float[:] gaussian_values = draw_gaussian(num_draws)
@@ -356,12 +361,23 @@ def ddm(np.ndarray[float, ndim = 1] v, # drift by timestep 'delta_t'
         for n in range(n_samples):
             y = z_view[k] * a_view[k] # reset starting point
             t_particle = 0.0 # reset time
+            ix = 0 # reset boundary index
+
+            if n == 0:
+                if k == 0:
+                    traj_view[0, 0] = y
 
             # Random walker
             while y <= a_view[k] and y >= 0 and t_particle <= max_t:
                 y += v_view[k] * delta_t + sqrt_st * gaussian_values[m] # update particle position
                 t_particle += delta_t
                 m += 1
+                ix += 1
+
+                if n == 0:
+                    if k == 0:
+                        traj_view[ix, 0] = y
+
                 if m == num_draws:
                     gaussian_values = draw_gaussian(num_draws)
                     m = 0
@@ -381,7 +397,8 @@ def ddm(np.ndarray[float, ndim = 1] v, # drift by timestep 'delta_t'
                                                           'n_samples': n_samples,
                                                           'simulator': 'ddm',
                                                           'boundary_fun_type': 'constant',
-                                                          'possible_choices': [-1, 1]}}
+                                                          'possible_choices': [-1, 1],
+                                                          'trajectory': traj}}
 
 # Simulate (rt, choice) tuples from: SIMPLE DDM -----------------------------------------------
 # Simplest algorithm

@@ -272,7 +272,7 @@ def simulator(theta,
                                random_state = random_state
                                )
 
-    if model == 'ddm_legacy' or model == 'ddm_hddm_base':
+    if model == 'ddm_hddm_base':
         x = cssm.ddm(v = theta[:, 0],
                      a = theta[:, 1], 
                      z = theta[:, 2],
