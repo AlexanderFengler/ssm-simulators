@@ -28,7 +28,7 @@ def weibull_cdf(t = 1,
                 beta = 1):
     return np.exp( - np.power(np.divide(t, beta), alpha))
 
-def gamma_conflict_bound(t = np.arange(0, 20, 0.1),
+def conflict_gamma_bound(t = np.arange(0, 20, 0.1),
                          a = 0.5,
                          theta = 0.5,
                          scale = 1,

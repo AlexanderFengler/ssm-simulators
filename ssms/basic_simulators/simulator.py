@@ -768,7 +768,7 @@ def simulator(theta,
                                     boundary_params = {},
                                     random_state=random_state)
 
-    if model == 'ddm_seq2_gamma_conflict_no_bias':
+    if model == 'ddm_seq2_conflict_gamma_no_bias':
         x = cssm.ddm_flexbound_seq2(v_h = theta[:, 0],
                                     v_l_1 = theta[:, 1],
                                     v_l_2 = theta[:, 2],
@@ -782,7 +782,7 @@ def simulator(theta,
                                     n_trials = n_trials,
                                     delta_t = delta_t,
                                     max_t = max_t,
-                                    boundary_fun = bf.gamma_conflict_bound,
+                                    boundary_fun = bf.conflict_gamma_bound,
                                     boundary_multiplicative = False,
                                     boundary_params = {'a': theta[:, 4],
                                                        'theta': theta[:, 5],
@@ -868,7 +868,7 @@ def simulator(theta,
                                     boundary_params = {},
                                     random_state=random_state)
 
-    if model == 'ddm_par2_gamma_conflict_no_bias':
+    if model == 'ddm_par2_conflict_gamma_no_bias':
         x = cssm.ddm_flexbound_par2(v_h = theta[:, 0],
                                     v_l_1 = theta[:, 1],
                                     v_l_2 = theta[:, 2],
@@ -882,7 +882,7 @@ def simulator(theta,
                                     n_trials = n_trials,
                                     delta_t = delta_t,
                                     max_t = max_t,
-                                    boundary_fun = bf.gamma_conflict_bound,
+                                    boundary_fun = bf.conflict_gamma_bound,
                                     boundary_multiplicative = False,
                                     boundary_params = {'a': theta[:, 4],
                                                        'theta': theta[:, 5],
@@ -970,7 +970,7 @@ def simulator(theta,
                                         boundary_params = {},
                                         random_state=random_state)
 
-    if model == 'ddm_mic2_adj_gamma_conflict_no_bias':
+    if model == 'ddm_mic2_adj_conflict_gamma_no_bias':
         x = cssm.ddm_flexbound_mic2_adj(v_h = theta[:, 0],
                                         v_l_1 = theta[:, 1],
                                         v_l_2 = theta[:, 2],
@@ -985,7 +985,7 @@ def simulator(theta,
                                         n_trials = n_trials,
                                         delta_t = delta_t,
                                         max_t = max_t,
-                                        boundary_fun = bf.gamma_conflict_bound,
+                                        boundary_fun = bf.conflict_gamma_bound,
                                         boundary_multiplicative = False,
                                         boundary_params = {'a': theta[:, 5],
                                                            'theta': theta[:, 6],
@@ -1096,7 +1096,7 @@ def simulator(theta,
                                                            'beta': theta[:, 7]},
                                         random_state=random_state)
 
-    if model == 'tradeoff_gamma_conflict_no_bias':
+    if model == 'tradeoff_conflict_gamma_no_bias':
         x = cssm.ddm_flexbound_tradeoff(v_h = theta[:, 0],
                                         v_l_1 = theta[:, 1],
                                         v_l_2 = theta[:, 2],
@@ -1111,7 +1111,7 @@ def simulator(theta,
                                         n_trials = n_trials,
                                         delta_t = delta_t,
                                         max_t = max_t,
-                                        boundary_fun = bf.gamma_conflict_bound,
+                                        boundary_fun = bf.conflict_gamma_bound,
                                         boundary_multiplicative = False,
                                         boundary_params = {'a': theta[:, 5],
                                                            'theta': theta[:, 6],
