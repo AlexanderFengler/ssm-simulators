@@ -2,6 +2,8 @@
 #from Cython.Build import cythonize
 from setuptools import setup
 from setuptools import Extension
+from setuptools.dist import Distribution
+Distribution().fetch_build_eggs(['Cython>=0.29', 'numpy>=1.20'])
 import numpy
 
 import setuptools
