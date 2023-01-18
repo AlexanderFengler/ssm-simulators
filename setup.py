@@ -3,7 +3,7 @@
 from setuptools import setup
 from setuptools import Extension
 from setuptools.dist import Distribution
-Distribution().fetch_build_eggs(['Cython>=0.29', 'numpy>=1.20'])
+Distribution().fetch_build_eggs(['Cython>=0.29', 'numpy>=1.20']) # necessary to allow cold install into empty environment / otherwise complains about lack of numpy
 import numpy
 
 import setuptools
