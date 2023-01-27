@@ -16,6 +16,8 @@ import numbers
 #import pandas as pd
 
 DTYPE = np.float32
+a_global_variable = cython.declare(cython.int, 32)
+
 
 cdef set_seed(random_state):
     """
