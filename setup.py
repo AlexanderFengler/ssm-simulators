@@ -2,11 +2,7 @@
 #from Cython.Build import cythonize
 from setuptools import setup
 from setuptools import Extension
-from setuptools.dist import Distribution
-Distribution().fetch_build_eggs(['Cython>=0.29', 'numpy>=1.20']) # necessary to allow cold install into empty environment / otherwise complains about lack of numpy
 import numpy
-
-import setuptools
 
 try:
     from Cython.Build import cythonize
@@ -14,7 +10,6 @@ try:
                                 compiler_directives = {"language_level": "3"})
 except ImportError:
     ext_modules = [Extension('cssm', ['src/cssm.pyx'], language = 'c++')]
-
 
 
 setup(  
@@ -36,7 +31,3 @@ setup(
                     ]
 
     )
-
-
-# package_data={'hddm':['examples/*.csv', 'examples/*.conf', 'keras_models/*.h5', 'cnn_models/*/*', 'simulators/*']},
-# scripts=['scripts/hddm_demo.py'],
