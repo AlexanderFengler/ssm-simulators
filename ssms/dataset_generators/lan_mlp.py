@@ -226,7 +226,8 @@ class data_generator():
         return rejected_thetas
           
     def generate_data_training_uniform(self, 
-                                       save = False):
+                                       save = False,
+                                       verbose = True):
         
         seeds = np.random.choice(400000000, size = self.generator_config['n_parameter_sets'])
         seed_args = [[seeds[i], i + 1] for i in np.arange(0, self.generator_config['n_parameter_sets'], 1)]
@@ -237,7 +238,8 @@ class data_generator():
         # Get Simulations 
         out_list = []
         for i in range(self.generator_config['n_subruns']):
-            print('simulation round:', i + 1 , ' of', self.generator_config['n_subruns'])
+            if verbose:
+                print('simulation round:', i + 1 , ' of', self.generator_config['n_subruns'])
             with Pool(processes = self.generator_config['n_cpus'] - 1) as pool:
                 out_list += pool.map(self._mlp_get_processed_data_for_theta, [k for k in seed_args[(i * subrun_n):((i + 1) * subrun_n)]])
         

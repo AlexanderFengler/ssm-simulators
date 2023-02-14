@@ -163,7 +163,7 @@ def bin_arbitrary_fptd(out = None,
 def simulator(theta, 
               model = 'angle', 
               n_samples = 1000,
-              delta_t = 0.001,  # n_trials
+              delta_t = 0.001,
               max_t = 20,
               no_noise = False,
               bin_dim = None,
@@ -179,9 +179,7 @@ def simulator(theta,
         model: str <default='angle'>
             Determines the model that will be simulated.
         n_samples: int <default=1000>
-            Number of simulation runs (for each trial if supplied n_trials > 1)
-        n_trials: int <default=1>
-            Number of trials in a simulations run (this specifically addresses trial by trial parameterizations)
+            Number of simulation runs for each row in the theta argument.
         delta_t: float
             Size fo timesteps in simulator (conceptually measured in seconds)
         max_t: float
