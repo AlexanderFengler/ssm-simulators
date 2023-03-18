@@ -12,6 +12,14 @@ ssms.dataset\_generators.lan\_mlp module
    :undoc-members:
    :show-inheritance:
 
+ssms.dataset\_generators.snpe module
+------------------------------------
+
+.. automodule:: ssms.dataset_generators.snpe
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 
