@@ -1,4 +1,4 @@
-__version__ = '0.2.0'
+__version__ = "0.2.0"
 
 from . import basic_simulators
 from . import dataset_generators
