@@ -2,6 +2,7 @@ from ssms.basic_simulators import boundary_functions as bf
 from ssms.basic_simulators import drift_functions as df
 import numpy as np
 
+# Configuration dictionary for simulators
 model_config = {
     "ddm": {
         "name": "ddm",
