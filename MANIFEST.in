@@ -1,0 +1,10 @@
+recursive-include docs
+include README.md LICENSE
+include ssms *.py
+include src/*.pyx
+include notebooks/*
+global-exclude .gitignore
+global-exclude .git
+global-exclude *~
+global-exclude *.pyc
+global-exclude .#*
