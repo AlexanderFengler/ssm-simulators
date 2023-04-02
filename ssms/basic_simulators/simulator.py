@@ -531,6 +531,7 @@ def simulator(
             boundary_fun=bf.angle,
             drift_fun=df.ds_conflict_drift,
             boundary_params={"theta": theta[:, 10]},
+            boundary_multiplicative=False,
             drift_params={
                 "init_p_t": theta[:, 3],
                 "init_p_d": theta[:, 4],

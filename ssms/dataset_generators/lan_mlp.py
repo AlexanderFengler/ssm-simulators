@@ -75,7 +75,7 @@ class data_generator:
             theta=theta,
             model=self.model_config["name"],
             random_state=random_seed,
-        )  # AF-TODO Want to change this so that we accept
+        ) 
         return out
 
     def _filter_simulations(
