@@ -518,7 +518,7 @@ def ddm_flexbound_deadline(np.ndarray[float, ndim = 1] v,
     t_s = np.arange(0, max_t + delta_t, delta_t).astype(DTYPE)
     boundary = np.zeros(t_s.shape, dtype = DTYPE)
 
-    cdef float y, t_particle
+    cdef float y, t_particle, deadline_adj
     cdef Py_ssize_t n 
     cdef Py_ssize_t ix
     cdef Py_ssize_t m = 0
@@ -536,7 +536,9 @@ def ddm_flexbound_deadline(np.ndarray[float, ndim = 1] v,
             boundary[:] = np.multiply(a_view[k], boundary_fun(t = t_s, **boundary_params_tmp)).astype(DTYPE)
         else:
             boundary[:] = np.add(a_view[k], boundary_fun(t = t_s, **boundary_params_tmp)).astype(DTYPE)
-    
+
+        # subtract current non-decision-time from current deadline
+        deadline_adj = deadline_view[k] - t_view[k]
         for n in range(n_samples):
             y = (-1) * boundary_view[0] + (z_view[k] * 2 * (boundary_view[0]))  # reset starting position 
             t_particle = 0.0 # reset time
@@ -548,7 +550,7 @@ def ddm_flexbound_deadline(np.ndarray[float, ndim = 1] v,
                     traj_view[0, 0] = y
 
             # Random walker
-            while (y >= (-1) * boundary_view[ix]) and (y <= boundary_view[ix]) and (t_particle <= max_t) and (t_particle <= deadline_view[k]):
+            while (y >= (-1) * boundary_view[ix]) and (y <= boundary_view[ix]) and (t_particle <= max_t) and (t_particle <= deadline_adj):
                 y += (v_view[k] * delta_t) + (sqrt_st * gaussian_values[m])
                 t_particle += delta_t
                 ix += 1
@@ -563,11 +565,14 @@ def ddm_flexbound_deadline(np.ndarray[float, ndim = 1] v,
                     gaussian_values = draw_gaussian(num_draws)
                     m = 0
 
-            if t_particle > deadline_view[k]:
+            if t_particle > deadline_adj:
                 rts_view[n, k, 0] = -999
                 choices_view[n, k, 0] = -1
+            elif t_particle == deadline_adj:
+                rts_view[n, k, 0] = t_particle + t_view[k] - ((delta_t / 2) * random_uniform()) # Store rt
+                choices_view[n, k, 0] = sign(y) # Store choice
             else:
-                rts_view[n, k, 0] = t_particle + t_view[k] # Store rt
+                rts_view[n, k, 0] = t_particle + t_view[k] + ((delta_t * random_uniform()) - (delta_t / 2)) # Store rt
                 choices_view[n, k, 0] = sign(y) # Store choice
     
     return {'rts': rts, 'choices': choices,  'metadata': {'v': v,

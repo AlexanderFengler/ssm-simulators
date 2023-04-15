@@ -27,7 +27,7 @@ model_config = {
     "ddm_deadline": {
         "name": "ddm_deadline",
         "params": ["v", "a", "z", "t", "deadline"],
-        "param_bounds": [[-3.0, 0.3, 0.1, 0.0, 0.0], [3.0, 2.5, 0.9, 2.0, 5.0]],
+        "param_bounds": [[-3.0, 0.3, 0.1, 0.0, 0.1], [3.0, 2.5, 0.9, 2.0, 5.0]],
         "boundary": bf.constant,
         "n_params": 5,
         "default_params": [0.0, 1.0, 0.5, 1e-3, 5.0],
