@@ -216,7 +216,7 @@ def simulator(
     elif type(theta) == np.ndarray:
         theta = theta.astype(np.float32)
     else:
-        theta = theta.numpy()
+        theta = theta.numpy().astype(np.float32)     
 
     if len(theta.shape) < 2:
         theta = np.expand_dims(theta, axis=0)
@@ -254,6 +254,24 @@ def simulator(
             a=theta[:, 1],
             z=theta[:, 2],
             t=theta[:, 3],
+            s=s,
+            n_samples=n_samples,
+            n_trials=n_trials,
+            delta_t=delta_t,
+            boundary_params={},
+            boundary_fun=bf.constant,
+            boundary_multiplicative=True,
+            max_t=max_t,
+            random_state=random_state,
+        )
+
+    if model == "ddm_deadline":
+        x = cssm.ddm_flexbound_deadline(
+            v=theta[:, 0],
+            a=theta[:, 1],
+            z=theta[:, 2],
+            t=theta[:, 3],
+            deadline=theta[:, 4],
             s=s,
             n_samples=n_samples,
             n_trials=n_trials,

@@ -24,6 +24,16 @@ model_config = {
         "hddm_include": ["z"],
         "nchoices": 2,
     },
+    "ddm_deadline": {
+        "name": "ddm_deadline",
+        "params": ["v", "a", "z", "t", "deadline"],
+        "param_bounds": [[-3.0, 0.3, 0.1, 0.0, 0.0], [3.0, 2.5, 0.9, 2.0, 5.0]],
+        "boundary": bf.constant,
+        "n_params": 5,
+        "default_params": [0.0, 1.0, 0.5, 1e-3, 5.0],
+        "hddm_include": ["z", "deadline"],
+        "nchoices": 2,
+    },
     "angle": {
         "name": "angle",
         "params": ["v", "a", "z", "t", "theta"],

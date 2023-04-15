@@ -194,7 +194,6 @@ class data_generator:
         out[(n_kde + n_unif_up) :, -3] = rt_tmp
         out[(n_kde + n_unif_up) :, -2] = choice_tmp
         out[(n_kde + n_unif_up) :, -1] = self.generator_config["negative_rt_cutoff"]
-
         return out.astype(np.float32)
 
     def _mlp_get_processed_data_for_theta(self, random_seed_tuple):
@@ -239,6 +238,34 @@ class data_generator:
             "theta": np.expand_dims(theta, axis=0),
         }
 
+    def _cpn_get_processed_data_for_theta(self, random_seed_tuple):
+        np.random.seed(random_seed_tuple[0])
+        
+        # Get a random parameter set
+        theta = np.float32(
+            np.random.uniform(
+                low=self.model_config["param_bounds"][0],
+                high=self.model_config["param_bounds"][1],
+            )
+        )
+        # Run the simulator
+        simulations = self.get_simulations(
+            theta=theta, random_seed=random_seed_tuple[1]
+        )
+
+        # Compute the choice probabilities
+        choice_p = np.array(
+            [
+                (simulations["choices"] == 1.0).sum()
+                / simulations["choices"].flatten().shape[0]
+            ]
+        )
+
+        return {
+            "choice_p": choice_p,
+            "theta": np.expand_dims(theta, axis=0),
+        }
+    
     def _get_rejected_parameter_setups(self, random_seed_tuple):
         np.random.seed(random_seed_tuple[0])
         rejected_thetas = []
@@ -264,8 +291,8 @@ class data_generator:
             rej_cnt += 1
 
         return rejected_thetas
-
-    def generate_data_training_uniform(self, save=False, verbose=True):
+ 
+    def generate_data_training_uniform(self, save=False, verbose=True, cpn_only=False):
         seeds_1 = np.random.choice(
             400000000, size=self.generator_config["n_parameter_sets"]
         )
@@ -290,31 +317,44 @@ class data_generator:
                     " of",
                     self.generator_config["n_subruns"],
                 )
-            with Pool(processes=self.generator_config["n_cpus"] - 1) as pool:
-                out_list += pool.map(
-                    self._mlp_get_processed_data_for_theta,
-                    [k for k in seed_args[(i * subrun_n) : ((i + 1) * subrun_n)]],
-                )
+            if not cpn_only:
+                with Pool(processes=self.generator_config["n_cpus"] - 1) as pool:
+                    out_list += pool.map(
+                        self._cpn_only_get_processed_data_for_theta,
+                        [k for k in seed_args[(i * subrun_n) : ((i + 1) * subrun_n)]],
+                    )
+            else:
+                with Pool(processes=self.generator_config["n_cpus"] - 1) as pool:
+                    out_list += pool.map(
+                        self._mlp_get_processed_data_for_theta,
+                        [k for k in seed_args[(i * subrun_n) : ((i + 1) * subrun_n)]],
+                    )
 
         data = {}
-        data["data"] = np.concatenate(
-            [out_list[k]["data"] for k in range(len(out_list))]
-        ).astype(np.float32)
-        data["labels"] = np.concatenate(
-            [out_list[k]["labels"] for k in range(len(out_list))]
-        ).astype(np.float32)
+        
+        # Choice probabilities and theta are always needed
         data["choice_p"] = np.concatenate(
             [out_list[k]["choice_p"] for k in range(len(out_list))]
         ).astype(np.float32)
         data["thetas"] = np.concatenate(
             [out_list[k]["theta"] for k in range(len(out_list))]
-        ).astype(np.float32)
-        data["binned_128"] = np.concatenate(
-            [out_list[k]["binned_128"] for k in range(len(out_list))]
-        ).astype(np.float32)
-        data["binned_256"] = np.concatenate(
-            [out_list[k]["binned_256"] for k in range(len(out_list))]
-        ).astype(np.float32)
+        ).astype(np.float32)    
+        
+        # Only if not cpn_only, do we need the rest of the data 
+        # (which is not computed if cpn_only is selected)
+        if not cpn_only:    
+            data["data"] = np.concatenate(
+                [out_list[k]["data"] for k in range(len(out_list))]
+            ).astype(np.float32)
+            data["labels"] = np.concatenate(
+                [out_list[k]["labels"] for k in range(len(out_list))]
+            ).astype(np.float32)
+            data["binned_128"] = np.concatenate(
+                [out_list[k]["binned_128"] for k in range(len(out_list))]
+            ).astype(np.float32)
+            data["binned_256"] = np.concatenate(
+                [out_list[k]["binned_256"] for k in range(len(out_list))]
+            ).astype(np.float32)
 
         # Add metadata to training_data
         data["generator_config"] = self.generator_config
