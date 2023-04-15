@@ -780,6 +780,20 @@ kde_simulation_filters = {
 }
 
 data_generator_config = {
+    "cpn_only": {
+        "output_folder": "data/cpn_only/",
+        "dgp_list": "ddm",  # should be ['ddm'],
+        "n_samples": 100000,  # eventually should be {'low': 100000, 'high': 100000},
+        "n_parameter_sets": 10000,
+        "n_parameter_sets_rejected": 100,
+        "n_training_samples_by_parameter_set": 1000,
+        "max_t": 20.0,
+        "delta_t": 0.001,
+        "pickleprotocol": 4,
+        "n_cpus": "all",
+        "negative_rt_cutoff": -66.77497,
+        "n_subruns": 10,
+    },
     "lan": {
         "output_folder": "data/lan_mlp/",
         "dgp_list": "ddm",  # should be ['ddm'],
