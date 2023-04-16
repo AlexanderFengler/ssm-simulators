@@ -317,7 +317,8 @@ class data_generator:
                     " of",
                     self.generator_config["n_subruns"],
                 )
-            if not cpn_only:
+            
+            if cpn_only:
                 with Pool(processes=self.generator_config["n_cpus"] - 1) as pool:
                     out_list += pool.map(
                         self._cpn_get_processed_data_for_theta,
@@ -342,7 +343,7 @@ class data_generator:
         
         # Only if not cpn_only, do we need the rest of the data 
         # (which is not computed if cpn_only is selected)
-        if not cpn_only:    
+        if not cpn_only:
             data["data"] = np.concatenate(
                 [out_list[k]["data"] for k in range(len(out_list))]
             ).astype(np.float32)
