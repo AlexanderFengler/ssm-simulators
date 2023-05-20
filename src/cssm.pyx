@@ -1320,14 +1320,6 @@ def ddm_sdv(np.ndarray[float, ndim = 1] v,
     boundary = np.zeros(t_s.shape, dtype = DTYPE)
     cdef float[:] boundary_view = boundary
 
-    # Precompute boundary evaluations
-    if boundary_multiplicative:
-        # print(a)
-        boundary_view[:] = np.multiply(a, boundary_fun(t = t_s, **boundary_params)).astype(DTYPE)
-    else:
-        # print(a)
-        boundary_view[:] = np.add(a, boundary_fun(t = t_s, **boundary_params)).astype(DTYPE)
-    
     cdef float y, t_particle
     cdef Py_ssize_t n, ix, k
     cdef Py_ssize_t m = 0
