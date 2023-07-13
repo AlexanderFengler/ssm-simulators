@@ -331,7 +331,7 @@ def simulator(
             random_state=random_state,
         )
 
-    if model == "weibull_cdf":
+    if model == "weibull":
         x = cssm.ddm_flexbound(
             v=theta[:, 0],
             a=theta[:, 1],
