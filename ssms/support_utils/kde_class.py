@@ -1,16 +1,45 @@
 # KDE GENERATORS
 import numpy as np
-import scipy as scp
-import time
-from datetime import datetime
 from sklearn.neighbors import KernelDensity
 
 
+"""
+    This module contains a class for generating kdes from data.
+"""
+
 # Generate class for log_kdes
 class logkde:
+    # I want some numpy style docstrings here
+    """
+    Class for generating kdes from (rt, choice) data. Works for any number of choices.
+
+    Attributes
+    ----------
+        simulator_data: (rt, choice, simulator_info) tuple as returned by simulator function
+        bandwidth_type: string, type of bandwidth to use, default is 'silverman'
+        auto_bandwidth: boolean, whether to compute bandwidths automatically, default is True
+
+    Methods
+    -------
+        compute_bandwidths(type='silverman')
+            Computes bandwidths for each choice from rt data.
+        generate_base_kdes(auto_bandwidth=True, bandwidth_type='silverman')
+            Generates kdes from rt data.
+        kde_eval(data=([], []), log_eval=True)
+            Evaluates kde log likelihood at chosen points.
+        kde_sample(n_samples=2000, use_empirical_choice_p=True, alternate_choice_p=0)
+            Samples from a given kde.
+        attach_data_from_simulator(simulator_data=([0, 2, 4], [-1, 1, -1]))
+            Helper function to transform ddm simulator output to dataset suitable for the kde function class.
+
+    Returns:
+        _type_: _description_
+    """
+
+    # Initialize the class
     def __init__(
         self,
-        simulator_data,  # Simulator_data is the kind of data returned by the simulators in ddm_data_simulation.py
+        simulator_data,  # as returned by simulator function
         bandwidth_type="silverman",
         auto_bandwidth=True,
     ):
@@ -38,8 +67,10 @@ class logkde:
                         self.bandwidths.append("no_base_data")
 
     # Function to generate basic kdes
-    # I call the function generate_base_kdes because in the final evaluation computations
-    # we adjust the input and output of the kdes appropriately (we do not use them directly)
+    # I call the function generate_base_kdes because 
+    # in the final evaluation computations
+    # we adjust the input and output of the kdes 
+    # appropriately (we do not use them directly)
     def generate_base_kdes(self, auto_bandwidth=True, bandwidth_type="silverman"):
         # Compute bandwidth parameters
         if auto_bandwidth:
@@ -69,25 +100,27 @@ class logkde:
             # Get data indices where choice == c
             choice_idx_tmp = np.where(data[1] == c)
 
-            # Main step: Evaluate likelihood for rts corresponding to choice == c
+            # Main step: Evaluate likelihood for rts corresponding 
+            # to choice == c
             if self.base_kdes[self.data["choices"].index(c)] == "no_base_data":
                 log_kde_eval[choice_idx_tmp] = np.log(
                     1 / self.data["n_trials"]
                 ) + np.log(
                     1 / self.simulator_info["max_t"]
-                )  # -66.77497 # the number corresponds to log(1e-29) # --> should rather be log(1 / n) + log(1 / 20)
+                )  # -66.77497 # the number corresponds to log(1e-29)
+                   # --> should rather be log(1 / n) + log(1 / 20)
             else:
                 log_kde_eval[choice_idx_tmp] = (
-                    np.log(
-                        self.data["choice_proportions"][self.data["choices"].index(c)]
-                    )
-                    + self.base_kdes[self.data["choices"].index(c)].score_samples(
-                        np.expand_dims(log_rts[choice_idx_tmp], 1)
-                    )
-                    - log_rts[choice_idx_tmp]
+                np.log(
+                    self.data["choice_proportions"][self.data["choices"].index(c)]
+                )
+                + self.base_kdes[self.data["choices"].index(c)].score_samples(
+                    np.expand_dims(log_rts[choice_idx_tmp], 1)
+                )
+                - log_rts[choice_idx_tmp]
                 )
 
-        if log_eval == True:
+        if log_eval is True:
             return log_kde_eval
         else:
             return np.exp(log_kde_eval)
@@ -105,7 +138,7 @@ class logkde:
 
         n_by_choice = []
         for i in range(0, len(self.data["choices"]), 1):
-            if use_empirical_choice_p == True:
+            if use_empirical_choice_p is True:
                 n_by_choice.append(
                     round(n_samples * self.data["choice_proportions"][i])
                 )

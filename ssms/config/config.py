@@ -2,6 +2,25 @@ from ssms.basic_simulators import boundary_functions as bf
 from ssms.basic_simulators import drift_functions as df
 import numpy as np
 
+# I need a generic docstring here
+
+"""
+    Configuration dictionary for simulators
+
+    Variables:
+    ---------
+    model_config: dict
+        Dictionary containing all the information about the models
+
+    kde_simulation_filters: dict
+        Dictionary containing the filters for the KDE simulations
+
+    data_generator_config: dict
+        Dictionary containing information for data generator settings.
+        Supposed to serve as a starting point and example, which the user then
+        modifies to their needs.
+"""
+
 # Configuration dictionary for simulators
 model_config = {
     "ddm": {
@@ -403,7 +422,7 @@ model_config = {
         "param_bounds": [
             [0.0, 0.0, 0.0, 0.0, 1.0, 0.0, -1.0, -1.0, 0.0, -0.1],
             [2.5, 2.5, 2.5, 2.5, 3.0, 0.9, 1.0, 1.0, 2.0, 1.45],
-        ],  # [[0, 2.5], [0, 2.5], [0, 2.5], [0, 2.5], [1.0, 3.0], [0.1, 0.9], [-1.0, 1.0], [-1.0, 1.0], [0.0, 2.0], [-.1, 1.45]],
+        ],
         "boundary": bf.angle,
         "n_params": 10,
         "default_params": [0.0, 0.0, 0.0, 0.0, 2.0, 0.5, 0.0, 0.0, 1e-3, 0.0],
@@ -769,14 +788,14 @@ model_config = {
 model_config["weibull_cdf"] = model_config["weibull"].copy()
 model_config["full_ddm2"] = model_config["full_ddm"].copy()
 
-#### DATASET GENERATOR CONFIGS ----------------------------------------------------------------
+#### DATASET GENERATOR CONFIGS --------------------------
 
 kde_simulation_filters = {
     "mode": 20,  # != (if mode is max_rt)
-    "choice_cnt": 0,  # > (each choice receive at least 10 samples in simulator)
+    "choice_cnt": 0,  # > (each choice receive at least 10 samples )
     "mean_rt": 17,  # < (mean_rt is smaller than specified value
     "std": 0,  # > (std is positive for each choice)
-    "mode_cnt_rel": 0.9,  # < (mode does not receive more than a proportion of samples for each choice)
+    "mode_cnt_rel": 0.9,  # < (mode can't be large proportion of all samples)
 }
 
 data_generator_config = {
@@ -826,7 +845,7 @@ data_generator_config = {
         "pickleprotocol": 4,
         "n_cpus": "all",
         "n_subdatasets": 12,
-        "n_trials_per_dataset": 10000,  # EVEN NUMBER ! AF-TODO: Saveguard against odd in code
+        "n_trials_per_dataset": 10000,  # EVEN NUMBER ! AF-TODO: Saveguard against odd
         "kde_data_mixture_probabilities": [0.8, 0.1, 0.1],
         "simulation_filters": kde_simulation_filters,
         "negative_rt_cutoff": -66.77497,
@@ -847,7 +866,7 @@ data_generator_config = {
         "pickleprotocol": 4,
         "n_cpus": "all",
         "n_subdatasets": 12,
-        "n_trials_per_dataset": 10000,  # EVEN NUMBER ! AF-TODO: Saveguard against odd in code
+        "n_trials_per_dataset": 10000,  # EVEN NUMBER ! AF-TODO: Saveguard against odd
         "kde_data_mixture_probabilities": [0.8, 0.1, 0.1],
         "simulation_filters": kde_simulation_filters,
         "negative_rt_cutoff": -66.77497,
@@ -868,4 +887,4 @@ data_generator_config = {
         "separate_response_channels": False,
     },
 }
-##### -------------------------------------------------------------------------------------------
+##### -----------------------------------------------------

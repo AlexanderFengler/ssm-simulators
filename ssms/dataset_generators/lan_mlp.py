@@ -1,4 +1,4 @@
-import ssms.basic_simulators as bs
+import ssms.basic_simulators.simulator as bs
 from ssms.support_utils import kde_class
 import numpy as np
 import pickle
@@ -10,23 +10,56 @@ import psutil
 
 from functools import partial
 
+"""
+    This module defines a data generator class for use with LANs. 
+    The class defined below can be used to generate training data compatible with the expectations
+    of LANs.
+"""
 
 class data_generator:
-    """The data_generator() class is used to generate training data for various likelihood approximators.
+    """The data_generator() class is used to generate training data
+      for various likelihood approximators.
 
-    :Arguments:
+    Attributes
+    ----------
         generator_config: dict
-            Configuation dictionary for the data generator. (For an example load ssms.config.data_generator_config['lan'])
+            Configuation dictionary for the data generator. 
+            (For an example load ssms.config.data_generator_config['lan'])
         model_config: dict
-            Configuration dictionary for the model to be simulated. (For an example load ssms.config.model_config['ddm'])
-
-    :Returns:
-        data_generator object, with various methods.
+            Configuration dictionary for the model to be simulated. 
+            (For an example load ssms.config.model_config['ddm'])
+    Methods
+    -------
+        generate_data_training_uniform(save=False, verbose=True, cpn_only=False)
+            Generates training data for LANs.
+        get_simulations(theta=None, random_seed=None)
+            Generates simulations for a given parameter set.
+        _filter_simulations(simulations=None)
+            Filters simulations according to the criteria specified in the generator_config.
+        _make_kde_data(simulations=None, theta=None)
+            Generates KDE data from simulations.
+        _mlp_get_processed_data_for_theta(random_seed_tuple)
+            Helper function for generating training data for MLPs.
+        _cpn_get_processed_data_for_theta(random_seed_tuple)
+            Helper function for generating training data for CPNs.
+        _get_rejected_parameter_setups(random_seed_tuple)
+            Helper function that collectes parameters sets which were rejected
+            by the filter used in the _filter_simulations() method.
+        _make_save_file_name(unique_tag=None)
+            Helper function for generating save file names.
+        _build_simulator()
+            Builds simulator function for LANs.
+        _get_ncpus()
+            Helper function for determining the number of cpus to use for parallelization.
+        
+    Returns
+    -------
+        data_generator object
     """
 
     def __init__(self, generator_config=None, model_config=None):
         # INIT -----------------------------------------
-        if generator_config == None:
+        if generator_config is None:
             print("No generator_config specified")
             return
         else:
@@ -103,7 +136,8 @@ class data_generator:
                 std_ = 1
                 mode_cnt_rel_ = 0
 
-            # AF-TODO: More flexible way with list of filter objects that provides for each filter
+            # AF-TODO: More flexible way with list of 
+            # filter objects that provides for each filter
             #  1. Function to compute statistic (e.g. mode)
             #  2. Comparison operator (e.g. <=, != , etc.)
             #  3. Comparator (number to test against)
@@ -414,7 +448,8 @@ class data_generator:
             component_idx_in_full_params = self.model_config["params"].index(
                 component_name
             )
-            # Set parameter to the 'off_value' that corresponds to a model without this particular model component
+            # Set parameter to the 'off_value' that corresponds to a model
+            # without this particular model component
             theta[component_idx_in_full_params] = self.model_config["components"][
                 "off_values"
             ][component_tmp]
@@ -563,8 +598,8 @@ class data_generator:
         else:
             return data
 
-    def _training_defective_simulations_get_preprocessed(seed):
-        np.random.seed(random_seed)
+    def _training_defective_simulations_get_preprocessed(self,seed):
+        np.random.seed(seed)
         rejected_thetas = []
         accepted_thetas = []
         stats_rej = []
@@ -634,7 +669,8 @@ class data_generator:
         theta_real[indices_fake, :] = theta_fake
 
         if self.generator_config["nbins"] > 0:
-            return "Error: Generating data for ratio estimators works only for unbinned data at this point"  # {'data': np.expand_dims(simulations['data'], axis = 0), 'label_parameters': theta, 'label_components': label_tmp, 'metadata': simulations['metadata']}
+            return "Error: Generating data for ratio estimators " + \
+                "works only for unbinned data at this point" 
         else:
             return {
                 "data": np.column_stack(
@@ -642,7 +678,6 @@ class data_generator:
                 ),
                 "labels": np.logical_not(indices_fake).astype(int),
             }
-            # return {'data': np.column_stack([simulations['rts'], simulations['choices']]), 'label_parameters': theta, 'label_components': label_tmp, 'metadata': simulations['metadata']}
 
     def _make_save_file_name(self, unique_tag=""):
         binned = str(0)
@@ -675,7 +710,8 @@ class data_generator:
 
     def generate_rejected_parameterizations(self, save=False):
         seeds = np.random.choice(
-            400000000, size=self.generator_config["n_paramseter_sets_rejected"]
+            400000000, 
+            size=self.generator_config["n_paramseter_sets_rejected"]
         )
 
         # Get Simulations
@@ -684,7 +720,7 @@ class data_generator:
                 self._get_rejected_parameter_setups, seeds
             )
         rejected_parameterization_list = np.concatenate(
-            [l for l in rejected_parameterization_list if len(l) > 0]
+            [l_rej for l_rej in rejected_parameterization_list if len(l_rej) > 0]
         )
 
         if save:
@@ -716,6 +752,8 @@ class data_generator:
                 open(full_file_name, "wb"),
                 protocol=self.generator_config["pickleprotocol"],
             )
-            return "Dataset completed"
+            print("Dataset completed")
+            return rejected_parameterization_list
         else:
-            return data_grid
+            print("Dataset completed")
+            return rejected_parameterization_list

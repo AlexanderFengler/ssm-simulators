@@ -1,11 +1,15 @@
-import ssms.config as config
 from . import boundary_functions as bf
 from . import drift_functions as df
 import numpy as np
-import sys
 from copy import deepcopy
 import cssm
 
+"""
+This module defines the basic simulator function which is the main
+workshorse of the package.
+In addition some utility functions are provided that help
+with preprocessing the output of the simulator function.
+"""
 
 # Basic simulators and basic preprocessing
 def bin_simulator_output_pointwise(
@@ -15,18 +19,23 @@ def bin_simulator_output_pointwise(
 ):  # ['v', 'a', 'w', 't', 'angle']
     """Turns RT part of simulator output into bin-identifier by trial
 
-    :Arguments:
+    Arguments
+    ---------
         out: tuple
             Output of the 'simulator' function
         bin_dt: float
-            If nbins is 0, this determines the desired bin size which in turn automatically
+            If nbins is 0, this determines the desired 
+            bin size which in turn automatically
             determines the resulting number of bins.
         nbins: int
-            Number of bins to bin reaction time data into. If supplied as 0, bin_dt instead determines the number of
-            bins automatically.
+            Number of bins to bin reaction time data into. 
+            If supplied as 0, bin_dt instead determines the 
+            number of bins automatically.
 
-    :Returns:
-        2d array. The first columns collects bin-identifiers by trial, the second column lists the corresponding choices.
+    Returns
+    -------
+        2d array. The first columns collects bin-identifiers 
+        by trial, the second column lists the corresponding choices.
     """
     out_copy = deepcopy(out)
 
@@ -41,17 +50,12 @@ def bin_simulator_output_pointwise(
         bins[:nbins] = np.linspace(0, out["metadata"]["max_t"], nbins)
         bins[nbins] = np.inf
 
-    cnt = 0
-    counts = np.zeros((nbins, len(out["metadata"]["possible_choices"])))
-
-    # data_out = pd.DataFrame(np.zeros(( columns = ['rt', 'response'])
     out_copy_tmp = deepcopy(out_copy)
     for i in range(out_copy[0].shape[0]):
         for j in range(1, bins.shape[0], 1):
             if out_copy[0][i] > bins[j - 1] and out_copy[0][i] < bins[j]:
                 out_copy_tmp[0][i] = j - 1
     out_copy = out_copy_tmp
-    # np.array(out_copy[0] / (bins[1] - bins[0])).astype(np.int32)
 
     out_copy[1][out_copy[1] == -1] = 0
 
@@ -67,29 +71,30 @@ def bin_simulator_output(
 ):  # ['v', 'a', 'w', 't', 'angle']
     """Turns RT part of simulator output into bin-identifier by trial
 
-    :Arguments:
+    Arguments
+    ---------
         out : tuple
             Output of the 'simulator' function
         bin_dt : float
-            If nbins is 0, this determines the desired bin size which in turn automatically
+            If nbins is 0, this determines the desired 
+            bin size which in turn automatically
             determines the resulting number of bins.
         nbins : int
-            Number of bins to bin reaction time data into. If supplied as 0, bin_dt instead determines the number of
+            Number of bins to bin reaction time data into. 
+            If supplied as 0, bin_dt instead determines the number of
             bins automatically.
         max_t : int <default=-1>
-            Override the 'max_t' metadata as part of the simulator output. Sometimes useful, but usually
-            default will do the job.
+            Override the 'max_t' metadata as part of the simulator output. 
+            Sometimes useful, but usually default will do the job.
         freq_cnt : bool <default=False>
             Decide whether to return proportions (default) or counts in bins.
 
-    :Returns:
+    Returns
+    -------
         A histogram of counts or proportions.
 
     """
 
-    # print(out)
-    # print('passed')
-    # print(out.keys())
     if max_t == -1:
         max_t = out["metadata"]["max_t"]
 
@@ -113,7 +118,7 @@ def bin_simulator_output(
         ]
         cnt += 1
 
-    if freq_cnt == False:
+    if freq_cnt is False:
         counts = counts / out["metadata"]["n_samples"]
 
     return counts
@@ -128,14 +133,16 @@ def bin_arbitrary_fptd(
     max_t=10.0,
 ):  # ['v', 'a', 'w', 't', 'angle']
     """Takes in simulator output and returns a histogram of bin counts
-    :Arguments:
+    Arguments
+    ---------
         out: tuple
             Output of the 'simulator' function
         bin_dt : float
-            If nbins is 0, this determines the desired bin size which in turn automatically
-            determines the resulting number of bins.
+            If nbins is 0, this determines the desired bin size 
+            which in turn automatically determines the resulting number of bins.
         nbins : int
-            Number of bins to bin reaction time data into. If supplied as 0, bin_dt instead determines the number of
+            Number of bins to bin reaction time data into. 
+            If supplied as 0, bin_dt instead determines the number of
             bins automatically.
         nchoices: int <default=2>
             Number of choices allowed by the simulator.
@@ -144,9 +151,11 @@ def bin_arbitrary_fptd(
         max_t: float
             Maximum RT to consider.
 
-    Returns:
+    Returns
+    -------
         2d array (nbins, nchoices): A histogram of bin counts
     """
+
     # Generate bins
     if nbins == 0:
         nbins = int(max_t / bin_dt)
@@ -181,7 +190,8 @@ def simulator(
 ):
     """Basic data simulator for the models included in HDDM.
 
-    :Arguments:
+    Arguments
+    ---------
         theta : list or numpy.array
             Parameters of the simulator. If 2d array, each row is treated as a 'trial'
             and the function runs n_sample * n_trials simulations.
@@ -196,21 +206,27 @@ def simulator(
         no_noise: bool <default=False>
             Turn noise of (useful for plotting purposes mostly)
         bin_dim: int <default=None>
-            Number of bins to use (in case the simulator output is supposed to come out as a count histogram)
+            Number of bins to use (in case the simulator output is 
+            supposed to come out as a count histogram)
         bin_pointwise: bool <default=False>
-            Wheter or not to bin the output data pointwise. If true the 'RT' part of the data is now specifies the
-            'bin-number' of a given trial instead of the 'RT' directly. You need to specify bin_dim as some number for this to work.
+            Wheter or not to bin the output data pointwise. 
+            If true the 'RT' part of the data is now specifies the
+            'bin-number' of a given trial instead of the 'RT' directly. 
+            You need to specify bin_dim as some number for this to work.
         random_state: int <default=None>
-            Integer passed to random_seed function in the simulator. Can be used for reproducibility.
+            Integer passed to random_seed function in the simulator. 
+            Can be used for reproducibility.
 
-    :Return: dictionary where keys
+    Return
+    ------
+    dictionary where keys
         can be (rts, responses, metadata)
         or     (rt-response histogram, metadata)
         or     (rts binned pointwise, responses, metadata)
 
     """
     # Useful for sbi
-    if type(theta) == list:
+    if isinstance(theta, list):
         # print('theta is supplied as list --> simulator assumes n_trials = 1')
         theta = np.asarray(theta).astype(np.float32)
     elif type(theta) == np.ndarray:
@@ -1247,15 +1263,13 @@ def simulator(
     if n_trials == 1:
         x["rts"] = np.squeeze(x["rts"], axis=1)
         x["choices"] = np.squeeze(x["choices"], axis=1)
-        # x = (np.squeeze(x['rts'], axis = 1), np.squeeze(x['choices'], axis = 1), x['metadata'])
     if n_trials > 1 and n_samples == 1:
         x["rts"] = np.squeeze(x["rts"], axis=0)
         x["choices"] = np.squeeze(x["choices"], axis=0)
-        # x = (np.squeeze(x['rts'], axis = 0), np.squeeze(x['choices'], axis = 0), x['metadata'])
 
     x["metadata"]["model"] = model
 
-    if bin_dim == 0 or bin_dim == None:
+    if bin_dim == 0 or bin_dim is None:
         return x
     elif bin_dim > 0 and n_trials == 1 and not bin_pointwise:
         # print(x)
@@ -1276,7 +1290,8 @@ def simulator(
             "metadata": x["metadata"],
         }
     elif bin_dim > 0 and n_trials > 1 and n_samples > 1 and bin_pointwise:
-        return "currently n_trials > 1 and n_samples > 1 will not work together with bin_pointwise"
+        return "currently n_trials > 1 and n_samples > 1, " \
+             "will not work together with bin_pointwise"
     elif bin_dim > 0 and n_trials > 1 and not bin_pointwise:
         return "currently binned outputs not implemented for multi-trial simulators"
     elif bin_dim == -1:

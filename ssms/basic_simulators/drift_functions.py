@@ -1,29 +1,47 @@
 # External
-import scipy as scp
-from scipy.stats import gamma
 import numpy as np
 
+"""
+This module defines a collection of drift functions for the simulators in the package.
+"""
 
 def constant(t=np.arange(0, 20, 0.1)):
+    """constant drift function
+
+    Arguments
+    ---------
+        t (_type_, optional): _description_. Defaults to np.arange(0, 20, 0.1).
+
+    Returns
+    -------
+        np.array: Array of drift values, same length as t
+        
+    """
     return np.zeros(t.shape[0])
 
 
 def gamma_drift(t=np.arange(0, 20, 0.1), shape=2, scale=0.01, c=1.5):
     """Drift function that follows a scaled gamma distribution
 
-    :Arguments:
+    Arguments
+    ---------
         t: np.ndarray <default=np.arange(0, 20, 0.1)>
-            Timepoints at which to evaluate the drift. Usually np.arange() of some sort.
+            Timepoints at which to evaluate the drift. 
+            Usually np.arange() of some sort.
         shape: float <default=2>
             Shape parameter of the gamma distribution
         scale: float <default=0.01>
             Scale parameter of the gamma distribution
         c: float <default=1.5>
-            Scalar parameter that scales the peak of the gamma distribution
-            (Note this function follows a gamma distribution but does not integrate to 1)
+            Scalar parameter that scales the peak of 
+            the gamma distribution.
+            (Note this function follows a gamma distribution 
+            but does not integrate to 1)
 
-    :Return: np.ndarray
-         The gamma drift evaluated at the supplied timepoints t.
+    Return
+    ------
+        np.ndarray
+            The gamma drift evaluated at the supplied timepoints t.
 
     """
 
@@ -37,10 +55,14 @@ def gamma_drift(t=np.arange(0, 20, 0.1), shape=2, scale=0.01, c=1.5):
 
 
 def ds_support_analytic(t=np.arange(0, 10, 0.001), init_p=0, fix_point=1, slope=2):
-    """Solution to differential equation of the form: x' = slope*(fix_point - x), with initial
-       condition init_p. The solution takes the form: (init_p - fix_point) * exp(-slope * t) + fix_point
+    """Solution to differential equation of the form: 
+       x' = slope*(fix_point - x), 
+       with initial condition init_p. 
+       The solution takes the form: 
+       (init_p - fix_point) * exp(-slope * t) + fix_point
 
-    :Arguments:
+    Arguments
+    ---------
         t: np.ndarray <default=np.arange(0, 20, 0.1)>
             Timepoints at which to evaluate the drift. Usually np.arange() of some sort.
         init_p: float <default=0>
@@ -49,7 +71,9 @@ def ds_support_analytic(t=np.arange(0, 10, 0.001), init_p=0, fix_point=1, slope=
             Fixed point of dynamical system
         slope: float <default=0.01>
             Coefficient in exponent of the solution.
-    :Return: np.ndarray
+    Return
+    ------
+    np.ndarray
          The gamma drift evaluated at the supplied timepoints t.
 
     """
@@ -67,13 +91,19 @@ def ds_conflict_drift(
     coherence_t=1.5,
     coherence_d=1.5,
 ):
-    """This drift is inspired by a conflict task which involves a target and a distractor stimuli both presented
-       simultaneously. Two drift timecourses are linearly combined weighted by the coherence in the respective target
-       and distractor stimuli. Each timecourse follows a dynamical system as described in the ds_support_analytic() function.
+    """This drift is inspired by a conflict task which 
+       involves a target and a distractor stimuli both presented
+       simultaneously. 
+       Two drift timecourses are linearly combined weighted 
+       by the coherence in the respective target and distractor stimuli. 
+       Each timecourse follows a dynamical system as described 
+       in the ds_support_analytic() function.
 
-    :Arguments:
+    Arguments
+    ---------
         t: np.ndarray <default=np.arange(0, 20, 0.1)>
-            Timepoints at which to evaluate the drift. Usually np.arange() of some sort.
+            Timepoints at which to evaluate the drift. 
+            Usually np.arange() of some sort.
         init_p_t: float <default=0>
             Initial condition of target drift timecourse
         init_p_d: float <default=0>
@@ -88,9 +118,10 @@ def ds_conflict_drift(
             Coefficient for the target drift timecourse
         coherence_d: float <default=-1.0>
             Coefficient for the distractor drift timecourse
-    :Return: np.ndarray
+    Return
+    ------
+    np.ndarray
          The full drift timecourse evaluated at the supplied timepoints t.
-
     """
 
     w_t = ds_support_analytic(t=t, init_p=init_p_t, fix_point=fixed_p_t, slope=slope_t)
