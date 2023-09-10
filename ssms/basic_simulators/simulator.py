@@ -1,5 +1,6 @@
 from . import boundary_functions as bf
 from . import drift_functions as df
+from ssms.config.config import model_config
 import numpy as np
 from copy import deepcopy
 import cssm
@@ -10,6 +11,80 @@ workshorse of the package.
 In addition some utility functions are provided that help
 with preprocessing the output of the simulator function.
 """
+
+def _make_valid_dict(dict_in):
+    """Turn all values in dictionary into numpy arrays and make sure,
+    that all thetas are either scalars or vectors of the same length
+    
+    Arguments:
+    ----------
+        dict_in: dictionary
+            Dictionary of parameters, potentially with different length / types per 
+            parameter (key)
+    
+    Returns:
+    --------
+        dict_in: dictionary 
+            Aligned to same size np.float32 np.arrays for every parameter
+    """
+
+    collect_lengths = []
+    for key, value in dict_in.items():
+        # Turn all values into numpy arrays
+        if type(value) == list:
+            dict_in[key] = np.array(value).astype(np.float32)
+        elif type(value) == int or type(value) == float:
+            dict_in[key] = np.array([value]).astype(np.float32)
+
+        # Squeeze all values to make sure they are 1d arrays
+        dict_in[key] = np.squeeze(dict_in[key]).astype(np.float32)
+        
+        # Check if all thetas are either scalars or vectors of the same length
+        if dict_in[key].ndim > 1:
+            raise ValueError('Dimension of {} is greater than 1'.format(key))
+        elif dict_in[key].ndim > 0:
+            collect_lengths.append(dict_in[key].shape[0]) # add vector parameters to list
+    
+    if len(set(collect_lengths)) > 1:
+        raise ValueError('thetas have to be either scalars or same length for ' \
+                         'all thetas which are not scalars')
+    
+    # If there were any thetas provided as vectors (and they had the same length),
+    # tile all scalar thetas to that length
+    if len(set(collect_lengths)) > 0:
+        for key, value in dict_in.items():
+            if value.ndim == 0:
+                dict_in[key] = np.tile(value, collect_lengths[0])
+    else: # Expand scalars to 1d arrays
+        for key, value in dict_in.items():
+            if value.ndim == 0:
+                dict_in[key] = np.expand_dims(value, axis = 0)
+    return dict_in
+
+def _theta_dict_to_array(theta = dict(), 
+                         model_param_list = None):
+    """Converts theta dictionary to numpy array for use with simulator function"""
+    if model_param_list is None:
+        raise ValueError('model_param_list is not supplied')
+    
+    return np.stack([theta[param] for param in model_param_list], axis = 1).astype(np.float32)
+
+def _theta_array_to_dict(theta = None,
+                         model_param_list = None):
+    """Converts theta array to dictionary for use with simulator function"""
+    if model_param_list is None:
+        raise ValueError('model_param_list is not supplied')
+    elif theta is None:
+        raise ValueError('theta array is not supplied')
+    elif theta.ndim == 1 and len(model_param_list) != theta.shape[0]:
+            raise ValueError('model_param_list and theta array do not imply the same number of parameters')
+    elif theta.ndim == 2 and len(model_param_list) != theta.shape[1]:
+            raise ValueError('model_param_list and theta array do not imply the same number of parameters')
+    else:
+        if theta.ndim == 1:
+            theta = np.expand_dims(theta, axis = 0)
+        return {param: theta[:, i] for i, param in enumerate(model_param_list)}
+
 
 # Basic simulators and basic preprocessing
 def bin_simulator_output_pointwise(
@@ -60,7 +135,6 @@ def bin_simulator_output_pointwise(
     out_copy[1][out_copy[1] == -1] = 0
 
     return np.concatenate([out_copy[0], out_copy[1]], axis=-1).astype(np.int32)
-
 
 def bin_simulator_output(
     out=None,
@@ -227,24 +301,41 @@ def simulator(
     """
     # Useful for sbi
     if isinstance(theta, list):
-        # print('theta is supplied as list --> simulator assumes n_trials = 1')
         theta = np.asarray(theta).astype(np.float32)
-    elif type(theta) == np.ndarray:
+    elif isinstance(theta, np.ndarray):
         theta = theta.astype(np.float32)
+    elif isinstance(theta, dict):
+        theta = _make_valid_dict(deepcopy(theta))
     else:
-        theta = theta.numpy().astype(np.float32)     
+        try: 
+            if isinstance(theta, torch.Tensor):
+                theta = theta.numpy().astype(np.float32)
+            else:
+                pass
+        except:
+            raise ValueError('theta is not supplied as list, numpy array, dictionary or torch tensor')
 
+    # Turn theta into array if it is a dictionary       
+    if isinstance(theta, dict):
+        theta = _theta_dict_to_array(theta, model_config[model]['params'])
+
+    # Adjust theta to be 2d array
     if len(theta.shape) < 2:
         theta = np.expand_dims(theta, axis=0)
 
+    # Set number of trials to pass to simulator
+    # based on shape of theta
     n_trials = theta.shape[0]
+
+    # Make sure theta is np.float32
+    theta = theta.astype(np.float32)
 
     # 2 choice models
     if no_noise:
         s = 0.0
     else:
         s = 1.0
-
+  
     if model == "glob":
         x = cssm.glob_flexbound(
             v=theta[:, 0],
@@ -316,7 +407,8 @@ def simulator(
             random_state=random_state,
         )
 
-    if model == "ddm_hddm_base":
+    # AF-TODO: Check what the intended purpose of 'ddm_legacy' was!
+    if model == "ddm_hddm_base" or "ddm_legacy":
         x = cssm.ddm(
             v=theta[:, 0],
             a=theta[:, 1],
@@ -329,6 +421,7 @@ def simulator(
             max_t=max_t,
             random_state=random_state,
         )
+
 
     if model == "angle":
         x = cssm.ddm_flexbound(
@@ -1050,7 +1143,7 @@ def simulator(
         )
 
     if model == "ddm_mic2_adj":
-        x = cssm.ddm_flexbound_mic2(
+        x = cssm.ddm_flexbound_mic2_adj(
             v_h=theta[:, 0],
             v_l_1=theta[:, 1],
             v_l_2=theta[:, 2],
