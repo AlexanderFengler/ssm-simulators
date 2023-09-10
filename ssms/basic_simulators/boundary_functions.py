@@ -45,10 +45,10 @@ def generalized_logistic_bnd(t=1, B=2.0, M=3.0, v=0.5):
 
     Arguments
     ---------
-        t (int, optional): _description_. Defaults to 1.
-        B (float, optional): _description_. Defaults to 2.0.
-        M (float, optional): _description_. Defaults to 3.0.
-        v (float, optional): _description_. Defaults to 0.5.
+        t (int, optional): Defaults to 1.
+        B (float, optional): Defaults to 2.0.
+        M (float, optional): Defaults to 3.0.
+        v (float, optional): Defaults to 0.5.
 
     Returns
     -------
@@ -63,9 +63,9 @@ def weibull_cdf(t=1, alpha=1, beta=1):
 
     Arguments
     ---------
-        t (int, optional): _description_. Defaults to 1.
-        alpha (int, optional): _description_. Defaults to 1.
-        beta (int, optional): _description_. Defaults to 1.
+        t (int, optional): Defaults to 1.
+        alpha (int, optional): Defaults to 1.
+        beta (int, optional): Defaults to 1.
 
     Returns
     -------
