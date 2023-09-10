@@ -1,4 +1,4 @@
-import ssms.basic_simulators as bs
+from ssms.basic_simulators.simulator import  simulator
 import numpy as np
 import pickle
 import uuid
@@ -128,7 +128,7 @@ class data_generator_snpe(data_generator):
 
     def _build_simulator(self):
         self.simulator = partial(
-            bs.simulator.simulator,
+            simulator,
             n_samples=self.generator_config["n_samples"],
             max_t=self.generator_config["max_t"],
             bin_dim=0,

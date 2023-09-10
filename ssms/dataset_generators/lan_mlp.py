@@ -1,4 +1,4 @@
-import ssms.basic_simulators.simulator as bs
+from ssms.basic_simulators.simulator import simulator, bin_simulator_output
 from ssms.support_utils import kde_class
 import numpy as np
 import pickle
@@ -96,7 +96,7 @@ class data_generator:
 
     def _build_simulator(self):
         self.simulator = partial(
-            bs.simulator,
+            simulator,
             n_samples=self.generator_config["n_samples"],
             max_t=self.generator_config["max_t"],
             bin_dim=0,
@@ -255,11 +255,11 @@ class data_generator:
             ]
         )
         binned_128 = np.expand_dims(
-            bs.bin_simulator_output(simulations, nbins=128, max_t=-1, freq_cnt=True),
+            bin_simulator_output(simulations, nbins=128, max_t=-1, freq_cnt=True),
             axis=0,
         )
         binned_256 = np.expand_dims(
-            bs.bin_simulator_output(simulations, nbins=256, max_t=-1, freq_cnt=True),
+            bin_simulator_output(simulations, nbins=256, max_t=-1, freq_cnt=True),
             axis=0,
         )
 
