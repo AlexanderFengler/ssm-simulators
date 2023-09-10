@@ -1,6 +1,7 @@
 # MY PACKAGE SPECIFIC ADDITIONS
 data/
-
+ssm_simulators.egg-info/
+.vscode/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
