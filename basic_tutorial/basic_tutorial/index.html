@@ -1880,7 +1880,7 @@ Licensed under the Apache License, Version 2.0.
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [1]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [2]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy for="cell-1">
@@ -1927,7 +1927,7 @@ The central dictionary with metadata about included models sits in <code>ssms.co
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [2]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy for="cell-2">
@@ -1954,18 +1954,18 @@ list(ssms.config.model_config.keys())[:10]</div>
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[2]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[3]:</div>
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
 <pre>['ddm',
  'ddm_legacy',
+ 'ddm_deadline',
  'angle',
  'weibull',
  'levy',
  'levy_angle',
  'full_ddm',
  'gamma_drift',
- 'gamma_drift_angle',
- 'ds_conflict_drift']</pre>
+ 'gamma_drift_angle']</pre>
 </div>
 </div>
 </div>
@@ -1977,7 +1977,7 @@ list(ssms.config.model_config.keys())[:10]</div>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy for="cell-3">
@@ -2004,7 +2004,7 @@ ssms.config.model_config['ddm']</div>
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[3]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[4]:</div>
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
 <pre>{'name': 'ddm',
  'params': ['v', 'a', 'z', 't'],
@@ -2046,7 +2046,7 @@ The usual structure of these models includes,</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy for="cell-4">
@@ -2059,14 +2059,20 @@ The usual structure of these models includes,</p>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">from</span> <span class="nn">ssms.basic_simulators</span> <span class="kn">import</span> <span class="n">simulator</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">from</span> <span class="nn">ssms.basic_simulators.simulator</span> <span class="kn">import</span> <span class="n">simulator</span>
 <span class="n">sim_out</span> <span class="o">=</span> <span class="n">simulator</span><span class="p">(</span><span class="n">model</span> <span class="o">=</span> <span class="s1">'ddm'</span><span class="p">,</span> 
-                    <span class="n">theta</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+                    <span class="n">theta</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'v'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> 
+                             <span class="s1">'a'</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                             <span class="s1">'z'</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>
+                             <span class="s1">'t'</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">},</span>
                     <span class="n">n_samples</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-4">from ssms.basic_simulators import simulator
+<div class="clipboard-copy-txt" id="cell-4">from ssms.basic_simulators.simulator import simulator
 sim_out = simulator(model = 'ddm', 
-                    theta = [0, 1, 0.5, 0.5],
+                    theta = {'v': 0, 
+                             'a': 1,
+                             'z': 0.5,
+                             't': 0.5},
                     n_samples = 1000)</div>
 </div>
 </div>
@@ -2114,7 +2120,7 @@ sim_out = simulator(model = 'ddm',
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [8]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy for="cell-5">
@@ -2127,9 +2133,9 @@ sim_out = simulator(model = 'ddm',
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">ssms</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">data_generator_config</span><span class="p">[</span><span class="s1">'lan'</span><span class="p">][</span><span class="s1">'mlp'</span><span class="p">]</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">ssms</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">data_generator_config</span><span class="p">[</span><span class="s1">'lan'</span><span class="p">]</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-5">ssms.config.data_generator_config['lan']['mlp']</div>
+<div class="clipboard-copy-txt" id="cell-5">ssms.config.data_generator_config['lan']</div>
 </div>
 </div>
 </div>
@@ -2139,7 +2145,7 @@ sim_out = simulator(model = 'ddm',
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[5]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[8]:</div>
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
 <pre>{'output_folder': 'data/lan_mlp/',
  'dgp_list': 'ddm',
@@ -2185,7 +2191,7 @@ An example below.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [9]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy for="cell-6">
@@ -2200,7 +2206,7 @@ An example below.</p>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
 <span class="c1"># Initialize the generator config (for MLP LANs)</span>
-<span class="n">generator_config</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">ssms</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">data_generator_config</span><span class="p">[</span><span class="s1">'lan'</span><span class="p">][</span><span class="s1">'mlp'</span><span class="p">])</span>
+<span class="n">generator_config</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">ssms</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">data_generator_config</span><span class="p">[</span><span class="s1">'lan'</span><span class="p">])</span>
 <span class="c1"># Specify generative model (one from the list of included models mentioned above)</span>
 <span class="n">generator_config</span><span class="p">[</span><span class="s1">'dgp_list'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'angle'</span> 
 <span class="c1"># Specify number of parameter sets to simulate</span>
@@ -2210,7 +2216,7 @@ An example below.</p>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-6">from copy import deepcopy
 # Initialize the generator config (for MLP LANs)
-generator_config = deepcopy(ssms.config.data_generator_config['lan']['mlp'])
+generator_config = deepcopy(ssms.config.data_generator_config['lan'])
 # Specify generative model (one from the list of included models mentioned above)
 generator_config['dgp_list'] = 'angle' 
 # Specify number of parameter sets to simulate
@@ -2239,7 +2245,7 @@ generator_config['n_samples'] = 1000</div>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [7]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [10]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy for="cell-7">
@@ -2268,7 +2274,7 @@ print(model_config)</div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>{'name': 'angle', 'params': ['v', 'a', 'z', 't', 'theta'], 'param_bounds': [[-3.0, 0.3, 0.1, 0.001, -0.1], [3.0, 3.0, 0.9, 2.0, 1.3]], 'boundary': &lt;function angle at 0x124d43b80&gt;, 'n_params': 5, 'default_params': [0.0, 1.0, 0.5, 0.001, 0.0], 'hddm_include': ['z', 'theta'], 'nchoices': 2}
+<pre>{'name': 'angle', 'params': ['v', 'a', 'z', 't', 'theta'], 'param_bounds': [[-3.0, 0.3, 0.1, 0.001, -0.1], [3.0, 3.0, 0.9, 2.0, 1.3]], 'boundary': &lt;function angle at 0x125e060c0&gt;, 'n_params': 5, 'default_params': [0.0, 1.0, 0.5, 0.001, 0.0], 'hddm_include': ['z', 'theta'], 'nchoices': 2}
 </pre>
 </div>
 </div>
@@ -2292,7 +2298,7 @@ print(model_config)</div>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [8]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [14]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy for="cell-8">
@@ -2305,11 +2311,11 @@ print(model_config)</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">my_dataset_generator</span> <span class="o">=</span> <span class="n">ssms</span><span class="o">.</span><span class="n">dataset_generators</span><span class="o">.</span><span class="n">data_generator_uniform</span><span class="p">(</span><span class="n">generator_config</span> <span class="o">=</span> <span class="n">generator_config</span><span class="p">,</span>
-                                                                    <span class="n">model_config</span> <span class="o">=</span> <span class="n">model_config</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">my_dataset_generator</span> <span class="o">=</span> <span class="n">ssms</span><span class="o">.</span><span class="n">dataset_generators</span><span class="o">.</span><span class="n">lan_mlp</span><span class="o">.</span><span class="n">data_generator</span><span class="p">(</span><span class="n">generator_config</span> <span class="o">=</span> <span class="n">generator_config</span><span class="p">,</span>
+                                                                   <span class="n">model_config</span> <span class="o">=</span> <span class="n">model_config</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-8">my_dataset_generator = ssms.dataset_generators.data_generator_uniform(generator_config = generator_config,
-                                                                    model_config = model_config)</div>
+<div class="clipboard-copy-txt" id="cell-8">my_dataset_generator = ssms.dataset_generators.lan_mlp.data_generator(generator_config = generator_config,
+                                                                   model_config = model_config)</div>
 </div>
 </div>
 </div>
@@ -2335,7 +2341,7 @@ checking:  data/lan_mlp/
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [9]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [15]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy for="cell-9">
