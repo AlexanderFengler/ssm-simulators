@@ -30,7 +30,7 @@ plugins:
             - https://mkdocstrings.github.io/objects.inv
             - https://mkdocstrings.github.io/griffe/objects.inv
           options:
-            show_submodules: false
+            show_submodules: true
             separate_signature: true
             merge_init_into_class: true
             docstring_options:
