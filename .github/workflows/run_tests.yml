@@ -53,12 +53,3 @@ jobs:
 
       - name: Build Docs
         run: mkdocs build
-
-      # - name: Linting
-      #   run: poetry run ruff check .
-
-      # - name: Run tests
-      #   run: poetry run pytest
-
-      # - name: build docs
-      #   run: poetry run mkdocs build

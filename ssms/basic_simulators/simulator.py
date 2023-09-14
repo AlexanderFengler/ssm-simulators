@@ -326,10 +326,13 @@ def simulator(
     else:
         try:
             import torch
+
             if isinstance(theta, torch.Tensor):
                 theta = theta.numpy().astype(np.float32)
             else:
-                raise ValueError("theta is not supplied as list, numpy array, dictionary or torch tensor!")
+                raise ValueError(
+                    "theta is not supplied as list, numpy array, dictionary or torch tensor!"
+                )
         except ImportError as e:
             raise e
 
