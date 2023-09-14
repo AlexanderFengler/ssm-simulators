@@ -10,13 +10,12 @@ from sklearn.neighbors import KernelDensity
 
 # Generate class for log_kdes
 class logkde:
-    # I want some numpy style docstrings here
     """
     Class for generating kdes from (rt, choice) data. Works for any number of choices.
 
     Attributes
     ----------
-        simulator_data: (rt, choice, simulator_info) 
+        simulator_data: (rt, choice, simulator_info)
             tuple as returned by simulator function
         bandwidth_type: string
             type of bandwidth to use, default is 'silverman'
@@ -34,7 +33,7 @@ class logkde:
         kde_sample(n_samples=2000, use_empirical_choice_p=True, alternate_choice_p=0)
             Samples from a given kde.
         attach_data_from_simulator(simulator_data=([0, 2, 4], [-1, 1, -1]))
-            Helper function to transform ddm simulator output 
+            Helper function to transform ddm simulator output
             to dataset suitable for the kde function class.
 
     Returns:

@@ -36,7 +36,7 @@ class data_generator:
         get_simulations(theta=None, random_seed=None)
             Generates simulations for a given parameter set.
         _filter_simulations(simulations=None)
-            Filters simulations according to the criteria 
+            Filters simulations according to the criteria
             specified in the generator_config.
         _make_kde_data(simulations=None, theta=None)
             Generates KDE data from simulations.
@@ -52,7 +52,7 @@ class data_generator:
         _build_simulator()
             Builds simulator function for LANs.
         _get_ncpus()
-            Helper function for determining the number of 
+            Helper function for determining the number of
             cpus to use for parallelization.
 
     Returns
