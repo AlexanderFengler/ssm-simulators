@@ -1,6 +1,7 @@
 import pytest
 
 import numpy as np
+import pandas as pd
 from ssms.basic_simulators.simulator import simulator
 from ssms.config import model_config
 from copy import deepcopy
@@ -42,32 +43,40 @@ def sim_input_data():
         
         # Input is list
         theta_list = [np.mean([model_config[key]['param_bounds'][0][i],
-                                                  model_config[key]['param_bounds'][1][i]]) for i, param in enumerate(model_param_list)]
+                                                 model_config[key]['param_bounds'][1][i]]) for i, param in enumerate(model_param_list)]
         
         # Input is numpy array
         theta_nparray = np.array(theta_list)
+
+        # Input is pd.DataFrame
+        theta_pd_1 = pd.DataFrame([theta_nparray], 
+                                  columns=model_param_list)
+        
+        theta_pd_n = pd.DataFrame(np.tile(theta_nparray, (100, 1)),
+                                  columns = model_param_list)
 
         data[key] = {'theta_dict_all_scalars': theta_dict_all_scalars,
                      'theta_dict_all_vectors': theta_dict_all_vectors,
                      'theta_dict_sca_vec': theta_dict_sca_vec,
                      'theta_dict_uneven': theta_dict_uneven,
                      'theta_list': theta_list,
-                     'theta_nparray': theta_nparray}
-        #print(data.keys())
+                     'theta_nparray': theta_nparray,
+                     'theta_pd_1': theta_pd_1,
+                     'theta_pd_n': theta_pd_n}
     return data
 
 def test_simulator_runs(sim_input_data):
     """Test that simulator runs for all models"""
     # Go over model names
-    for key in model_config.keys(): 
+    for key in model_config.keys():
         # Go over different types of input data (listed above in sim_input_data() fixture)
             for subkey in sim_input_data[key].keys():
-                #print(sim_input_data[key][subkey])
+                print(subkey)
                 # Go over different number of samples
                 if subkey == 'theta_dict_uneven':
                     for n_samples in [1, 10]:
                         try:
-                            out = simulator(model=key, 
+                            out = simulator(model=key,
                                             theta=sim_input_data[key][subkey],
                                             n_samples=1)
                         except ValueError:
@@ -82,5 +91,3 @@ def test_simulator_runs(sim_input_data):
                         assert 'metadata' in out.keys()
                         assert 'rts' in out.keys()
                         assert 'choices' in out.keys()
-                    
-    

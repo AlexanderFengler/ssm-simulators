@@ -2,6 +2,7 @@ from . import boundary_functions as bf
 from . import drift_functions as df
 from ssms.config.config import model_config
 import numpy as np
+import pandas as pd
 from copy import deepcopy
 import cssm
 
@@ -266,7 +267,7 @@ def simulator(
 
     Arguments
     ---------
-        theta : list or numpy.array
+        theta : list, numpy.array, dict or pd.DataFrame
             Parameters of the simulator. If 2d array, each row is treated as a 'trial'
             and the function runs n_sample * n_trials simulations.
         model: str <default='angle'>
@@ -299,13 +300,17 @@ def simulator(
         or     (rts binned pointwise, responses, metadata)
 
     """
-    # Useful for sbi
+    # Preprocess theta to be a 2d numpy array with correct column ordering 
+    # (if supplied as 2d array or list in the first place,
+    # user has to supply the correct ordering to begin with)
     if isinstance(theta, list):
         theta = np.asarray(theta).astype(np.float32)
     elif isinstance(theta, np.ndarray):
         theta = theta.astype(np.float32)
     elif isinstance(theta, dict):
         theta = _make_valid_dict(deepcopy(theta))
+    elif isinstance(theta, pd.DataFrame):
+        theta = theta.to_dict('list')
     else:
         try: 
             if isinstance(theta, torch.Tensor):
@@ -313,7 +318,8 @@ def simulator(
             else:
                 pass
         except:
-            raise ValueError('theta is not supplied as list, numpy array, dictionary or torch tensor')
+            raise ValueError('theta is not supplied as list, numpy array, dictionary or torch tensor' \
+                             ' or torch module is not loaded / installed!')
 
     # Turn theta into array if it is a dictionary       
     if isinstance(theta, dict):
