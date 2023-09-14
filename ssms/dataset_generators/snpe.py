@@ -1,4 +1,4 @@
-from ssms.basic_simulators.simulator import  simulator
+from ssms.basic_simulators.simulator import simulator
 import numpy as np
 import pickle
 import uuid
@@ -12,9 +12,10 @@ from functools import partial
 
 """
 
+
 class data_generator_snpe(data_generator):
     """
-        
+
     Class for generating data for SNPE.
 
     Attributes
@@ -23,7 +24,7 @@ class data_generator_snpe(data_generator):
         Configuration for data generation
     model_config: dict
         Configuration for model
-    
+
     Methods
     -------
     generate_data_training_uniform(save=False)
@@ -32,8 +33,9 @@ class data_generator_snpe(data_generator):
         Helper function for generating data for SNPE.
     _build_simulator()
         Builds simulator function for SNPE.
-    
+
     """
+
     def __init__(self, generator_config=None, model_config=None):
         super().__init__(generator_config=generator_config, model_config=model_config)
 

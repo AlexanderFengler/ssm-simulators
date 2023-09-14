@@ -7,6 +7,7 @@ from sklearn.neighbors import KernelDensity
     This module contains a class for generating kdes from data.
 """
 
+
 # Generate class for log_kdes
 class logkde:
     # I want some numpy style docstrings here
@@ -67,9 +68,9 @@ class logkde:
                         self.bandwidths.append("no_base_data")
 
     # Function to generate basic kdes
-    # I call the function generate_base_kdes because 
+    # I call the function generate_base_kdes because
     # in the final evaluation computations
-    # we adjust the input and output of the kdes 
+    # we adjust the input and output of the kdes
     # appropriately (we do not use them directly)
     def generate_base_kdes(self, auto_bandwidth=True, bandwidth_type="silverman"):
         # Compute bandwidth parameters
@@ -100,7 +101,7 @@ class logkde:
             # Get data indices where choice == c
             choice_idx_tmp = np.where(data[1] == c)
 
-            # Main step: Evaluate likelihood for rts corresponding 
+            # Main step: Evaluate likelihood for rts corresponding
             # to choice == c
             if self.base_kdes[self.data["choices"].index(c)] == "no_base_data":
                 log_kde_eval[choice_idx_tmp] = np.log(
@@ -108,16 +109,16 @@ class logkde:
                 ) + np.log(
                     1 / self.simulator_info["max_t"]
                 )  # -66.77497 # the number corresponds to log(1e-29)
-                   # --> should rather be log(1 / n) + log(1 / 20)
+                # --> should rather be log(1 / n) + log(1 / 20)
             else:
                 log_kde_eval[choice_idx_tmp] = (
-                np.log(
-                    self.data["choice_proportions"][self.data["choices"].index(c)]
-                )
-                + self.base_kdes[self.data["choices"].index(c)].score_samples(
-                    np.expand_dims(log_rts[choice_idx_tmp], 1)
-                )
-                - log_rts[choice_idx_tmp]
+                    np.log(
+                        self.data["choice_proportions"][self.data["choices"].index(c)]
+                    )
+                    + self.base_kdes[self.data["choices"].index(c)].score_samples(
+                        np.expand_dims(log_rts[choice_idx_tmp], 1)
+                    )
+                    - log_rts[choice_idx_tmp]
                 )
 
         if log_eval is True:

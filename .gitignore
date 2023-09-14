@@ -2,6 +2,7 @@
 data/
 ssm_simulators.egg-info/
 .vscode/
+#.ruff_cache/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

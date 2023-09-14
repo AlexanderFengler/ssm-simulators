@@ -13,77 +13,88 @@ In addition some utility functions are provided that help
 with preprocessing the output of the simulator function.
 """
 
+
 def _make_valid_dict(dict_in):
     """Turn all values in dictionary into numpy arrays and make sure,
     that all thetas are either scalars or vectors of the same length
-    
+
     Arguments:
     ----------
         dict_in: dictionary
-            Dictionary of parameters, potentially with different length / types per 
+            Dictionary of parameters, potentially with different length / types per
             parameter (key)
-    
+
     Returns:
     --------
-        dict_in: dictionary 
+        dict_in: dictionary
             Aligned to same size np.float32 np.arrays for every parameter
     """
 
     collect_lengths = []
     for key, value in dict_in.items():
         # Turn all values into numpy arrays
-        if type(value) == list:
+        if isinstance(value, list):
             dict_in[key] = np.array(value).astype(np.float32)
-        elif type(value) == int or type(value) == float:
+        elif isinstance(value, int) or isinstance(value, float):
             dict_in[key] = np.array([value]).astype(np.float32)
 
         # Squeeze all values to make sure they are 1d arrays
         dict_in[key] = np.squeeze(dict_in[key]).astype(np.float32)
-        
+
         # Check if all thetas are either scalars or vectors of the same length
         if dict_in[key].ndim > 1:
-            raise ValueError('Dimension of {} is greater than 1'.format(key))
+            raise ValueError("Dimension of {} is greater than 1".format(key))
         elif dict_in[key].ndim > 0:
-            collect_lengths.append(dict_in[key].shape[0]) # add vector parameters to list
-    
+            collect_lengths.append(
+                dict_in[key].shape[0]
+            )  # add vector parameters to list
+
     if len(set(collect_lengths)) > 1:
-        raise ValueError('thetas have to be either scalars or same length for ' \
-                         'all thetas which are not scalars')
-    
+        raise ValueError(
+            "thetas have to be either scalars or same length for "
+            "all thetas which are not scalars"
+        )
+
     # If there were any thetas provided as vectors (and they had the same length),
     # tile all scalar thetas to that length
     if len(set(collect_lengths)) > 0:
         for key, value in dict_in.items():
             if value.ndim == 0:
                 dict_in[key] = np.tile(value, collect_lengths[0])
-    else: # Expand scalars to 1d arrays
+    else:  # Expand scalars to 1d arrays
         for key, value in dict_in.items():
             if value.ndim == 0:
-                dict_in[key] = np.expand_dims(value, axis = 0)
+                dict_in[key] = np.expand_dims(value, axis=0)
     return dict_in
 
-def _theta_dict_to_array(theta = dict(), 
-                         model_param_list = None):
+
+def _theta_dict_to_array(theta=dict(), model_param_list=None):
     """Converts theta dictionary to numpy array for use with simulator function"""
     if model_param_list is None:
-        raise ValueError('model_param_list is not supplied')
-    
-    return np.stack([theta[param] for param in model_param_list], axis = 1).astype(np.float32)
+        raise ValueError("model_param_list is not supplied")
 
-def _theta_array_to_dict(theta = None,
-                         model_param_list = None):
+    return np.stack([theta[param] for param in model_param_list], axis=1).astype(
+        np.float32
+    )
+
+
+def _theta_array_to_dict(theta=None, model_param_list=None):
     """Converts theta array to dictionary for use with simulator function"""
     if model_param_list is None:
-        raise ValueError('model_param_list is not supplied')
+        raise ValueError("model_param_list is not supplied")
     elif theta is None:
-        raise ValueError('theta array is not supplied')
+        raise ValueError("theta array is not supplied")
     elif theta.ndim == 1 and len(model_param_list) != theta.shape[0]:
-            raise ValueError('model_param_list and theta array do not imply the same number of parameters')
+        raise ValueError(
+            "model_param_list and theta array do not imply the same number of parameters"
+        )
     elif theta.ndim == 2 and len(model_param_list) != theta.shape[1]:
-            raise ValueError('model_param_list and theta array do not imply the same number of parameters')
+        raise ValueError(
+            "model_param_list and theta array do not imply the same number of parameters"
+        )
     else:
         if theta.ndim == 1:
-            theta = np.expand_dims(theta, axis = 0)
+            theta = np.expand_dims(theta, axis=0)
         return {param: theta[:, i] for i, param in enumerate(model_param_list)}
 
 
@@ -100,17 +111,17 @@ def bin_simulator_output_pointwise(
         out: tuple
             Output of the 'simulator' function
         bin_dt: float
-            If nbins is 0, this determines the desired 
+            If nbins is 0, this determines the desired
             bin size which in turn automatically
             determines the resulting number of bins.
         nbins: int
-            Number of bins to bin reaction time data into. 
-            If supplied as 0, bin_dt instead determines the 
+            Number of bins to bin reaction time data into.
+            If supplied as 0, bin_dt instead determines the
             number of bins automatically.
 
     Returns
     -------
-        2d array. The first columns collects bin-identifiers 
+        2d array. The first columns collects bin-identifiers
         by trial, the second column lists the corresponding choices.
     """
     out_copy = deepcopy(out)
@@ -137,6 +148,7 @@ def bin_simulator_output_pointwise(
 
     return np.concatenate([out_copy[0], out_copy[1]], axis=-1).astype(np.int32)
 
+
 def bin_simulator_output(
     out=None,
     bin_dt=0.04,
@@ -151,15 +163,15 @@ def bin_simulator_output(
         out : tuple
             Output of the 'simulator' function
         bin_dt : float
-            If nbins is 0, this determines the desired 
+            If nbins is 0, this determines the desired
             bin size which in turn automatically
             determines the resulting number of bins.
         nbins : int
-            Number of bins to bin reaction time data into. 
+            Number of bins to bin reaction time data into.
             If supplied as 0, bin_dt instead determines the number of
             bins automatically.
         max_t : int <default=-1>
-            Override the 'max_t' metadata as part of the simulator output. 
+            Override the 'max_t' metadata as part of the simulator output.
             Sometimes useful, but usually default will do the job.
         freq_cnt : bool <default=False>
             Decide whether to return proportions (default) or counts in bins.
@@ -213,10 +225,10 @@ def bin_arbitrary_fptd(
         out: tuple
             Output of the 'simulator' function
         bin_dt : float
-            If nbins is 0, this determines the desired bin size 
+            If nbins is 0, this determines the desired bin size
             which in turn automatically determines the resulting number of bins.
         nbins : int
-            Number of bins to bin reaction time data into. 
+            Number of bins to bin reaction time data into.
             If supplied as 0, bin_dt instead determines the number of
             bins automatically.
         nchoices: int <default=2>
@@ -281,15 +293,15 @@ def simulator(
         no_noise: bool <default=False>
             Turn noise of (useful for plotting purposes mostly)
         bin_dim: int <default=None>
-            Number of bins to use (in case the simulator output is 
+            Number of bins to use (in case the simulator output is
             supposed to come out as a count histogram)
         bin_pointwise: bool <default=False>
-            Wheter or not to bin the output data pointwise. 
+            Wheter or not to bin the output data pointwise.
             If true the 'RT' part of the data is now specifies the
-            'bin-number' of a given trial instead of the 'RT' directly. 
+            'bin-number' of a given trial instead of the 'RT' directly.
             You need to specify bin_dim as some number for this to work.
         random_state: int <default=None>
-            Integer passed to random_seed function in the simulator. 
+            Integer passed to random_seed function in the simulator.
             Can be used for reproducibility.
 
     Return
@@ -300,7 +312,7 @@ def simulator(
         or     (rts binned pointwise, responses, metadata)
 
     """
-    # Preprocess theta to be a 2d numpy array with correct column ordering 
+    # Preprocess theta to be a 2d numpy array with correct column ordering
     # (if supplied as 2d array or list in the first place,
     # user has to supply the correct ordering to begin with)
     if isinstance(theta, list):
@@ -310,20 +322,20 @@ def simulator(
     elif isinstance(theta, dict):
         theta = _make_valid_dict(deepcopy(theta))
     elif isinstance(theta, pd.DataFrame):
-        theta = theta.to_dict('list')
+        theta = theta.to_dict("list")
     else:
-        try: 
+        try:
+            import torch
             if isinstance(theta, torch.Tensor):
                 theta = theta.numpy().astype(np.float32)
             else:
-                pass
-        except:
-            raise ValueError('theta is not supplied as list, numpy array, dictionary or torch tensor' \
-                             ' or torch module is not loaded / installed!')
+                raise ValueError("theta is not supplied as list, numpy array, dictionary or torch tensor!")
+        except ImportError as e:
+            raise e
 
-    # Turn theta into array if it is a dictionary       
+    # Turn theta into array if it is a dictionary
     if isinstance(theta, dict):
-        theta = _theta_dict_to_array(theta, model_config[model]['params'])
+        theta = _theta_dict_to_array(theta, model_config[model]["params"])
 
     # Adjust theta to be 2d array
     if len(theta.shape) < 2:
@@ -341,7 +353,7 @@ def simulator(
         s = 0.0
     else:
         s = 1.0
-  
+
     if model == "glob":
         x = cssm.glob_flexbound(
             v=theta[:, 0],
@@ -427,7 +439,6 @@ def simulator(
             max_t=max_t,
             random_state=random_state,
         )
-
 
     if model == "angle":
         x = cssm.ddm_flexbound(
@@ -1389,8 +1400,10 @@ def simulator(
             "metadata": x["metadata"],
         }
     elif bin_dim > 0 and n_trials > 1 and n_samples > 1 and bin_pointwise:
-        return "currently n_trials > 1 and n_samples > 1, " \
-             "will not work together with bin_pointwise"
+        return (
+            "currently n_trials > 1 and n_samples > 1, "
+            "will not work together with bin_pointwise"
+        )
     elif bin_dim > 0 and n_trials > 1 and not bin_pointwise:
         return "currently binned outputs not implemented for multi-trial simulators"
     elif bin_dim == -1:
