@@ -12,8 +12,8 @@ from functools import partial
 
 """
     This module defines a data generator class for use with LANs. 
-    The class defined below can be used to generate training data compatible with the expectations
-    of LANs.
+    The class defined below can be used to generate training data 
+    compatible with the expectations of LANs.
 """
 
 
@@ -36,7 +36,8 @@ class data_generator:
         get_simulations(theta=None, random_seed=None)
             Generates simulations for a given parameter set.
         _filter_simulations(simulations=None)
-            Filters simulations according to the criteria specified in the generator_config.
+            Filters simulations according to the criteria 
+            specified in the generator_config.
         _make_kde_data(simulations=None, theta=None)
             Generates KDE data from simulations.
         _mlp_get_processed_data_for_theta(random_seed_tuple)
@@ -51,7 +52,8 @@ class data_generator:
         _build_simulator()
             Builds simulator function for LANs.
         _get_ncpus()
-            Helper function for determining the number of cpus to use for parallelization.
+            Helper function for determining the number of 
+            cpus to use for parallelization.
 
     Returns
     -------

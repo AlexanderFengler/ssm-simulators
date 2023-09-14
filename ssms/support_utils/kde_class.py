@@ -16,9 +16,12 @@ class logkde:
 
     Attributes
     ----------
-        simulator_data: (rt, choice, simulator_info) tuple as returned by simulator function
-        bandwidth_type: string, type of bandwidth to use, default is 'silverman'
-        auto_bandwidth: boolean, whether to compute bandwidths automatically, default is True
+        simulator_data: (rt, choice, simulator_info) 
+            tuple as returned by simulator function
+        bandwidth_type: string
+            type of bandwidth to use, default is 'silverman'
+        auto_bandwidth: boolean
+            whether to compute bandwidths automatically, default is True
 
     Methods
     -------
@@ -31,7 +34,8 @@ class logkde:
         kde_sample(n_samples=2000, use_empirical_choice_p=True, alternate_choice_p=0)
             Samples from a given kde.
         attach_data_from_simulator(simulator_data=([0, 2, 4], [-1, 1, -1]))
-            Helper function to transform ddm simulator output to dataset suitable for the kde function class.
+            Helper function to transform ddm simulator output 
+            to dataset suitable for the kde function class.
 
     Returns:
         _type_: _description_

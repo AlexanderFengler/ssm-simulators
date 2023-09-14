@@ -99,7 +99,8 @@ def test_simulator_runs(sim_input_data):
     """Test that simulator runs for all models"""
     # Go over model names
     for key in model_config.keys():
-        # Go over different types of input data (listed above in sim_input_data() fixture)
+        # Go over different types of input data 
+        # (listed above in sim_input_data() fixture)
         for subkey in sim_input_data[key].keys():
             print(subkey)
             # Go over different number of samples

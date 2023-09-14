@@ -86,11 +86,13 @@ def _theta_array_to_dict(theta=None, model_param_list=None):
         raise ValueError("theta array is not supplied")
     elif theta.ndim == 1 and len(model_param_list) != theta.shape[0]:
         raise ValueError(
-            "model_param_list and theta array do not imply the same number of parameters"
+            "model_param_list and theta array do not imply" \
+                " the same number of parameters"
         )
     elif theta.ndim == 2 and len(model_param_list) != theta.shape[1]:
         raise ValueError(
-            "model_param_list and theta array do not imply the same number of parameters"
+            "model_param_list and theta array do not imply" \
+                " the same number of parameters"
         )
     else:
         if theta.ndim == 1:
@@ -331,7 +333,8 @@ def simulator(
                 theta = theta.numpy().astype(np.float32)
             else:
                 raise ValueError(
-                    "theta is not supplied as list, numpy array, dictionary or torch tensor!"
+                    "theta is not supplied as list, numpy array," \
+                        " dictionary or torch tensor!"
                 )
         except ImportError as e:
             raise e
