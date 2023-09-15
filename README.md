@@ -3,12 +3,16 @@ Python Package which collects simulators for Sequential Sampling Models.
 
 Find the package documentation [here](https://alexanderfengler.github.io/ssm-simulators/).
 
+![PyPI](https://img.shields.io/pypi/v/ssm-simulators)
+![PyPI_dl](https://img.shields.io/pypi/dm/ssm-simulators)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 ### Quick Start
 
 The `ssms` package serves two purposes. 
 
 1. Easy access to *fast simulators of sequential sampling models*
-   
 2. Support infrastructure to construct training data for various approaches to likelihood / posterior amortization
 
 We provide two minimal examples here to illustrate how to use each of the two capabilities.
@@ -46,10 +50,8 @@ The central dictionary with metadata about included models sits in `ssms.config.
 ```python
 # Check included models
 list(ssms.config.model_config.keys())[:10]
+
 ```
-
-
-
 
     ['ddm',
      'ddm_legacy',
@@ -63,15 +65,10 @@ list(ssms.config.model_config.keys())[:10]
      'ddm_sdv']
 
 
-
-
 ```python
 # Take an example config for a given model
 ssms.config.model_config['ddm']
 ```
-
-
-
 
     {'name': 'ddm',
      'params': ['v', 'a', 'z', 't'],
@@ -98,9 +95,13 @@ The `'hddm_include'` key concerns information useful for integration with the [h
 
 
 ```python
-from ssms.basic_simulators import simulator
+from ssms.basic_simulators.simulator import simulator
 sim_out = simulator(model = 'ddm', 
-                    theta = [0, 1, 0.5, 0.5],
+                    theta = {'v': 0, 
+                             'a': 1,
+                             'z': 0.5,
+                             't': 0.5,
+                    },
                     n_samples = 1000)
 ```
 
@@ -119,19 +120,15 @@ The training data generators sit on top of the simulator function to turn raw si
 We will use the `data_generator` class from `ssms.dataset_generators`. Initializing the `data_generator` boils down to supplying two configuration dictionaries.
 
 1. The `generator_config`, concerns choices as to what kind of training data one wants to generate.
-2. The `model_config` concerns choices with respect to the underlying generative *sequential sampling model*. 
+2. The `model_config` concerns choices with respect to the underlying generative *sequential sampling model*.
 
 We will consider a basic example here, concerning data generation to prepare for training [LANs](https://elifesciences.org/articles/65074).
 
 Let's start by peeking at an example `generator_config`.
 
-
 ```python
 ssms.config.data_generator_config['lan']['mlp']
 ```
-
-
-
 
     {'output_folder': 'data/lan_mlp/',
      'dgp_list': 'ddm',
@@ -155,11 +152,8 @@ ssms.config.data_generator_config['lan']['mlp']
      'bin_pointwise': False,
      'separate_response_channels': False}
 
-
-
 You usually have to make just few changes to this basic configuration dictionary.
 An example below.
-
 
 ```python
 from copy import deepcopy
@@ -175,13 +169,16 @@ generator_config['n_samples'] = 1000
 
 Now let's define our corresponding `model_config`.
 
-
 ```python
 model_config = ssms.config.model_config['angle']
 print(model_config)
 ```
-
-    {'name': 'angle', 'params': ['v', 'a', 'z', 't', 'theta'], 'param_bounds': [[-3.0, 0.3, 0.1, 0.001, -0.1], [3.0, 3.0, 0.9, 2.0, 1.3]], 'boundary': <function angle at 0x11b2a7c10>, 'n_params': 5, 'default_params': [0.0, 1.0, 0.5, 0.001, 0.0], 'hddm_include': ['z', 'theta'], 'nchoices': 2}
+    {'name': 'angle', 'params': ['v', 'a', 'z', 't', 'theta'], 
+    'param_bounds': [[-3.0, 0.3, 0.1, 0.001, -0.1], [3.0, 3.0, 0.9, 2.0, 1.3]], 
+    'boundary': <function angle at 0x11b2a7c10>, 
+    'n_params': 5, 
+    'default_params': [0.0, 1.0, 0.5, 0.001, 0.0], 
+    'hddm_include': ['z', 'theta'], 'nchoices': 2}
 
 
 We are now ready to initialize a `data_generator`, after which we can generate training data using the `generate_data_training_uniform` function, which will use the hypercube defined by our parameter bounds from the `model_config` to uniformly generate parameter sets and corresponding simulated datasets.

@@ -5,8 +5,9 @@ import numpy as np
 # Collection of boundary functions
 
 """
-This module defines a collection of boundary functions for the simulators in the package.
+Module defines a collection of boundary functions for the simulators in the package.
 """
+
 
 # Constant: (multiplicative)
 def constant(t=0):
@@ -92,7 +93,7 @@ def conflict_gamma_bound(
         theta: float <default = 0.5>
             Collapse angle
         scale: float <default = 1.0>
-            Scaling the gamma distribution of the boundary 
+            Scaling the gamma distribution of the boundary
             (since bound does not have to integrate to one)
         a: float <default = 0.5>
             Initial boundary separation

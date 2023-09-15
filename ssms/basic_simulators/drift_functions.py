@@ -5,6 +5,7 @@ import numpy as np
 This module defines a collection of drift functions for the simulators in the package.
 """
 
+
 def constant(t=np.arange(0, 20, 0.1)):
     """constant drift function
 
@@ -15,7 +16,7 @@ def constant(t=np.arange(0, 20, 0.1)):
     Returns
     -------
         np.array: Array of drift values, same length as t
-        
+
     """
     return np.zeros(t.shape[0])
 
@@ -26,16 +27,16 @@ def gamma_drift(t=np.arange(0, 20, 0.1), shape=2, scale=0.01, c=1.5):
     Arguments
     ---------
         t: np.ndarray <default=np.arange(0, 20, 0.1)>
-            Timepoints at which to evaluate the drift. 
+            Timepoints at which to evaluate the drift.
             Usually np.arange() of some sort.
         shape: float <default=2>
             Shape parameter of the gamma distribution
         scale: float <default=0.01>
             Scale parameter of the gamma distribution
         c: float <default=1.5>
-            Scalar parameter that scales the peak of 
+            Scalar parameter that scales the peak of
             the gamma distribution.
-            (Note this function follows a gamma distribution 
+            (Note this function follows a gamma distribution
             but does not integrate to 1)
 
     Return
@@ -55,10 +56,10 @@ def gamma_drift(t=np.arange(0, 20, 0.1), shape=2, scale=0.01, c=1.5):
 
 
 def ds_support_analytic(t=np.arange(0, 10, 0.001), init_p=0, fix_point=1, slope=2):
-    """Solution to differential equation of the form: 
-       x' = slope*(fix_point - x), 
-       with initial condition init_p. 
-       The solution takes the form: 
+    """Solution to differential equation of the form:
+       x' = slope*(fix_point - x),
+       with initial condition init_p.
+       The solution takes the form:
        (init_p - fix_point) * exp(-slope * t) + fix_point
 
     Arguments
@@ -91,18 +92,18 @@ def ds_conflict_drift(
     coherence_t=1.5,
     coherence_d=1.5,
 ):
-    """This drift is inspired by a conflict task which 
+    """This drift is inspired by a conflict task which
        involves a target and a distractor stimuli both presented
-       simultaneously. 
-       Two drift timecourses are linearly combined weighted 
-       by the coherence in the respective target and distractor stimuli. 
-       Each timecourse follows a dynamical system as described 
+       simultaneously.
+       Two drift timecourses are linearly combined weighted
+       by the coherence in the respective target and distractor stimuli.
+       Each timecourse follows a dynamical system as described
        in the ds_support_analytic() function.
 
     Arguments
     ---------
         t: np.ndarray <default=np.arange(0, 20, 0.1)>
-            Timepoints at which to evaluate the drift. 
+            Timepoints at which to evaluate the drift.
             Usually np.arange() of some sort.
         init_p_t: float <default=0>
             Initial condition of target drift timecourse

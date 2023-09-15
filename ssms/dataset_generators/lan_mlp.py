@@ -12,9 +12,10 @@ from functools import partial
 
 """
     This module defines a data generator class for use with LANs. 
-    The class defined below can be used to generate training data compatible with the expectations
-    of LANs.
+    The class defined below can be used to generate training data 
+    compatible with the expectations of LANs.
 """
+
 
 class data_generator:
     """The data_generator() class is used to generate training data
@@ -23,10 +24,10 @@ class data_generator:
     Attributes
     ----------
         generator_config: dict
-            Configuation dictionary for the data generator. 
+            Configuation dictionary for the data generator.
             (For an example load ssms.config.data_generator_config['lan'])
         model_config: dict
-            Configuration dictionary for the model to be simulated. 
+            Configuration dictionary for the model to be simulated.
             (For an example load ssms.config.model_config['ddm'])
     Methods
     -------
@@ -35,7 +36,8 @@ class data_generator:
         get_simulations(theta=None, random_seed=None)
             Generates simulations for a given parameter set.
         _filter_simulations(simulations=None)
-            Filters simulations according to the criteria specified in the generator_config.
+            Filters simulations according to the criteria
+            specified in the generator_config.
         _make_kde_data(simulations=None, theta=None)
             Generates KDE data from simulations.
         _mlp_get_processed_data_for_theta(random_seed_tuple)
@@ -50,8 +52,9 @@ class data_generator:
         _build_simulator()
             Builds simulator function for LANs.
         _get_ncpus()
-            Helper function for determining the number of cpus to use for parallelization.
-        
+            Helper function for determining the number of
+            cpus to use for parallelization.
+
     Returns
     -------
         data_generator object
@@ -108,7 +111,7 @@ class data_generator:
             theta=theta,
             model=self.model_config["name"],
             random_state=random_seed,
-        ) 
+        )
         return out
 
     def _filter_simulations(
@@ -136,7 +139,7 @@ class data_generator:
                 std_ = 1
                 mode_cnt_rel_ = 0
 
-            # AF-TODO: More flexible way with list of 
+            # AF-TODO: More flexible way with list of
             # filter objects that provides for each filter
             #  1. Function to compute statistic (e.g. mode)
             #  2. Comparison operator (e.g. <=, != , etc.)
@@ -274,7 +277,7 @@ class data_generator:
 
     def _cpn_get_processed_data_for_theta(self, random_seed_tuple):
         np.random.seed(random_seed_tuple[0])
-        
+
         # Get a random parameter set
         theta = np.float32(
             np.random.uniform(
@@ -299,7 +302,7 @@ class data_generator:
             "choice_p": choice_p,
             "theta": np.expand_dims(theta, axis=0),
         }
-    
+
     def _get_rejected_parameter_setups(self, random_seed_tuple):
         np.random.seed(random_seed_tuple[0])
         rejected_thetas = []
@@ -325,7 +328,7 @@ class data_generator:
             rej_cnt += 1
 
         return rejected_thetas
- 
+
     def generate_data_training_uniform(self, save=False, verbose=True, cpn_only=False):
         seeds_1 = np.random.choice(
             400000000, size=self.generator_config["n_parameter_sets"]
@@ -351,7 +354,7 @@ class data_generator:
                     " of",
                     self.generator_config["n_subruns"],
                 )
-            
+
             if cpn_only:
                 with Pool(processes=self.generator_config["n_cpus"] - 1) as pool:
                     out_list += pool.map(
@@ -366,16 +369,16 @@ class data_generator:
                     )
 
         data = {}
-        
+
         # Choice probabilities and theta are always needed
         data["choice_p"] = np.concatenate(
             [out_list[k]["choice_p"] for k in range(len(out_list))]
         ).astype(np.float32)
         data["thetas"] = np.concatenate(
             [out_list[k]["theta"] for k in range(len(out_list))]
-        ).astype(np.float32)    
-        
-        # Only if not cpn_only, do we need the rest of the data 
+        ).astype(np.float32)
+
+        # Only if not cpn_only, do we need the rest of the data
         # (which is not computed if cpn_only is selected)
         if not cpn_only:
             data["data"] = np.concatenate(
@@ -598,7 +601,7 @@ class data_generator:
         else:
             return data
 
-    def _training_defective_simulations_get_preprocessed(self,seed):
+    def _training_defective_simulations_get_preprocessed(self, seed):
         np.random.seed(seed)
         rejected_thetas = []
         accepted_thetas = []
@@ -669,8 +672,10 @@ class data_generator:
         theta_real[indices_fake, :] = theta_fake
 
         if self.generator_config["nbins"] > 0:
-            return "Error: Generating data for ratio estimators " + \
-                "works only for unbinned data at this point" 
+            return (
+                "Error: Generating data for ratio estimators "
+                + "works only for unbinned data at this point"
+            )
         else:
             return {
                 "data": np.column_stack(
@@ -710,8 +715,7 @@ class data_generator:
 
     def generate_rejected_parameterizations(self, save=False):
         seeds = np.random.choice(
-            400000000, 
-            size=self.generator_config["n_paramseter_sets_rejected"]
+            400000000, size=self.generator_config["n_paramseter_sets_rejected"]
         )
 
         # Get Simulations
