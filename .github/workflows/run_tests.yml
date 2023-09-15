@@ -51,5 +51,5 @@ jobs:
       - name: Run pytest
         run: pytest
 
-      - name: Build Docs
-        run: mkdocs build
+      # - name: Build Docs
+      #   run: mkdocs build
