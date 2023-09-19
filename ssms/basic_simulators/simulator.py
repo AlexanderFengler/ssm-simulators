@@ -415,6 +415,11 @@ def simulator(
         )
 
     if model == "ddm":
+        print('passing through')
+        print('v: ', theta[:, 0])
+        print('a: ', theta[:, 1])
+        print('z: ', theta[:, 2])
+        print('t: ', theta[:, 3])
         x = cssm.ddm_flexbound(
             v=theta[:, 0],
             a=theta[:, 1],
@@ -432,7 +437,7 @@ def simulator(
         )
 
     # AF-TODO: Check what the intended purpose of 'ddm_legacy' was!
-    if model == "ddm_hddm_base" or "ddm_legacy":
+    if model == "ddm_hddm_base" or model == "ddm_legacy":
         x = cssm.ddm(
             v=theta[:, 0],
             a=theta[:, 1],
