@@ -261,10 +261,8 @@ def bin_arbitrary_fptd(
 
     for choice in choice_codes:
         counts[:, cnt] = np.histogram(out[:, 0][out[:, 1] == choice], bins=bins)[0]
-        # print(np.histogram(out[:, 0][out[:, 1] == choice], bins = bins)[1])
         cnt += 1
     return counts
-
 
 def simulator(
     theta,
@@ -415,11 +413,6 @@ def simulator(
         )
 
     if model == "ddm":
-        print('passing through')
-        print('v: ', theta[:, 0])
-        print('a: ', theta[:, 1])
-        print('z: ', theta[:, 2])
-        print('t: ', theta[:, 3])
         x = cssm.ddm_flexbound(
             v=theta[:, 0],
             a=theta[:, 1],
@@ -1393,7 +1386,6 @@ def simulator(
     if bin_dim == 0 or bin_dim is None:
         return x
     elif bin_dim > 0 and n_trials == 1 and not bin_pointwise:
-        # print(x)
         binned_out = bin_simulator_output(x, nbins=bin_dim)
         return {"data": binned_out, "metadata": x["metadata"]}
     elif bin_dim > 0 and n_trials == 1 and bin_pointwise:
