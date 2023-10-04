@@ -795,7 +795,7 @@ kde_simulation_filters = {
     "choice_cnt": 0,  # > (each choice receive at least 10 samples )
     "mean_rt": 17,  # < (mean_rt is smaller than specified value
     "std": 0,  # > (std is positive for each choice)
-    "mode_cnt_rel": 0.9,  # < (mode can't be large proportion of all samples)
+    "mode_cnt_rel": 0.95,  # < (mode can't be large proportion of all samples)
 }
 
 data_generator_config = {

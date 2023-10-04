@@ -9,7 +9,7 @@ from sklearn.neighbors import KernelDensity
 
 
 # Generate class for log_kdes
-class logkde:
+class LogKDE:
     """
     Class for generating kdes from (rt, choice) data. Works for any number of choices.
 
@@ -56,6 +56,21 @@ class logkde:
     # Function to compute bandwidth parameters given data-set
     # (At this point using Silverman rule)
     def compute_bandwidths(self, type="silverman"):
+        """ 
+        Computes bandwidths for each choice from rt data.
+        
+        Arguments:
+        ----------
+        type: string
+            Type of bandwidth to use, default is 'silverman' which follows silverman rule.
+        
+        Returns:
+        --------
+        bandwidths: list
+            List of bandwidths for each choice.
+        """
+        
+        # For now allows only silverman rule
         self.bandwidths = []
         if type == "silverman":
             for i in range(0, len(self.data["choices"]), 1):
@@ -76,6 +91,21 @@ class logkde:
     # we adjust the input and output of the kdes
     # appropriately (we do not use them directly)
     def generate_base_kdes(self, auto_bandwidth=True, bandwidth_type="silverman"):
+        """
+        Generates kdes from rt data. We apply gaussian kernels to the log of the rts.
+
+        Arguments:
+        ----------
+        auto_bandwidth: boolean
+            Whether to compute bandwidths automatically, default is True.
+        bandwidth_type: string
+            Type of bandwidth to use, default is 'silverman' which follows silverman rule.
+
+        Returns:
+        --------
+        base_kdes: list
+            List of kdes for each choice. (These get attached to the base_kdes attribute of the class, not returned)
+        """
         # Compute bandwidth parameters
         if auto_bandwidth:
             self.compute_bandwidths(type=bandwidth_type)
@@ -94,6 +124,21 @@ class logkde:
 
     # Function to evaluate the kde log likelihood at chosen points
     def kde_eval(self, data=([], []), log_eval=True):  # kde
+        """ 
+        Evaluates kde log likelihood at chosen points.
+        
+        Arguments:
+        ----------
+        data: tuple
+            Tuple of (rts, choices) to evaluate the kde at.
+        log_eval: boolean
+            Whether to return log likelihood or likelihood, default is True.
+        
+        Returns:
+        --------
+        log_kde_eval: array
+            Array of log likelihoods for each (rt, choice) pair.
+        """
         # Initializations
         log_rts = np.log(data[0])
         log_kde_eval = np.log(data[0])
@@ -132,6 +177,23 @@ class logkde:
     def kde_sample(
         self, n_samples=2000, use_empirical_choice_p=True, alternate_choice_p=0
     ):
+        """ 
+        Samples from a given kde.
+        
+        Arguments:
+        ----------
+        n_samples: int
+            Number of samples to draw.
+        use_empirical_choice_p: boolean
+            Whether to use empirical choice proportions, default is True. (Note 'empirical' here,
+            refers to the originally attached datasets that served as the basis to generate the choice-wise
+            kdes)
+        alternate_choice_p: array
+            Array of choice proportions to use, default is 0. (Note 'alternate' here refers to 'alternative' 
+            to the 'empirical' choice proportions)
+
+        """
+        
         # sorting the which list in ascending order
         # this implies that we return the kde_samples array so that the
         # indices reflect 'choice-labels' as provided in 'which' in ascending order
@@ -204,6 +266,27 @@ def bandwidth_silverman(
     std_proc="restrict",  # options 'kill', 'restrict'
     std_n_1=10,  # HERE WE CAN ALLOW FOR SOMETHING MORE INTELLIGENT
 ):
+    """
+    Computes silverman bandwidth for an array of samples (rts in our context, but general).
+    
+    Arguments:
+    ----------
+    sample: array
+        Array of samples to compute bandwidth for.
+    std_cutoff: float
+        Cutoff for std, default is 1e-3. 
+        (If sample-std is smaller than this, we either kill it or restrict it to this value)
+    std_proc: string
+        How to deal with small stds, default is 'restrict'. (Options: 'kill', 'restrict')
+    std_n_1: float
+        Value to use if n = 1, default is 10. (Not clear if the default is sensible here)
+    
+    Returns:
+    --------
+    bandwidth: float
+        Silverman bandwidth for the given sample. This is applied as the bandwidth parameter 
+        when generating gaussian-based kdes in the LogKDE class.
+    """
     # Compute number of samples
     n = len(sample)
 
@@ -217,6 +300,7 @@ def bandwidth_silverman(
             if std_proc == "kill":
                 std = 0
     else:
+        # AF-Comment: This is a bit of a weakness (can be arbitrarily incorrect)
         std = std_n_1
 
     return np.power((4 / 3), 1 / 5) * std * np.power(n, (-1 / 5))

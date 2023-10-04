@@ -273,6 +273,7 @@ def simulator(
     no_noise=False,
     bin_dim=None,
     bin_pointwise=False,
+    smooth_unif = True,
     random_state=None,
 ):
     """Basic data simulator for the models included in HDDM.
@@ -1383,6 +1384,17 @@ def simulator(
 
     x["metadata"]["model"] = model
 
+    # Apply uniform smoothing to rts
+    if smooth_unif:
+        x["rts"][x["rts"] > 0] = x["rts"][x["rts"] > 0] + \
+                                        np.random.uniform(low = - delta_t / 2, 
+                                                          high = delta_t / 2, 
+                                                          size = (x["rts"][x["rts"] > 0]).shape)
+        x["rts"][x["rts"] == 0] = x["rts"][x["rts"] == 0] - np.random.uniform(low = 0., 
+                                                          high = delta_t / 2, 
+                                                          size = (x["rts"][x["rts"] == 0]).shape)
+
+    # Adjust in output to binning choice
     if bin_dim == 0 or bin_dim is None:
         return x
     elif bin_dim > 0 and n_trials == 1 and not bin_pointwise:
