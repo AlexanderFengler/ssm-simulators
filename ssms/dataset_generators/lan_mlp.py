@@ -330,7 +330,7 @@ class data_generator:
         return rejected_thetas
 
     def generate_data_training_uniform(self, save=False, verbose=True, cpn_only=False):
-        """ Generates training data for LANs.
+        """Generates training data for LANs.
 
         Arguments
         ---------

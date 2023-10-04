@@ -56,20 +56,20 @@ class LogKDE:
     # Function to compute bandwidth parameters given data-set
     # (At this point using Silverman rule)
     def compute_bandwidths(self, type="silverman"):
-        """ 
+        """
         Computes bandwidths for each choice from rt data.
-        
+
         Arguments:
         ----------
         type: string
             Type of bandwidth to use, default is 'silverman' which follows silverman rule.
-        
+
         Returns:
         --------
         bandwidths: list
             List of bandwidths for each choice.
         """
-        
+
         # For now allows only silverman rule
         self.bandwidths = []
         if type == "silverman":
@@ -124,16 +124,16 @@ class LogKDE:
 
     # Function to evaluate the kde log likelihood at chosen points
     def kde_eval(self, data=([], []), log_eval=True):  # kde
-        """ 
+        """
         Evaluates kde log likelihood at chosen points.
-        
+
         Arguments:
         ----------
         data: tuple
             Tuple of (rts, choices) to evaluate the kde at.
         log_eval: boolean
             Whether to return log likelihood or likelihood, default is True.
-        
+
         Returns:
         --------
         log_kde_eval: array
@@ -177,9 +177,9 @@ class LogKDE:
     def kde_sample(
         self, n_samples=2000, use_empirical_choice_p=True, alternate_choice_p=0
     ):
-        """ 
+        """
         Samples from a given kde.
-        
+
         Arguments:
         ----------
         n_samples: int
@@ -189,11 +189,11 @@ class LogKDE:
             refers to the originally attached datasets that served as the basis to generate the choice-wise
             kdes)
         alternate_choice_p: array
-            Array of choice proportions to use, default is 0. (Note 'alternate' here refers to 'alternative' 
+            Array of choice proportions to use, default is 0. (Note 'alternate' here refers to 'alternative'
             to the 'empirical' choice proportions)
 
         """
-        
+
         # sorting the which list in ascending order
         # this implies that we return the kde_samples array so that the
         # indices reflect 'choice-labels' as provided in 'which' in ascending order
@@ -268,23 +268,23 @@ def bandwidth_silverman(
 ):
     """
     Computes silverman bandwidth for an array of samples (rts in our context, but general).
-    
+
     Arguments:
     ----------
     sample: array
         Array of samples to compute bandwidth for.
     std_cutoff: float
-        Cutoff for std, default is 1e-3. 
+        Cutoff for std, default is 1e-3.
         (If sample-std is smaller than this, we either kill it or restrict it to this value)
     std_proc: string
         How to deal with small stds, default is 'restrict'. (Options: 'kill', 'restrict')
     std_n_1: float
         Value to use if n = 1, default is 10. (Not clear if the default is sensible here)
-    
+
     Returns:
     --------
     bandwidth: float
-        Silverman bandwidth for the given sample. This is applied as the bandwidth parameter 
+        Silverman bandwidth for the given sample. This is applied as the bandwidth parameter
         when generating gaussian-based kdes in the LogKDE class.
     """
     # Compute number of samples
