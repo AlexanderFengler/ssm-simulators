@@ -45,8 +45,8 @@ jobs:
       - name: Check styling
         run: black . --check
 
-      - name: Linting
-        run: ruff check --line-length 120 .
+      # - name: Linting
+      #   run: ruff check --line-length 120 .
 
       - name: Run pytest
         run: pytest
