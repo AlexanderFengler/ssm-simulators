@@ -7,7 +7,7 @@ requires = ["setuptools", "wheel", "Cython>=0.29.23", "numpy >= 1.20"]
 
 [project]
 name= "ssm-simulators"
-version= "0.4.5"
+version= "0.4.6"
 authors= [{name = "Alexander Fenger", email = "alexander_fengler@brown.edu"}]
 description= "SSMS is a package collecting simulators and training data generators for a bunch of generative models of interest in the cognitive science / neuroscience and approximate bayesian computation communities"
 readme = "README.md"
