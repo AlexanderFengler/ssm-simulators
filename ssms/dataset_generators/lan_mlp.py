@@ -179,7 +179,7 @@ class data_generator:
 
         out[:, : len(theta)] = np.tile(theta, (n_kde + n_unif_up + n_unif_down, 1))
 
-        tmp_kde = kde_class.logkde(
+        tmp_kde = kde_class.LogKDE(
             (simulations["rts"], simulations["choices"], simulations["metadata"])
         )
 
@@ -330,6 +330,23 @@ class data_generator:
         return rejected_thetas
 
     def generate_data_training_uniform(self, save=False, verbose=True, cpn_only=False):
+        """Generates training data for LANs.
+
+        Arguments
+        ---------
+            save: bool
+                If True, the generated data is saved to disk.
+            verbose: bool
+                If True, progress is printed to the console.
+            cpn_only: bool
+                If True, only choice probabilities are computed.
+                This is useful for training CPNs.
+
+        Returns
+        -------
+            data: dict
+                Dictionary containing the generated data.
+        """
         seeds_1 = np.random.choice(
             400000000, size=self.generator_config["n_parameter_sets"]
         )

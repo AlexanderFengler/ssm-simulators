@@ -261,7 +261,6 @@ def bin_arbitrary_fptd(
 
     for choice in choice_codes:
         counts[:, cnt] = np.histogram(out[:, 0][out[:, 1] == choice], bins=bins)[0]
-        # print(np.histogram(out[:, 0][out[:, 1] == choice], bins = bins)[1])
         cnt += 1
     return counts
 
@@ -275,6 +274,7 @@ def simulator(
     no_noise=False,
     bin_dim=None,
     bin_pointwise=False,
+    smooth_unif=True,
     random_state=None,
 ):
     """Basic data simulator for the models included in HDDM.
@@ -415,11 +415,6 @@ def simulator(
         )
 
     if model == "ddm":
-        print('passing through')
-        print('v: ', theta[:, 0])
-        print('a: ', theta[:, 1])
-        print('z: ', theta[:, 2])
-        print('t: ', theta[:, 3])
         x = cssm.ddm_flexbound(
             v=theta[:, 0],
             a=theta[:, 1],
@@ -468,7 +463,7 @@ def simulator(
             random_state=random_state,
         )
 
-    if model == "weibull_cdf":
+    if model == "weibull_cdf" or model == "weibull":
         x = cssm.ddm_flexbound(
             v=theta[:, 0],
             a=theta[:, 1],
@@ -521,7 +516,7 @@ def simulator(
             random_state=random_state,
         )
 
-    if model == "full_ddm":
+    if model == "full_ddm" or model == "full_ddm2":
         x = cssm.full_ddm(
             v=theta[:, 0],
             a=theta[:, 1],
@@ -1390,10 +1385,19 @@ def simulator(
 
     x["metadata"]["model"] = model
 
+    # Apply uniform smoothing to rts
+    if smooth_unif:
+        x["rts"][x["rts"] > 0] = x["rts"][x["rts"] > 0] + np.random.uniform(
+            low=-delta_t / 2, high=delta_t / 2, size=(x["rts"][x["rts"] > 0]).shape
+        )
+        x["rts"][x["rts"] == 0] = x["rts"][x["rts"] == 0] - np.random.uniform(
+            low=0.0, high=delta_t / 2, size=(x["rts"][x["rts"] == 0]).shape
+        )
+
+    # Adjust in output to binning choice
     if bin_dim == 0 or bin_dim is None:
         return x
     elif bin_dim > 0 and n_trials == 1 and not bin_pointwise:
-        # print(x)
         binned_out = bin_simulator_output(x, nbins=bin_dim)
         return {"data": binned_out, "metadata": x["metadata"]}
     elif bin_dim > 0 and n_trials == 1 and bin_pointwise:
