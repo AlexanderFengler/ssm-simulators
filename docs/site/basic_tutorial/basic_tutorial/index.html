@@ -2142,7 +2142,7 @@ sim_out = simulator(model = 'ddm',
 <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[5]:</div>
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
 <pre>{'output_folder': 'data/lan_mlp/',
- 'dgp_list': 'ddm',
+ 'model': 'ddm',
  'nbins': 0,
  'n_samples': 100000,
  'n_parameter_sets': 10000,
@@ -2202,7 +2202,7 @@ An example below.</p>
 <span class="c1"># Initialize the generator config (for MLP LANs)</span>
 <span class="n">generator_config</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">ssms</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">data_generator_config</span><span class="p">[</span><span class="s1">'lan'</span><span class="p">][</span><span class="s1">'mlp'</span><span class="p">])</span>
 <span class="c1"># Specify generative model (one from the list of included models mentioned above)</span>
-<span class="n">generator_config</span><span class="p">[</span><span class="s1">'dgp_list'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'angle'</span> 
+<span class="n">generator_config</span><span class="p">[</span><span class="s1">'model'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'angle'</span> 
 <span class="c1"># Specify number of parameter sets to simulate</span>
 <span class="n">generator_config</span><span class="p">[</span><span class="s1">'n_parameter_sets'</span><span class="p">]</span> <span class="o">=</span> <span class="mi">100</span> 
 <span class="c1"># Specify how many samples a simulation run should entail</span>
@@ -2212,7 +2212,7 @@ An example below.</p>
 # Initialize the generator config (for MLP LANs)
 generator_config = deepcopy(ssms.config.data_generator_config['lan']['mlp'])
 # Specify generative model (one from the list of included models mentioned above)
-generator_config['dgp_list'] = 'angle' 
+generator_config['model'] = 'angle' 
 # Specify number of parameter sets to simulate
 generator_config['n_parameter_sets'] = 100 
 # Specify how many samples a simulation run should entail

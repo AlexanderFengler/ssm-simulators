@@ -892,7 +892,7 @@ The usual structure of these models includes,</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">ssms</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">data_generator_config</span><span class="p">[</span><span class="s1">&#39;lan&#39;</span><span class="p">][</span><span class="s1">&#39;mlp&#39;</span><span class="p">]</span>
 </span></code></pre></div>
 <div class="language-text highlight"><pre><span></span><code>{&#39;output_folder&#39;: &#39;data/lan_mlp/&#39;,
- &#39;dgp_list&#39;: &#39;ddm&#39;,
+ &#39;model&#39;: &#39;ddm&#39;,
  &#39;nbins&#39;: 0,
  &#39;n_samples&#39;: 100000,
  &#39;n_parameter_sets&#39;: 10000,
@@ -919,7 +919,7 @@ An example below.</p>
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="c1"># Initialize the generator config (for MLP LANs)</span>
 </span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">generator_config</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">ssms</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">data_generator_config</span><span class="p">[</span><span class="s1">&#39;lan&#39;</span><span class="p">][</span><span class="s1">&#39;mlp&#39;</span><span class="p">])</span>
 </span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1"># Specify generative model (one from the list of included models mentioned above)</span>
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="n">generator_config</span><span class="p">[</span><span class="s1">&#39;dgp_list&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;angle&#39;</span> 
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="n">generator_config</span><span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;angle&#39;</span> 
 </span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="c1"># Specify number of parameter sets to simulate</span>
 </span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="n">generator_config</span><span class="p">[</span><span class="s1">&#39;n_parameter_sets&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">100</span> 
 </span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="c1"># Specify how many samples a simulation run should entail</span>

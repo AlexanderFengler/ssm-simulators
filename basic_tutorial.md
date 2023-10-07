@@ -125,7 +125,7 @@ ssms.config.data_generator_config['lan']['mlp']
 
 
     {'output_folder': 'data/lan_mlp/',
-     'dgp_list': 'ddm',
+     'model': 'ddm',
      'nbins': 0,
      'n_samples': 100000,
      'n_parameter_sets': 10000,
@@ -157,7 +157,7 @@ from copy import deepcopy
 # Initialize the generator config (for MLP LANs)
 generator_config = deepcopy(ssms.config.data_generator_config['lan']['mlp'])
 # Specify generative model (one from the list of included models mentioned above)
-generator_config['dgp_list'] = 'angle' 
+generator_config['model'] = 'angle' 
 # Specify number of parameter sets to simulate
 generator_config['n_parameter_sets'] = 100 
 # Specify how many samples a simulation run should entail

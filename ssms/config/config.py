@@ -801,7 +801,7 @@ kde_simulation_filters = {
 data_generator_config = {
     "cpn_only": {
         "output_folder": "data/cpn_only/",
-        "dgp_list": "ddm",  # should be ['ddm'],
+        "model": "ddm",  # should be ['ddm'],
         "n_samples": 100000,  # eventually should be {'low': 100000, 'high': 100000},
         "n_parameter_sets": 10000,
         "n_parameter_sets_rejected": 100,
@@ -815,7 +815,7 @@ data_generator_config = {
     },
     "lan": {
         "output_folder": "data/lan_mlp/",
-        "dgp_list": "ddm",  # should be ['ddm'],
+        "model": "ddm",  # should be ['ddm'],
         "nbins": 0,
         "n_samples": 100000,  # eventually should be {'low': 100000, 'high': 100000},
         "n_parameter_sets": 10000,
@@ -834,7 +834,7 @@ data_generator_config = {
     },
     "ratio_estimator": {
         "output_folder": "data/ratio/",
-        "dgp_list": ["ddm"],
+        "model": "ddm",
         "nbins": 0,
         "n_samples": {"low": 100000, "high": 100000},
         "n_parameter_sets": 100000,
@@ -855,7 +855,7 @@ data_generator_config = {
     },
     "defective_detector": {
         "output_folder": "data/ratio/",
-        "dgp_list": ["ddm"],
+        "model": ["ddm"],
         "nbins": 0,
         "n_samples": {"low": 100000, "high": 100000},
         "n_parameter_sets": 100000,
@@ -876,7 +876,7 @@ data_generator_config = {
     },
     "snpe": {
         "output_folder": "data/snpe_training/",
-        "dgp_list": "ddm",  # should be ['ddm'],
+        "model": "ddm",  # should be ['ddm'],
         "n_samples": 5000,  # eventually should be {'low': 100000, 'high': 100000},
         "n_parameter_sets": 10000,
         "max_t": 20.0,
