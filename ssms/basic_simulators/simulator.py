@@ -415,11 +415,11 @@ def simulator(
         )
 
     if model == "ddm":
-        print('passing through')
-        print('v: ', theta[:, 0])
-        print('a: ', theta[:, 1])
-        print('z: ', theta[:, 2])
-        print('t: ', theta[:, 3])
+        print("passing through")
+        print("v: ", theta[:, 0])
+        print("a: ", theta[:, 1])
+        print("z: ", theta[:, 2])
+        print("t: ", theta[:, 3])
         x = cssm.ddm_flexbound(
             v=theta[:, 0],
             a=theta[:, 1],
