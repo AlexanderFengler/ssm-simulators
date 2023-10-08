@@ -770,15 +770,15 @@ def ddm_flex(np.ndarray[float, ndim = 1] v,
         
         # Drift
         drift_params_tmp = {key: drift_params[key][k] for key in drift_params.keys()}
-        drift[:] = np.add(v_view[k], drift_fun(t = t_s, **drift_params_tmp)).astype(DTYPE)
+        drift_view[:] = np.add(v_view[k], drift_fun(t = t_s, **drift_params_tmp)).astype(DTYPE)
 
         # Boundary
         boundary_params_tmp = {key: boundary_params[key][k] for key in boundary_params.keys()}
         if boundary_multiplicative:
             # print('passed')
-            boundary[:] = np.multiply(a_view[k], boundary_fun(t = t_s, **boundary_params_tmp)).astype(DTYPE)
+            boundary_view[:] = np.multiply(a_view[k], boundary_fun(t = t_s, **boundary_params_tmp)).astype(DTYPE)
         else:
-            boundary[:] = np.add(a_view[k], boundary_fun(t = t_s, **boundary_params_tmp)).astype(DTYPE)
+            boundary_view[:] = np.add(a_view[k], boundary_fun(t = t_s, **boundary_params_tmp)).astype(DTYPE)
 
         for n in range(n_samples):
             y = (-1) * boundary_view[0] + (z_view[k] * 2 * (boundary_view[0]))  # reset starting position 
@@ -822,7 +822,7 @@ def ddm_flex(np.ndarray[float, ndim = 1] v,
                                                           'n_samples': n_samples,
                                                           'simulator': 'ddm_flex',
                                                           'boundary_fun_type': boundary_fun.__name__,
-                                                          'drift_fun_type': boundary_fun.__name__,
+                                                          'drift_fun_type': drift_fun.__name__,
                                                           'possible_choices': [-1, 1],
                                                           'trajectory': traj,
                                                           'drift': drift,
@@ -1270,6 +1270,152 @@ def full_ddm(np.ndarray[float, ndim = 1] v, # = 0,
                                                          'possible_choices': [-1, 1],
                                                          'trajectory': traj,
                                                          'boundary': boundary}}
+
+# -------------------------------------------------------------------------------------------------
+
+# Simulate (rt, choice) tuples from: FULL DDM WITH FLEXIBLE BOUNDARIES AND FLEXIBLE SLOPE ---------
+# @cythonboundscheck(False)
+# @cythonwraparound(False)
+def full_ddm_flex(np.ndarray[float, ndim = 1] v, # = 0,
+             np.ndarray[float, ndim = 1] a, # = 1,
+             np.ndarray[float, ndim = 1] z, # = 0.5,
+             np.ndarray[float, ndim = 1] t, # = 0.0,
+             np.ndarray[float, ndim = 1] sz, # = 0.05,
+             np.ndarray[float, ndim = 1] sv, # = 0.1,
+             np.ndarray[float, ndim = 1] st, # = 0.0,
+             float s = 1,
+             float delta_t = 0.001,
+             float max_t = 20,
+             int n_samples = 20000,
+             int n_trials = 1,
+             drift_fun = None,
+             drift_params = {},
+             boundary_fun = None, # function of t (and potentially other parameters) that takes in (t, *args)
+             boundary_multiplicative = True,
+             boundary_params = {},
+             random_state = None,):
+
+    set_seed(random_state)
+
+    cdef float[:] v_view  = v
+    cdef float[:] a_view = a
+    cdef float[:] z_view = z
+    cdef float[:] t_view = t
+    cdef float[:] sz_view = sz
+    cdef float[:] sv_view = sv
+    cdef float[:] st_view = st
+
+    # Data-structs for trajectory storage
+    traj = np.zeros((int(max_t / delta_t) + 1, 1), dtype = DTYPE)
+    traj[:, :] = -999 
+    cdef float[:, :] traj_view = traj
+
+    rts = np.zeros((n_samples, n_trials, 1), dtype = DTYPE)
+    choices = np.zeros((n_samples, n_trials, 1), dtype = np.intc)
+
+    cdef float[:, :, :] rts_view = rts
+    cdef int[:, :, :] choices_view = choices
+
+    cdef float delta_t_sqrt = sqrt(delta_t) # correct scalar so we can use standard normal samples for the brownian motion
+    cdef float sqrt_st = delta_t_sqrt * s # scalar to ensure the correct variance for the gaussian step
+
+    # Boundary storage for the upper bound
+    cdef int num_draws = int((max_t / delta_t) + 1)
+    t_s = np.arange(0, max_t + delta_t, delta_t).astype(DTYPE)
+    
+    cdef float y, t_particle, t_tmp
+    cdef Py_ssize_t n, ix, k
+    cdef Py_ssize_t m = 0
+    cdef float drift_increment = 0.0
+    cdef float[:] gaussian_values = draw_gaussian(num_draws)
+
+    # Loop over trials
+    for k in range(n_trials):
+
+        # Precompute boundary evaluations and drift evaluations
+        boundary_view = np.full(t_s.shape, a_view[k],dtype = DTYPE)
+        drift_view = np.full(t_s.shape, v_view[k],dtype = DTYPE)
+        # Drift
+        if drift_fun:
+            drift_params_tmp = {key: drift_params[key][k] for key in drift_params.keys()}
+            drift_view[:] = drift_fun(t_s, v_view[k], **drift_params_tmp).astype(DTYPE)
+        # Boundary
+        if boundary_fun:
+            boundary_params_tmp = {key: boundary_params[key][k] for key in boundary_params.keys()}
+            if boundary_multiplicative:
+                # print(a)
+                boundary_view[:] = np.multiply(a_view[k], boundary_fun(t = t_s, **boundary_params_tmp)).astype(DTYPE)
+            else:
+                # print(a)
+                boundary_view[:] = np.add(a_view[k], boundary_fun(t = t_s, **boundary_params_tmp)).astype(DTYPE)
+        
+        # Loop over samples
+        for n in range(n_samples):
+            # initialize starting point
+            y = ((-1) * boundary_view[0]) + (z_view[k] * 2.0 * (boundary_view[0]))  # reset starting position
+            
+            # get drift by random displacement of v 
+            drift_increment = (sv_view[k] * gaussian_values[m])
+            
+            # apply uniform displacement on non-decision time 
+            t_tmp = t_view[k] + (2 * (random_uniform() - 0.5) * st_view[k])
+            
+            # apply uniform displacement on y
+            y += 2 * (random_uniform() - 0.5) * sz_view[k]
+            
+            # increment m appropriately
+            m += 1
+            if m == num_draws:
+                    gaussian_values = draw_gaussian(num_draws)
+                    m = 0
+            
+            t_particle = 0.0 # reset time
+            ix = 0 # reset varing boundary and drift index
+            
+            if n == 0:
+                if k == 0:
+                    traj_view[0, 0] = y
+
+            # Random walker
+            while y >= (-1) * boundary_view[ix] and y <= boundary_view[ix] and t_particle <= max_t:
+                
+                
+                y += (drift_view[ix] + drift_increment) * delta_t + (sqrt_st * gaussian_values[m])
+                t_particle += delta_t
+                ix += 1
+                m += 1
+                
+                if n == 0:
+                    if k == 0:
+                        traj_view[ix, 0] = y
+                if m == num_draws:
+                    gaussian_values = draw_gaussian(num_draws)
+                    m = 0
+
+            rts_view[n, k, 0] = t_particle + t_tmp # Store rt
+            choices_view[n, k, 0] = np.sign(y) # Store choice
+
+    return {'rts': rts, 'choices': choices, 'metadata': {'v': v,
+                                                         'a': a,
+                                                         'z': z,
+                                                         't': t,
+                                                         'sz': sz,
+                                                         'sv': sv,
+                                                         'st': st,
+                                                         's': s,
+                                                         **boundary_params,
+                                                         **drift_params,
+                                                         'delta_t': delta_t,
+                                                         'max_t': max_t,
+                                                         'n_samples': n_samples,
+                                                         'simulator': 'full_ddm_flex',
+                                                         'boundary_fun_type': boundary_fun.__name__,
+                                                         'drift_fun_type': drift_fun.__name__,
+                                                         'possible_choices': [-1, 1],
+                                                         'trajectory': traj,
+                                                         'boundary': boundary_view,
+                                                         'drift': drift_view,
+                                                         }}
 
 # -------------------------------------------------------------------------------------------------
 
