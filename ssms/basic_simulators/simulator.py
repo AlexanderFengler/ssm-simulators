@@ -1390,7 +1390,7 @@ def simulator(
         x["rts"][x["rts"] > 0] = x["rts"][x["rts"] > 0] + np.random.uniform(
             low=-delta_t / 2, high=delta_t / 2, size=(x["rts"][x["rts"] > 0]).shape
         )
-        x["rts"][x["rts"] == 0] = x["rts"][x["rts"] == 0] - np.random.uniform(
+        x["rts"][x["rts"] == 0] = x["rts"][x["rts"] == 0] + np.random.uniform(
             low=0.0, high=delta_t / 2, size=(x["rts"][x["rts"] == 0]).shape
         )
 
