@@ -1386,6 +1386,9 @@ def simulator(
     x["metadata"]["model"] = model
 
     # Apply uniform smoothing to rts
+    if random_state is not None:
+        np.random.seed(random_state)
+    
     if smooth_unif:
         x["rts"][x["rts"] > 0] = x["rts"][x["rts"] > 0] + np.random.uniform(
             low=-delta_t / 2, high=delta_t / 2, size=(x["rts"][x["rts"] > 0]).shape
