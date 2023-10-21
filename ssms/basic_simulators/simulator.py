@@ -702,11 +702,8 @@ def simulator(
     if model == "full_SSP": 
         # Note: here simulate n samples for two congruency condition, thus 2 * n_samples totally
         # This simulation strategy is consistent with R package flankr. 
-        diff_sigma = kwargs.pop("diff_sigma", 0.1)
-        con_congruency = [1, -1]         
-        x = []
-        for congruency in con_congruency:
-            x_tmp = cssm.full_ddm_flex(
+        congruency = kwargs.pop("congruency", 1)
+        x = cssm.full_ddm_flex(
                 v=theta[:, 0],
                 a=theta[:, 1],
                 z=theta[:, 2],
@@ -714,7 +711,7 @@ def simulator(
                 sz=theta[:, 4],
                 sv=theta[:, 5],
                 st=theta[:, 6],
-                s=diff_sigma,
+                s=s*0.1,
                 boundary_fun=bf.constant,
                 boundary_multiplicative=True,
                 boundary_params={},
@@ -726,22 +723,44 @@ def simulator(
                 max_t=max_t,
                 random_state=random_state,
             )
-            x_tmp["metadata"].pop("congruency", None)
-            x_tmp["congruency"] = [congruency] * x_tmp["rts"].shape[0]
-            # revert the incongruent response in incongruent condition to correct
-            x_tmp["choices"] = x_tmp["choices"] * congruency
-            if x:
-                x["rts"] = np.concatenate((x["rts"], x_tmp["rts"]))
-                x["choices"] = np.concatenate((x["choices"], x_tmp["choices"]))
-                x["congruency"] = np.concatenate((x["congruency"], x_tmp["congruency"]))
-            else:
-                x = x_tmp
-        x["metadata"]["n_samples"] = n_samples * 2
+        # con_congruency = [1, -1]         
+        # x = []
+        # for congruency in con_congruency:
+        #     x_tmp = cssm.full_ddm_flex(
+        #         v=theta[:, 0],
+        #         a=theta[:, 1],
+        #         z=theta[:, 2],
+        #         t=theta[:, 3],
+        #         sz=theta[:, 4],
+        #         sv=theta[:, 5],
+        #         st=theta[:, 6],
+        #         s=s*0.1,
+        #         boundary_fun=bf.constant,
+        #         boundary_multiplicative=True,
+        #         boundary_params={},
+        #         drift_fun=df.SSP_drift,
+        #         drift_params={"sda":theta[:, 7], "rd":theta[:, 8], "congruency": [congruency]},
+        #         delta_t=delta_t,
+        #         n_samples=n_samples,
+        #         n_trials=n_trials,
+        #         max_t=max_t,
+        #         random_state=random_state,
+        #     )
+        #     x_tmp["metadata"].pop("congruency", None)
+        #     x_tmp["congruency"] = [congruency] * x_tmp["rts"].shape[0]
+        #     # revert the incongruent response in incongruent condition to correct
+        #     x_tmp["choices"] = x_tmp["choices"] * congruency
+        #     if x:
+        #         x["rts"] = np.concatenate((x["rts"], x_tmp["rts"]))
+        #         x["choices"] = np.concatenate((x["choices"], x_tmp["choices"]))
+        #         x["congruency"] = np.concatenate((x["congruency"], x_tmp["congruency"]))
+        #     else:
+        #         x = x_tmp
+        # x["metadata"]["n_samples"] = n_samples * 2
     
     if model == "full_DMC":
         # Note: here simulate n samples for two congruency condition, thus 2 * n_samples totally
         # This simulation strategy is consistent with Luo, J., Yang, M., & Wang, L. (2022). Learned irrelevant stimulus-response associations and proportion congruency effect: A diffusion model account. Journal of Experimental Psychology: Learning, Memory, and Cognition. https://doi.org/10.1037/xlm0001158. 
-        diff_sigma = kwargs.pop("diff_sigma", 4)  # Note, the default sigma in DMC is 4, see (White et al., 2018). 
         con_congruency = [1, -1]         
         x = []
         for congruency in con_congruency:
@@ -753,9 +772,9 @@ def simulator(
                 sz=theta[:, 7],
                 sv=theta[:, 8],
                 st=theta[:, 9],
-                s=diff_sigma,
+                s=s,   # Note, the default sigma in DMC is 4, see (White et al., 2018). 
                 boundary_fun=bf.constant,
-                drift_fun=df.DMC_drift ,
+                drift_fun=df.DMC_drift,
                 boundary_multiplicative=True,
                 boundary_params={},
                 drift_params={"shape": theta[:, 4], "peak": theta[:, 5], "tau": theta[:, 6], "congruency": [congruency]},
@@ -780,7 +799,6 @@ def simulator(
     if model == "full_DSTP":
         # Note: here simulate n samples for two congruency condition, thus 2 * n_samples totally
         # This simulation strategy is consistent with Luo, J., Yang, M., & Wang, L. (2022). Learned irrelevant stimulus-response associations and proportion congruency effect: A diffusion model account. Journal of Experimental Psychology: Learning, Memory, and Cognition. https://doi.org/10.1037/xlm0001158. 
-        diff_sigma = kwargs.pop("diff_sigma", 0.1)
         con_congruency = [1, -1]         
         x = []
         for congruency in con_congruency:
@@ -792,12 +810,12 @@ def simulator(
                 sz=theta[:, 9],
                 sv=theta[:, 10],
                 st=theta[:, 11],
-                s=diff_sigma,
+                s=s*0.1,
                 boundary_fun=bf.constant,
                 drift_fun=df.DSTP_drift,
                 boundary_multiplicative=True,
                 boundary_params={},
-                drift_params={"vfl":theta[:,4], "vss":theta[:,5], "vp2":theta[:,6], "ass":theta[:,7], "zss":theta[:,8], "delta_t":[delta_t], "congruency": [congruency], "sqrt_st": [np.sqrt(delta_t) * diff_sigma]},
+                drift_params={"vfl":theta[:,4], "vss":theta[:,5], "vp2":theta[:,6], "ass":theta[:,7], "zss":theta[:,8], "delta_t":[delta_t], "congruency": [congruency], "sqrt_st": [np.sqrt(delta_t) * s*0.1]},
                 delta_t=delta_t,
                 n_samples=n_samples,
                 n_trials=n_trials,

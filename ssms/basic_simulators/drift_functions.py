@@ -6,7 +6,7 @@ This module defines a collection of drift functions for the simulators in the pa
 """
 
 
-def constant(t_tmp=np.arange(0, 20, 0.1)):
+def constant(t=np.arange(0, 20, 0.1)):
     """constant drift function
 
     Arguments
@@ -82,16 +82,7 @@ def ds_support_analytic(t=np.arange(0, 10, 0.001), init_p=0, fix_point=1, slope=
     return (init_p - fix_point) * np.exp(-(slope * t)) + fix_point
 
 
-def ds_conflict_drift(
-    t=np.arange(0, 10, 0.001),
-    init_p_t=0,
-    init_p_d=0,
-    slope_t=1,
-    slope_d=1,
-    fixed_p_t=1,
-    coherence_t=1.5,
-    coherence_d=1.5,
-):
+def ds_conflict_drift(t=np.arange(0, 10, 0.001),init_p_t=0,init_p_d=0,slope_t=1,slope_d=1,fixed_p_t=1,coherence_t=1.5,coherence_d=1.5):
     """This drift is inspired by a conflict task which
        involves a target and a distractor stimuli both presented
        simultaneously.
@@ -133,23 +124,29 @@ def ds_conflict_drift(
 
     return v_t  # , w_t, w_d
 
-def SSP_drift(
-    t=np.arange(0, 20, 0.001),
-    p=1,          
-    sda = 0.1,    
-    rd = 0.05,    
-    congruency=1   
-):
-    """This drift is inspired by shrinking spotlight model in conflict task which
-       involves a target and a distractor(flanker) stimuli both presented
-       simultaneously.
 
-    :param np.ndarray t: drift timecourse, defaults to np.arange(0, 20, 0.001), means max 20 seconds. 
-    :param float p: perceptual strength, defaults to 1
-    :param float sda: spotlight width at stimulus onset, defaults to 0.1
-    :param float rd: shrink rate of variance, defaults to 0.05
-    :param int congruency: congruency condition with flanker and target, 1 means congruent, -1 means incongruent. 
-    :return np.ndarray: The full drift timecourse evaluated at the supplied timepoints t.
+def SSP_drift(t=np.arange(0, 20, 0.1), p=1, sda = 0.1, rd = 0.05, congruency=1):
+    """This drift is inspired by shrinking spotlight model in conflict task by Evans et al. (2020) which involves a target and a distractor(flanker) stimuli both presented simultaneously.
+
+    Arguments
+    ---------
+        t: np.ndarray <default=np.arange(0, 20, 0.1)>
+            Timepoints at which to evaluate the drift.
+            Usually np.arange() of some sort.
+        p: float <default=1>
+            Perceptual strength.
+        sda: float <default=0.1>
+            Spotlight width at stimulus onset.
+        rd: float <default=0.05>
+            Shrink rate of spotlight width.
+        congruency: int
+            Congruency condition with flanker and target.
+            1 means congruent, -1 means incongruent.
+
+    Return
+    ------
+        np.ndarray
+            The full drift timecourse evaluated at the supplied timepoints t.
     """
     from scipy.stats import norm
 
@@ -167,14 +164,8 @@ def SSP_drift(
     
     return drift
 
-def DMC_drift(
-    t=np.arange(0, 20, 0.1), 
-    vc=0.3, 
-    peak=30, 
-    shape=3, 
-    tau=100,
-    congruency=1,
-    ):
+
+def DMC_drift(t=np.arange(0, 20, 0.1), vc=0.3, peak=0.5, shape=3, tau=0.1,congruency=1):
     """Drift function for Diffusion model in conflict tasks that follows a gamma function by Evans et al. (2020)
 
     Arguments
@@ -212,24 +203,39 @@ def DMC_drift(
     return v
 
 
-def DSTP_drift(
-    t=np.arange(0, 20, 0.001), 
-    vta=0.3, vfl=1, vss=0.5, vp2=2, 
-    ass=1.5, zss = 0.5, 
-    congruency = 1, 
-    delta_t=0.001, sqrt_st=np.sqrt(0.001)
-    ):
+def DSTP_drift(t=np.arange(0, 20, 0.1), vta=0.3, vfl=1, vss=0.5, vp2=2, ass=1.5, zss = 0.5, 
+congruency = 1, delta_t=0.001, sqrt_st=np.sqrt(0.001)):
     """Drift function for dual-stage two-phase modell in conflict tasks that follows a gamma function by Evans et al. (2020). The code is transformed from Luo, J., Yang, M., & Wang, L. (2022). Learned irrelevant stimulus-response associations and proportion congruency effect: A diffusion model account. Journal of Experimental Psychology: Learning, Memory, and Cognition. https://doi.org/10.1037/xlm0001158
 
-    :param np.ndarray t: drift timecourse, default to np.arange(0, 20, 0.001), means max 20 seconds. 
-    :param float vta: drift for target in phase 1
-    :param float vfl: drift for flanker in phase 1
-    :param float vss: drift for stimulus selection
-    :param float ass: boundary for stimulus selection
-    :param float zss: start poin for stimulus selection. default to 0.5, means there is no selection bias. 
-    :param int congruency: congruency condition with flanker and target, 1 means congruent, -1 means incongruent. 
-    :param float delta_t, sqrt_st: the time step and scale factor for diffusion process, respectively. 
-    :return np.ndarray: The full drift timecourse evaluated at the supplied timepoints t.
+    Arguments
+    ---------
+        t: np.ndarray <default=np.arange(0, 20, 0.001)>
+            Drift timecourse.
+            Represents the timepoints at which to evaluate the drift.
+        vta: float
+            Drift for target in phase 1.
+        vfl: float
+            Drift for flanker in phase 1.
+        vss: float
+            Drift for stimulus selection.
+        ass: float
+            Boundary for stimulus selection.
+        zss: float <default=0.5>
+            Start point for stimulus selection.
+            Indicates the presence or absence of selection bias.
+            Defaults to 0.5, which means no selection bias.
+        congruency: int
+            Congruency condition with flanker and target.
+            1 means congruent, -1 means incongruent.
+        delta_t: float
+            Time step for diffusion process.
+        sqrt_st: float
+            Scale factor for diffusion process.
+
+    Return
+    ------
+        np.ndarray
+            The full drift timecourse evaluated at the supplied timepoints t.
     """
 
     # initiate the X of start point for stimulus selection

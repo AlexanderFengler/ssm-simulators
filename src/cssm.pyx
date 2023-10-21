@@ -762,7 +762,7 @@ def ddm_flex(np.ndarray[float, ndim = 1] v,
     cdef Py_ssize_t k
     cdef float[:] gaussian_values = draw_gaussian(num_draws)
     cdef float[:] boundary_view = boundary
-    cdef float[:] drift_view = drift
+    drift_view = np.full(t_s.shape, v_view[k],dtype = DTYPE)
 
     # Loop over samples
     for k in range(n_trials):
