@@ -700,7 +700,6 @@ def simulator(
         )
 
     if model == "full_SSP": 
-        # Note: here simulate n samples for two congruency condition, thus 2 * n_samples totally
         # This simulation strategy is consistent with R package flankr. 
         congruency = kwargs.pop("congruency", 1)
         x = cssm.full_ddm_flex(
