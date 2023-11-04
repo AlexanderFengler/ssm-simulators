@@ -394,7 +394,6 @@ class data_generator:
                 else:
                     for k in seed_args[(i * subrun_n) : ((i + 1) * subrun_n)]:        
                         out_list.append(self._mlp_get_processed_data_for_theta(k))
-        print(out_list)
         data = {}
 
         # Choice probabilities and theta are always needed

@@ -318,8 +318,6 @@ def simulator(
     # (if supplied as 2d array or list in the first place,
     # user has to supply the correct ordering to begin with)
 
-    print(theta)
-
     if isinstance(theta, list):
         theta = np.asarray(theta).astype(np.float32)
     elif isinstance(theta, np.ndarray):
