@@ -357,10 +357,6 @@ def simulator(
     # Make sure theta is np.float32
     theta = theta.astype(np.float32)
 
-    print('theta after transform')
-    print(theta)
-    print(theta.shape)
-
     # 2 choice models
     if no_noise:
         s = 0.0

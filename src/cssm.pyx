@@ -576,7 +576,6 @@ def ddm_flexbound_deadline(np.ndarray[float, ndim = 1] v,
         boundary_params_tmp = {key: boundary_params[key][k] for key in boundary_params.keys()}
 
         if boundary_multiplicative:
-            # print('passed')
             boundary[:] = np.multiply(a_view[k], boundary_fun(t = t_s, **boundary_params_tmp)).astype(DTYPE)
         else:
             boundary[:] = np.add(a_view[k], boundary_fun(t = t_s, **boundary_params_tmp)).astype(DTYPE)
@@ -698,16 +697,11 @@ def ddm_flexbound(np.ndarray[float, ndim = 1] v,
     cdef float[:] gaussian_values = draw_gaussian(num_draws)
     cdef float[:] boundary_view = boundary
 
-    #print('boundary shape')
-    #print(boundary.shape)
-
     # Loop over samples
     for k in range(n_trials):
         # Precompute boundary evaluations
         boundary_params_tmp = {key: boundary_params[key][k] for key in boundary_params.keys()}
-        # print('before passed')
         if boundary_multiplicative:
-            # print('passed')
             boundary[:] = np.multiply(a_view[k], boundary_fun(t = t_s, **boundary_params_tmp)).astype(DTYPE)
         else:
             boundary[:] = np.add(a_view[k], boundary_fun(t = t_s, **boundary_params_tmp)).astype(DTYPE)
@@ -724,7 +718,6 @@ def ddm_flexbound(np.ndarray[float, ndim = 1] v,
 
             # Random walker
             while (y >= (-1) * boundary_view[ix]) and (y <= boundary_view[ix]) and (t_particle <= max_t):
-                # print('passed')
                 y += (v_view[k] * delta_t) + (sqrt_st * gaussian_values[m])
                 t_particle += delta_t
                 ix += 1
@@ -1568,10 +1561,8 @@ def ornstein_uhlenbeck(np.ndarray[float, ndim = 1] v, # drift parameter
 
         # Precompute boundary evaluations
         if boundary_multiplicative:
-            # print(a)
             boundary[:] = np.multiply(a_view[k], boundary_fun(t = t_s, **boundary_params_tmp)).astype(DTYPE)
         else:
-            # print(a)
             boundary[:] = np.add(a_view[k], boundary_fun(t = t_s, **boundary_params_tmp)).astype(DTYPE)
     
         # Loop over samples
@@ -1865,10 +1856,8 @@ def lca(np.ndarray[float, ndim = 2] v, # drift parameters (np.array expect: one 
 
         # Precompute boundary evaluations
         if boundary_multiplicative:
-            # print(a)
             boundary[:] = np.multiply(a_view[k, 0], boundary_fun(t = t_s, **boundary_params_tmp)).astype(DTYPE)
         else:
-            # print(a)
             boundary[:] = np.add(a_view[k, 0], boundary_fun(t = t_s, **boundary_params_tmp)).astype(DTYPE)
 
         for n in range(n_samples):
@@ -2006,10 +1995,8 @@ def ddm_flexbound_seq2(np.ndarray[float, ndim = 1] v_h,
 
         # Precompute boundary evaluations
         if boundary_multiplicative:
-            # print(a)
             boundary[:] = np.multiply(a_view[k], boundary_fun(t = t_s, **boundary_params_tmp)).astype(DTYPE)
         else:
-            # print(a)
             boundary[:] = np.add(a_view[k], boundary_fun(t = t_s, **boundary_params_tmp)).astype(DTYPE)
     
         # Loop over samples
