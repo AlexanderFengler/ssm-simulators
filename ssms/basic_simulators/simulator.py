@@ -378,7 +378,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "test":
@@ -396,7 +396,7 @@ def simulator(
             boundary_multiplicative=True,
             max_t=max_t,
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "ddm_deadline":
@@ -415,7 +415,7 @@ def simulator(
             boundary_multiplicative=True,
             max_t=max_t,
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "ddm":
@@ -433,7 +433,7 @@ def simulator(
             boundary_multiplicative=True,
             max_t=max_t,
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     # AF-TODO: Check what the intended purpose of 'ddm_legacy' was!
@@ -449,7 +449,7 @@ def simulator(
             delta_t=delta_t,
             max_t=max_t,
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "angle":
@@ -467,7 +467,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "weibull_cdf" or model == "weibull":
@@ -485,7 +485,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "levy":
@@ -504,7 +504,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "levy_angle":
@@ -523,7 +523,8 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
-            smooth = smooth_unif)
+            smooth=smooth_unif,
+        )
 
     if model == "full_ddm" or model == "full_ddm2":
         x = cssm.full_ddm(
@@ -543,7 +544,8 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
-            smooth = smooth_unif)
+            smooth=smooth_unif,
+        )
 
     if model == "full_ddm_legacy" or model == "full_ddm_hddm_base":
         x = cssm.full_ddm_hddm_base(
@@ -560,7 +562,7 @@ def simulator(
             delta_t=delta_t,
             max_t=max_t,
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "ddm_sdv":
@@ -579,7 +581,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "ornstein" or model == "ornstein_uhlenbeck":
@@ -598,7 +600,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "ornstein_angle":
@@ -617,7 +619,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "gamma_drift":
@@ -637,7 +639,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "gamma_drift_angle":
@@ -657,7 +659,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "ds_conflict_drift":
@@ -684,7 +686,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "ds_conflict_drift_angle":
@@ -712,17 +714,34 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
-
 
     # Multi-particle models
 
     # 2 Choice
     if no_noise:
-        s = np.tile(np.array([0.0, 0.0,], dtype=np.float32), (n_trials, 1))
+        s = np.tile(
+            np.array(
+                [
+                    0.0,
+                    0.0,
+                ],
+                dtype=np.float32,
+            ),
+            (n_trials, 1),
+        )
     else:
-        s = np.tile(np.array([1.0, 1.0,], dtype=np.float32), (n_trials, 1))
+        s = np.tile(
+            np.array(
+                [
+                    1.0,
+                    1.0,
+                ],
+                dtype=np.float32,
+            ),
+            (n_trials, 1),
+        )
 
     if model == "race_2":
         x = cssm.race_model(
@@ -739,7 +758,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "race_no_bias_2":
@@ -757,14 +776,23 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
-            smooth = smooth_unif,
-            )
-        
+            smooth=smooth_unif,
+        )
+
     if model == "race_no_z_2":
         x = cssm.race_model(
             v=theta[:, :2],
             a=theta[:, [2]],
-            z=np.tile(np.array([0.0, 0.0,], dtype=np.float32), (n_trials, 1)),
+            z=np.tile(
+                np.array(
+                    [
+                        0.0,
+                        0.0,
+                    ],
+                    dtype=np.float32,
+                ),
+                (n_trials, 1),
+            ),
             t=theta[:, [3]],
             s=s,
             boundary_fun=bf.constant,
@@ -775,44 +803,53 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
-            smooth = smooth_unif,
-            )
+            smooth=smooth_unif,
+        )
 
     if model == "race_no_bias_angle_2":
         x = cssm.race_model(
-            v = theta[:, :2],
-            a = theta[:, [2]],
-            z = np.column_stack([theta[:, [3]], theta[:, [3]]]),
-            t = theta[:, [4]],
-            s = s,
-            boundary_fun = bf.angle,
-            boundary_multiplicative = False,
-            boundary_params = {"theta": theta[:, 5]},
-            delta_t = delta_t,
-            n_samples = n_samples,
-            n_trials = n_trials,
-            max_t = max_t,
-            random_state = random_state,
-            smooth = smooth_unif,
-            )
-        
+            v=theta[:, :2],
+            a=theta[:, [2]],
+            z=np.column_stack([theta[:, [3]], theta[:, [3]]]),
+            t=theta[:, [4]],
+            s=s,
+            boundary_fun=bf.angle,
+            boundary_multiplicative=False,
+            boundary_params={"theta": theta[:, 5]},
+            delta_t=delta_t,
+            n_samples=n_samples,
+            n_trials=n_trials,
+            max_t=max_t,
+            random_state=random_state,
+            smooth=smooth_unif,
+        )
+
     if model == "race_no_z_angle_2":
         x = cssm.race_model(
-            v = theta[:, :2],
-            a = theta[:, [2]],
-            z = np.tile(np.array([0.0, 0.0,], dtype=np.float32), (n_trials, 1)),
-            t = theta[:, [3]],
-            s = s,
-            boundary_fun = bf.angle,
-            boundary_multiplicative = False,
-            boundary_params = {"theta": theta[:, 4]},
-            delta_t = delta_t,
-            n_samples = n_samples,
-            n_trials = n_trials,
-            max_t = max_t,
-            random_state = random_state,
-            smooth = smooth_unif,
-            )
+            v=theta[:, :2],
+            a=theta[:, [2]],
+            z=np.tile(
+                np.array(
+                    [
+                        0.0,
+                        0.0,
+                    ],
+                    dtype=np.float32,
+                ),
+                (n_trials, 1),
+            ),
+            t=theta[:, [3]],
+            s=s,
+            boundary_fun=bf.angle,
+            boundary_multiplicative=False,
+            boundary_params={"theta": theta[:, 4]},
+            delta_t=delta_t,
+            n_samples=n_samples,
+            n_trials=n_trials,
+            max_t=max_t,
+            random_state=random_state,
+            smooth=smooth_unif,
+        )
 
     # 3 Choice models
     if no_noise:
@@ -835,7 +872,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "race_no_bias_3":
@@ -853,7 +890,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "race_no_z_3":
@@ -871,9 +908,8 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
-
 
     if model == "race_no_bias_angle_3":
         x = cssm.race_model(
@@ -890,7 +926,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "race_no_z_angle_3":
@@ -908,7 +944,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "lca_3":
@@ -928,7 +964,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "lca_no_bias_3":
@@ -948,7 +984,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "lca_no_z_3":
@@ -968,7 +1004,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "lca_no_bias_angle_3":
@@ -988,7 +1024,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "lca_no_z_angle_3":
@@ -1008,7 +1044,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     # 4 Choice models
@@ -1032,7 +1068,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "race_no_bias_4":
@@ -1052,7 +1088,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "race_no_z_4":
@@ -1070,7 +1106,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "race_no_bias_angle_4":
@@ -1090,7 +1126,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "race_no_z_angle_4":
@@ -1108,7 +1144,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "lca_4":
@@ -1128,7 +1164,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "lca_no_bias_4":
@@ -1150,7 +1186,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "lca_no_z_4":
@@ -1170,7 +1206,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "lca_no_bias_angle_4":
@@ -1192,7 +1228,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "lca_no_z_angle_4":
@@ -1212,7 +1248,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     # Seq / Parallel models (4 choice)
@@ -1245,7 +1281,7 @@ def simulator(
             boundary_multiplicative=True,
             boundary_params={},
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "ddm_seq2_no_bias":
@@ -1267,7 +1303,7 @@ def simulator(
             boundary_multiplicative=True,
             boundary_params={},
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "ddm_seq2_conflict_gamma_no_bias":
@@ -1295,7 +1331,7 @@ def simulator(
                 "scale_gamma": theta[:, 8],
             },
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "ddm_seq2_angle_no_bias":
@@ -1317,7 +1353,7 @@ def simulator(
             boundary_multiplicative=False,
             boundary_params={"theta": theta[:, 5]},
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "ddm_seq2_weibull_no_bias":
@@ -1339,7 +1375,7 @@ def simulator(
             boundary_multiplicative=True,
             boundary_params={"alpha": theta[:, 5], "beta": theta[:, 6]},
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "ddm_par2":
@@ -1361,7 +1397,7 @@ def simulator(
             boundary_multiplicative=True,
             boundary_params={},
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "ddm_par2_no_bias":
@@ -1383,7 +1419,7 @@ def simulator(
             boundary_multiplicative=True,
             boundary_params={},
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "ddm_par2_conflict_gamma_no_bias":
@@ -1411,7 +1447,7 @@ def simulator(
                 "scale_gamma": theta[:, 8],
             },
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "ddm_par2_angle_no_bias":
@@ -1433,7 +1469,7 @@ def simulator(
             boundary_multiplicative=False,
             boundary_params={"theta": theta[:, 5]},
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "ddm_par2_weibull_no_bias":
@@ -1455,7 +1491,7 @@ def simulator(
             boundary_multiplicative=True,
             boundary_params={"alpha": theta[:, 5], "beta": theta[:, 6]},
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "ddm_mic2_adj":
@@ -1479,7 +1515,7 @@ def simulator(
             boundary_multiplicative=True,
             boundary_params={},
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "ddm_mic2_adj_no_bias":
@@ -1503,7 +1539,7 @@ def simulator(
             boundary_multiplicative=True,
             boundary_params={},
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "ddm_mic2_adj_conflict_gamma_no_bias":
@@ -1533,7 +1569,7 @@ def simulator(
                 "scale_gamma": theta[:, 9],
             },
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "ddm_mic2_adj_angle_no_bias":
@@ -1557,7 +1593,7 @@ def simulator(
             boundary_multiplicative=False,
             boundary_params={"theta": theta[:, 6]},
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "ddm_mic2_adj_weibull_no_bias":
@@ -1581,7 +1617,7 @@ def simulator(
             boundary_multiplicative=True,
             boundary_params={"alpha": theta[:, 6], "beta": theta[:, 7]},
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     # ----- Ornstein version of mic2_adj ---------
@@ -1606,7 +1642,7 @@ def simulator(
             boundary_multiplicative=True,
             boundary_params={},
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "ddm_mic2_ornstein_no_bias":
@@ -1630,7 +1666,7 @@ def simulator(
             boundary_multiplicative=True,
             boundary_params={},
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "ddm_mic2_ornstein_conflict_gamma_no_bias":
@@ -1660,7 +1696,7 @@ def simulator(
                 "scale_gamma": theta[:, 10],
             },
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "ddm_mic2_ornstein_angle_no_bias":
@@ -1684,7 +1720,7 @@ def simulator(
             boundary_multiplicative=False,
             boundary_params={"theta": theta[:, 7]},
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "ddm_mic2_ornstein_weibull_no_bias":
@@ -1708,7 +1744,7 @@ def simulator(
             boundary_multiplicative=True,
             boundary_params={"alpha": theta[:, 6], "beta": theta[:, 7]},
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     # Leak version of mic2
@@ -1733,7 +1769,7 @@ def simulator(
             boundary_multiplicative=True,
             boundary_params={},
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "ddm_mic2_leak_no_bias":
@@ -1757,7 +1793,7 @@ def simulator(
             boundary_multiplicative=True,
             boundary_params={},
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "ddm_mic2_leak_conflict_gamma_no_bias":
@@ -1787,7 +1823,7 @@ def simulator(
                 "scale_gamma": theta[:, 9],
             },
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "ddm_mic2_leak_angle_no_bias":
@@ -1811,7 +1847,7 @@ def simulator(
             boundary_multiplicative=False,
             boundary_params={"theta": theta[:, 6]},
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "ddm_mic2_leak_weibull_no_bias":
@@ -1835,7 +1871,7 @@ def simulator(
             boundary_multiplicative=True,
             boundary_params={"alpha": theta[:, 6], "beta": theta[:, 7]},
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     # ----------------- Tradeoff models -----------------
@@ -1859,7 +1895,7 @@ def simulator(
             boundary_multiplicative=True,
             boundary_params={},
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "tradeoff_angle_no_bias":
@@ -1882,7 +1918,7 @@ def simulator(
             boundary_multiplicative=False,
             boundary_params={"theta": theta[:, 6]},
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "tradeoff_weibull_no_bias":
@@ -1905,7 +1941,7 @@ def simulator(
             boundary_multiplicative=True,
             boundary_params={"alpha": theta[:, 6], "beta": theta[:, 7]},
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     if model == "tradeoff_conflict_gamma_no_bias":
@@ -1934,7 +1970,7 @@ def simulator(
                 "scale_gamma": theta[:, 9],
             },
             random_state=random_state,
-            smooth = smooth_unif,
+            smooth=smooth_unif,
         )
 
     # Output compatibility
