@@ -1874,6 +1874,112 @@ def simulator(
             smooth=smooth_unif,
         )
 
+    if model == "ddm_mic2_leak_no_bias_no_lowdim_noise":
+        x = cssm.ddm_flexbound_mic2_ornstein(
+            v_h=theta[:, 0],
+            v_l_1=theta[:, 1],
+            v_l_2=theta[:, 2],
+            a=theta[:, 3],
+            z_h=z_vec,  # np.array([0.5], dtype = np.float32),
+            z_l_1=z_vec,  # np.array([0.5], dtype = np.float32),
+            z_l_2=z_vec,  # np.array([0.5], dtype = np.float32),
+            d=theta[:, 4],
+            g=g_vec_leak,
+            t=theta[:, 5],
+            s=s,
+            s_pre_high_level_choice=0.0,
+            n_samples=n_samples,
+            n_trials=n_trials,
+            delta_t=delta_t,
+            max_t=max_t,
+            boundary_fun=bf.constant,
+            boundary_multiplicative=True,
+            boundary_params={},
+            random_state=random_state,
+            smooth=smooth_unif,
+        )
+
+    if model == "ddm_mic2_leak_weibull_no_bias_no_lowdim_noise":
+        x = cssm.ddm_flexbound_mic2_ornstein(
+            v_h=theta[:, 0],
+            v_l_1=theta[:, 1],
+            v_l_2=theta[:, 2],
+            a=theta[:, 3],
+            z_h=z_vec,  # np.array([0.5], dtype = np.float32),
+            z_l_1=z_vec,  # np.array([0.5], dtype = np.float32),
+            z_l_2=z_vec,  # np.array([0.5], dtype = np.float32),
+            d=theta[:, 4],
+            g=g_vec_leak,
+            t=theta[:, 5],
+            s=s,
+            s_pre_high_level_choice=0.0,
+            n_samples=n_samples,
+            n_trials=n_trials,
+            delta_t=delta_t,
+            max_t=max_t,
+            boundary_fun=bf.weibull_cdf,
+            boundary_multiplicative=True,
+            boundary_params={"alpha": theta[:, 6], "beta": theta[:, 7]},
+            random_state=random_state,
+            smooth=smooth_unif,
+        )
+
+    if model == "ddm_mic2_leak_angle_no_bias_no_lowdim_noise":
+        x = cssm.ddm_flexbound_mic2_ornstein(
+            v_h=theta[:, 0],
+            v_l_1=theta[:, 1],
+            v_l_2=theta[:, 2],
+            a=theta[:, 3],
+            z_h=z_vec,  # np.array([0.5], dtype = np.float32),
+            z_l_1=z_vec,  # np.array([0.5], dtype = np.float32),
+            z_l_2=z_vec,  # np.array([0.5], dtype = np.float32),
+            d=theta[:, 4],
+            g=g_vec_leak,
+            t=theta[:, 5],
+            s=s,
+            s_pre_high_level_choice=0.0,
+            n_samples=n_samples,
+            n_trials=n_trials,
+            delta_t=delta_t,
+            max_t=max_t,
+            boundary_fun=bf.angle,
+            boundary_multiplicative=False,
+            boundary_params={"theta": theta[:, 6]},
+            random_state=random_state,
+            smooth=smooth_unif,
+        )
+
+    if model == "ddm_mic2_leak_conflict_gamma_no_bias_no_lowdim_noise":
+        x = cssm.ddm_flexbound_mic2_ornstein(
+            v_h=theta[:, 0],
+            v_l_1=theta[:, 1],
+            v_l_2=theta[:, 2],
+            a=a_zero_vec,
+            z_h=z_vec,  # np.array([0.5], dtype = np.float32),
+            z_l_1=z_vec,  # np.array([0.5], dtype = np.float32),
+            z_l_2=z_vec,  # np.array([0.5], dtype = np.float32),
+            d=theta[:, 3],
+            g=g_vec_leak,
+            t=theta[:, 4],
+            s=s,
+            s_pre_high_level_choice=0.0,
+            n_samples=n_samples,
+            n_trials=n_trials,
+            delta_t=delta_t,
+            max_t=max_t,
+            boundary_fun=bf.conflict_gamma_bound,
+            boundary_multiplicative=False,
+            boundary_params={
+                "a": theta[:, 5],
+                "theta": theta[:, 6],
+                "scale": theta[:, 7],
+                "alpha_gamma": theta[:, 8],
+                "scale_gamma": theta[:, 9],
+            },
+            random_state=random_state,
+            smooth=smooth_unif,
+        )
+
     # ----------------- Tradeoff models -----------------
     if model == "tradeoff_no_bias":
         x = cssm.ddm_flexbound_tradeoff(
