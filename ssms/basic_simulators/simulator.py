@@ -1,4 +1,3 @@
-from ossaudiodev import SNDCTL_DSP_GETIPTR
 from . import boundary_functions as bf
 from . import drift_functions as df
 from ssms.config.config import model_config
