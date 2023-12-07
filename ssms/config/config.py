@@ -1,3 +1,4 @@
+from pyexpat import model
 from ssms.basic_simulators import boundary_functions as bf
 from ssms.basic_simulators import drift_functions as df
 import numpy as np
@@ -932,6 +933,20 @@ model_config = {
         "hddm_include": ["vh", "vl1", "vl2", "a", "d", "g", "t", "theta"],
         "nchoices": 4,
     },
+    "ddm_mic2_ornstein_angle_no_bias_no_lowdim_noise": {
+        "name": "ddm_mic2_ornstein_angle_no_bias",
+        "params": ["vh", "vl1", "vl2", "a", "d", "g", "t", "theta"],
+        "param_bounds": [
+            [-4.0, -4.0, -4.0, 0.3, 0.0, 0.0, 0.0, -0.1],
+            [4.0, 4.0, 4.0, 2.5, 1.0, 3.0, 2.0, 1.0],
+        ],
+        "boundary": bf.angle,
+        "boundary_multiplicative": False,
+        "n_params": 8,
+        "default_params": [0.0, 0.0, 0.0, 1.0, 0.5, 1.5, 1.0, 0.0],
+        "hddm_include": ["vh", "vl1", "vl2", "a", "d", "g", "t", "theta"],
+        "nchoices": 4,
+    },
     "ddm_mic2_ornstein_weibull_no_bias": {
         "name": "ddm_mic2_ornstein_weibull_no_bias",
         "params": ["vh", "vl1", "vl2", "a", "d", "g", "t", "alpha", "beta"],
@@ -1138,6 +1153,30 @@ model_config = {
 
 model_config["weibull_cdf"] = model_config["weibull"].copy()
 model_config["full_ddm2"] = model_config["full_ddm"].copy()
+model_config["ddm_mic2_ornstein_no_bias_no_lowdim_noise"] = model_config[
+    "ddm_mic2_ornstein_no_bias"
+].copy()
+model_config["ddm_mic2_ornstein_angle_no_bias_no_lowdim_noise"] = model_config[
+    "ddm_mic2_ornstein_angle_no_bias"
+].copy()
+model_config["ddm_mic2_ornstein_weibull_no_bias_no_lowdim_noise"] = model_config[
+    "ddm_mic2_ornstein_weibull_no_bias"
+].copy()
+model_config["ddm_mic2_ornstein_conflict_gamma_no_bias_no_lowdim_noise"] = model_config[
+    "ddm_mic2_ornstein_conflict_gamma_no_bias"
+].copy()
+model_config["ddm_mic2_leak_no_bias_no_lowdim_noise"] = model_config[
+    "ddm_mic2_leak_no_bias"
+].copy()
+model_config["ddm_mic2_leak_angle_no_bias_no_lowdim_noise"] = model_config[
+    "ddm_mic2_leak_angle_no_bias"
+].copy()
+model_config["ddm_mic2_leak_weibull_no_bias_no_lowdim_noise"] = model_config[
+    "ddm_mic2_leak_weibull_no_bias"
+].copy()
+model_config["ddm_mic2_leak_conflict_gamma_no_bias_no_lowdim_noise"] = model_config[
+    "ddm_mic2_leak_conflict_gamma_no_bias"
+].copy()
 
 #### DATASET GENERATOR CONFIGS --------------------------
 
