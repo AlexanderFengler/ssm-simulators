@@ -2488,7 +2488,8 @@ def ddm_flexbound_mic2_ornstein(np.ndarray[float, ndim = 1] v_h,
                                 np.ndarray[float, ndim = 1] d, # damper (1 --> no drift on low level until high level done, 0 --> full drift on low level)
                                 np.ndarray[float, ndim = 1] g, # inhibition parameter for the low dim choice procress while high dim is running
                                 np.ndarray[float, ndim = 1] t,
-                                float s = 1,
+                                float s = 1.0,
+                                float s_pre_high_level_choice = 1.0,
                                 float delta_t = 0.001,
                                 float max_t = 20,
                                 int n_samples = 20000,
@@ -2621,11 +2622,14 @@ def ddm_flexbound_mic2_ornstein(np.ndarray[float, ndim = 1] v_h,
                 if (bias_trace_view[ix] < 1) and (bias_trace_view[ix] > 0):
                     # main propagation if bias_trace is between 0 and 1 (high level choice is not yet made)
                     y_l += (((v_l * bias_trace_view[ix] * (1 - d_view[k])) - (g_view[k] * y_l)) * delta_t)
+                    # add gaussian displacement
+                    y_l += (sqrt_st * gaussian_values[m]) * s_pre_high_level_choice
                 else:
                     # main propagation if bias_trace is not between 0 and 1 (high level choice is already made)
                     y_l += (v_l * delta_t)
-                # add gaussian displacement
-                y_l += (sqrt_st * gaussian_values[m])
+                    # add gaussian displacement
+                    y_l += (sqrt_st * gaussian_values[m])
+                
                 
                 # propagate time and indices
                 t_l += delta_t

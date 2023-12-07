@@ -61,7 +61,6 @@ class data_generator:
     """
 
     def __init__(self, generator_config=None, model_config=None):
-        print("changed")
         # INIT -----------------------------------------
         if generator_config is None:
             print("No generator_config specified")
