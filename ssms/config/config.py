@@ -1,3 +1,4 @@
+from pyexpat import model
 from ssms.basic_simulators import boundary_functions as bf
 from ssms.basic_simulators import drift_functions as df
 import numpy as np
@@ -247,6 +248,71 @@ model_config = {
         "hddm_include": ["z", "sv"],
         "nchoices": 2,
     },
+    "race_2": {
+        "name": "race_2",
+        "params": ["v0", "v1", "a", "z0", "z1", "ndt"],
+        "param_bounds": [
+            [0.0, 0.0, 1.0, 0.0, 0.0, 0.0],
+            [2.5, 2.5, 3.0, 0.9, 0.9, 2.0],
+        ],
+        "boundary": bf.constant,
+        "n_params": 6,
+        "default_params": [0.0, 0.0, 2.0, 0.5, 0.5, 1e-3],
+        "hddm_include": ["v0", "v1", "a", "z0", "z1", "ndt"],
+        "nchoices": 2,
+    },
+    "race_no_bias_2": {
+        "name": "race_no_bias_2",
+        "params": ["v0", "v1", "a", "z", "ndt"],
+        "param_bounds": [
+            [0.0, 0.0, 1.0, 0.0, 0.0],
+            [2.5, 2.5, 3.0, 0.9, 2.0],
+        ],
+        "boundary": bf.constant,
+        "n_params": 5,
+        "default_params": [0.0, 0.0, 2.0, 0.5, 1e-3],
+        "hddm_include": ["v0", "v1", "a", "z", "ndt"],
+        "nchoices": 2,
+    },
+    "race_no_z_2": {
+        "name": "race_no_z_2",
+        "params": ["v0", "v1", "a", "ndt"],
+        "param_bounds": [
+            [0.0, 0.0, 1.0, 0.0],
+            [2.5, 2.5, 3.0, 2.0],
+        ],
+        "boundary": bf.constant,
+        "n_params": 4,
+        "default_params": [0.0, 0.0, 2.0, 1e-3],
+        "hddm_include": ["v0", "v1", "a", "ndt"],
+        "nchoices": 2,
+    },
+    "race_no_bias_angle_2": {
+        "name": "race_no_bias_angle_2",
+        "params": ["v0", "v1", "a", "z", "ndt", "theta"],
+        "param_bounds": [
+            [0.0, 0.0, 1.0, 0.0, 0.0, -0.1],
+            [2.5, 2.5, 3.0, 0.9, 2.0, 1.45],
+        ],
+        "boundary": bf.angle,
+        "n_params": 6,
+        "default_params": [0.0, 0.0, 2.0, 0.5, 1e-3, 0.0],
+        "hddm_include": ["v0", "v1", "a", "z", "ndt", "theta"],
+        "nchoices": 2,
+    },
+    "race_no_z_angle_2": {
+        "name": "race_no_z_angle_2",
+        "params": ["v0", "v1", "a", "ndt", "theta"],
+        "param_bounds": [
+            [0.0, 0.0, 1.0, 0.0, -0.1],
+            [2.5, 2.5, 3.0, 2.0, 1.45],
+        ],
+        "boundary": bf.angle,
+        "n_params": 5,
+        "default_params": [0.0, 0.0, 2.0, 1e-3, 0.0],
+        "hddm_include": ["v0", "v1", "a", "ndt", "theta"],
+        "nchoices": 2,
+    },
     "race_3": {
         "name": "race_3",
         "params": ["v0", "v1", "v2", "a", "z0", "z1", "z2", "ndt"],
@@ -273,6 +339,19 @@ model_config = {
         "hddm_include": ["v0", "v1", "v2", "a", "z", "ndt"],
         "nchoices": 3,
     },
+    "race_no_z_3": {
+        "name": "race_no_z_3",
+        "params": ["v0", "v1", "v2", "a", "ndt"],
+        "param_bounds": [
+            [0.0, 0.0, 0.0, 1.0, 0.0],
+            [2.5, 2.5, 2.5, 3.0, 2.0],
+        ],
+        "boundary": bf.constant,
+        "n_params": 5,
+        "default_params": [0.0, 0.0, 0.0, 2.0, 1e-3],
+        "hddm_include": ["v0", "v1", "v2", "a", "ndt"],
+        "nchoices": 3,
+    },
     "race_no_bias_angle_3": {
         "name": "race_no_bias_angle_3",
         "params": ["v0", "v1", "v2", "a", "z", "ndt", "theta"],
@@ -284,6 +363,19 @@ model_config = {
         "n_params": 7,
         "default_params": [0.0, 0.0, 0.0, 2.0, 0.5, 1e-3, 0.0],
         "hddm_include": ["v0", "v1", "v2", "a", "z", "ndt", "theta"],
+        "nchoices": 3,
+    },
+    "race_no_z_angle_3": {
+        "name": "race_no_z_angle_3",
+        "params": ["v0", "v1", "v2", "a", "ndt", "theta"],
+        "param_bounds": [
+            [0.0, 0.0, 0.0, 1.0, 0.0, -0.1],
+            [2.5, 2.5, 2.5, 3.0, 2.0, 1.45],
+        ],
+        "boundary": bf.angle,
+        "n_params": 6,
+        "default_params": [0.0, 0.0, 0.0, 2.0, 1e-3, 0.0],
+        "hddm_include": ["v0", "v1", "v2", "a", "ndt", "theta"],
         "nchoices": 3,
     },
     "race_4": {
@@ -312,6 +404,19 @@ model_config = {
         "hddm_include": ["v0", "v1", "v2", "v3", "a", "z", "ndt"],
         "nchoices": 4,
     },
+    "race_no_z_4": {
+        "name": "race_no_z_4",
+        "params": ["v0", "v1", "v2", "v3", "a", "ndt"],
+        "param_bounds": [
+            [0.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+            [2.5, 2.5, 2.5, 2.5, 3.0, 2.0],
+        ],
+        "boundary": bf.constant,
+        "n_params": 6,
+        "default_params": [0.0, 0.0, 0.0, 0.0, 2.0, 1e-3],
+        "hddm_include": ["v0", "v1", "v2", "v3", "a", "ndt"],
+        "nchoices": 4,
+    },
     "race_no_bias_angle_4": {
         "name": "race_no_bias_angle_4",
         "params": ["v0", "v1", "v2", "v3", "a", "z", "ndt", "theta"],
@@ -323,6 +428,19 @@ model_config = {
         "n_params": 8,
         "default_params": [0.0, 0.0, 0.0, 0.0, 2.0, 0.5, 1e-3, 0.0],
         "hddm_include": ["v0", "v1", "v2", "v3", "a", "z", "ndt", "theta"],
+        "nchoices": 4,
+    },
+    "race_no_z_angle_4": {
+        "name": "race_no_z_angle_4",
+        "params": ["v0", "v1", "v2", "v3", "a", "ndt", "theta"],
+        "param_bounds": [
+            [0.0, 0.0, 0.0, 0.0, 1.0, 0.0, -0.1],
+            [2.5, 2.5, 2.5, 2.5, 3.0, 2.0, 1.45],
+        ],
+        "boundary": bf.angle,
+        "n_params": 7,
+        "default_params": [0.0, 0.0, 0.0, 0.0, 2.0, 1e-3, 0.0],
+        "hddm_include": ["v0", "v1", "v2", "v3", "a", "ndt", "theta"],
         "nchoices": 4,
     },
     "lca_3": {
@@ -351,6 +469,19 @@ model_config = {
         "hddm_include": ["v0", "v1", "v2", "a", "z", "g", "b", "ndt"],
         "nchoices": 3,
     },
+    "lca_no_z_3": {
+        "name": "lca_no_z_3",
+        "params": ["v0", "v1", "v2", "a", "g", "b", "ndt"],
+        "param_bounds": [
+            [0.0, 0.0, 0.0, 1.0, -1.0, -1.0, 0.0],
+            [2.5, 2.5, 2.5, 3.0, 1.0, 1.0, 2.0],
+        ],
+        "boundary": bf.constant,
+        "n_params": 7,
+        "default_params": [0.0, 0.0, 0.0, 2.0, 0.0, 0.0, 1e-3],
+        "hddm_include": ["v0", "v1", "v2", "a", "g", "b", "ndt"],
+        "nchoices": 3,
+    },
     "lca_no_bias_angle_3": {
         "name": "lca_no_bias_angle_3",
         "params": ["v0", "v1", "v2", "a", "z", "g", "b", "ndt", "theta"],
@@ -362,6 +493,19 @@ model_config = {
         "n_params": 9,
         "default_params": [0.0, 0.0, 0.0, 2.0, 0.5, 0.0, 0.0, 1e-3, 0.0],
         "hddm_include": ["v0", "v1", "v2", "a", "z", "g", "b", "ndt", "theta"],
+        "nchoices": 3,
+    },
+    "lca_no_z_angle_3": {
+        "name": "lca_no_z_angle_3",
+        "params": ["v0", "v1", "v2", "a", "g", "b", "ndt", "theta"],
+        "param_bounds": [
+            [0.0, 0.0, 0.0, 1.0, -1.0, -1.0, 0.0, -1.0],
+            [2.5, 2.5, 2.5, 3.0, 1.0, 1.0, 2.0, 1.45],
+        ],
+        "boundary": bf.angle,
+        "n_params": 8,
+        "default_params": [0.0, 0.0, 0.0, 2.0, 0.0, 0.0, 1e-3, 0.0],
+        "hddm_include": ["v0", "v1", "v2", "a", "g", "b", "ndt", "theta"],
         "nchoices": 3,
     },
     "lca_4": {
@@ -416,6 +560,19 @@ model_config = {
         "hddm_include": ["v0", "v1", "v2", "v3", "a", "z", "g", "b", "ndt"],
         "nchoices": 4,
     },
+    "lca_no_z_4": {
+        "name": "lca_no_z_4",
+        "params": ["v0", "v1", "v2", "v3", "a", "g", "b", "ndt"],
+        "param_bounds": [
+            [0.0, 0.0, 0.0, 0.0, 1.0, -1.0, -1.0, 0.0],
+            [2.5, 2.5, 2.5, 2.5, 3.0, 1.0, 1.0, 2.0],
+        ],
+        "boundary": bf.constant,
+        "n_params": 8,
+        "default_params": [0.0, 0.0, 0.0, 0.0, 2.0, 0.0, 0.0, 1e-3],
+        "hddm_include": ["v0", "v1", "v2", "v3", "a", "g", "b", "ndt"],
+        "nchoices": 4,
+    },
     "lca_no_bias_angle_4": {
         "name": "lca_no_bias_angle_4",
         "params": ["v0", "v1", "v2", "v3", "a", "z", "g", "b", "ndt", "theta"],
@@ -427,6 +584,19 @@ model_config = {
         "n_params": 10,
         "default_params": [0.0, 0.0, 0.0, 0.0, 2.0, 0.5, 0.0, 0.0, 1e-3, 0.0],
         "hddm_include": ["v0", "v1", "v2", "v3", "a", "z", "g", "b", "ndt", "theta"],
+        "nchoices": 4,
+    },
+    "lca_no_z_angle_4": {
+        "name": "lca_no_z_angle_4",
+        "params": ["v0", "v1", "v2", "v3", "a", "g", "b", "ndt", "theta"],
+        "param_bounds": [
+            [0.0, 0.0, 0.0, 0.0, 1.0, -1.0, -1.0, 0.0, -0.1],
+            [2.5, 2.5, 2.5, 2.5, 3.0, 1.0, 1.0, 2.0, 1.45],
+        ],
+        "boundary": bf.angle,
+        "n_params": 9,
+        "default_params": [0.0, 0.0, 0.0, 0.0, 2.0, 0.0, 0.0, 1e-3, 0.0],
+        "hddm_include": ["v0", "v1", "v2", "v3", "a", "g", "b", "ndt", "theta"],
         "nchoices": 4,
     },
     "ddm_par2": {
@@ -620,7 +790,7 @@ model_config = {
         "boundary": bf.constant,
         "n_params": 6,
         "default_params": [0.0, 0.0, 0.0, 1.0, 0.5, 1.0],
-        "hddm_include": ["vh", "vl1", "vl2", "a", "zh", "zl1", "zl2", "d", "t"],
+        "hddm_include": ["vh", "vl1", "vl2", "a", "d", "t"],
         "nchoices": 4,
     },
     "ddm_mic2_adj_conflict_gamma_no_bias": {
@@ -686,6 +856,202 @@ model_config = {
         "hddm_include": ["vh", "vl1", "vl2", "a", "d", "t", "theta"],
         "nchoices": 4,
     },
+    "ddm_mic2_ornstein": {
+        "name": "ddm_mic2_ornstein",
+        "params": ["vh", "vl1", "vl2", "a", "zh", "zl1", "zl2", "d", "g", "t"],
+        "param_bounds": [
+            [-4.0, -4.0, -4.0, 0.3, 0.2, 0.2, 0.2, 0.0, 0.0, 0.0],
+            [4.0, 4.0, 4.0, 2.5, 0.8, 0.8, 0.8, 1.0, 3.0, 2.0],
+        ],
+        "boundary": bf.constant,
+        "n_params": 10,
+        "default_params": [0.0, 0.0, 0.0, 1.0, 0.5, 0.5, 0.5, 0.5, 1.5, 0.5],
+        "hddm_include": ["vh", "vl1", "vl2", "a", "zh", "zl1", "zl2", "d", "g", "t"],
+        "nchoices": 4,
+    },
+    "ddm_mic2_ornstein_no_bias": {
+        "name": "ddm_mic2_ornstein_no_bias",
+        "params": ["vh", "vl1", "vl2", "a", "d", "g", "t"],
+        "param_bounds": [
+            [-4.0, -4.0, -4.0, 0.3, 0.0, 0.0, 0.0],
+            [4.0, 4.0, 4.0, 2.5, 1.0, 3.0, 2.0],
+        ],
+        "boundary": bf.constant,
+        "n_params": 7,
+        "default_params": [0.0, 0.0, 0.0, 1.0, 0.5, 1.5, 1.0],
+        "hddm_include": ["vh", "vl1", "vl2", "a", "d", "g", "t"],
+        "nchoices": 4,
+    },
+    "ddm_mic2_ornstein_conflict_gamma_no_bias": {
+        "name": "ddm_mic2_ornstein_conflict_gamma_no_bias",
+        "params": [
+            "vh",
+            "vl1",
+            "vl2",
+            "d",
+            "g",
+            "t",
+            "a",
+            "theta",
+            "scale",
+            "alpha_gamma",
+            "scale_gamma",
+        ],
+        "param_bounds": [
+            [-4.0, -4.0, -4.0, 0.0, 0.0, 0.0, 0.3, 0.0, 0.0, 1.1, 0.5],
+            [4.0, 4.0, 4.0, 1.0, 3.0, 2.0, 2.5, 0.5, 5.0, 5.0, 5.0],
+        ],
+        "boundary": bf.conflict_gamma_bound,
+        "n_params": 11,
+        "default_params": [0.0, 0.0, 0.0, 0.5, 1.5, 1.0, 1.0, 1.0, 1.0, 2, 2],
+        "hddm_include": [
+            "vh",
+            "vl1",
+            "vl2",
+            "a",
+            "d",
+            "g",
+            "t",
+            "theta",
+            "scale",
+            "alpha_gamma",
+            "scale_gamma",
+        ],
+        "nchoices": 4,
+    },
+    "ddm_mic2_ornstein_angle_no_bias": {
+        "name": "ddm_mic2_ornstein_angle_no_bias",
+        "params": ["vh", "vl1", "vl2", "a", "d", "g", "t", "theta"],
+        "param_bounds": [
+            [-4.0, -4.0, -4.0, 0.3, 0.0, 0.0, 0.0, -0.1],
+            [4.0, 4.0, 4.0, 2.5, 1.0, 3.0, 2.0, 1.0],
+        ],
+        "boundary": bf.angle,
+        "boundary_multiplicative": False,
+        "n_params": 8,
+        "default_params": [0.0, 0.0, 0.0, 1.0, 0.5, 1.5, 1.0, 0.0],
+        "hddm_include": ["vh", "vl1", "vl2", "a", "d", "g", "t", "theta"],
+        "nchoices": 4,
+    },
+    "ddm_mic2_ornstein_angle_no_bias_no_lowdim_noise": {
+        "name": "ddm_mic2_ornstein_angle_no_bias",
+        "params": ["vh", "vl1", "vl2", "a", "d", "g", "t", "theta"],
+        "param_bounds": [
+            [-4.0, -4.0, -4.0, 0.3, 0.0, 0.0, 0.0, -0.1],
+            [4.0, 4.0, 4.0, 2.5, 1.0, 3.0, 2.0, 1.0],
+        ],
+        "boundary": bf.angle,
+        "boundary_multiplicative": False,
+        "n_params": 8,
+        "default_params": [0.0, 0.0, 0.0, 1.0, 0.5, 1.5, 1.0, 0.0],
+        "hddm_include": ["vh", "vl1", "vl2", "a", "d", "g", "t", "theta"],
+        "nchoices": 4,
+    },
+    "ddm_mic2_ornstein_weibull_no_bias": {
+        "name": "ddm_mic2_ornstein_weibull_no_bias",
+        "params": ["vh", "vl1", "vl2", "a", "d", "g", "t", "alpha", "beta"],
+        "param_bounds": [
+            [-4.0, -4.0, -4.0, 0.3, 0.0, 0.0, 0.0, 0.31, 0.31],
+            [4.0, 4.0, 4.0, 2.5, 1.0, 3.0, 2.0, 4.99, 6.99],
+        ],
+        "boundary": bf.weibull_cdf,
+        "boundary_multiplicative": True,
+        "n_params": 9,
+        "default_params": [0.0, 0.0, 0.0, 1.0, 0.5, 1.5, 1.0, 2.5, 3.5],
+        "hddm_include": ["vh", "vl1", "vl2", "a", "d", "g", "t", "alpha", "beta"],
+        "nchoices": 4,
+    },
+    # -----
+    "ddm_mic2_leak": {
+        "name": "ddm_mic2_leak",
+        "params": ["vh", "vl1", "vl2", "a", "zh", "zl1", "zl2", "d", "t"],
+        "param_bounds": [
+            [-4.0, -4.0, -4.0, 0.3, 0.2, 0.2, 0.2, 0.0, 0.0],
+            [4.0, 4.0, 4.0, 2.5, 0.8, 0.8, 0.8, 1.0, 2.0],
+        ],
+        "boundary": bf.constant,
+        "n_params": 9,
+        "default_params": [0.0, 0.0, 0.0, 1.0, 0.5, 0.5, 0.5, 0.5, 0.5],
+        "hddm_include": ["vh", "vl1", "vl2", "a", "zh", "zl1", "zl2", "d", "t"],
+        "nchoices": 4,
+    },
+    "ddm_mic2_leak_no_bias": {
+        "name": "ddm_mic2_leak_no_bias",
+        "params": ["vh", "vl1", "vl2", "a", "d", "t"],
+        "param_bounds": [
+            [-4.0, -4.0, -4.0, 0.3, 0.0, 0.0],
+            [4.0, 4.0, 4.0, 2.5, 1.0, 2.0],
+        ],
+        "boundary": bf.constant,
+        "n_params": 6,
+        "default_params": [0.0, 0.0, 0.0, 1.0, 0.5, 1.0],
+        "hddm_include": ["vh", "vl1", "vl2", "a", "d", "t"],
+        "nchoices": 4,
+    },
+    "ddm_mic2_leak_conflict_gamma_no_bias": {
+        "name": "ddm_mic2_leak_conflict_gamma_no_bias",
+        "params": [
+            "vh",
+            "vl1",
+            "vl2",
+            "d",
+            "t",
+            "a",
+            "theta",
+            "scale",
+            "alpha_gamma",
+            "scale_gamma",
+        ],
+        "param_bounds": [
+            [-4.0, -4.0, -4.0, 0.0, 0.0, 0.3, 0.0, 0.0, 1.1, 0.5],
+            [4.0, 4.0, 4.0, 1.0, 2.0, 2.5, 0.5, 5.0, 5.0, 5.0],
+        ],
+        "boundary": bf.conflict_gamma_bound,
+        "n_params": 10,
+        "default_params": [0.0, 0.0, 0.0, 0.5, 1.0, 1.0, 1.0, 1.0, 2, 2],
+        "hddm_include": [
+            "vh",
+            "vl1",
+            "vl2",
+            "d",
+            "t",
+            "a",
+            "theta",
+            "scale",
+            "alpha_gamma",
+            "scale_gamma",
+        ],
+        "nchoices": 4,
+    },
+    "ddm_mic2_leak_angle_no_bias": {
+        "name": "ddm_mic2_leak_angle_no_bias",
+        "params": ["vh", "vl1", "vl2", "a", "d", "t", "theta"],
+        "param_bounds": [
+            [-4.0, -4.0, -4.0, 0.3, 0.0, 0.0, -0.1],
+            [4.0, 4.0, 4.0, 2.5, 1.0, 2.0, 1.0],
+        ],
+        "boundary": bf.angle,
+        "boundary_multiplicative": False,
+        "n_params": 7,
+        "default_params": [0.0, 0.0, 0.0, 1.0, 0.5, 1.0, 0.0],
+        "hddm_include": ["vh", "vl1", "vl2", "a", "d", "t", "theta"],
+        "nchoices": 4,
+    },
+    "ddm_mic2_leak_weibull_no_bias": {
+        "name": "ddm_mic2_leak_weibull_no_bias",
+        "params": ["vh", "vl1", "vl2", "a", "d", "t", "alpha", "beta"],
+        "param_bounds": [
+            [-4.0, -4.0, -4.0, 0.3, 0.0, 0.0, 0.31, 0.31],
+            [4.0, 4.0, 4.0, 2.5, 1.0, 2.0, 4.99, 6.99],
+        ],
+        "boundary": bf.weibull_cdf,
+        "boundary_multiplicative": True,
+        "n_params": 8,
+        "default_params": [0.0, 0.0, 0.0, 1.0, 0.5, 1.0, 2.5, 3.5],
+        "hddm_include": ["vh", "vl1", "vl2", "a", "d", "t", "alpha", "beta"],
+        "nchoices": 4,
+    },
+    # -----
     "tradeoff_no_bias": {
         "name": "tradeoff_no_bias",
         "params": ["vh", "vl1", "vl2", "a", "d", "t"],
@@ -787,6 +1153,30 @@ model_config = {
 
 model_config["weibull_cdf"] = model_config["weibull"].copy()
 model_config["full_ddm2"] = model_config["full_ddm"].copy()
+model_config["ddm_mic2_ornstein_no_bias_no_lowdim_noise"] = model_config[
+    "ddm_mic2_ornstein_no_bias"
+].copy()
+model_config["ddm_mic2_ornstein_angle_no_bias_no_lowdim_noise"] = model_config[
+    "ddm_mic2_ornstein_angle_no_bias"
+].copy()
+model_config["ddm_mic2_ornstein_weibull_no_bias_no_lowdim_noise"] = model_config[
+    "ddm_mic2_ornstein_weibull_no_bias"
+].copy()
+model_config["ddm_mic2_ornstein_conflict_gamma_no_bias_no_lowdim_noise"] = model_config[
+    "ddm_mic2_ornstein_conflict_gamma_no_bias"
+].copy()
+model_config["ddm_mic2_leak_no_bias_no_lowdim_noise"] = model_config[
+    "ddm_mic2_leak_no_bias"
+].copy()
+model_config["ddm_mic2_leak_angle_no_bias_no_lowdim_noise"] = model_config[
+    "ddm_mic2_leak_angle_no_bias"
+].copy()
+model_config["ddm_mic2_leak_weibull_no_bias_no_lowdim_noise"] = model_config[
+    "ddm_mic2_leak_weibull_no_bias"
+].copy()
+model_config["ddm_mic2_leak_conflict_gamma_no_bias_no_lowdim_noise"] = model_config[
+    "ddm_mic2_leak_conflict_gamma_no_bias"
+].copy()
 
 #### DATASET GENERATOR CONFIGS --------------------------
 
@@ -812,6 +1202,7 @@ data_generator_config = {
         "n_cpus": "all",
         "negative_rt_cutoff": -66.77497,
         "n_subruns": 10,
+        "smooth_unif": False,
     },
     "lan": {
         "output_folder": "data/lan_mlp/",
@@ -831,6 +1222,7 @@ data_generator_config = {
         "n_subruns": 10,
         "bin_pointwise": False,
         "separate_response_channels": False,
+        "smooth_unif": True,
     },
     "ratio_estimator": {
         "output_folder": "data/ratio/",

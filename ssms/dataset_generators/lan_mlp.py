@@ -104,6 +104,7 @@ class data_generator:
             max_t=self.generator_config["max_t"],
             bin_dim=0,
             delta_t=self.generator_config["delta_t"],
+            smooth_unif=self.generator_config["smooth_unif"],
         )
 
     def get_simulations(self, theta=None, random_seed=None):
@@ -371,20 +372,37 @@ class data_generator:
                     " of",
                     self.generator_config["n_subruns"],
                 )
-
-            if cpn_only:
-                with Pool(processes=self.generator_config["n_cpus"] - 1) as pool:
-                    out_list += pool.map(
-                        self._cpn_get_processed_data_for_theta,
-                        [k for k in seed_args[(i * subrun_n) : ((i + 1) * subrun_n)]],
-                    )
+            if self.generator_config["n_cpus"] > 1:
+                if cpn_only:
+                    with Pool(processes=self.generator_config["n_cpus"] - 1) as pool:
+                        out_list += pool.map(
+                            self._cpn_get_processed_data_for_theta,
+                            [
+                                k
+                                for k in seed_args[
+                                    (i * subrun_n) : ((i + 1) * subrun_n)
+                                ]
+                            ],
+                        )
+                else:
+                    with Pool(processes=self.generator_config["n_cpus"] - 1) as pool:
+                        out_list += pool.map(
+                            self._mlp_get_processed_data_for_theta,
+                            [
+                                k
+                                for k in seed_args[
+                                    (i * subrun_n) : ((i + 1) * subrun_n)
+                                ]
+                            ],
+                        )
             else:
-                with Pool(processes=self.generator_config["n_cpus"] - 1) as pool:
-                    out_list += pool.map(
-                        self._mlp_get_processed_data_for_theta,
-                        [k for k in seed_args[(i * subrun_n) : ((i + 1) * subrun_n)]],
-                    )
-
+                print("No Multiprocessing, since only one cpu requested!")
+                if cpn_only:
+                    for k in seed_args[(i * subrun_n) : ((i + 1) * subrun_n)]:
+                        out_list.append(self._cpn_get_processed_data_for_theta(k))
+                else:
+                    for k in seed_args[(i * subrun_n) : ((i + 1) * subrun_n)]:
+                        out_list.append(self._mlp_get_processed_data_for_theta(k))
         data = {}
 
         # Choice probabilities and theta are always needed
