@@ -13,6 +13,7 @@ In addition some utility functions are provided that help
 with preprocessing the output of the simulator function.
 """
 
+
 def _make_valid_dict(dict_in):
     """Turn all values in dictionary into numpy arrays and make sure,
     that all thetas are either scalars or vectors of the same length
@@ -274,7 +275,7 @@ def simulator(
     bin_dim=None,
     bin_pointwise=False,
     smooth_unif=True,
-    return_option='full',
+    return_option="full",
     random_state=None,
 ):
     """Basic data simulator for the models included in HDDM.
@@ -305,8 +306,8 @@ def simulator(
         return_option: str <default='full'>
             Determines what the function returns. Can be either
             'full' or 'minimal'. If 'full' the function returns
-            a dictionary with keys 'rts', 'responses' and 'metadata', and 
-            metadata contains the model parameters and some additional 
+            a dictionary with keys 'rts', 'responses' and 'metadata', and
+            metadata contains the model parameters and some additional
             information. 'metadata' is a simpler dictionary with less information
             if 'minimal' is chosen.
         random_state: int <default=None>
