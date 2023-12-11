@@ -127,6 +127,7 @@ def test(np.ndarray[float, ndim = 1] v, # drift by timestep 'delta_t'
          int n_trials = 10,
          random_state = None,
          smooth = False,
+         return_option = 'full', # 'full' or 'minimal'
          ):
 
     set_seed(random_state)
@@ -181,18 +182,26 @@ def test(np.ndarray[float, ndim = 1] v, # drift by timestep 'delta_t'
             
             rts_view[n, k, 0] = t_particle + t_view[k] + smooth_u # store rt
             choices_view[n, k, 0] = (-1) * sign(y) # store choice
-  
-    return {'rts': rts, 'choices': choices, 'metadata': {'v': v,
-                                                         'a': a,
-                                                         'z': z,
-                                                         't': t,
-                                                         's': s,
-                                                         'delta_t': delta_t,
-                                                         'max_t': max_t,
-                                                         'n_samples': n_samples,
-                                                         'simulator': 'ddm',
-                                                         'boundary_fun_type': 'constant',
-                                                         'possible_choices': [-1, 1]}}
+
+    if return_option == 'full':
+        return {'rts': rts, 'choices': choices, 'metadata': {'v': v,
+                                                            'a': a,
+                                                            'z': z,
+                                                            't': t,
+                                                            's': s,
+                                                            'delta_t': delta_t,
+                                                            'max_t': max_t,
+                                                            'n_samples': n_samples,
+                                                            'simulator': 'ddm',
+                                                            'boundary_fun_type': 'constant',
+                                                            'possible_choices': [-1, 1]}}
+    elif return_option == 'minimal':
+        return {'rts': rts, 'choices': choices, 'metadata': {'simulator': 'ddm', 
+                                                             'possible_choices': [-1, 1],
+                                                             'boundary_fun_type': 'constant',
+                                                             'n_samples': n_samples,}}
+    else:
+        raise ValueError('return_option must be either "full" or "minimal"')
 
 # ---------------------------------------------------------------------------------------------
 
@@ -213,6 +222,7 @@ def full_ddm_hddm_base(np.ndarray[float, ndim = 1] v, # = 0,
                      int n_trials = 1,
                      random_state = None,
                      smooth = False,
+                     return_option = 'full', # 'full' or 'minimal'
                      ):
 
     set_seed(random_state)
@@ -308,20 +318,29 @@ def full_ddm_hddm_base(np.ndarray[float, ndim = 1] v, # = 0,
             else:
                 choices_view[n, k, 0] = 1
 
-    return {'rts': rts, 'choices': choices, 'metadata': {'v': v,
-                            'a': a,
-                            'z': z,
-                            't': t,
-                            'sz': sz,
-                            'sv': sv,
-                            'st': st,
-                            's': s,
-                            'delta_t': delta_t,
-                            'max_t': max_t,
-                            'n_samples': n_samples,
-                            'simulator': 'full_ddm_hddm_base',
-                            'possible_choices': [0, 1],
-                            'trajectory': traj}}
+    if return_option == 'full':
+        return {'rts': rts, 'choices': choices, 'metadata': {'v': v,
+                                'a': a,
+                                'z': z,
+                                't': t,
+                                'sz': sz,
+                                'sv': sv,
+                                'st': st,
+                                's': s,
+                                'delta_t': delta_t,
+                                'max_t': max_t,
+                                'n_samples': n_samples,
+                                'simulator': 'full_ddm_hddm_base',
+                                'possible_choices': [0, 1],
+                                'boundary_fun_type': 'constant',
+                                'trajectory': traj}}
+    elif return_option == 'minimal':
+        return {'rts': rts, 'choices': choices, 'metadata': {'simulator': 'full_ddm_hddm_base', 
+                                                             'possible_choices': [0, 1],
+                                                             'n_samples': n_samples,
+                                                             'boundary_fun_type': 'constant'}}
+    else:
+        raise ValueError('return_option must be either "full" or "minimal"')
 # -------------------------------------------------------------------------------------------------
 
 
@@ -342,6 +361,7 @@ def ddm(np.ndarray[float, ndim = 1] v, # drift by timestep 'delta_t'
         int n_samples = 20000, # number of samples considered
         int n_trials = 10,
         random_state = None,
+        return_option = 'full', # 'full' or 'minimal'
         smooth = False):
 
     set_seed(random_state)
@@ -412,19 +432,27 @@ def ddm(np.ndarray[float, ndim = 1] v, # drift by timestep 'delta_t'
 
             rts_view[n, k, 0] = t_particle + t_view[k] + smooth_u # store rt
             choices_view[n, k, 0] = sign(y) # store choice
-        
-    return {'rts': rts, 'choices': choices,  'metadata': {'v': v,
-                                                          'a': a,
-                                                          'z': z,
-                                                          't': t,
-                                                          's': s,
-                                                          'delta_t': delta_t,
-                                                          'max_t': max_t,
-                                                          'n_samples': n_samples,
-                                                          'simulator': 'ddm',
-                                                          'boundary_fun_type': 'constant',
-                                                          'possible_choices': [-1, 1],
-                                                          'trajectory': traj}}
+
+    if return_option == 'full':
+        return {'rts': rts, 'choices': choices,  'metadata': {'v': v,
+                                                            'a': a,
+                                                            'z': z,
+                                                            't': t,
+                                                            's': s,
+                                                            'delta_t': delta_t,
+                                                            'max_t': max_t,
+                                                            'n_samples': n_samples,
+                                                            'simulator': 'ddm',
+                                                            'boundary_fun_type': 'constant',
+                                                            'possible_choices': [-1, 1],
+                                                            'trajectory': traj}}
+    elif return_option == 'minimal':
+        return {'rts': rts, 'choices': choices,  'metadata': {'simulator': 'ddm', 
+                                                             'possible_choices': [-1, 1],
+                                                             'boundary_fun_type': 'constant',
+                                                             'n_samples': n_samples,}}
+    else:
+        raise ValueError('return_option must be either "full" or "minimal"')
 
 # Simulate (rt, choice) tuples from: SIMPLE DDM -----------------------------------------------
 # Simplest algorithm
@@ -443,6 +471,7 @@ def ddm_cov(np.ndarray[float, ndim = 1] v, # drift by timestep 'delta_t'
             int n_samples = 1000, # number of samples considered
             int n_trials = 1,
             random_state = None,
+            return_option = 'full', # 'full' or 'minimal'
             smooth = False,
             ):
 
@@ -500,17 +529,25 @@ def ddm_cov(np.ndarray[float, ndim = 1] v, # drift by timestep 'delta_t'
             rts_view[n, k, 0] = t_particle + t_view[k] + smooth_u # store rt
             choices_view[n, k, 0] = sign(y) # store choice
 
-    return {'rts': rts, 'choices': choices, 'metadata': {'v': v,
-                                                         'a': a,
-                                                         'z': z,
-                                                         't': t,
-                                                         's': s,
-                                                         'delta_t': delta_t,
-                                                         'max_t': max_t,
-                                                         'n_samples': n_samples,
-                                                         'simulator': 'ddm',
-                                                         'boundary_fun_type': 'constant',
-                                                         'possible_choices': [-1, 1]}}
+    if return_option == 'full':
+        return {'rts': rts, 'choices': choices, 'metadata': {'v': v,
+                                                            'a': a,
+                                                            'z': z,
+                                                            't': t,
+                                                            's': s,
+                                                            'delta_t': delta_t,
+                                                            'max_t': max_t,
+                                                            'n_samples': n_samples,
+                                                            'simulator': 'ddm',
+                                                            'boundary_fun_type': 'constant',
+                                                            'possible_choices': [-1, 1]}}
+    elif return_option == 'minimal':
+        return {'rts': rts, 'choices': choices, 'metadata': {'simulator': 'ddm', 
+                                                             'possible_choices': [-1, 1],
+                                                             'boundary_fun_type': 'constant',
+                                                             'n_samples': n_samples,}}
+    else:
+        raise ValueError('return_option must be either "full" or "minimal"')
 
 # Simulate (rt, choice) tuples from: DDM WITH FLEXIBLE BOUNDARIES, 
 # but also apply a DEADLINE to rts. Any rt that exceeds the deadline is treated
@@ -532,6 +569,7 @@ def ddm_flexbound_deadline(np.ndarray[float, ndim = 1] v,
                            boundary_multiplicative = True,
                            boundary_params = {},
                            random_state = None,
+                           return_option = 'full',
                            smooth = False,
                            ):
 
@@ -625,23 +663,32 @@ def ddm_flexbound_deadline(np.ndarray[float, ndim = 1] v,
                     rts_view[n, k, 0] = t_particle + t_view[k] # Store rt
 
                 choices_view[n, k, 0] = sign(y) # Store choice
-    
-    return {'rts': rts, 'choices': choices,  'metadata': {'v': v,
-                                                          'a': a,
-                                                          'z': z,
-                                                          't': t,
-                                                          'deadline': deadline,
-                                                          's': s,
-                                                          **boundary_params,
-                                                          'delta_t': delta_t,
-                                                          'max_t': max_t,
-                                                          'n_samples': n_samples,
-                                                          'simulator': 'ddm_flexbound_deadline',
-                                                          'boundary_fun_type': boundary_fun.__name__,
-                                                          'possible_choices': [-1, 1],
-                                                          'trajectory': traj,
-                                                          'boundary': boundary,
-                                                          }}
+
+    if return_option == 'full':
+        return {'rts': rts, 'choices': choices,  'metadata': {'v': v,
+                                                            'a': a,
+                                                            'z': z,
+                                                            't': t,
+                                                            'deadline': deadline,
+                                                            's': s,
+                                                            **boundary_params,
+                                                            'delta_t': delta_t,
+                                                            'max_t': max_t,
+                                                            'n_samples': n_samples,
+                                                            'simulator': 'ddm_flexbound_deadline',
+                                                            'boundary_fun_type': boundary_fun.__name__,
+                                                            'possible_choices': [-1, 1],
+                                                            'trajectory': traj,
+                                                            'boundary': boundary,
+                                                            }}
+    elif return_option == 'minimal':
+        return {'rts': rts, 'choices': choices,  'metadata': {'simulator': 'ddm_flexbound_deadline', 
+                                                             'possible_choices': [-1, 1],
+                                                             'boundary_fun_type': boundary_fun.__name__,
+                                                             'n_samples': n_samples,
+                                                             }}
+    else:
+        raise ValueError('return_option must be either "full" or "minimal"')
 # ----------------------------------------------------------------------------------------------------
 
 # Simulate (rt, choice) tuples from: DDM WITH FLEXIBLE BOUNDARIES ------------------------------------
@@ -660,6 +707,7 @@ def ddm_flexbound(np.ndarray[float, ndim = 1] v,
                   boundary_multiplicative = True,
                   boundary_params = {},
                   random_state = None,
+                  return_option = 'full',
                   smooth = False,
                   ):
 
@@ -745,22 +793,31 @@ def ddm_flexbound(np.ndarray[float, ndim = 1] v,
 
             #rts_view[n, k, 0] = t_particle + t_view[k] # Store rt
             choices_view[n, k, 0] = sign(y) # Store choice
-    
-    return {'rts': rts, 'choices': choices,  'metadata': {'v': v,
-                                                          'a': a,
-                                                          'z': z,
-                                                          't': t,
-                                                          's': s,
-                                                          **boundary_params,
-                                                          'delta_t': delta_t,
-                                                          'max_t': max_t,
-                                                          'n_samples': n_samples,
-                                                          'simulator': 'ddm_flexbound',
-                                                          'boundary_fun_type': boundary_fun.__name__,
-                                                          'possible_choices': [-1, 1],
-                                                          'trajectory': traj,
-                                                          'boundary': boundary,
-                                                          }}
+
+    if return_option == 'full':
+        return {'rts': rts, 'choices': choices,  'metadata': {'v': v,
+                                                            'a': a,
+                                                            'z': z,
+                                                            't': t,
+                                                            's': s,
+                                                            **boundary_params,
+                                                            'delta_t': delta_t,
+                                                            'max_t': max_t,
+                                                            'n_samples': n_samples,
+                                                            'simulator': 'ddm_flexbound',
+                                                            'boundary_fun_type': boundary_fun.__name__,
+                                                            'possible_choices': [-1, 1],
+                                                            'trajectory': traj,
+                                                            'boundary': boundary,
+                                                            }}
+    elif return_option == 'minimal':
+        return {'rts': rts, 'choices': choices,  'metadata': {'simulator': 'ddm_flexbound', 
+                                                             'possible_choices': [-1, 1],
+                                                             'boundary_fun_type': boundary_fun.__name__,
+                                                             'n_samples': n_samples,
+                                                             }}
+    else:
+        raise ValueError('return_option must be either "full" or "minimal"')
 ## ----------------------------------------------------------------------------------------------------
 
 
@@ -782,6 +839,7 @@ def ddm_flex(np.ndarray[float, ndim = 1] v,
              boundary_params = {},
              drift_params = {},
              random_state = None,
+             return_option = 'full',
              smooth = False,
              ):
 
@@ -871,24 +929,34 @@ def ddm_flex(np.ndarray[float, ndim = 1] v,
 
             rts_view[n, k, 0] = t_particle + t_view[k] + smooth_u # Store rt
             choices_view[n, k, 0] = sign(y) # Store choice
-    
-    return {'rts': rts, 'choices': choices,  'metadata': {'v': v,
-                                                          'a': a,
-                                                          'z': z,
-                                                          't': t,
-                                                          's': s,
-                                                          **boundary_params,
-                                                          **drift_params,
-                                                          'delta_t': delta_t,
-                                                          'max_t': max_t,
-                                                          'n_samples': n_samples,
-                                                          'simulator': 'ddm_flex',
-                                                          'boundary_fun_type': boundary_fun.__name__,
-                                                          'drift_fun_type': boundary_fun.__name__,
-                                                          'possible_choices': [-1, 1],
-                                                          'trajectory': traj,
-                                                          'drift': drift,
-                                                          'boundary': boundary}}
+
+    if return_option == 'full':
+        return {'rts': rts, 'choices': choices,  'metadata': {'v': v,
+                                                            'a': a,
+                                                            'z': z,
+                                                            't': t,
+                                                            's': s,
+                                                            **boundary_params,
+                                                            **drift_params,
+                                                            'delta_t': delta_t,
+                                                            'max_t': max_t,
+                                                            'n_samples': n_samples,
+                                                            'simulator': 'ddm_flex',
+                                                            'boundary_fun_type': boundary_fun.__name__,
+                                                            'drift_fun_type': boundary_fun.__name__,
+                                                            'possible_choices': [-1, 1],
+                                                            'trajectory': traj,
+                                                            'drift': drift,
+                                                            'boundary': boundary}}
+    elif return_option == 'minimal':
+        return {'rts': rts, 'choices': choices,  'metadata': {'simulator': 'ddm_flex', 
+                                                             'possible_choices': [-1, 1],
+                                                             'boundary_fun_type': boundary_fun.__name__,
+                                                             'drift_fun_type': boundary_fun.__name__,
+                                                             'n_samples': n_samples,
+                                                             }}
+    else:
+        raise ValueError('return_option must be either "full" or "minimal"')
 # ----------------------------------------------------------------------------------------------------
 
 # Simulate (rt, choice) tuples from: DDM WITH FLEXIBLE BOUNDARIES ------------------------------------
@@ -906,6 +974,7 @@ def ddm_flexbound_max(float v = 0.0,
                       boundary_multiplicative = True,
                       boundary_params = {},
                       random_state = None,
+                      return_option = 'full',
                       smooth = False,
                       ):
 
@@ -968,20 +1037,28 @@ def ddm_flexbound_max(float v = 0.0,
         rts_view[n, 0] = t_particle + t + smooth_u # Store rt
         choices_view[n, 0] = sign(y) # Store choice
     
-
-    return {'rts': rts, 'choices': choices,  'metadata': {'v': v,
-                                                          'a': a,
-                                                          'z': z,
-                                                          't': t,
-                                                          's': s,
-                                                          **boundary_params,
-                                                          'delta_t': delta_t,
-                                                          'max_t': max_t,
-                                                          'n_samples': n_samples,
-                                                          'simulator': 'ddm_flexbound',
-                                                          'boundary_fun_type': boundary_fun.__name__,
-                                                          'possible_choices': [-1, 1],
-                                                          'boundary': boundary}}
+    if return_option == 'full':
+        return {'rts': rts, 'choices': choices,  'metadata': {'v': v,
+                                                            'a': a,
+                                                            'z': z,
+                                                            't': t,
+                                                            's': s,
+                                                            **boundary_params,
+                                                            'delta_t': delta_t,
+                                                            'max_t': max_t,
+                                                            'n_samples': n_samples,
+                                                            'simulator': 'ddm_flexbound',
+                                                            'boundary_fun_type': boundary_fun.__name__,
+                                                            'possible_choices': [-1, 1],
+                                                            'boundary': boundary}}
+    elif return_option == 'minimal':
+        return {'rts': rts, 'choices': choices,  'metadata': {'simulator': 'ddm_flexbound', 
+                                                             'possible_choices': [-1, 1],
+                                                             'boundary_fun_type': boundary_fun.__name__,
+                                                             'n_samples': n_samples,
+                                                             }}
+    else:
+        raise ValueError('return_option must be either "full" or "minimal"')
 # ----------------------------------------------------------------------------------------------------
 
 
@@ -1005,6 +1082,7 @@ def glob_flexbound(np.ndarray[float, ndim = 1] v,
                    boundary_multiplicative = True,
                    boundary_params = {},
                    random_state = None,
+                   return_option = 'full',
                    smooth = False,
                    ):
 
@@ -1091,22 +1169,31 @@ def glob_flexbound(np.ndarray[float, ndim = 1] v,
             rts_view[n, k, 0] = t_particle + t_view[k] + smooth_u # Store rt
             choices_view[n, k, 0] = sign(y) # Store choice
 
-    return {'rts': rts, 'choices': choices,  'metadata': {'v': v,
-                                                          'a': a,
-                                                          'z': z,
-                                                          't': t,
-                                                          'alphar': alphar,
-                                                          'g': g,
-                                                          's': s,
-                                                          **boundary_params,
-                                                          'delta_t': delta_t,
-                                                          'max_t': max_t,
-                                                          'n_samples': n_samples,
-                                                          'simulator': 'glob_flexbound',
-                                                          'boundary_fun_type': boundary_fun.__name__,
-                                                          'possible_choices': [-1, 1],
-                                                          'trajectory': traj,
-                                                          'boundary': boundary}}
+    if return_option == 'full':
+        return {'rts': rts, 'choices': choices,  'metadata': {'v': v,
+                                                            'a': a,
+                                                            'z': z,
+                                                            't': t,
+                                                            'alphar': alphar,
+                                                            'g': g,
+                                                            's': s,
+                                                            **boundary_params,
+                                                            'delta_t': delta_t,
+                                                            'max_t': max_t,
+                                                            'n_samples': n_samples,
+                                                            'simulator': 'glob_flexbound',
+                                                            'boundary_fun_type': boundary_fun.__name__,
+                                                            'possible_choices': [-1, 1],
+                                                            'trajectory': traj,
+                                                            'boundary': boundary}}
+    elif return_option == 'minimal':
+        return {'rts': rts, 'choices': choices,  'metadata': {'simulator': 'glob_flexbound', 
+                                                             'possible_choices': [-1, 1],
+                                                             'boundary_fun_type': boundary_fun.__name__,
+                                                             'n_samples': n_samples,
+                                                             }}
+    else:
+        raise ValueError('return_option must be either "full" or "minimal"')
 # -------------------------------------------------------------------------------------------------
 
 
@@ -1128,6 +1215,7 @@ def levy_flexbound(np.ndarray[float, ndim = 1] v,
                    boundary_multiplicative = True,
                    boundary_params = {},
                    random_state = None,
+                   return_option = 'full',
                    smooth = False,
                    ):
 
@@ -1213,21 +1301,30 @@ def levy_flexbound(np.ndarray[float, ndim = 1] v,
             rts_view[n, k, 0] = t_particle + t_view[k] + smooth_u # Store rt
             choices_view[n, k, 0] = sign(y) # Store choice
         
-    return {'rts': rts, 'choices': choices, 'metadata': {'v': v,
-                                                          'a': a,
-                                                          'z': z,
-                                                          't': t,
-                                                          'alpha_diff': alpha_diff,
-                                                          's': s,
-                                                          **boundary_params,
-                                                          'delta_t': delta_t,
-                                                          'max_t': max_t,
-                                                          'n_samples': n_samples,
-                                                          'simulator': 'levy_flexbound',
-                                                          'boundary_fun_type': boundary_fun.__name__,
-                                                          'possible_choices': [-1, 1],
-                                                          'trajectory': traj,
-                                                          'boundary': boundary}}
+    if return_option == 'full':
+        return {'rts': rts, 'choices': choices, 'metadata': {'v': v,
+                                                            'a': a,
+                                                            'z': z,
+                                                            't': t,
+                                                            'alpha_diff': alpha_diff,
+                                                            's': s,
+                                                            **boundary_params,
+                                                            'delta_t': delta_t,
+                                                            'max_t': max_t,
+                                                            'n_samples': n_samples,
+                                                            'simulator': 'levy_flexbound',
+                                                            'boundary_fun_type': boundary_fun.__name__,
+                                                            'possible_choices': [-1, 1],
+                                                            'trajectory': traj,
+                                                            'boundary': boundary}}
+    elif return_option == 'minimal':
+        return {'rts': rts, 'choices': choices,  'metadata': {'simulator': 'levy_flexbound', 
+                                                             'possible_choices': [-1, 1],
+                                                             'boundary_fun_type': boundary_fun.__name__,
+                                                             'n_samples': n_samples,
+                                                             }}
+    else:
+        raise ValueError('return_option must be either "full" or "minimal"')
 # -------------------------------------------------------------------------------------------------
 
 # Simulate (rt, choice) tuples from: Full DDM with flexible bounds --------------------------------
@@ -1249,6 +1346,7 @@ def full_ddm(np.ndarray[float, ndim = 1] v, # = 0,
              boundary_multiplicative = True,
              boundary_params = {},
              random_state = None,
+             return_option = 'full',
              smooth = False,
              ):
 
@@ -1351,24 +1449,33 @@ def full_ddm(np.ndarray[float, ndim = 1] v, # = 0,
 
             rts_view[n, k, 0] = t_particle + t_tmp + smooth_u # Store rt
             choices_view[n, k, 0] = np.sign(y) # Store choice
-
-    return {'rts': rts, 'choices': choices, 'metadata': {'v': v,
-                                                         'a': a,
-                                                         'z': z,
-                                                         't': t,
-                                                         'sz': sz,
-                                                         'sv': sv,
-                                                         'st': st,
-                                                         's': s,
-                                                         **boundary_params,
-                                                         'delta_t': delta_t,
-                                                         'max_t': max_t,
-                                                         'n_samples': n_samples,
-                                                         'simulator': 'full_ddm',
-                                                         'boundary_fun_type': boundary_fun.__name__,
-                                                         'possible_choices': [-1, 1],
-                                                         'trajectory': traj,
-                                                         'boundary': boundary}}
+    
+    if return_option == 'full':
+        return {'rts': rts, 'choices': choices, 'metadata': {'v': v,
+                                                            'a': a,
+                                                            'z': z,
+                                                            't': t,
+                                                            'sz': sz,
+                                                            'sv': sv,
+                                                            'st': st,
+                                                            's': s,
+                                                            **boundary_params,
+                                                            'delta_t': delta_t,
+                                                            'max_t': max_t,
+                                                            'n_samples': n_samples,
+                                                            'simulator': 'full_ddm',
+                                                            'boundary_fun_type': boundary_fun.__name__,
+                                                            'possible_choices': [-1, 1],
+                                                            'trajectory': traj,
+                                                            'boundary': boundary}}
+    elif return_option == 'minimal':
+        return {'rts': rts, 'choices': choices,  'metadata': {'simulator': 'full_ddm', 
+                                                             'possible_choices': [-1, 1],
+                                                             'boundary_fun_type': boundary_fun.__name__,
+                                                             'n_samples': n_samples,
+                                                             }}
+    else:
+        raise ValueError('return_option must be either "full" or "minimal"')
 
 # -------------------------------------------------------------------------------------------------
 
@@ -1389,6 +1496,7 @@ def ddm_sdv(np.ndarray[float, ndim = 1] v,
             boundary_multiplicative = True,
             boundary_params = {},
             random_state = None,
+            return_option = 'full',
             smooth = False,
             ):
 
@@ -1482,22 +1590,30 @@ def ddm_sdv(np.ndarray[float, ndim = 1] v,
             rts_view[n, k, 0] = t_particle + t_view[k] + smooth_u # Store rt
             choices_view[n, k, 0] = np.sign(y) # Store choice
 
-
-    return { 'rts': rts, 'choices': choices, 'metadata': {'v': v,
-                                                          'a': a,
-                                                          'z': z,
-                                                          't': t,
-                                                          'sv': sv,
-                                                          's': s,
-                                                          **boundary_params,
-                                                          'delta_t': delta_t,
-                                                          'max_t': max_t,
-                                                          'n_samples': n_samples,
-                                                          'simulator': 'ddm_sdv',
-                                                          'boundary_fun_type': boundary_fun.__name__,
-                                                          'possible_choices': [-1, 1],
-                                                          'trajectory': traj,
-                                                          'boundary': boundary}}
+    if return_option == 'full':
+        return { 'rts': rts, 'choices': choices, 'metadata': {'v': v,
+                                                            'a': a,
+                                                            'z': z,
+                                                            't': t,
+                                                            'sv': sv,
+                                                            's': s,
+                                                            **boundary_params,
+                                                            'delta_t': delta_t,
+                                                            'max_t': max_t,
+                                                            'n_samples': n_samples,
+                                                            'simulator': 'ddm_sdv',
+                                                            'boundary_fun_type': boundary_fun.__name__,
+                                                            'possible_choices': [-1, 1],
+                                                            'trajectory': traj,
+                                                            'boundary': boundary}}
+    elif return_option == 'minimal':
+        return {'rts': rts, 'choices': choices,  'metadata': {'simulator': 'ddm_sdv', 
+                                                             'possible_choices': [-1, 1],
+                                                             'boundary_fun_type': boundary_fun.__name__,
+                                                             'n_samples': n_samples,
+                                                             }}
+    else:
+        raise ValueError('return_option must be either "full" or "minimal"')
 
 # -------------------------------------------------------------------------------------------------
 
@@ -1518,6 +1634,7 @@ def ornstein_uhlenbeck(np.ndarray[float, ndim = 1] v, # drift parameter
                        boundary_multiplicative = True,
                        boundary_params = {},
                        random_state = None,
+                       return_option = 'full',
                        smooth = False,
                       ):
 
@@ -1601,21 +1718,30 @@ def ornstein_uhlenbeck(np.ndarray[float, ndim = 1] v, # drift parameter
             rts_view[n, k, 0] = t_particle + t_view[k] + smooth_u
             choices_view[n, k, 0] = sign(y)
 
-    return { 'rts': rts, 'choices': choices, 'metadata': {'v': v,
-                                                          'a': a,
-                                                          'z': z,
-                                                          'g': g,
-                                                          't': t,
-                                                          's': s,
-                                                          **boundary_params,
-                                                          'delta_t': delta_t,
-                                                          'max_t': max_t,
-                                                          'n_samples': n_samples,
-                                                          'simulator': 'ornstein_uhlenbeck',
-                                                          'boundary_fun_type': boundary_fun.__name__,
-                                                          'possible_choices': [-1, 1],
-                                                          'trajectory': traj,
-                                                          'boundary': boundary}}
+    if return_option == 'full':
+        return { 'rts': rts, 'choices': choices, 'metadata': {'v': v,
+                                                            'a': a,
+                                                            'z': z,
+                                                            'g': g,
+                                                            't': t,
+                                                            's': s,
+                                                            **boundary_params,
+                                                            'delta_t': delta_t,
+                                                            'max_t': max_t,
+                                                            'n_samples': n_samples,
+                                                            'simulator': 'ornstein_uhlenbeck',
+                                                            'boundary_fun_type': boundary_fun.__name__,
+                                                            'possible_choices': [-1, 1],
+                                                            'trajectory': traj,
+                                                            'boundary': boundary}}
+    elif return_option == 'minimal':
+        return {'rts': rts, 'choices': choices,  'metadata': {'simulator': 'ornstein_uhlenbeck', 
+                                                             'possible_choices': [-1, 1],
+                                                             'boundary_fun_type': boundary_fun.__name__,
+                                                             'n_samples': n_samples,
+                                                             }}
+    else:
+        raise ValueError('return_option must be either "full" or "minimal"')
 # --------------------------------------------------------------------------------------------------
 
 # Simulate (rt, choice) tuples from: RACE MODEL WITH N SAMPLES ----------------------------------
@@ -1662,6 +1788,7 @@ def race_model(np.ndarray[float, ndim = 2] v,  # np.array expected, one column o
                boundary_multiplicative = True,
                boundary_params = {},
                random_state = None,
+               return_option = 'full',
                smooth = False,):
 
     set_seed(random_state)
@@ -1766,21 +1893,31 @@ def race_model(np.ndarray[float, ndim = 2] v,  # np.array expected, one column o
             z_dict['z_' + str(i)] = z[:, i]
             #t_dict['t_' + str(i)] = t[i] # for now no t by choice
 
-    return {'rts': rts, 'choices': choices, 'metadata': {**v_dict,
-                                                          'a': a, 
-                                                          **z_dict,
-                                                          't': t,
-                                                          # **t_dict, # for now no t by choice
-                                                          's': s,
-                                                          **boundary_params,
-                                                          'delta_t': delta_t,
-                                                          'max_t': max_t,
-                                                          'n_samples': n_samples,
-                                                          'simulator': 'race_model',
-                                                          'boundary_fun_type': boundary_fun.__name__,
-                                                          'possible_choices': list(np.arange(0, n_particles, 1)),
-                                                          'trajectory': traj,
-                                                          'boundary': boundary}}
+    if return_option == 'full':
+        return {'rts': rts, 'choices': choices, 'metadata': {**v_dict,
+                                                            'a': a, 
+                                                            **z_dict,
+                                                            't': t,
+                                                            # **t_dict, # for now no t by choice
+                                                            's': s,
+                                                            **boundary_params,
+                                                            'delta_t': delta_t,
+                                                            'max_t': max_t,
+                                                            'n_samples': n_samples,
+                                                            'simulator': 'race_model',
+                                                            'boundary_fun_type': boundary_fun.__name__,
+                                                            'possible_choices': list(np.arange(0, n_particles, 1)),
+                                                            'trajectory': traj,
+                                                            'boundary': boundary}}
+    elif return_option == 'minimal':
+        return {'rts': rts, 'choices': choices, 'metadata': {'simulator': 'race_model', 
+                                                             'possible_choices': [-1, 1],
+                                                             'boundary_fun_type': boundary_fun.__name__,
+                                                             'n_samples': n_samples,
+                                                             }}
+
+    else:
+        raise ValueError('return_option must be either "full" or "minimal"')
     # -------------------------------------------------------------------------------------------------
 # @cythonboundscheck(False)
 # @cythonwraparound(False)
@@ -1801,6 +1938,7 @@ def lca(np.ndarray[float, ndim = 2] v, # drift parameters (np.array expect: one 
         boundary_multiplicative = True,
         boundary_params = {},
         random_state = None,
+        return_option = 'full',
         smooth = False,
         ):
 
@@ -1917,22 +2055,31 @@ def lca(np.ndarray[float, ndim = 2] v, # drift parameters (np.array expect: one 
         v_dict['v_' + str(i)] = v[:, i]
         z_dict['z_' + str(i)] = z[:, i]
 
-    return {'rts': rts, 'choices': choices, 'metadata': {**v_dict,
-                                                         'a': a,
-                                                         **z_dict,
-                                                         'g': g,
-                                                         'b': b,
-                                                         't': t,
-                                                         's': s,
-                                                         **boundary_params,
-                                                         'delta_t': delta_t,
-                                                         'max_t': max_t,
-                                                         'n_samples': n_samples,
-                                                         'simulator' : 'lca',
-                                                         'boundary_fun_type': boundary_fun.__name__,
-                                                         'possible_choices': list(np.arange(0, n_particles, 1)),
-                                                         'trajectory': traj,
-                                                         'boundary': boundary}}
+    if return_option == 'full':
+        return {'rts': rts, 'choices': choices, 'metadata': {**v_dict,
+                                                            'a': a,
+                                                            **z_dict,
+                                                            'g': g,
+                                                            'b': b,
+                                                            't': t,
+                                                            's': s,
+                                                            **boundary_params,
+                                                            'delta_t': delta_t,
+                                                            'max_t': max_t,
+                                                            'n_samples': n_samples,
+                                                            'simulator' : 'lca',
+                                                            'boundary_fun_type': boundary_fun.__name__,
+                                                            'possible_choices': list(np.arange(0, n_particles, 1)),
+                                                            'trajectory': traj,
+                                                            'boundary': boundary}}
+    elif return_option == 'minimal':
+        return {'rts': rts, 'choices': choices, 'metadata': {'simulator': 'lca', 
+                                                             'possible_choices': [-1, 1],
+                                                             'boundary_fun_type': boundary_fun.__name__,
+                                                             'n_samples': n_samples,
+                                                             }}
+    else:
+        raise ValueError('return_option must be either "full" or "minimal"')
 
 # Simulate (rt, choice) tuples from: DDM WITH FLEXIBLE BOUNDARIES ------------------------------------
 # @cythonboundscheck(False)
@@ -1955,6 +2102,7 @@ def ddm_flexbound_seq2(np.ndarray[float, ndim = 1] v_h,
                        boundary_multiplicative = True,
                        boundary_params = {},
                        random_state = None,
+                       return_option = 'full',
                        smooth = False,
                        ):
 
@@ -2095,24 +2243,33 @@ def ddm_flexbound_seq2(np.ndarray[float, ndim = 1] v_h,
                 elif random_uniform() <= ((y_l + boundary_view[ix]) / (2 * boundary_view[ix])):
                     choices_view[n, k, 0] += 1
 
-    return {'rts': rts, 'choices': choices, 'metadata': {'vh': v_h,
-                                                         'vl1': v_l_1,
-                                                         'vl2': v_l_2,
-                                                         'a': a,
-                                                         'zh': z_h,
-                                                         'zl1': z_l_1,
-                                                         'zl2': z_l_2,
-                                                         't': t,
-                                                         's': s,
-                                                         **boundary_params,
-                                                         'delta_t': delta_t,
-                                                         'max_t': max_t,
-                                                         'n_samples': n_samples,
-                                                         'simulator': 'ddm_flexbound',
-                                                         'boundary_fun_type': boundary_fun.__name__,
-                                                         'trajectory': 'This simulator does not yet allow for trajectory simulation',
-                                                         'possible_choices': [0, 1, 2, 3],
-                                                         'boundary': boundary}}
+    if return_option == 'full':
+        return {'rts': rts, 'choices': choices, 'metadata': {'vh': v_h,
+                                                            'vl1': v_l_1,
+                                                            'vl2': v_l_2,
+                                                            'a': a,
+                                                            'zh': z_h,
+                                                            'zl1': z_l_1,
+                                                            'zl2': z_l_2,
+                                                            't': t,
+                                                            's': s,
+                                                            **boundary_params,
+                                                            'delta_t': delta_t,
+                                                            'max_t': max_t,
+                                                            'n_samples': n_samples,
+                                                            'simulator': 'ddm_flexbound',
+                                                            'boundary_fun_type': boundary_fun.__name__,
+                                                            'trajectory': 'This simulator does not yet allow for trajectory simulation',
+                                                            'possible_choices': [0, 1, 2, 3],
+                                                            'boundary': boundary}}
+    elif return_option == 'minimal':
+        return {'rts': rts, 'choices': choices, 'metadata': {'simulator': 'ddm_flexbound', 
+                                                             'possible_choices': [0, 1, 2, 3],
+                                                             'boundary_fun_type': boundary_fun.__name__,
+                                                             'n_samples': n_samples,
+                                                             }}
+    else:
+        raise ValueError('return_option must be either "full" or "minimal"')
 # -----------------------------------------------------------------------------------------------
 
 # Simulate (rt, choice) tuples from: DDM WITH FLEXIBLE BOUNDARIES ------------------------------------
@@ -2136,6 +2293,7 @@ def ddm_flexbound_par2(np.ndarray[float, ndim = 1] v_h,
                        boundary_multiplicative = True,
                        boundary_params = {},
                        random_state = None,
+                       return_option = 'full',
                        smooth = False,
                        ):
 
@@ -2262,25 +2420,35 @@ def ddm_flexbound_par2(np.ndarray[float, ndim = 1] v_h,
             elif random_uniform() <= ((y_l + boundary_view[ix]) / (2 * boundary_view[ix])):
                 choices_view[n, k, 0] += 1
 
-    return {'rts': rts, 'choices': choices, 'rts_low': rts_low, 'rts_high': rts_high, 
-            'metadata': {'vh': v_h,
-                         'vl1': v_l_1,
-                         'vl2': v_l_2,
-                         'a': a,
-                         'zh': z_h,
-                         'zl1': z_l_1,
-                         'zl2': z_l_2,
-                         't': t,
-                         's': s,
-                         **boundary_params,
-                         'delta_t': delta_t,
-                         'max_t': max_t,
-                         'n_samples': n_samples,
-                         'simulator': 'ddm_flexbound',
-                         'boundary_fun_type': boundary_fun.__name__,
-                         'possible_choices': [0, 1, 2, 3],
-                         'trajectory': 'This simulator does not yet allow for trajectory simulation',
-                         'boundary': boundary}}
+    if return_option == 'full':
+        return {'rts': rts, 'choices': choices, 'rts_low': rts_low, 'rts_high': rts_high, 
+                'metadata': {'vh': v_h,
+                            'vl1': v_l_1,
+                            'vl2': v_l_2,
+                            'a': a,
+                            'zh': z_h,
+                            'zl1': z_l_1,
+                            'zl2': z_l_2,
+                            't': t,
+                            's': s,
+                            **boundary_params,
+                            'delta_t': delta_t,
+                            'max_t': max_t,
+                            'n_samples': n_samples,
+                            'simulator': 'ddm_flexbound',
+                            'boundary_fun_type': boundary_fun.__name__,
+                            'possible_choices': [0, 1, 2, 3],
+                            'trajectory': 'This simulator does not yet allow for trajectory simulation',
+                            'boundary': boundary}}
+    elif return_option == 'minimal':
+        return {'rts': rts, 'choices': choices, 'rts_low': rts_low, 'rts_high': rts_high, 
+                'metadata': {'simulator': 'ddm_flexbound', 
+                             'possible_choices': [0, 1, 2, 3],
+                             'boundary_fun_type': boundary_fun.__name__,
+                             'n_samples': n_samples,
+                             }}
+    else:
+        raise ValueError('return_option must be either "full" or "minimal"')
 # -----------------------------------------------------------------------------------------------
 
 ## Simulate (rt, choice) tuples from: DDM WITH FLEXIBLE BOUNDARIES ------------------------------------
@@ -2488,8 +2656,8 @@ def ddm_flexbound_mic2_ornstein(np.ndarray[float, ndim = 1] v_h,
                                 np.ndarray[float, ndim = 1] d, # damper (1 --> no drift on low level until high level done, 0 --> full drift on low level)
                                 np.ndarray[float, ndim = 1] g, # inhibition parameter for the low dim choice procress while high dim is running
                                 np.ndarray[float, ndim = 1] t,
+                                np.ndarray[float, ndim = 1] s_pre_high_level_choice,
                                 float s = 1.0,
-                                float s_pre_high_level_choice = 1.0,
                                 float delta_t = 0.001,
                                 float max_t = 20,
                                 int n_samples = 20000,
@@ -2499,6 +2667,7 @@ def ddm_flexbound_mic2_ornstein(np.ndarray[float, ndim = 1] v_h,
                                 boundary_multiplicative = True,
                                 boundary_params = {},
                                 random_state = None,
+                                return_option = 'full',
                                 smooth = False,
                                 ):
 
@@ -2514,6 +2683,7 @@ def ddm_flexbound_mic2_ornstein(np.ndarray[float, ndim = 1] v_h,
     cdef float[:] d_view = d
     cdef float[:] g_view = g
     cdef float[:] t_view = t
+    cdef float[:] s_pre_high_level_choice_view = s_pre_high_level_choice
 
     # TD: Add trajectory --> same issue as with par2 model above... might need to make a separate simulator for trajectories
     rts = np.zeros((n_samples, n_trials, 1), dtype = DTYPE)
@@ -2623,7 +2793,7 @@ def ddm_flexbound_mic2_ornstein(np.ndarray[float, ndim = 1] v_h,
                     # main propagation if bias_trace is between 0 and 1 (high level choice is not yet made)
                     y_l += (((v_l * bias_trace_view[ix] * (1 - d_view[k])) - (g_view[k] * y_l)) * delta_t)
                     # add gaussian displacement
-                    y_l += (sqrt_st * gaussian_values[m]) * s_pre_high_level_choice
+                    y_l += (sqrt_st * gaussian_values[m]) * s_pre_high_level_choice_view[k] 
                 else:
                     # main propagation if bias_trace is not between 0 and 1 (high level choice is already made)
                     y_l += (v_l * delta_t)
@@ -2663,27 +2833,259 @@ def ddm_flexbound_mic2_ornstein(np.ndarray[float, ndim = 1] v_h,
             elif random_uniform() <= ((y_l + boundary_view[ix]) / (2 * boundary_view[ix])):
                 choices_view[n, k, 0] += 1
 
-    return {'rts': rts, 'choices': choices, 'rts_high': rts_high, 'rts_low': rts_low, 
-            'metadata': {'vh': v_h,
-                        'vl1': v_l_1,
-                        'vl2': v_l_2,
-                        'a': a,
-                        'zh': z_h,
-                        'zl1': z_l_1,
-                        'zl2': z_l_2,
-                        'd': d,
-                        't': t,
-                        's': s,
-                        **boundary_params,
-                        'delta_t': delta_t,
-                        'max_t': max_t,
-                        'n_samples': n_samples,
-                        'simulator': 'ddm_flexbound_mic2_adj',
-                        'boundary_fun_type': boundary_fun.__name__,
-                        'possible_choices': [0, 1, 2, 3],
-                        'trajectory': 'This simulator does not yet allow for trajectory simulation',
-                        'boundary': boundary}}
+    if return_option == 'full':
+        return {'rts': rts, 'choices': choices, 'rts_high': rts_high, 'rts_low': rts_low, 
+                'metadata': {'vh': v_h,
+                            'vl1': v_l_1,
+                            'vl2': v_l_2,
+                            'a': a,
+                            'zh': z_h,
+                            'zl1': z_l_1,
+                            'zl2': z_l_2,
+                            'd': d,
+                            't': t,
+                            's_pre_high_level_choice': s_pre_high_level_choice,
+                            's': s,
+                            **boundary_params,
+                            'delta_t': delta_t,
+                            'max_t': max_t,
+                            'n_samples': n_samples,
+                            'simulator': 'ddm_flexbound_mic2_adj',
+                            'boundary_fun_type': boundary_fun.__name__,
+                            'possible_choices': [0, 1, 2, 3],
+                            'trajectory': 'This simulator does not yet allow for trajectory simulation',
+                            'boundary': boundary}}
+    elif return_option == 'minimal':
+        return {'rts': rts, 'choices': choices, 'rts_high': rts_high, 'rts_low': rts_low, 
+                'metadata': {'simulator': 'ddm_flexbound_mic2_adj', 
+                             'possible_choices': [0, 1, 2, 3],
+                             'boundary_fun_type': boundary_fun.__name__,
+                             'n_samples': n_samples,
+                             }}
+    else:
+        raise ValueError('return_option must be either "full" or "minimal"')
 # ----------------------------------------------------------------------------------------------------
+
+# Simulate (rt, choice) tuples from: DDM WITH FLEXIBLE BOUNDARIES ------------------------------------
+# @cythonboundscheck(False)
+# @cythonwraparound(False)
+def ddm_flexbound_mic2_multinoise(np.ndarray[float, ndim = 1] v_h, 
+                                  np.ndarray[float, ndim = 1] v_l_1,
+                                  np.ndarray[float, ndim = 1] v_l_2,
+                                  np.ndarray[float, ndim = 1] a,
+                                  np.ndarray[float, ndim = 1] z_h,
+                                  np.ndarray[float, ndim = 1] z_l_1,
+                                  np.ndarray[float, ndim = 1] z_l_2,
+                                  np.ndarray[float, ndim = 1] d, # damper (1 --> no drift on low level until high level done, 0 --> full drift on low level)
+                                  np.ndarray[float, ndim = 1] t,
+                                  float s = 1.0,
+                                  float delta_t = 0.001,
+                                  float max_t = 20,
+                                  int n_samples = 20000,
+                                  int n_trials = 1,
+                                  print_info = True,
+                                  boundary_fun = None, # function of t (and potentially other parameters) that takes in (t, *args)
+                                  boundary_multiplicative = True,
+                                  boundary_params = {},
+                                  random_state = None,
+                                  return_option = 'full',
+                                  smooth = False,
+                                  ):
+
+    set_seed(random_state)
+    # Param views
+    cdef float[:] v_h_view = v_h
+    cdef float[:] v_l_1_view = v_l_1
+    cdef float[:] v_l_2_view = v_l_2
+    cdef float[:] a_view = a
+    cdef float[:] z_h_view = z_h
+    cdef float[:] z_l_1_view = z_l_1
+    cdef float[:] z_l_2_view = z_l_2
+    cdef float[:] d_view = d
+    cdef float[:] t_view = t
+
+    # TD: Add trajectory --> same issue as with par2 model above... might need to make a separate simulator for trajectories
+    rts = np.zeros((n_samples, n_trials, 1), dtype = DTYPE)
+    choices = np.zeros((n_samples, n_trials, 1), dtype = np.intc)
+    rts_low = np.zeros((n_samples, n_trials, 1), dtype = DTYPE)
+    rts_high = np.zeros((n_samples, n_trials, 1), dtype = DTYPE)
+
+    cdef float[:, :, :] rts_view = rts
+    cdef float[:, :, :] rts_high_view = rts_high
+    cdef float[:, :, :] rts_low_view = rts_low
+    cdef int[:, :, :] choices_view = choices
+
+    cdef float delta_t_sqrt = sqrt(delta_t) # correct scalar so we can use standard normal samples for the brownian motion
+    cdef float sqrt_st = delta_t_sqrt * s # scalar to ensure the correct variance for the gaussian step
+
+    # Boundary storage for the upper bound
+    cdef int num_draws = int((max_t / delta_t) + 1)
+    t_s = np.arange(0, max_t + delta_t, delta_t).astype(DTYPE)
+    boundary = np.zeros(t_s.shape, dtype = DTYPE)
+    cdef float[:] boundary_view = boundary
+
+    # Y particle trace
+    bias_trace = np.zeros(num_draws, dtype = DTYPE)
+    cdef float[:] bias_trace_view = bias_trace
+
+    cdef float y_h, y_l, v_l, t_h, t_l, smooth_u
+    cdef Py_ssize_t n, ix, ix_tmp, k
+    cdef Py_ssize_t m = 0
+    cdef float[:] gaussian_values = draw_gaussian(num_draws)
+
+    for k in range(n_trials):
+        # Precompute boundary evaluations
+        boundary_params_tmp = {key: boundary_params[key][k] for key in boundary_params.keys()}
+
+        # Precompute boundary evaluations
+        if boundary_multiplicative:
+            boundary[:] = np.multiply(a_view[k], boundary_fun(t = t_s, **boundary_params_tmp)).astype(DTYPE)
+        else:
+            boundary[:] = np.add(a_view[k], boundary_fun(t = t_s, **boundary_params_tmp)).astype(DTYPE)
+    
+        # Loop over samples
+        for n in range(n_samples):
+            choices_view[n, k, 0] = 0 # reset choice
+            t_h = 0 # reset time high dimension
+            t_l = 0 # reset time low dimension
+            ix = 0 # reset boundary index
+
+            # Initialize walkers
+            # Particle
+            y_h = (-1) * boundary_view[0] + (z_h_view[k] * 2 * (boundary_view[0])) 
+            # Relative particle position (used as resource allocator for low dim choice)
+            bias_trace_view[0] = ((y_h + boundary_view[0]) / (2 * boundary_view[0]))
+
+            # Random walks until y_h hits bound
+            while (y_h >= ((-1) * boundary_view[ix])) and ((y_h <= boundary_view[ix])) and (t_h <= max_t):
+                y_h += (v_h_view[k] * delta_t) + (sqrt_st * gaussian_values[m])
+                bias_trace_view[ix] = ((y_h + boundary_view[ix]) / (2 * boundary_view[ix]))
+                t_h += delta_t
+                ix += 1
+                m += 1
+                if m == num_draws:
+                    gaussian_values = draw_gaussian(num_draws)
+                    m = 0
+
+            # The probability of making a 'mistake' 1 - (relative y position)
+            # y at upper bound --> choices_view[n, k, 0] add 2 deterministically
+            # y at lower bound --> choice_view[n, k, 0] stay the same deterministically
+
+            # If boundary is negative (or 0) already, we flip a coin
+            if boundary_view[ix] <= 0:
+                if random_uniform() <= 0.5:
+                    choices_view[n, k, 0] += 2
+            # Otherwise, apply rule from above
+            elif random_uniform() <= ((y_h + boundary_view[ix]) / (2 * boundary_view[ix])):
+                choices_view[n, k, 0] += 2
+           
+            if choices_view[n, k, 0] == 2:
+                y_l = (- 1) * boundary_view[0] + (z_l_2_view[k] * 2 * (boundary_view[0])) 
+                v_l = v_l_2_view[k]
+
+                # Fill bias trace until max_rt reached
+                ix_tmp = ix + 1
+                while ix_tmp < num_draws:
+                    bias_trace_view[ix_tmp] = 1.0
+                    ix_tmp += 1
+
+            else: # Store intermediate choice
+                y_l = (- 1) * boundary_view[0] + (z_l_1_view[k] * 2 * (boundary_view[0])) 
+                v_l = v_l_1_view[k]
+
+                # Fill bias trace until max_rt reached
+                ix_tmp = ix + 1
+                while ix_tmp < num_draws:
+                    bias_trace_view[ix_tmp] = 0.0
+                    ix_tmp += 1
+
+                #We need to reverse the bias_trace if we took the lower choice
+                ix_tmp = 0 
+                while ix_tmp < num_draws:
+                    bias_trace_view[ix_tmp] = 1.0 - bias_trace_view[ix_tmp]
+                    ix_tmp += 1
+
+            # Random walks until the y_l corresponding to y_h hits bound
+            ix = 0
+            while (y_l >= ((-1) * boundary_view[ix])) and (y_l <= boundary_view[ix]) and (t_l <= max_t):
+                if (bias_trace_view[ix] < 1) and (bias_trace_view[ix] > 0):
+                    # main propagation if bias_trace is between 0 and 1 (high level choice is not yet made)
+                    y_l += (((v_l * bias_trace_view[ix] * (1 - d_view[k]))) * delta_t)
+                    # add gaussian displacement
+                    # we multiply by bias_trace_view to make low level variance depend on high level trace
+                    y_l += (sqrt_st * gaussian_values[m]) * bias_trace_view[ix]
+                else:
+                    # main propagation if bias_trace is not between 0 and 1 (high level choice is already made)
+                    y_l += (v_l * delta_t)
+                    # add gaussian displacement
+                    y_l += (sqrt_st * gaussian_values[m])
+                
+                
+                # propagate time and indices
+                t_l += delta_t
+                ix += 1
+                m += 1
+                if m == num_draws:
+                    gaussian_values = draw_gaussian(num_draws)
+                    m = 0
+
+            if smooth:
+                if t_h == 0:
+                    smooth_u = random_uniform() * 0.5 * delta_t
+                else:
+                    smooth_u = (0.5 - random_uniform()) * delta_t
+            else:
+                smooth_u = 0.0
+
+            rts_view[n, k, 0] = fmax(t_h, t_l) + t_view[k]
+            rts_high_view[n, k, 0] = t_h + t_view[k]
+            rts_low_view[n, k, 0] = t_l + t_view[k]
+
+            # The probability of making a 'mistake' 1 - (relative y position)
+            # y at upper bound --> choices_view[n, k, 0] add one deterministically
+            # y at lower bound --> choice_view[n, k, 0] stays the same deterministically
+
+            # If boundary is negative (or 0) already, we flip a coin
+            if boundary_view[ix] <= 0:
+                if random_uniform() <= 0.5:
+                    choices_view[n, k, 0] += 1
+            # Otherwise apply rule from above
+            elif random_uniform() <= ((y_l + boundary_view[ix]) / (2 * boundary_view[ix])):
+                choices_view[n, k, 0] += 1
+
+    if return_option == 'full':
+        return {'rts': rts, 'choices': choices, 'rts_high': rts_high, 'rts_low': rts_low, 
+                'metadata': {'vh': v_h,
+                            'vl1': v_l_1,
+                            'vl2': v_l_2,
+                            'a': a,
+                            'zh': z_h,
+                            'zl1': z_l_1,
+                            'zl2': z_l_2,
+                            'd': d,
+                            't': t,
+                            's': s,
+                            **boundary_params,
+                            'delta_t': delta_t,
+                            'max_t': max_t,
+                            'n_samples': n_samples,
+                            'simulator': 'ddm_flexbound_mic2_adj',
+                            'boundary_fun_type': boundary_fun.__name__,
+                            'possible_choices': [0, 1, 2, 3],
+                            'trajectory': 'This simulator does not yet allow for trajectory simulation',
+                            'boundary': boundary}}
+    elif return_option == 'minimal':
+        return {'rts': rts, 'choices': choices, 'rts_high': rts_high, 'rts_low': rts_low, 
+                'metadata': {'simulator': 'ddm_flexbound_mic2_adj', 
+                             'possible_choices': [0, 1, 2, 3],
+                             'boundary_fun_type': boundary_fun.__name__,
+                             'n_samples': n_samples,
+                             }}
+    else:
+        raise ValueError('return_option must be either "full" or "minimal"')
+# ----------------------------------------------------------------------------------------------------
+
+
 
 # Simulate (rt, choice) tuples from: DDM WITH FLEXIBLE BOUNDARIES ------------------------------------
 # @cythonboundscheck(False)
@@ -2707,6 +3109,7 @@ def ddm_flexbound_tradeoff(np.ndarray[float, ndim = 1] v_h,
                            boundary_multiplicative = True,
                            boundary_params = {},
                            random_state = None,
+                           return_option = 'full',
                            smooth = False,
                            ):
 
@@ -2855,25 +3258,34 @@ def ddm_flexbound_tradeoff(np.ndarray[float, ndim = 1] v_h,
             if random_uniform() <= ((y_l + boundary_view[ix]) / (2 * boundary_view[ix])):
                 choices_view[n, k, 0] += 1
 
-    return {'rts': rts, 'choices': choices, 'metadata': {'vh': v_h,
-                                                         'vl1': v_l_1,
-                                                         'vl2': v_l_2,
-                                                         'a': a,
-                                                         'zh': z_h,
-                                                         'zl1': z_l_1,
-                                                         'zl2': z_l_2,
-                                                         'd': d,
-                                                         't': t,
-                                                         's': s,
-                                                         **boundary_params,
-                                                         'delta_t': delta_t,
-                                                         'max_t': max_t,
-                                                         'n_samples': n_samples,
-                                                         'simulator': 'ddm_flexbound_mic2_adj',
-                                                         'boundary_fun_type': boundary_fun.__name__,
-                                                         'possible_choices': [0, 1, 2, 3],
-                                                         'trajectory': 'This simulator does not yet allow for trajectory simulation',
-                                                         'boundary': boundary}}
+    if return_option == 'full':
+        return {'rts': rts, 'choices': choices, 'metadata': {'vh': v_h,
+                                                            'vl1': v_l_1,
+                                                            'vl2': v_l_2,
+                                                            'a': a,
+                                                            'zh': z_h,
+                                                            'zl1': z_l_1,
+                                                            'zl2': z_l_2,
+                                                            'd': d,
+                                                            't': t,
+                                                            's': s,
+                                                            **boundary_params,
+                                                            'delta_t': delta_t,
+                                                            'max_t': max_t,
+                                                            'n_samples': n_samples,
+                                                            'simulator': 'ddm_flexbound_mic2_adj',
+                                                            'boundary_fun_type': boundary_fun.__name__,
+                                                            'possible_choices': [0, 1, 2, 3],
+                                                            'trajectory': 'This simulator does not yet allow for trajectory simulation',
+                                                            'boundary': boundary}}
+    elif return_option == 'minimal':
+        return {'rts': rts, 'choices': choices, 'metadata': {'simulator': 'ddm_flexbound_mic2_adj', 
+                                                             'possible_choices': [0, 1, 2, 3],
+                                                             'boundary_fun_type': boundary_fun.__name__,
+                                                             'n_samples': n_samples,
+                                                             }}
+    else:
+        raise ValueError('return_option must be either "full" or "minimal"')
 # -----------------------------------------------------------------------------------------------
 
 ## Simulate (rt, choice) tuples from: DDM WITH FLEXIBLE BOUNDARIES ------------------------------------
