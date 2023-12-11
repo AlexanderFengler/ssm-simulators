@@ -13,7 +13,6 @@ In addition some utility functions are provided that help
 with preprocessing the output of the simulator function.
 """
 
-
 def _make_valid_dict(dict_in):
     """Turn all values in dictionary into numpy arrays and make sure,
     that all thetas are either scalars or vectors of the same length
@@ -275,6 +274,7 @@ def simulator(
     bin_dim=None,
     bin_pointwise=False,
     smooth_unif=True,
+    return_option='full',
     random_state=None,
 ):
     """Basic data simulator for the models included in HDDM.
@@ -302,6 +302,13 @@ def simulator(
             If true the 'RT' part of the data is now specifies the
             'bin-number' of a given trial instead of the 'RT' directly.
             You need to specify bin_dim as some number for this to work.
+        return_option: str <default='full'>
+            Determines what the function returns. Can be either
+            'full' or 'minimal'. If 'full' the function returns
+            a dictionary with keys 'rts', 'responses' and 'metadata', and 
+            metadata contains the model parameters and some additional 
+            information. 'metadata' is a simpler dictionary with less information
+            if 'minimal' is chosen.
         random_state: int <default=None>
             Integer passed to random_seed function in the simulator.
             Can be used for reproducibility.
@@ -378,6 +385,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -396,6 +404,7 @@ def simulator(
             boundary_multiplicative=True,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -415,6 +424,7 @@ def simulator(
             boundary_multiplicative=True,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -433,6 +443,7 @@ def simulator(
             boundary_multiplicative=True,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -449,6 +460,7 @@ def simulator(
             delta_t=delta_t,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -467,6 +479,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -485,6 +498,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -504,6 +518,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -523,6 +538,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -544,6 +560,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -562,6 +579,7 @@ def simulator(
             delta_t=delta_t,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -581,6 +599,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -600,6 +619,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -619,6 +639,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -639,6 +660,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -659,6 +681,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -686,6 +709,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -714,6 +738,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -758,6 +783,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -776,6 +802,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -803,6 +830,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -821,6 +849,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -848,6 +877,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -872,6 +902,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -890,6 +921,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -908,6 +940,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -926,6 +959,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -944,6 +978,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -964,6 +999,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -984,6 +1020,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -1004,6 +1041,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -1024,6 +1062,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -1044,6 +1083,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -1068,6 +1108,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -1088,6 +1129,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -1106,6 +1148,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -1126,6 +1169,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -1144,6 +1188,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -1164,6 +1209,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -1186,6 +1232,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -1206,6 +1253,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -1228,6 +1276,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -1248,6 +1297,7 @@ def simulator(
             n_trials=n_trials,
             max_t=max_t,
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -1287,6 +1337,7 @@ def simulator(
             boundary_multiplicative=True,
             boundary_params={},
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -1309,6 +1360,7 @@ def simulator(
             boundary_multiplicative=True,
             boundary_params={},
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -1337,6 +1389,7 @@ def simulator(
                 "scale_gamma": theta[:, 8],
             },
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -1359,6 +1412,7 @@ def simulator(
             boundary_multiplicative=False,
             boundary_params={"theta": theta[:, 5]},
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -1381,6 +1435,7 @@ def simulator(
             boundary_multiplicative=True,
             boundary_params={"alpha": theta[:, 5], "beta": theta[:, 6]},
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -1403,6 +1458,7 @@ def simulator(
             boundary_multiplicative=True,
             boundary_params={},
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -1425,6 +1481,7 @@ def simulator(
             boundary_multiplicative=True,
             boundary_params={},
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -1453,6 +1510,7 @@ def simulator(
                 "scale_gamma": theta[:, 8],
             },
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -1475,6 +1533,7 @@ def simulator(
             boundary_multiplicative=False,
             boundary_params={"theta": theta[:, 5]},
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -1497,6 +1556,7 @@ def simulator(
             boundary_multiplicative=True,
             boundary_params={"alpha": theta[:, 5], "beta": theta[:, 6]},
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -1522,6 +1582,7 @@ def simulator(
             boundary_multiplicative=True,
             boundary_params={},
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -1547,6 +1608,7 @@ def simulator(
             boundary_multiplicative=True,
             boundary_params={},
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -1578,6 +1640,7 @@ def simulator(
                 "scale_gamma": theta[:, 9],
             },
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -1603,6 +1666,7 @@ def simulator(
             boundary_multiplicative=False,
             boundary_params={"theta": theta[:, 6]},
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -1628,6 +1692,7 @@ def simulator(
             boundary_multiplicative=True,
             boundary_params={"alpha": theta[:, 6], "beta": theta[:, 7]},
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -1654,6 +1719,7 @@ def simulator(
             boundary_multiplicative=True,
             boundary_params={},
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -1679,6 +1745,7 @@ def simulator(
             boundary_multiplicative=True,
             boundary_params={},
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -1704,6 +1771,7 @@ def simulator(
             boundary_multiplicative=True,
             boundary_params={},
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -1735,6 +1803,7 @@ def simulator(
                 "scale_gamma": theta[:, 10],
             },
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -1766,6 +1835,7 @@ def simulator(
                 "scale_gamma": theta[:, 10],
             },
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -1791,6 +1861,7 @@ def simulator(
             boundary_multiplicative=False,
             boundary_params={"theta": theta[:, 7]},
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -1816,6 +1887,7 @@ def simulator(
             boundary_multiplicative=False,
             boundary_params={"theta": theta[:, 7]},
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -1841,6 +1913,7 @@ def simulator(
             boundary_multiplicative=True,
             boundary_params={"alpha": theta[:, 7], "beta": theta[:, 8]},
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -1866,6 +1939,7 @@ def simulator(
             boundary_multiplicative=True,
             boundary_params={"alpha": theta[:, 7], "beta": theta[:, 8]},
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -1892,6 +1966,7 @@ def simulator(
             boundary_multiplicative=True,
             boundary_params={},
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -1917,6 +1992,7 @@ def simulator(
             boundary_multiplicative=True,
             boundary_params={},
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -1948,6 +2024,7 @@ def simulator(
                 "scale_gamma": theta[:, 9],
             },
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -1973,6 +2050,7 @@ def simulator(
             boundary_multiplicative=False,
             boundary_params={"theta": theta[:, 6]},
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -1998,6 +2076,7 @@ def simulator(
             boundary_multiplicative=True,
             boundary_params={"alpha": theta[:, 6], "beta": theta[:, 7]},
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -2023,6 +2102,7 @@ def simulator(
             boundary_multiplicative=True,
             boundary_params={},
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -2048,6 +2128,7 @@ def simulator(
             boundary_multiplicative=True,
             boundary_params={"alpha": theta[:, 6], "beta": theta[:, 7]},
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -2073,6 +2154,7 @@ def simulator(
             boundary_multiplicative=False,
             boundary_params={"theta": theta[:, 6]},
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -2104,6 +2186,7 @@ def simulator(
                 "scale_gamma": theta[:, 9],
             },
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -2128,6 +2211,7 @@ def simulator(
             boundary_multiplicative=True,
             boundary_params={},
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -2151,6 +2235,7 @@ def simulator(
             boundary_multiplicative=False,
             boundary_params={"theta": theta[:, 6]},
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
     if model == "ddm_mic2_multinoise_weibull_no_bias":
@@ -2173,6 +2258,7 @@ def simulator(
             boundary_multiplicative=True,
             boundary_params={"alpha": theta[:, 6], "beta": theta[:, 7]},
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
     if model == "ddm_mic2_multinoise_conflict_gamma_no_bias":
@@ -2201,6 +2287,7 @@ def simulator(
                 "scale_gamma": theta[:, 9],
             },
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -2225,6 +2312,7 @@ def simulator(
             boundary_multiplicative=True,
             boundary_params={},
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -2248,6 +2336,7 @@ def simulator(
             boundary_multiplicative=False,
             boundary_params={"theta": theta[:, 6]},
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -2271,6 +2360,7 @@ def simulator(
             boundary_multiplicative=True,
             boundary_params={"alpha": theta[:, 6], "beta": theta[:, 7]},
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
@@ -2300,6 +2390,7 @@ def simulator(
                 "scale_gamma": theta[:, 9],
             },
             random_state=random_state,
+            return_option=return_option,
             smooth=smooth_unif,
         )
 
