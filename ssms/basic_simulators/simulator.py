@@ -744,6 +744,29 @@ def simulator(
         )
 
     # Multi-particle models
+    
+    lba_sd = 0.1
+
+    if model == 'lba_3_v1':
+        x = cssm.lba_vanilla_wo_ndt(v = theta[:, :3],
+                            a = theta[:, [3]],
+                            z = theta[:, [4]],
+                            sd = lba_sd,
+                            n_samples = n_samples,
+                            n_trials = n_trials,
+                            max_t = 3
+                            )
+    
+    if model == 'lba_angle_3_v1':
+        x = cssm.lba_angle_wo_ndt(v = theta[:, :3],
+                            a = theta[:, [3]],
+                            z = theta[:, [4]],
+                            theta = theta[:, [5]],
+                            sd = lba_sd,
+                            n_samples = n_samples,
+                            n_trials = n_trials,
+                            max_t = 3
+                            )
 
     # 2 Choice
     if no_noise:

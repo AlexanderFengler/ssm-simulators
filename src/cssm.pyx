@@ -3288,6 +3288,138 @@ def ddm_flexbound_tradeoff(np.ndarray[float, ndim = 1] v_h,
         raise ValueError('return_option must be either "full" or "minimal"')
 # -----------------------------------------------------------------------------------------------
 
+# Simulate (rt, choice) tuples from: Vanilla LBA Model without ndt -----------------------------
+def lba_vanilla_wo_ndt(np.ndarray[float, ndim = 2] v, # drift parameters (np.array expect: one column of floats)
+        np.ndarray[float, ndim = 2] a, # criterion height
+        np.ndarray[float, ndim = 2] z, # initial bias parameters (np.array expect: one column of floats)
+        float sd, # std dev of Normal from where we sample vs
+        int nact = 3,
+        int n_samples = 2000,
+        int n_trials = 1,
+        float max_t = 5
+        ):
+
+    # v_t = np.random.normal(v, sd)
+    # print(len(z), nact, np.array([z]*nact).transpose().shape)
+    # z_t = np.random.uniform(np.zeros((len(z), nact)), np.array([z]*nact).transpose(), (len(z), nact))
+
+    # Param views
+    cdef float[:, :] v_view = v
+    cdef float[:, :] a_view = a
+    cdef float[:, :] z_view = z
+
+    rts = np.zeros((n_samples, n_trials, 1), dtype = DTYPE)
+    cdef float[:, :, :] rts_view = rts
+    
+    choices = np.zeros((n_samples, n_trials, 1), dtype = np.intc)
+    cdef int[:, :, :] choices_view = choices
+    
+    cdef Py_ssize_t n, k, i
+
+    for k in range(n_trials):
+        
+        for n in range(n_samples):
+            zs = np.random.uniform(0, z_view[k], nact)
+
+            vs = np.abs(np.random.normal(v_view[k], sd)) # np.abs() to avoid negative vs
+
+            x_t = ([a_view[k]]*nact - zs)/vs
+        
+            choices_view[n, k, 0] = np.argmin(x_t) # store choices for sample n
+            rts_view[n, k, 0] = np.min(x_t)  # store reaction time for sample n
+        
+
+    v_dict = {}    
+    for i in range(nact):
+        v_dict['v_' + str(i)] = v[:, i]
+
+    return {'rts': rts, 'choices': choices, 'metadata': {**v_dict,
+                                                         'a': a,
+                                                         'z': z,
+                                                         'sd': sd,
+                                                         'n_samples': n_samples,
+                                                         'simulator' : 'lba_vanilla_wo_ndt',
+                                                         'possible_choices': list(np.arange(0, nact, 1)),
+                                                         'max_t': max_t,
+                                                         }}
+
+
+
+# Simulate (rt, choice) tuples from: Collapsing bound angle LBA Model -----------------------------
+def lba_angle_wo_ndt(np.ndarray[float, ndim = 2] v, # drift parameters (np.array expect: one column of floats)
+        np.ndarray[float, ndim = 2] a, # criterion height
+        np.ndarray[float, ndim = 2] z, # initial bias parameters (np.array expect: one column of floats)
+        np.ndarray[float, ndim = 2] theta,
+        float sd, # std dev 
+        int nact = 3,
+        int n_samples = 2000,
+        int n_trials = 1,
+        float max_t = 5
+        ):
+
+    # Param views
+    cdef float[:, :] v_view = v
+    cdef float[:, :] a_view = a
+    cdef float[:, :] z_view = z
+    cdef float[:, :] theta_view = theta
+
+    rts = np.zeros((n_samples, n_trials, 1), dtype = DTYPE)
+    cdef float[:, :, :] rts_view = rts
+    
+    choices = np.zeros((n_samples, n_trials, 1), dtype = np.intc)
+    cdef int[:, :, :] choices_view = choices
+    
+    cdef Py_ssize_t n, k, i
+
+    # === perform checks ===
+    # check if number of drift rates matches number of actions
+    if nact != v.shape[1]:
+        raise ValueError('Number of actions does not match number of drift rates')
+    
+    # check if drift rates sum to 1
+    v_sum = np.sum(v, axis = 1)
+    if np.any(v_sum <= 0.99) or np.any(v_sum >= 1.01):
+        raise ValueError('Drift rates do not sum to 1 for each trial')
+    
+    # check if z < a for all trials
+    if np.any(z >= a):
+        raise ValueError('Starting point z >= a for at least one trial')
+    
+
+    for k in range(n_trials):
+        
+        for n in range(n_samples):
+            zs = np.random.uniform(0, z_view[k], nact)
+
+            vs = np.abs(np.random.normal(v_view[k], sd)) # np.abs() to avoid negative vs
+            x_t = ([a_view[k]]*nact - zs)/(vs + np.tan(theta_view[k, 0]))
+        
+            choices_view[n, k, 0] = np.argmin(x_t) # store choices for sample n
+            rts_view[n, k, 0] = np.min(x_t) # store reaction time for sample n
+
+            if np.min(x_t) <= 0:
+                print("\nerror: ", a[k], zs, vs, np.tan(theta[k]))
+    
+    v_dict = {}  
+    for i in range(nact):
+        v_dict['v_' + str(i)] = v[:, i]
+
+    return {'rts': rts, 'choices': choices, 'metadata': {**v_dict,
+                                                         'a': a,
+                                                         'z': z,
+                                                         'theta': theta,
+                                                         'sd': sd,
+                                                         'n_samples': n_samples,
+                                                         'simulator' : 'lba_angle_wo_ndt',
+                                                         'possible_choices': list(np.arange(0, nact, 1)),
+                                                         'max_t': max_t,
+                                                         }}
+
+
+
+
+# -----------------------------------------------------------------------------------------------
+
 ## Simulate (rt, choice) tuples from: DDM WITH FLEXIBLE BOUNDARIES ------------------------------------
 ## @cythonboundscheck(False)
 ## @cythonwraparound(False)
