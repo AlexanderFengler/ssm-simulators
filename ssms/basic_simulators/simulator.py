@@ -748,6 +748,20 @@ def simulator(
     lba_sd = 0.1
 
     if model == 'lba_3_v1':
+        # === perform checks ===
+        # check if number of drift rates matches number of actions
+        if 3 != theta[:, :3].shape[1]:
+            raise ValueError('Number of actions does not match number of drift rates')
+        
+        # check if drift rates sum to 1
+        v_sum = np.sum(theta[:, :3], axis = 1)
+        if np.any(v_sum <= 0.99) or np.any(v_sum >= 1.01):
+            raise ValueError('Drift rates do not sum to 1 for each trial')
+        
+        # check if z < a for all trials
+        if np.any(theta[:, [4]] >= theta[:, [3]]):
+            raise ValueError('Starting point z >= a for at least one trial')
+    
         x = cssm.lba_vanilla_wo_ndt(v = theta[:, :3],
                             a = theta[:, [3]],
                             z = theta[:, [4]],
@@ -758,6 +772,20 @@ def simulator(
                             )
     
     if model == 'lba_angle_3_v1':
+        # === perform checks ===
+        # check if number of drift rates matches number of actions
+        if 3 != theta[:, :3].shape[1]:
+            raise ValueError('Number of actions does not match number of drift rates')
+        
+        # check if drift rates sum to 1
+        v_sum = np.sum(theta[:, :3], axis = 1)
+        if np.any(v_sum <= 0.99) or np.any(v_sum >= 1.01):
+            raise ValueError('Drift rates do not sum to 1 for each trial')
+        
+        # check if z < a for all trials
+        if np.any(theta[:, [4]] >= theta[:, [3]]):
+            raise ValueError('Starting point z >= a for at least one trial')
+        
         x = cssm.lba_angle_wo_ndt(v = theta[:, :3],
                             a = theta[:, [3]],
                             z = theta[:, [4]],

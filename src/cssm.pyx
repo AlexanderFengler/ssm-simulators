@@ -3371,21 +3371,6 @@ def lba_angle_wo_ndt(np.ndarray[float, ndim = 2] v, # drift parameters (np.array
     
     cdef Py_ssize_t n, k, i
 
-    # === perform checks ===
-    # check if number of drift rates matches number of actions
-    if nact != v.shape[1]:
-        raise ValueError('Number of actions does not match number of drift rates')
-    
-    # check if drift rates sum to 1
-    v_sum = np.sum(v, axis = 1)
-    if np.any(v_sum <= 0.99) or np.any(v_sum >= 1.01):
-        raise ValueError('Drift rates do not sum to 1 for each trial')
-    
-    # check if z < a for all trials
-    if np.any(z >= a):
-        raise ValueError('Starting point z >= a for at least one trial')
-    
-
     for k in range(n_trials):
         
         for n in range(n_samples):
@@ -3398,7 +3383,7 @@ def lba_angle_wo_ndt(np.ndarray[float, ndim = 2] v, # drift parameters (np.array
             rts_view[n, k, 0] = np.min(x_t) # store reaction time for sample n
 
             if np.min(x_t) <= 0:
-                print("\nerror: ", a[k], zs, vs, np.tan(theta[k]))
+                print("\n ssms sim error: ", a[k], zs, vs, np.tan(theta[k]))
     
     v_dict = {}  
     for i in range(nact):
