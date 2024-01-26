@@ -40,19 +40,11 @@ class data_generator_snpe(data_generator):
         super().__init__(generator_config=generator_config, model_config=model_config)
 
     def generate_data_training_uniform(self, save=False):
-        seeds = np.random.choice(
-            400000000, size=self.generator_config["n_parameter_sets"]
-        )
-        seed_args = [
-            [seeds[i], i + 1]
-            for i in np.arange(0, self.generator_config["n_parameter_sets"], 1)
-        ]
+        seeds = np.random.choice(400000000, size=self.generator_config["n_parameter_sets"])
+        seed_args = [[seeds[i], i + 1] for i in np.arange(0, self.generator_config["n_parameter_sets"], 1)]
 
         # Inits
-        subrun_n = (
-            self.generator_config["n_parameter_sets"]
-            // self.generator_config["n_subruns"]
-        )
+        subrun_n = self.generator_config["n_parameter_sets"] // self.generator_config["n_subruns"]
 
         # Get Simulations
         data = {}
