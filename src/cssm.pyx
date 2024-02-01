@@ -683,7 +683,7 @@ def ddm_flexbound(np.ndarray[float, ndim = 1] v,
             #rts_view[n, k, 0] = t_particle + t_view[k] # Store rt
             choices_view[n, k, 0] = sign(y) # Store choice
 
-            if rts_view[n, k, 0] > deadline_view[k]:
+            if (rts_view[n, k, 0] > deadline_view[k]) | (deadline_view[k] <= 0):
                 rts_view[n, k, 0] = -999
 
     if return_option == 'full':

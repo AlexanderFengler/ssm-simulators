@@ -744,7 +744,7 @@ def simulator(
             x['choice_p_no_omission'][0, k] = -999
 
     x['omission_p'][0,0] = (x['rts'] == -999).sum() / out_len
-    x['nogo_p'][0,0] = ((x['choices'] != x['metadata']['possible_choices'][0]) | (x['rts'] == -999)).sum() / out_len
+    x['nogo_p'][0,0] = ((x['choices'] != max(x['metadata']['possible_choices'])) | (x['rts'] == -999)).sum() / out_len
     x['go_p'][0,0] = 1 - x['nogo_p'][0,0]
 
     x['binned_128'] = np.expand_dims(bin_simulator_output(x, nbins=128, max_t=-1, freq_cnt = True), 
