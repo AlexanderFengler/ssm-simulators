@@ -386,6 +386,8 @@ def simulator(
         # print('Setting mock deadline to 999 (this should never have an effect)')
         theta["deadline"] = np.tile(np.array([999], dtype=np.float32), n_trials)
 
+    print(theta['deadline'])
+
     # Initialize dictionary that collects
     # simulator inputs that are commong across simulator functions
     sim_param_dict = {
