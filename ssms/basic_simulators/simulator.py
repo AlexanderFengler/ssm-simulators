@@ -738,7 +738,10 @@ def simulator(
     out_len_no_omission = x['rts'][x['rts'] != -999].shape[0]
     for k, choice in enumerate(x['metadata']['possible_choices']):
         x['choice_p'][0, k] = (x['choices'] == choice).sum() / out_len
-        x['choice_p_no_omission'][0, k] = (x['choices'][x['rts'] != -999] == choice).sum() / out_len_no_omission
+        if out_len_no_omission > 0:
+            x['choice_p_no_omission'][0, k] = (x['choices'][x['rts'] != -999] == choice).sum() / out_len_no_omission
+        else:
+            x['choice_p_no_omission'][0, k] = -999
 
     x['omission_p'][0,0] = (x['rts'] == -999).sum() / out_len
     x['nogo_p'][0,0] = ((x['choices'] != x['metadata']['possible_choices'][0]) | (x['rts'] == -999)).sum() / out_len

@@ -1,6 +1,7 @@
 from ssms.basic_simulators.simulator import simulator, bin_simulator_output
 from ssms.support_utils import kde_class
 import numpy as np
+from copy import deepcopy
 import pickle
 import uuid
 import os
@@ -66,8 +67,18 @@ class data_generator:
             print("No generator_config specified")
             return
         else:
-            self.generator_config = generator_config
-            self.model_config = model_config
+            self.generator_config = deepcopy(generator_config)
+            self.model_config = deepcopy(model_config)
+            # Account for deadline if in model name
+            if "deadline" in self.generator_config["model"]:
+                self.model_config['params'].append('deadline')
+                self.model_config['param_bounds'][0].append(0.001)
+                self.model_config['param_bounds'][1].append(10)
+                self.model_config['default_params'].append(10)
+                self.model_config['name'] += "_deadline"
+                self.model_config['n_params'] += 1
+                print(self.model_config)
+
             self._build_simulator()
             self._get_ncpus()
 
@@ -230,8 +241,9 @@ class data_generator:
                     high=self.model_config["param_bounds"][1],
                 )
             )
+            theta_dict = {name:val for name, val in zip(self.model_config["params"], theta)}
 
-            simulations = self.get_simulations(theta=theta, random_seed=random_seed_tuple[1])
+            simulations = self.get_simulations(theta=theta_dict, random_seed=random_seed_tuple[1])
             keep, stats = self._filter_simulations(simulations)
 
         kde_data = self._make_kde_data(simulations=simulations, theta=theta)
@@ -244,8 +256,8 @@ class data_generator:
             cpn_no_omission_labels = simulations['choice_p_no_omission']
 
         return {
-            "mlp_data": kde_data[:, :-1],
-            "mlp_labels": kde_data[:, -1],
+            "lan_data": kde_data[:, :-1],
+            "lan_labels": kde_data[:, -1],
             "cpn_data": np.expand_dims(theta, axis=0),
             "cpn_labels": cpn_labels,
             "cpn_no_omission_data": np.expand_dims(theta, axis=0),
@@ -269,8 +281,10 @@ class data_generator:
                 high=self.model_config["param_bounds"][1],
             )
         )
+        theta_dict = {name:val for name, val in zip(self.model_config["params"], theta)}
+        
         # Run the simulator
-        simulations = self.get_simulations(theta=theta, random_seed=random_seed_tuple[1])
+        simulations = self.get_simulations(theta=theta_dict, random_seed=random_seed_tuple[1])
 
         # Compute the choice probabilities
         out_dict = {}
@@ -394,8 +408,8 @@ class data_generator:
         # Only if not cpn_only, do we need the rest of the data
         # (which is not computed if cpn_only is selected)
         if not cpn_only:
-            data["mlp_data"] = np.concatenate([out_list[k]["mlp_data"] for k in range(len(out_list))]).astype(np.float32)
-            data["mlp_labels"] = np.concatenate([out_list[k]["mlp_labels"] for k in range(len(out_list))]).astype(np.float32)
+            data["lan_data"] = np.concatenate([out_list[k]["lan_data"] for k in range(len(out_list))]).astype(np.float32)
+            data["lan_labels"] = np.concatenate([out_list[k]["lan_labels"] for k in range(len(out_list))]).astype(np.float32)
             data["binned_128"] = np.concatenate([out_list[k]["binned_128"] for k in range(len(out_list))]).astype(
                 np.float32
             )

@@ -1160,9 +1160,24 @@ kde_simulation_filters = {
 }
 
 data_generator_config = {
+    "opn_only": {
+        "output_folder": "data/cpn_only/",
+        "model": "ddm",  # should be ['ddm'],
+        "n_samples": 100000,  # eventually should be {'low': 100000, 'high': 100000},
+        "n_parameter_sets": 10000,
+        "n_parameter_sets_rejected": 100,
+        "n_training_samples_by_parameter_set": 1000,
+        "max_t": 20.0,
+        "delta_t": 0.001,
+        "pickleprotocol": 4,
+        "n_cpus": "all",
+        "negative_rt_cutoff": -66.77497,
+        "n_subruns": 10,
+        "smooth_unif": False,
+    },
     "cpn_only": {
         "output_folder": "data/cpn_only/",
-        "dgp_list": "ddm",  # should be ['ddm'],
+        "model": "ddm",  # should be ['ddm'],
         "n_samples": 100000,  # eventually should be {'low': 100000, 'high': 100000},
         "n_parameter_sets": 10000,
         "n_parameter_sets_rejected": 100,
@@ -1177,7 +1192,7 @@ data_generator_config = {
     },
     "lan": {
         "output_folder": "data/lan_mlp/",
-        "dgp_list": "ddm",  # should be ['ddm'],
+        "model": "ddm",  # should be ['ddm'],
         "nbins": 0,
         "n_samples": 100000,  # eventually should be {'low': 100000, 'high': 100000},
         "n_parameter_sets": 10000,
@@ -1195,9 +1210,10 @@ data_generator_config = {
         "separate_response_channels": False,
         "smooth_unif": True,
     },
+    # AF-TODO: Add opn, gonogo
     "ratio_estimator": {
         "output_folder": "data/ratio/",
-        "dgp_list": ["ddm"],
+        "model": "ddm",
         "nbins": 0,
         "n_samples": {"low": 100000, "high": 100000},
         "n_parameter_sets": 100000,
@@ -1218,7 +1234,7 @@ data_generator_config = {
     },
     "defective_detector": {
         "output_folder": "data/ratio/",
-        "dgp_list": ["ddm"],
+        "model": "ddm",
         "nbins": 0,
         "n_samples": {"low": 100000, "high": 100000},
         "n_parameter_sets": 100000,
@@ -1239,7 +1255,7 @@ data_generator_config = {
     },
     "snpe": {
         "output_folder": "data/snpe_training/",
-        "dgp_list": "ddm",  # should be ['ddm'],
+        "model": "ddm",  # should be ['ddm'],
         "n_samples": 5000,  # eventually should be {'low': 100000, 'high': 100000},
         "n_parameter_sets": 10000,
         "max_t": 20.0,
