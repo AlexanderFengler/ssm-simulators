@@ -2179,8 +2179,8 @@ def ddm_flexbound_seq2(np.ndarray[float, ndim = 1] vh,
                     smooth_u = (0.5 - random_uniform()) * delta_t
                 else:
                     smooth_u = 0.0
-                else:
-                    smooth_u = 0.0
+            else:
+                smooth_u = 0.0
 
                 rts_view[n, k, 0] = t_particle + t_view[k] + smooth_u
 
