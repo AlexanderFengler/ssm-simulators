@@ -2401,9 +2401,9 @@ def ddm_flexbound_par2(np.ndarray[float, ndim = 1] vh,
                 ix = ix2
             
             if smooth:
-                if t_particle == 0.0:
+                if t_h == 0.0:
                     smooth_u = random_uniform() * 0.5 * delta_t
-                elif t_particle < deadline_tmp:
+                elif fmax(t_h, t_l) < deadline_tmp:
                     smooth_u = (0.5 - random_uniform()) * delta_t
                 else:
                     smooth_u = 0.0
@@ -2688,9 +2688,9 @@ def ddm_flexbound_mic2_ornstein(np.ndarray[float, ndim = 1] vh,
                 ix_l = ix2
 
             if smooth:
-                if t_particle == 0.0:
+                if t_h == 0.0:
                     smooth_u = random_uniform() * 0.5 * delta_t
-                elif t_particle < deadline_tmp:
+                elif fmax(t_h, t_l) < deadline_tmp:
                     smooth_u = (0.5 - random_uniform()) * delta_t
                 else:
                     smooth_u = 0.0
@@ -2977,9 +2977,9 @@ def ddm_flexbound_mic2_multinoise(np.ndarray[float, ndim = 1] vh,
                 ix_l = ix2
 
             if smooth:
-                if t_particle == 0.0:
+                if t_h == 0.0:
                     smooth_u = random_uniform() * 0.5 * delta_t
-                elif t_particle < deadline_tmp:
+                elif fmax(t_h, t_l) < deadline_tmp:
                     smooth_u = (0.5 - random_uniform()) * delta_t
                 else:
                     smooth_u = 0.0
@@ -3259,9 +3259,9 @@ def ddm_flexbound_mic2_ornstein_multinoise(np.ndarray[float, ndim = 1] vh,
                 ix_l = ix2
 
             if smooth:
-                if t_particle == 0.0:
+                if t_h == 0.0:
                     smooth_u = random_uniform() * 0.5 * delta_t
-                elif t_particle < deadline_tmp:
+                elif fmax(t_h, t_l) < deadline_tmp:
                     smooth_u = (0.5 - random_uniform()) * delta_t
                 else:
                     smooth_u = 0.0
@@ -3540,9 +3540,9 @@ def ddm_flexbound_mic2_unnormalized_ornstein_multinoise(np.ndarray[float, ndim =
                 ix_l = ix2
 
             if smooth:
-                if t_particle == 0.0:
+                if t_h == 0.0:
                     smooth_u = random_uniform() * 0.5 * delta_t
-                elif t_particle < deadline_tmp:
+                elif fmax(t_h, t_l) < deadline_tmp:
                     smooth_u = (0.5 - random_uniform()) * delta_t
                 else:
                     smooth_u = 0.0
@@ -3992,9 +3992,9 @@ def ddm_flexbound_tradeoff(np.ndarray[float, ndim = 1] vh,
                     m = 0
 
             if smooth:
-                if t_particle == 0.0:
+                if t_h == 0.0:
                     smooth_u = random_uniform() * 0.5 * delta_t
-                elif t_particle < deadline_tmp:
+                elif fmax(t_h, t_l) < deadline_tmp:
                     smooth_u = (0.5 - random_uniform()) * delta_t
                 else:
                     smooth_u = 0.0
