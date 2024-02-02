@@ -408,10 +408,12 @@ def full_ddm_hddm_base(np.ndarray[float, ndim = 1] v, # = 0,
 
             # Apply smoothing with uniform if desired
             if smooth:
-                if t_particle == 0:
+                if t_particle == 0.0:
                     smooth_u = random_uniform() * 0.5 * delta_t
-                else:
+                elif t_particle < deadline_tmp:
                     smooth_u = (0.5 - random_uniform()) * delta_t
+                else:
+                    smooth_u = 0.0
             else:
                 smooth_u = 0.0
 
@@ -423,7 +425,7 @@ def full_ddm_hddm_base(np.ndarray[float, ndim = 1] v, # = 0,
                 choices_view[n, k, 0] = 1
 
             # If the rt exceeds the deadline, set rt to -999 and choice to -1 
-            if rts_view[n, k, 0] > deadline_view[k]:
+            if (rts_view[n, k, 0] >= deadline_view[k]) | (deadline_view[k] <= 0):
                 rts_view[n, k, 0] = -999
 
     if return_option == 'full':
@@ -538,10 +540,12 @@ def ddm(np.ndarray[float, ndim = 1] v, # drift by timestep 'delta_t'
 
             # Apply smoothing with uniform if desired
             if smooth:
-                if t_particle == 0:
+                if t_particle == 0.0:
                     smooth_u = random_uniform() * 0.5 * delta_t
-                else:
+                elif t_particle < deadline_tmp:
                     smooth_u = (0.5 - random_uniform()) * delta_t
+                else:
+                    smooth_u = 0.0
             else:
                 smooth_u = 0.0
 
@@ -549,7 +553,7 @@ def ddm(np.ndarray[float, ndim = 1] v, # drift by timestep 'delta_t'
             choices_view[n, k, 0] = sign(y) # store choice
 
             # If the rt exceeds the deadline, set rt to -999 and choice to -1 
-            if rts_view[n, k, 0] > deadline_view[k]:
+            if (rts_view[n, k, 0] >= deadline_view[k]) | (deadline_view[k] <= 0):
                 rts_view[n, k, 0] = -999
 
     if return_option == 'full':
@@ -673,8 +677,10 @@ def ddm_flexbound(np.ndarray[float, ndim = 1] v,
             if smooth:
                 if t_particle == 0.0:
                     smooth_u = random_uniform() * 0.5 * delta_t
-                else:
+                elif t_particle < deadline_tmp:
                     smooth_u = (0.5 - random_uniform()) * delta_t
+                else:
+                    smooth_u = 0.0
             else:
                 smooth_u = 0.0
 
@@ -683,7 +689,7 @@ def ddm_flexbound(np.ndarray[float, ndim = 1] v,
             #rts_view[n, k, 0] = t_particle + t_view[k] # Store rt
             choices_view[n, k, 0] = sign(y) # Store choice
 
-            if (rts_view[n, k, 0] > deadline_view[k]) | (deadline_view[k] <= 0):
+            if (rts_view[n, k, 0] >= deadline_view[k]) | (deadline_view[k] <= 0):
                 rts_view[n, k, 0] = -999
 
     if return_option == 'full':
@@ -818,17 +824,19 @@ def ddm_flex(np.ndarray[float, ndim = 1] v,
                     m = 0
 
             if smooth:
-                if t_particle == 0:
+                if t_particle == 0.0:
                     smooth_u = random_uniform() * 0.5 * delta_t
-                else:
+                elif t_particle < deadline_tmp:
                     smooth_u = (0.5 - random_uniform()) * delta_t
+                else:
+                    smooth_u = 0.0
             else:
                 smooth_u = 0.0
 
             rts_view[n, k, 0] = t_particle + t_view[k] + smooth_u # Store rt
             choices_view[n, k, 0] = sign(y) # Store choice
 
-            if rts_view[n, k, 0] > deadline_view[k]:
+            if (rts_view[n, k, 0] >= deadline_view[k]) | (deadline_view[k] <= 0):
                 rts_view[n, k, 0] = -999
             
     if return_option == 'full':
@@ -1105,17 +1113,19 @@ def levy_flexbound(np.ndarray[float, ndim = 1] v,
                     m = 0
 
             if smooth:
-                if t_particle == 0:
+                if t_particle == 0.0:
                     smooth_u = random_uniform() * 0.5 * delta_t
-                else:
+                elif t_particle < deadline_tmp:
                     smooth_u = (0.5 - random_uniform()) * delta_t
+                else:
+                    smooth_u = 0.0
             else:
                 smooth_u = 0.0
 
             rts_view[n, k, 0] = t_particle + t_view[k] + smooth_u # Store rt
             choices_view[n, k, 0] = sign(y) # Store choice
 
-            if rts_view[n, k, 0] > deadline_view[k]:
+            if (rts_view[n, k, 0] >= deadline_view[k]) | (deadline_view[k] <= 0):
                 rts_view[n, k, 0] = -999
         
     if return_option == 'full':
@@ -1262,17 +1272,19 @@ def full_ddm(np.ndarray[float, ndim = 1] v, # = 0,
                     m = 0
 
             if smooth:
-                if t_particle == 0:
+                if t_particle == 0.0:
                     smooth_u = random_uniform() * 0.5 * delta_t
-                else:
+                elif t_particle < deadline_tmp:
                     smooth_u = (0.5 - random_uniform()) * delta_t
+                else:
+                    smooth_u = 0.0
             else:
                 smooth_u = 0.0
 
             rts_view[n, k, 0] = t_particle + t_tmp + smooth_u # Store rt
             choices_view[n, k, 0] = np.sign(y) # Store choice
 
-            if rts_view[n, k, 0] > deadline_view[k]:
+            if (rts_view[n, k, 0] >= deadline_view[k]) | (deadline_view[k] <= 0):
                 rts_view[n, k, 0] = -999
     
     if return_option == 'full':
@@ -1411,17 +1423,19 @@ def ddm_sdv(np.ndarray[float, ndim = 1] v,
                     m = 0
 
             if smooth:
-                if t_particle == 0:
+                if t_particle == 0.0:
                     smooth_u = random_uniform() * 0.5 * delta_t
-                else:
+                elif t_particle < deadline_tmp:
                     smooth_u = (0.5 - random_uniform()) * delta_t
+                else:
+                    smooth_u = 0.0
             else:
                 smooth_u = 0.0
 
             rts_view[n, k, 0] = t_particle + t_view[k] + smooth_u # Store rt
             choices_view[n, k, 0] = np.sign(y) # Store choice
 
-            if rts_view[n, k, 0] > deadline_view[k]:
+            if (rts_view[n, k, 0] >= deadline_view[k]) | (deadline_view[k] <= 0):
                 rts_view[n, k, 0] = -999
 
     if return_option == 'full':
@@ -1548,17 +1562,19 @@ def ornstein_uhlenbeck(np.ndarray[float, ndim = 1] v, # drift parameter
                     m = 0
 
             if smooth:
-                if t_particle == 0:
+                if t_particle == 0.0:
                     smooth_u = random_uniform() * 0.5 * delta_t
-                else:
+                elif t_particle < deadline_tmp:
                     smooth_u = (0.5 - random_uniform()) * delta_t
+                else:
+                    smooth_u = 0.0
             else:
                 smooth_u = 0.0
 
             rts_view[n, k, 0] = t_particle + t_view[k] + smooth_u
             choices_view[n, k, 0] = sign(y)
 
-            if rts_view[n, k, 0] > deadline_view[k]:
+            if (rts_view[n, k, 0] >= deadline_view[k]) | (deadline_view[k] <= 0):
                 rts_view[n, k, 0] = -999
 
     if return_option == 'full':
@@ -1722,10 +1738,12 @@ def race_model(np.ndarray[float, ndim = 2] v,  # np.array expected, one column o
                             traj_view[ix, j] = particles[j]
 
             if smooth:
-                if t_particle == 0:
+                if t_particle == 0.0:
                     smooth_u = random_uniform() * 0.5 * delta_t
-                else:
+                elif t_particle < deadline_tmp:
                     smooth_u = (0.5 - random_uniform()) * delta_t
+                else:
+                    smooth_u = 0.0
             else:
                 smooth_u = 0.0
 
@@ -1733,7 +1751,7 @@ def race_model(np.ndarray[float, ndim = 2] v,  # np.array expected, one column o
             choices_view[n, k, 0] = np.argmax(particles)
             #rts_view[n, 0] = t + t[choices_view[n, 0]]
 
-            if rts_view[n, k, 0] > deadline_view[k]:
+            if (rts_view[n, k, 0] >= deadline_view[k]) | (deadline_view[k] <= 0):
                 rts_view[n, k, 0] = -999
             
 
@@ -1895,17 +1913,19 @@ def lca(np.ndarray[float, ndim = 2] v, # drift parameters (np.array expect: one 
                             traj_view[ix, i] = particles[i]
 
             if smooth:
-                if t_particle == 0:
+                if t_particle == 0.0:
                     smooth_u = random_uniform() * 0.5 * delta_t
-                else:
+                elif t_particle < deadline_tmp:
                     smooth_u = (0.5 - random_uniform()) * delta_t
+                else:
+                    smooth_u = 0.0
             else:
                 smooth_u = 0.0
         
             choices_view[n, k, 0] = np.argmax(particles) # store choices for sample n
             rts_view[n, k, 0] = t_particle + t_view[k, 0] + smooth_u # t[choices_view[n, 0]] # store reaction time for sample n
 
-            if rts_view[n, k, 0] > deadline_view[k]:
+            if (rts_view[n, k, 0] >= deadline_view[k]) | (deadline_view[k] <= 0):
                 rts_view[n, k, 0] = -999
         
     # Create some dics
@@ -2152,11 +2172,13 @@ def ddm_flexbound_seq2(np.ndarray[float, ndim = 1] vh,
                     ix = ix2
                     y_l = y_l2
 
-                if smooth:
-                    if t_particle == 0:
-                        smooth_u = random_uniform() * 0.5 * delta_t
-                    else:
-                        smooth_u = (0.5 - random_uniform()) * delta_t
+            if smooth:
+                if t_particle == 0.0:
+                    smooth_u = random_uniform() * 0.5 * delta_t
+                elif t_particle < deadline_tmp:
+                    smooth_u = (0.5 - random_uniform()) * delta_t
+                else:
+                    smooth_u = 0.0
                 else:
                     smooth_u = 0.0
 
@@ -2174,7 +2196,7 @@ def ddm_flexbound_seq2(np.ndarray[float, ndim = 1] vh,
                 elif random_uniform() <= ((y_l + boundary_view[ix]) / (2 * boundary_view[ix])):
                     choices_view[n, k, 0] += 1
 
-                if rts_view[n, k, 0] > deadline_view[k]:
+            if (rts_view[n, k, 0] >= deadline_view[k]) | (deadline_view[k] <= 0):
                     rts_view[n, k, 0] = -999
 
     if return_option == 'full':
@@ -2379,10 +2401,12 @@ def ddm_flexbound_par2(np.ndarray[float, ndim = 1] vh,
                 ix = ix2
             
             if smooth:
-                if t_h == 0:
+                if t_particle == 0.0:
                     smooth_u = random_uniform() * 0.5 * delta_t
-                else:
+                elif t_particle < deadline_tmp:
                     smooth_u = (0.5 - random_uniform()) * delta_t
+                else:
+                    smooth_u = 0.0
             else:
                 smooth_u = 0.0
 
@@ -2402,7 +2426,7 @@ def ddm_flexbound_par2(np.ndarray[float, ndim = 1] vh,
             elif random_uniform() <= ((y_l + boundary_view[ix]) / (2 * boundary_view[ix])):
                 choices_view[n, k, 0] += 1
 
-            if rts_view[n, k, 0] > deadline_view[k]:
+            if (rts_view[n, k, 0] >= deadline_view[k]) | (deadline_view[k] <= 0):
                 rts_view[n, k, 0] = -999
 
     if return_option == 'full':
@@ -2664,10 +2688,12 @@ def ddm_flexbound_mic2_ornstein(np.ndarray[float, ndim = 1] vh,
                 ix_l = ix2
 
             if smooth:
-                if t_h == 0:
+                if t_particle == 0.0:
                     smooth_u = random_uniform() * 0.5 * delta_t
-                else:
+                elif t_particle < deadline_tmp:
                     smooth_u = (0.5 - random_uniform()) * delta_t
+                else:
+                    smooth_u = 0.0
             else:
                 smooth_u = 0.0
 
@@ -2687,7 +2713,7 @@ def ddm_flexbound_mic2_ornstein(np.ndarray[float, ndim = 1] vh,
             elif random_uniform() <= ((y_l + boundary_view[ix_l]) / (2 * boundary_view[ix_l])):
                 choices_view[n, k, 0] += 1
 
-            if rts_view[n, k, 0] > deadline_view[k]:
+            if (rts_view[n, k, 0] >= deadline_view[k]) | (deadline_view[k] <= 0):
                 rts_view[n, k, 0] = -999
 
     if return_option == 'full':
@@ -2951,10 +2977,12 @@ def ddm_flexbound_mic2_multinoise(np.ndarray[float, ndim = 1] vh,
                 ix_l = ix2
 
             if smooth:
-                if t_h == 0:
+                if t_particle == 0.0:
                     smooth_u = random_uniform() * 0.5 * delta_t
-                else:
+                elif t_particle < deadline_tmp:
                     smooth_u = (0.5 - random_uniform()) * delta_t
+                else:
+                    smooth_u = 0.0
             else:
                 smooth_u = 0.0
 
@@ -2974,7 +3002,7 @@ def ddm_flexbound_mic2_multinoise(np.ndarray[float, ndim = 1] vh,
             elif random_uniform() <= ((y_l + boundary_view[ix]) / (2 * boundary_view[ix])):
                 choices_view[n, k, 0] += 1
 
-            if rts_view[n, k, 0] > deadline_view[k]:
+            if (rts_view[n, k, 0] >= deadline_view[k]) | (deadline_view[k] <= 0):
                 rts_view[n, k, 0] = -999
 
     if return_option == 'full':
@@ -3231,10 +3259,12 @@ def ddm_flexbound_mic2_ornstein_multinoise(np.ndarray[float, ndim = 1] vh,
                 ix_l = ix2
 
             if smooth:
-                if t_h == 0:
+                if t_particle == 0.0:
                     smooth_u = random_uniform() * 0.5 * delta_t
-                else:
+                elif t_particle < deadline_tmp:
                     smooth_u = (0.5 - random_uniform()) * delta_t
+                else:
+                    smooth_u = 0.0
             else:
                 smooth_u = 0.0
 
@@ -3254,7 +3284,7 @@ def ddm_flexbound_mic2_ornstein_multinoise(np.ndarray[float, ndim = 1] vh,
             elif random_uniform() <= ((y_l + boundary_view[ix]) / (2 * boundary_view[ix])):
                 choices_view[n, k, 0] += 1
 
-            if rts_view[n, k, 0] > deadline_view[k]:
+            if (rts_view[n, k, 0] >= deadline_view[k]) | (deadline_view[k] <= 0):
                 rts_view[n, k, 0] = -999
 
     if return_option == 'full':
@@ -3510,10 +3540,12 @@ def ddm_flexbound_mic2_unnormalized_ornstein_multinoise(np.ndarray[float, ndim =
                 ix_l = ix2
 
             if smooth:
-                if t_h == 0:
+                if t_particle == 0.0:
                     smooth_u = random_uniform() * 0.5 * delta_t
-                else:
+                elif t_particle < deadline_tmp:
                     smooth_u = (0.5 - random_uniform()) * delta_t
+                else:
+                    smooth_u = 0.0
             else:
                 smooth_u = 0.0
 
@@ -3533,7 +3565,7 @@ def ddm_flexbound_mic2_unnormalized_ornstein_multinoise(np.ndarray[float, ndim =
             elif random_uniform() <= ((y_l + boundary_view[ix]) / (2 * boundary_view[ix])):
                 choices_view[n, k, 0] += 1
 
-            if rts_view[n, k, 0] > deadline_view[k]:
+            if (rts_view[n, k, 0] >= deadline_view[k]) | (deadline_view[k] <= 0):
                 rts_view[n, k, 0] = -999
 
     if return_option == 'full':
@@ -3960,10 +3992,12 @@ def ddm_flexbound_tradeoff(np.ndarray[float, ndim = 1] vh,
                     m = 0
 
             if smooth:
-                if t_h == 0:
+                if t_particle == 0.0:
                     smooth_u = random_uniform() * 0.5 * delta_t
-                else:
+                elif t_particle < deadline_tmp:
                     smooth_u = (0.5 - random_uniform()) * delta_t
+                else:
+                    smooth_u = 0.0
             else:
                 smooth_u = 0.0
 
@@ -3975,7 +4009,7 @@ def ddm_flexbound_tradeoff(np.ndarray[float, ndim = 1] vh,
             if random_uniform() <= ((y_l + boundary_view[ix]) / (2 * boundary_view[ix])):
                 choices_view[n, k, 0] += 1
 
-            if rts_view[n, k, 0] > deadline_view[k]:
+            if (rts_view[n, k, 0] >= deadline_view[k]) | (deadline_view[k] <= 0):
                 rts_view[n, k, 0] = -999
 
     if return_option == 'full':
