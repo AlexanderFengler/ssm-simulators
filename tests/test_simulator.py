@@ -56,7 +56,9 @@ def sim_input_data():
         for tmp_key in theta_dict_all_scalars.keys():
             if cnt > 0:
                 break
-            theta_dict_uneven[tmp_key] = np.concatenate([theta_dict_all_vectors[tmp_key], np.zeros(2)])
+            theta_dict_uneven[tmp_key] = np.concatenate(
+                [theta_dict_all_vectors[tmp_key], np.zeros(2)]
+            )
             cnt += 1
 
         # Input is list
@@ -76,7 +78,9 @@ def sim_input_data():
         # Input is pd.DataFrame
         theta_pd_1 = pd.DataFrame([theta_nparray], columns=model_param_list)
 
-        theta_pd_n = pd.DataFrame(np.tile(theta_nparray, (100, 1)), columns=model_param_list)
+        theta_pd_n = pd.DataFrame(
+            np.tile(theta_nparray, (100, 1)), columns=model_param_list
+        )
 
         data[key] = {
             "theta_dict_all_scalars": theta_dict_all_scalars,
@@ -104,7 +108,9 @@ def test_simulator_runs(sim_input_data):
             if subkey == "theta_dict_uneven":
                 for n_samples in [1, 10]:
                     try:
-                        out = simulator(model=key, theta=sim_input_data[key][subkey], n_samples=1)
+                        out = simulator(
+                            model=key, theta=sim_input_data[key][subkey], n_samples=1
+                        )
                     except ValueError:
                         raised_val_error = 1
                     assert raised_val_error == 1

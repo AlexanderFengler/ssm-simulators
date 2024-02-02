@@ -185,7 +185,18 @@ model_config = {
     },
     "ds_conflict_drift": {
         "name": "ds_conflict_drift",
-        "params": ["a", "z", "t", "tinit", "dinit", "tslope", "dslope", "tfixedp", "tcoh", "dcoh"],
+        "params": [
+            "a",
+            "z",
+            "t",
+            "tinit",
+            "dinit",
+            "tslope",
+            "dslope",
+            "tfixedp",
+            "tcoh",
+            "dcoh",
+        ],
         "param_bounds": [
             [0.3, 0.1, 1e-3, 0.0, 0.0, 0.01, 0.01, 0.0, -1.0, -1.0],
             [3.0, 0.9, 2.0, 5.0, 5.0, 5.0, 5.0, 5.0, 1.0, 1.0],
@@ -201,7 +212,19 @@ model_config = {
     },
     "ds_conflict_drift_angle": {
         "name": "ds_conflict_drift_angle",
-        "params": ["a", "z", "t", "tinit", "dinit", "tslope", "dslope", "tfixedp", "tcoh", "dcoh", "theta"],
+        "params": [
+            "a",
+            "z",
+            "t",
+            "tinit",
+            "dinit",
+            "tslope",
+            "dslope",
+            "tfixedp",
+            "tcoh",
+            "dcoh",
+            "theta",
+        ],
         "param_bounds": [
             [0.3, 0.1, 1e-3, 0.0, 0.0, 0.01, 0.01, 0.0, -1.0, -1.0, 0.0],
             [3.0, 0.9, 2.0, 5.0, 5.0, 5.0, 5.0, 5.0, 1.0, 1.0, 1.3],
@@ -802,7 +825,18 @@ model_config = {
     },
     "ddm_mic2_adj_conflict_gamma_no_bias": {
         "name": "ddm_mic2_adj_conflict_gamma_no_bias",
-        "params": ["vh", "vl1", "vl2", "d", "t", "a", "theta", "scale", "alpha_gamma", "scale_gamma"],
+        "params": [
+            "vh",
+            "vl1",
+            "vl2",
+            "d",
+            "t",
+            "a",
+            "theta",
+            "scale",
+            "alpha_gamma",
+            "scale_gamma",
+        ],
         "param_bounds": [
             [-4.0, -4.0, -4.0, 0.0, 0.0, 0.3, 0.0, 0.0, 1.1, 0.5],
             [4.0, 4.0, 4.0, 1.0, 2.0, 2.5, 0.5, 5.0, 5.0, 5.0],
@@ -874,7 +908,19 @@ model_config = {
     },
     "ddm_mic2_ornstein_conflict_gamma_no_bias": {
         "name": "ddm_mic2_ornstein_conflict_gamma_no_bias",
-        "params": ["vh", "vl1", "vl2", "d", "g", "t", "a", "theta", "scale", "alpha_gamma", "scale_gamma"],
+        "params": [
+            "vh",
+            "vl1",
+            "vl2",
+            "d",
+            "g",
+            "t",
+            "a",
+            "theta",
+            "scale",
+            "alpha_gamma",
+            "scale_gamma",
+        ],
         "param_bounds": [
             [-4.0, -4.0, -4.0, 0.0, 0.0, 0.0, 0.3, 0.0, 0.0, 1.1, 0.5],
             [4.0, 4.0, 4.0, 1.0, 3.0, 2.0, 2.5, 0.5, 5.0, 5.0, 5.0],
@@ -933,7 +979,18 @@ model_config = {
     },
     "ddm_mic2_multinoise_conflict_gamma_no_bias": {
         "name": "ddm_mic2_multinoise_conflict_gamma_no_bias",
-        "params": ["vh", "vl1", "vl2", "d", "t", "a", "theta", "scale", "alpha_gamma", "scale_gamma"],
+        "params": [
+            "vh",
+            "vl1",
+            "vl2",
+            "d",
+            "t",
+            "a",
+            "theta",
+            "scale",
+            "alpha_gamma",
+            "scale_gamma",
+        ],
         "param_bounds": [
             [-4.0, -4.0, -4.0, 0.0, 0.0, 0.3, 0.0, 0.0, 1.1, 0.5],
             [4.0, 4.0, 4.0, 1.0, 2.0, 2.5, 0.5, 5.0, 5.0, 5.0],
@@ -1006,7 +1063,18 @@ model_config = {
     },
     "ddm_mic2_leak_conflict_gamma_no_bias": {
         "name": "ddm_mic2_leak_conflict_gamma_no_bias",
-        "params": ["vh", "vl1", "vl2", "d", "t", "a", "theta", "scale", "alpha_gamma", "scale_gamma"],
+        "params": [
+            "vh",
+            "vl1",
+            "vl2",
+            "d",
+            "t",
+            "a",
+            "theta",
+            "scale",
+            "alpha_gamma",
+            "scale_gamma",
+        ],
         "param_bounds": [
             [-4.0, -4.0, -4.0, 0.0, 0.0, 0.3, 0.0, 0.0, 1.1, 0.5],
             [4.0, 4.0, 4.0, 1.0, 2.0, 2.5, 0.5, 5.0, 5.0, 5.0],
@@ -1095,7 +1163,18 @@ model_config = {
     },
     "tradeoff_conflict_gamma_no_bias": {
         "name": "tradeoff_conflict_gamma_no_bias",
-        "params": ["vh", "vl1", "vl2", "d", "t", "a", "theta", "scale", "alphagamma", "scalegamma"],
+        "params": [
+            "vh",
+            "vl1",
+            "vl2",
+            "d",
+            "t",
+            "a",
+            "theta",
+            "scale",
+            "alphagamma",
+            "scalegamma",
+        ],
         "param_bounds": [
             [-4.0, -4.0, -4.0, 0.0, 0.0, 0.3, 0.0, 0.0, 1.1, 0.5],
             [4.0, 4.0, 4.0, 1.0, 2.0, 2.5, 0.5, 5.0, 5.0, 5.0],
@@ -1134,15 +1213,27 @@ model_config = {
 
 model_config["weibull_cdf"] = model_config["weibull"].copy()
 model_config["full_ddm2"] = model_config["full_ddm"].copy()
-model_config["ddm_mic2_ornstein_no_bias_no_lowdim_noise"] = model_config["ddm_mic2_ornstein_no_bias"].copy()
-model_config["ddm_mic2_ornstein_angle_no_bias_no_lowdim_noise"] = model_config["ddm_mic2_ornstein_angle_no_bias"].copy()
-model_config["ddm_mic2_ornstein_weibull_no_bias_no_lowdim_noise"] = model_config["ddm_mic2_ornstein_weibull_no_bias"].copy()
+model_config["ddm_mic2_ornstein_no_bias_no_lowdim_noise"] = model_config[
+    "ddm_mic2_ornstein_no_bias"
+].copy()
+model_config["ddm_mic2_ornstein_angle_no_bias_no_lowdim_noise"] = model_config[
+    "ddm_mic2_ornstein_angle_no_bias"
+].copy()
+model_config["ddm_mic2_ornstein_weibull_no_bias_no_lowdim_noise"] = model_config[
+    "ddm_mic2_ornstein_weibull_no_bias"
+].copy()
 model_config["ddm_mic2_ornstein_conflict_gamma_no_bias_no_lowdim_noise"] = model_config[
     "ddm_mic2_ornstein_conflict_gamma_no_bias"
 ].copy()
-model_config["ddm_mic2_leak_no_bias_no_lowdim_noise"] = model_config["ddm_mic2_leak_no_bias"].copy()
-model_config["ddm_mic2_leak_angle_no_bias_no_lowdim_noise"] = model_config["ddm_mic2_leak_angle_no_bias"].copy()
-model_config["ddm_mic2_leak_weibull_no_bias_no_lowdim_noise"] = model_config["ddm_mic2_leak_weibull_no_bias"].copy()
+model_config["ddm_mic2_leak_no_bias_no_lowdim_noise"] = model_config[
+    "ddm_mic2_leak_no_bias"
+].copy()
+model_config["ddm_mic2_leak_angle_no_bias_no_lowdim_noise"] = model_config[
+    "ddm_mic2_leak_angle_no_bias"
+].copy()
+model_config["ddm_mic2_leak_weibull_no_bias_no_lowdim_noise"] = model_config[
+    "ddm_mic2_leak_weibull_no_bias"
+].copy()
 model_config["ddm_mic2_leak_conflict_gamma_no_bias_no_lowdim_noise"] = model_config[
     "ddm_mic2_leak_conflict_gamma_no_bias"
 ].copy()

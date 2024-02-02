@@ -47,7 +47,11 @@ def gamma_drift(t=np.arange(0, 20, 0.1), shape=2, scale=0.01, c=1.5):
     """
 
     num_ = np.power(t, shape - 1) * np.exp(np.divide(-t, scale))
-    div_ = np.power(shape - 1, shape - 1) * np.power(scale, shape - 1) * np.exp(-(shape - 1))
+    div_ = (
+        np.power(shape - 1, shape - 1)
+        * np.power(scale, shape - 1)
+        * np.exp(-(shape - 1))
+    )
     return c * np.divide(num_, div_)
 
 

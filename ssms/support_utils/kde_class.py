@@ -63,7 +63,9 @@ class LogKDE:
             self.displace_t = False
 
         self.attach_data_from_simulator(simulator_data)
-        self.generate_base_kdes(auto_bandwidth=auto_bandwidth, bandwidth_type=bandwidth_type)
+        self.generate_base_kdes(
+            auto_bandwidth=auto_bandwidth, bandwidth_type=bandwidth_type
+        )
 
     # Function to compute bandwidth parameters given data-set
     # (At this point using Silverman rule)
@@ -89,7 +91,9 @@ class LogKDE:
                 if len(self.data["log_rts"][i]) == 0:
                     self.bandwidths.append("no_base_data")
                 else:
-                    bandwidth_tmp = bandwidth_silverman(sample=(self.data["log_rts"][i]))
+                    bandwidth_tmp = bandwidth_silverman(
+                        sample=(self.data["log_rts"][i])
+                    )
                     if bandwidth_tmp > 0:
                         self.bandwidths.append(bandwidth_tmp)
                     else:
@@ -126,7 +130,9 @@ class LogKDE:
                 self.base_kdes.append("no_base_data")
             else:
                 self.base_kdes.append(
-                    KernelDensity(kernel="gaussian", bandwidth=self.bandwidths[i]).fit(np.log(self.data["rts"][i]))
+                    KernelDensity(kernel="gaussian", bandwidth=self.bandwidths[i]).fit(
+                        np.log(self.data["rts"][i])
+                    )
                 )
 
     # Function to evaluate the kde log likelihood at chosen points
@@ -158,28 +164,48 @@ class LogKDE:
         data_internal = deepcopy(data)
 
         if "log_rts" in data.keys() and ("rts" not in data.keys()):
-            data_internal["log_rts"] = np.expand_dims(data["log_rts"][data["log_rts"] != filter_rts], axis=1)
-            data_internal["choices"] = np.expand_dims(data["choices"][data["log_rts"] != filter_rts], axis=1)
+            data_internal["log_rts"] = np.expand_dims(
+                data["log_rts"][data["log_rts"] != filter_rts], axis=1
+            )
+            data_internal["choices"] = np.expand_dims(
+                data["choices"][data["log_rts"] != filter_rts], axis=1
+            )
             assert (
                 data["log_rts"].shape == data["choices"].shape
             ), "rts and choices need to have matching shapes in data dictionary!"
-            return self._kde_eval_log_rt(data=data_internal, log_eval=log_eval, lb=lb, eps=eps)
+            return self._kde_eval_log_rt(
+                data=data_internal, log_eval=log_eval, lb=lb, eps=eps
+            )
         elif "rts" in data.keys() and ("log_rts" not in data.keys()):
-            data_internal["rts"] = np.expand_dims(data["rts"][data["rts"] != filter_rts], axis=1)
-            data_internal["choices"] = np.expand_dims(data["choices"][data["rts"] != filter_rts], axis=1)
+            data_internal["rts"] = np.expand_dims(
+                data["rts"][data["rts"] != filter_rts], axis=1
+            )
+            data_internal["choices"] = np.expand_dims(
+                data["choices"][data["rts"] != filter_rts], axis=1
+            )
             assert (
                 data_internal["rts"].shape == data_internal["choices"].shape
             ), "rts and choices need to have matching shapes in data dictionary!"
-            return self._kde_eval_(data=data_internal, log_eval=log_eval, lb=lb, eps=eps)
+            return self._kde_eval_(
+                data=data_internal, log_eval=log_eval, lb=lb, eps=eps
+            )
         elif ("log_rts" in data.keys()) and ("rts" in data.keys()):
-            data_internal["rts"] = np.expand_dims(data["rts"][data["rts"] != filter_rts], axis=1)
-            data_internal["choices"] = np.expand_dims(data["choices"][data["rts"] != filter_rts], axis=1)
+            data_internal["rts"] = np.expand_dims(
+                data["rts"][data["rts"] != filter_rts], axis=1
+            )
+            data_internal["choices"] = np.expand_dims(
+                data["choices"][data["rts"] != filter_rts], axis=1
+            )
             assert (
                 data_internal["rts"].shape == data_internal["choices"].shape
             ), "rts and choices need to have matching shapes in data dictionary!"
-            return self._kde_eval_(data=data_internal, log_eval=log_eval, lb=lb, eps=eps)
+            return self._kde_eval_(
+                data=data_internal, log_eval=log_eval, lb=lb, eps=eps
+            )
         else:
-            raise ValueError("data dictionary must contain either rts or log_rts as keys!")
+            raise ValueError(
+                "data dictionary must contain either rts or log_rts as keys!"
+            )
 
     def _kde_eval_(self, data={}, log_eval=True, lb=-66.774, eps=10e-5):  # kde
         """
@@ -217,7 +243,9 @@ class LogKDE:
             # Main step: Evaluate likelihood for rts corresponding
             # to choice == c
             if self.base_kdes[self.data["choices"].index(c)] == "no_base_data":
-                log_kde_eval[choice_idx_tmp] = np.log(1 / self.data["n_trials"]) + np.log(
+                log_kde_eval[choice_idx_tmp] = np.log(
+                    1 / self.data["n_trials"]
+                ) + np.log(
                     1 / self.simulator_info["max_t"]
                 )  # -66.77497 # the number corresponds to log(1e-29)
                 # --> should rather be log(1 / n) + log(1 / 20)
@@ -225,9 +253,14 @@ class LogKDE:
                 log_kde_eval_out_tmp = log_rts[choice_idx_tmp]
                 log_kde_eval_out_tmp[displaced_rts[choice_idx_tmp] <= 0] = lb
                 log_kde_eval_out_tmp[displaced_rts[choice_idx_tmp] > 0] = (
-                    np.log(self.data["choice_proportions"][self.data["choices"].index(c)])
+                    np.log(
+                        self.data["choice_proportions"][self.data["choices"].index(c)]
+                    )
                     + self.base_kdes[self.data["choices"].index(c)].score_samples(
-                        np.expand_dims(log_rts[choice_idx_tmp][displaced_rts[choice_idx_tmp] > 0], 1)
+                        np.expand_dims(
+                            log_rts[choice_idx_tmp][displaced_rts[choice_idx_tmp] > 0],
+                            1,
+                        )
                     )
                     - log_rts[choice_idx_tmp][displaced_rts[choice_idx_tmp] > 0]
                 )
@@ -277,7 +310,9 @@ class LogKDE:
                 # AF-TODO: Check if it make sense to apply the np.log(1 / max_t)
                 # here, since if we operate on log rts, log rts are not uniform
                 # on the interval [log(~0), log(max_t)]
-                log_kde_eval[choice_idx_tmp] = np.log(1 / self.data["n_trials"]) + np.log(
+                log_kde_eval[choice_idx_tmp] = np.log(
+                    1 / self.data["n_trials"]
+                ) + np.log(
                     1 / self.simulator_info["max_t"]
                 )  # -66.77497 # the number corresponds to log(1e-29)
                 # --> should rather be log(1 / n) + log(1 / 20)
@@ -288,7 +323,9 @@ class LogKDE:
                 log_kde_eval_out_tmp[displaced_rts[choice_idx_tmp] > 0] = np.log(
                     self.data["choice_proportions"][self.data["choices"].index(c)]
                 ) + self.base_kdes[self.data["choices"].index(c)].score_samples(
-                    np.expand_dims(log_rts[choice_idx_tmp][displaced_rts[choice_idx_tmp] > 0], 1)
+                    np.expand_dims(
+                        log_rts[choice_idx_tmp][displaced_rts[choice_idx_tmp] > 0], 1
+                    )
                 )
                 log_kde_eval[choice_idx_tmp] = log_kde_eval_out_tmp
 
@@ -297,7 +334,9 @@ class LogKDE:
         else:
             return np.squeeze(np.exp(log_kde_eval))
 
-    def kde_sample(self, n_samples=2000, use_empirical_choice_p=True, alternate_choice_p=0):
+    def kde_sample(
+        self, n_samples=2000, use_empirical_choice_p=True, alternate_choice_p=0
+    ):
         """
         Samples from a given kde.
 
@@ -326,7 +365,9 @@ class LogKDE:
         n_by_choice = []
         for i in range(0, len(self.data["choices"]), 1):
             if use_empirical_choice_p is True:
-                n_by_choice.append(round(n_samples * self.data["choice_proportions"][i]))
+                n_by_choice.append(
+                    round(n_samples * self.data["choice_proportions"][i])
+                )
             else:
                 n_by_choice.append(round(n_samples * alternate_choice_p[i]))
 
@@ -344,22 +385,33 @@ class LogKDE:
                 cnt_high = cnt_low + n_by_choice[i]
 
                 if self.base_kdes[i] != "no_base_data":
-                    rts[cnt_low:cnt_high] = np.exp(self.base_kdes[i].sample(n_samples=n_by_choice[i]))
+                    rts[cnt_low:cnt_high] = np.exp(
+                        self.base_kdes[i].sample(n_samples=n_by_choice[i])
+                    )
                 else:
                     rts[cnt_low:cnt_high, 0] = np.random.uniform(
                         low=0, high=self.simulator_info["max_t"], size=n_by_choice[i]
                     )
 
-                choices[cnt_low:cnt_high, 0] = np.repeat(self.data["choices"][i], n_by_choice[i])
+                choices[cnt_low:cnt_high, 0] = np.repeat(
+                    self.data["choices"][i], n_by_choice[i]
+                )
                 cnt_low = cnt_high
 
         if self.displace_t is True:
             rts = rts + self.displace_t_val
-        return {"rts": rts, "log_rts": np.log(rts), "choices": choices, "metadata": self.simulator_info}
+        return {
+            "rts": rts,
+            "log_rts": np.log(rts),
+            "choices": choices,
+            "metadata": self.simulator_info,
+        }
 
     # Helper function to transform ddm simulator output to dataset suitable for
     # the kde function class
-    def attach_data_from_simulator(self, simulator_data=([0, 2, 4], [-1, 1, -1]), filter_rts=-999):
+    def attach_data_from_simulator(
+        self, simulator_data=([0, 2, 4], [-1, 1, -1]), filter_rts=-999
+    ):
         """
         Helper function to transform ddm simulator output to dataset suitable for
         the kde function class.
@@ -379,24 +431,35 @@ class LogKDE:
 
         # Loop through the choices made to get proportions and separated out rts
         if "log_rts" in simulator_data.keys() and ("rts" not in simulator_data.keys()):
-            simulator_data["rts"] = np.ones(simulator_data["log_rts"].shape) * filter_rts
+            simulator_data["rts"] = (
+                np.ones(simulator_data["log_rts"].shape) * filter_rts
+            )
             simulator_data["rts"][simulator_data["log_rts"] != filter_rts] = np.exp(
                 simulator_data["log_rts"][simulator_data["log_rts"] != filter_rts]
             )
-        elif "rts" in simulator_data.keys() and ("log_rts" not in simulator_data.keys()):
-            simulator_data["log_rts"] = np.ones(simulator_data["rts"].shape) * filter_rts
+        elif "rts" in simulator_data.keys() and (
+            "log_rts" not in simulator_data.keys()
+        ):
+            simulator_data["log_rts"] = (
+                np.ones(simulator_data["rts"].shape) * filter_rts
+            )
             simulator_data["log_rts"][simulator_data["rts"] != filter_rts] = np.log(
                 simulator_data["rts"][simulator_data["rts"] != filter_rts]
             )
         else:
-            raise ValueError("simulator_data dictionary must contain either " + "rts or log_rts or both as keys!")
+            raise ValueError(
+                "simulator_data dictionary must contain either "
+                + "rts or log_rts or both as keys!"
+            )
 
         for c in choices:
             rts_tmp = simulator_data["rts"][simulator_data["choices"] == c]
             log_rts_tmp = simulator_data["log_rts"][simulator_data["choices"] == c]
 
             if self.displace_t is True:
-                rts_tmp[rts_tmp != filter_rts] = rts_tmp[rts_tmp != filter_rts] - self.displace_t_val
+                rts_tmp[rts_tmp != filter_rts] = (
+                    rts_tmp[rts_tmp != filter_rts] - self.displace_t_val
+                )
                 log_rts_tmp[log_rts_tmp != filter_rts] = np.log(
                     np.exp(log_rts_tmp[log_rts_tmp != filter_rts]) - self.displace_t_val
                 )
@@ -404,8 +467,12 @@ class LogKDE:
             prop_tmp = len(rts_tmp) / n
             self.data["choices"].append(c)
 
-            self.data["log_rts"].append(np.expand_dims(log_rts_tmp[log_rts_tmp != filter_rts], axis=1))
-            self.data["rts"].append(np.expand_dims(rts_tmp[rts_tmp != filter_rts], axis=1))
+            self.data["log_rts"].append(
+                np.expand_dims(log_rts_tmp[log_rts_tmp != filter_rts], axis=1)
+            )
+            self.data["rts"].append(
+                np.expand_dims(rts_tmp[rts_tmp != filter_rts], axis=1)
+            )
             self.data["choice_proportions"].append(prop_tmp)
 
         self.data["n_trials"] = simulator_data["choices"].shape[0]
