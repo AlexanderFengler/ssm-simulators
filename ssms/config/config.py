@@ -1136,9 +1136,7 @@ model_config["weibull_cdf"] = model_config["weibull"].copy()
 model_config["full_ddm2"] = model_config["full_ddm"].copy()
 model_config["ddm_mic2_ornstein_no_bias_no_lowdim_noise"] = model_config["ddm_mic2_ornstein_no_bias"].copy()
 model_config["ddm_mic2_ornstein_angle_no_bias_no_lowdim_noise"] = model_config["ddm_mic2_ornstein_angle_no_bias"].copy()
-model_config["ddm_mic2_ornstein_weibull_no_bias_no_lowdim_noise"] = model_config[
-    "ddm_mic2_ornstein_weibull_no_bias"
-].copy()
+model_config["ddm_mic2_ornstein_weibull_no_bias_no_lowdim_noise"] = model_config["ddm_mic2_ornstein_weibull_no_bias"].copy()
 model_config["ddm_mic2_ornstein_conflict_gamma_no_bias_no_lowdim_noise"] = model_config[
     "ddm_mic2_ornstein_conflict_gamma_no_bias"
 ].copy()

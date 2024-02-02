@@ -5,6 +5,7 @@ import numpy as np
 This module defines a collection of drift functions for the simulators in the package.
 """
 
+
 def constant(t=np.arange(0, 20, 0.1)):
     """constant drift function
 
@@ -49,6 +50,7 @@ def gamma_drift(t=np.arange(0, 20, 0.1), shape=2, scale=0.01, c=1.5):
     div_ = np.power(shape - 1, shape - 1) * np.power(scale, shape - 1) * np.exp(-(shape - 1))
     return c * np.divide(num_, div_)
 
+
 def ds_support_analytic(t=np.arange(0, 10, 0.001), init_p=0, fix_point=1, slope=2):
     """Solution to differential equation of the form:
        x' = slope*(fix_point - x),
@@ -74,6 +76,7 @@ def ds_support_analytic(t=np.arange(0, 10, 0.001), init_p=0, fix_point=1, slope=
     """
 
     return (init_p - fix_point) * np.exp(-(slope * t)) + fix_point
+
 
 def ds_conflict_drift(
     t=np.arange(0, 10, 0.001),

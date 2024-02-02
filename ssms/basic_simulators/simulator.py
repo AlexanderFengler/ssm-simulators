@@ -88,9 +88,7 @@ def _theta_array_to_dict(theta=None, model_param_list=None):
 def make_boundary_dict(model_config, model, theta):
     boundary_name = model_config[model]["boundary_name"]
     boundary_params = {
-        param_name: value
-        for param_name, value in theta.items()
-        if param_name in boundary_config[boundary_name]["params"]
+        param_name: value for param_name, value in theta.items() if param_name in boundary_config[boundary_name]["params"]
     }
     boundary_fun = boundary_config[boundary_name]["fun"]
     boundary_multiplicative = boundary_config[boundary_name]["multiplicative"]
@@ -386,7 +384,7 @@ def simulator(
         # print('Setting mock deadline to 999 (this should never have an effect)')
         theta["deadline"] = np.tile(np.array([999], dtype=np.float32), n_trials)
 
-    print(theta['deadline'])
+    print(theta["deadline"])
 
     # Initialize dictionary that collects
     # simulator inputs that are commong across simulator functions
@@ -729,30 +727,28 @@ def simulator(
     x["metadata"]["model"] = model
 
     # Additional model outputs, easy to compute:
-    
+
     # Choice probability
-    x['choice_p'] = np.zeros((1, len(x['metadata']['possible_choices'])))
-    x['choice_p_no_omission'] = np.zeros((1, len(x['metadata']['possible_choices'])))
-    x['omission_p'] = np.zeros((1, 1))
-    x['nogo_p'] = np.zeros((1,1))
-    x['go_p'] = np.zeros((1,1))
-    out_len = x['rts'].shape[0]
-    out_len_no_omission = x['rts'][x['rts'] != -999].shape[0]
-    for k, choice in enumerate(x['metadata']['possible_choices']):
-        x['choice_p'][0, k] = (x['choices'] == choice).sum() / out_len
+    x["choice_p"] = np.zeros((1, len(x["metadata"]["possible_choices"])))
+    x["choice_p_no_omission"] = np.zeros((1, len(x["metadata"]["possible_choices"])))
+    x["omission_p"] = np.zeros((1, 1))
+    x["nogo_p"] = np.zeros((1, 1))
+    x["go_p"] = np.zeros((1, 1))
+    out_len = x["rts"].shape[0]
+    out_len_no_omission = x["rts"][x["rts"] != -999].shape[0]
+    for k, choice in enumerate(x["metadata"]["possible_choices"]):
+        x["choice_p"][0, k] = (x["choices"] == choice).sum() / out_len
         if out_len_no_omission > 0:
-            x['choice_p_no_omission'][0, k] = (x['choices'][x['rts'] != -999] == choice).sum() / out_len_no_omission
+            x["choice_p_no_omission"][0, k] = (x["choices"][x["rts"] != -999] == choice).sum() / out_len_no_omission
         else:
-            x['choice_p_no_omission'][0, k] = -999
+            x["choice_p_no_omission"][0, k] = -999
 
-    x['omission_p'][0,0] = (x['rts'] == -999).sum() / out_len
-    x['nogo_p'][0,0] = ((x['choices'] != max(x['metadata']['possible_choices'])) | (x['rts'] == -999)).sum() / out_len
-    x['go_p'][0,0] = 1 - x['nogo_p'][0,0]
+    x["omission_p"][0, 0] = (x["rts"] == -999).sum() / out_len
+    x["nogo_p"][0, 0] = ((x["choices"] != max(x["metadata"]["possible_choices"])) | (x["rts"] == -999)).sum() / out_len
+    x["go_p"][0, 0] = 1 - x["nogo_p"][0, 0]
 
-    x['binned_128'] = np.expand_dims(bin_simulator_output(x, nbins=128, max_t=-1, freq_cnt = True), 
-                                      axis=0)
-    x['binned_256'] = np.expand_dims(bin_simulator_output(x, nbins=256, max_t=-1, freq_cnt=True),
-                                     axis=0)
+    x["binned_128"] = np.expand_dims(bin_simulator_output(x, nbins=128, max_t=-1, freq_cnt=True), axis=0)
+    x["binned_256"] = np.expand_dims(bin_simulator_output(x, nbins=256, max_t=-1, freq_cnt=True), axis=0)
 
     # Choice probability no-omission
     # Calculate choice probability only from rts that did not pass a given deadline

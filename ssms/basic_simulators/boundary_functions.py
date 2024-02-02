@@ -105,6 +105,5 @@ def conflict_gamma(
     """
 
     return (
-        scale * gamma.pdf(t, a=alpha_gamma, loc=0, scale=scale_gamma)
-        + np.multiply(t, (-np.sin(theta) / np.cos(theta))),
+        scale * gamma.pdf(t, a=alpha_gamma, loc=0, scale=scale_gamma) + np.multiply(t, (-np.sin(theta) / np.cos(theta))),
     )
