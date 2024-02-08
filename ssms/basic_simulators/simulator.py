@@ -509,7 +509,7 @@ def simulator(
 
     if model in ["race_no_z_2", "race_no_z_angle_2"]:
         sim_param_dict["s"] = noise_dict["2_particles"]
-        theta["z"] = (np.tile(np.array([0.0] * 2, dtype=np.float32), (n_trials, 1)),)
+        theta["z"] = np.tile(np.array([0.0] * 2, dtype=np.float32), (n_trials, 1))
         theta["v"] = np.column_stack([theta["v0"], theta["v1"]])
         theta["t"] = np.expand_dims(theta["t"], axis=1)
         theta["a"] = np.expand_dims(theta["a"], axis=1)
