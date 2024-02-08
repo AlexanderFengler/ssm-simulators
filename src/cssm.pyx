@@ -35,26 +35,26 @@ cdef float random_uniform():
 cdef float random_exponential():
     return - log(random_uniform())
 
-cdef float random_stable(float alpha_diff):
+cdef float random_stable(float alpha):
     cdef float eta, u, w, x
 
     u = M_PI * (random_uniform() - 0.5)
     w = random_exponential()
 
-    if alpha_diff == 1.0:
+    if alpha == 1.0:
         eta = M_PI_2 # useless but kept to remain faithful to wikipedia entry
         x = (1.0 / eta) * ((M_PI_2) * tan(u))
     else:
-        x = (sin(alpha_diff * u) / (pow(cos(u), 1 / alpha_diff))) * pow(cos(u - (alpha_diff * u)) / w, (1.0 - alpha_diff) / alpha_diff)
+        x = (sin(alpha * u) / (pow(cos(u), 1 / alpha))) * pow(cos(u - (alpha * u)) / w, (1.0 - alpha) / alpha)
     return x
 
-cdef float[:] draw_random_stable(int n, float alpha_diff):
+cdef float[:] draw_random_stable(int n, float alpha):
 
     cdef int i
     cdef float[:] result = np.zeros(n, dtype = DTYPE)
 
     for i in range(n):
-        result[i] = random_stable(alpha_diff)
+        result[i] = random_stable(alpha)
     return result
 
 cdef float random_gaussian():
@@ -918,7 +918,7 @@ def ddm_flex(np.ndarray[float, ndim = 1] v,
 #    cdef float[:,:, :] rts_view = rts
 #    cdef int[:,:, :] choices_view = choices
 #
-#    cdef float delta_t_alpha # = pow(delta_t, 1.0 / alpha_diff) # correct scalar so we can use standard normal samples for the brownian motion
+#    cdef float delta_t_alpha # = pow(delta_t, 1.0 / alpha) # correct scalar so we can use standard normal samples for the brownian motion
 #
 #    # Boundary storage for the upper bound
 #    cdef int num_draws = int((max_t / delta_t) + 1)
@@ -1023,7 +1023,7 @@ def ddm_flex(np.ndarray[float, ndim = 1] v,
 def levy_flexbound(np.ndarray[float, ndim = 1] v,
                    np.ndarray[float, ndim = 1] a,
                    np.ndarray[float, ndim = 1] z,
-                   np.ndarray[float, ndim = 1] alpha_diff,
+                   np.ndarray[float, ndim = 1] alpha,
                    np.ndarray[float, ndim = 1] t,
                    np.ndarray[float, ndim = 1] deadline,
                    float s = 1, # strictly speaking this is a variance multiplier here, not THE variance !
@@ -1045,7 +1045,7 @@ def levy_flexbound(np.ndarray[float, ndim = 1] v,
     cdef float[:] v_view  = v
     cdef float[:] a_view = a
     cdef float[:] z_view = z
-    cdef float[:] alpha_diff_view = alpha_diff
+    cdef float[:] alpha_view = alpha
     cdef float[:] t_view = t
     cdef float[:] deadline_view = deadline
 
@@ -1060,7 +1060,7 @@ def levy_flexbound(np.ndarray[float, ndim = 1] v,
     cdef float[:,:, :] rts_view = rts
     cdef int[:,:, :] choices_view = choices
 
-    cdef float delta_t_alpha # = pow(delta_t, 1.0 / alpha_diff) # correct scalar so we can use standard normal samples for the brownian motion
+    cdef float delta_t_alpha # = pow(delta_t, 1.0 / alpha) # correct scalar so we can use standard normal samples for the brownian motion
 
     # Boundary storage for the upper bound
     cdef int num_draws = int((max_t / delta_t) + 1)
@@ -1075,10 +1075,10 @@ def levy_flexbound(np.ndarray[float, ndim = 1] v,
     cdef Py_ssize_t m = 0
     #cdef int n, ix
     #cdef int m = 0
-    cdef float[:] alpha_stable_values = draw_random_stable(num_draws, alpha_diff_view[0])
+    cdef float[:] alpha_stable_values = draw_random_stable(num_draws, alpha_view[0])
 
     for k in range(n_trials):
-        delta_t_alpha = s * pow(delta_t, 1.0 / alpha_diff_view[k])
+        delta_t_alpha = s * pow(delta_t, 1.0 / alpha_view[k])
         boundary_params_tmp = {key: boundary_params[key][k] for key in boundary_params.keys()}
 
         # Precompute boundary evaluations
@@ -1109,7 +1109,7 @@ def levy_flexbound(np.ndarray[float, ndim = 1] v,
                     if k == 0:
                         traj_view[ix, 0] = y
                 if m == num_draws:
-                    alpha_stable_values = draw_random_stable(num_draws, alpha_diff_view[k])
+                    alpha_stable_values = draw_random_stable(num_draws, alpha_view[k])
                     m = 0
 
             if smooth:
@@ -1133,7 +1133,7 @@ def levy_flexbound(np.ndarray[float, ndim = 1] v,
                                                             'a': a,
                                                             'z': z,
                                                             't': t,
-                                                            'alpha_diff': alpha_diff,
+                                                            'alpha': alpha,
                                                             's': s,
                                                             **boundary_params,
                                                             'delta_t': delta_t,

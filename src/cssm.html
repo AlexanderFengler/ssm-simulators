@@ -418,8 +418,8 @@ body.cython { font-family: courier; font-size: 12; }
   __pyx_r = (-log(__pyx_t_1));
   goto __pyx_L0;
 </pre><pre class="cython line score-0">&#xA0;<span class="">0037</span>: </pre>
-<pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">0038</span>: cdef float random_stable(float alpha_diff):</pre>
-<pre class='cython code score-2 '>static float __pyx_f_4cssm_random_stable(float __pyx_v_alpha_diff) {
+<pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">0038</span>: cdef float random_stable(float alpha):</pre>
+<pre class='cython code score-2 '>static float __pyx_f_4cssm_random_stable(float __pyx_v_alpha) {
   float __pyx_v_eta;
   float __pyx_v_u;
   float __pyx_v_w;
@@ -442,8 +442,8 @@ body.cython { font-family: courier; font-size: 12; }
 <pre class='cython code score-5 '>  __pyx_t_1 = __pyx_f_4cssm_random_exponential(); if (unlikely(__pyx_t_1 == ((float)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(0, 42, __pyx_L1_error)</span>
   __pyx_v_w = __pyx_t_1;
 </pre><pre class="cython line score-0">&#xA0;<span class="">0043</span>: </pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">0044</span>:     if alpha_diff == 1.0:</pre>
-<pre class='cython code score-0 '>  __pyx_t_2 = (__pyx_v_alpha_diff == 1.0);
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">0044</span>:     if alpha == 1.0:</pre>
+<pre class='cython code score-0 '>  __pyx_t_2 = (__pyx_v_alpha == 1.0);
   if (__pyx_t_2) {
 /* … */
     goto __pyx_L3;
@@ -453,17 +453,17 @@ body.cython { font-family: courier; font-size: 12; }
 </pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">0046</span>:         x = (1.0 / eta) * ((M_PI_2) * tan(u))</pre>
 <pre class='cython code score-0 '>    __pyx_v_x = ((1.0 / ((double)__pyx_v_eta)) * (M_PI_2 * tan(__pyx_v_u)));
 </pre><pre class="cython line score-0">&#xA0;<span class="">0047</span>:     else:</pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">0048</span>:         x = (sin(alpha_diff * u) / (pow(cos(u), 1 / alpha_diff))) * pow(cos(u - (alpha_diff * u)) / w, (1.0 - alpha_diff) / alpha_diff)</pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">0048</span>:         x = (sin(alpha * u) / (pow(cos(u), 1 / alpha))) * pow(cos(u - (alpha * u)) / w, (1.0 - alpha) / alpha)</pre>
 <pre class='cython code score-0 '>  /*else*/ {
-    __pyx_v_x = ((sin((__pyx_v_alpha_diff * __pyx_v_u)) / pow(cos(__pyx_v_u), (1.0 / __pyx_v_alpha_diff))) * pow((cos((__pyx_v_u - (__pyx_v_alpha_diff * __pyx_v_u))) / ((double)__pyx_v_w)), ((1.0 - __pyx_v_alpha_diff) / ((double)__pyx_v_alpha_diff))));
+    __pyx_v_x = ((sin((__pyx_v_alpha * __pyx_v_u)) / pow(cos(__pyx_v_u), (1.0 / __pyx_v_alpha))) * pow((cos((__pyx_v_u - (__pyx_v_alpha * __pyx_v_u))) / ((double)__pyx_v_w)), ((1.0 - __pyx_v_alpha) / ((double)__pyx_v_alpha))));
   }
   __pyx_L3:;
 </pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">0049</span>:     return x</pre>
 <pre class='cython code score-0 '>  __pyx_r = __pyx_v_x;
   goto __pyx_L0;
 </pre><pre class="cython line score-0">&#xA0;<span class="">0050</span>: </pre>
-<pre class="cython line score-11" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">0051</span>: cdef float[:] draw_random_stable(int n, float alpha_diff):</pre>
-<pre class='cython code score-11 '>static __Pyx_memviewslice __pyx_f_4cssm_draw_random_stable(int __pyx_v_n, float __pyx_v_alpha_diff) {
+<pre class="cython line score-11" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">0051</span>: cdef float[:] draw_random_stable(int n, float alpha):</pre>
+<pre class='cython code score-11 '>static __Pyx_memviewslice __pyx_f_4cssm_draw_random_stable(int __pyx_v_n, float __pyx_v_alpha) {
   int __pyx_v_i;
   __Pyx_memviewslice __pyx_v_result = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_r = { 0, 0, { 0 }, { 0 }, { 0 } };
@@ -525,8 +525,8 @@ body.cython { font-family: courier; font-size: 12; }
   __pyx_t_7 = __pyx_t_6;
   for (__pyx_t_8 = 0; __pyx_t_8 &lt; __pyx_t_7; __pyx_t_8+=1) {
     __pyx_v_i = __pyx_t_8;
-</pre><pre class="cython line score-5" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">0057</span>:         result[i] = random_stable(alpha_diff)</pre>
-<pre class='cython code score-5 '>    __pyx_t_9 = __pyx_f_4cssm_random_stable(__pyx_v_alpha_diff); if (unlikely(__pyx_t_9 == ((float)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(0, 57, __pyx_L1_error)</span>
+</pre><pre class="cython line score-5" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">0057</span>:         result[i] = random_stable(alpha)</pre>
+<pre class='cython code score-5 '>    __pyx_t_9 = __pyx_f_4cssm_random_stable(__pyx_v_alpha); if (unlikely(__pyx_t_9 == ((float)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(0, 57, __pyx_L1_error)</span>
     __pyx_t_10 = __pyx_v_i;
     *((float *) ( /* dim=0 */ (__pyx_v_result.data + __pyx_t_10 * __pyx_v_result.strides[0]) )) = __pyx_t_9;
   }
@@ -7672,7 +7672,7 @@ static PyObject *__pyx_pf_4cssm_10ddm_flex(CYTHON_UNUSED PyObject *__pyx_self, P
 <pre class="cython line score-0">&#xA0;<span class="">0918</span>: #    cdef float[:,:, :] rts_view = rts</pre>
 <pre class="cython line score-0">&#xA0;<span class="">0919</span>: #    cdef int[:,:, :] choices_view = choices</pre>
 <pre class="cython line score-0">&#xA0;<span class="">0920</span>: #</pre>
-<pre class="cython line score-0">&#xA0;<span class="">0921</span>: #    cdef float delta_t_alpha # = pow(delta_t, 1.0 / alpha_diff) # correct scalar so we can use standard normal samples for the brownian motion</pre>
+<pre class="cython line score-0">&#xA0;<span class="">0921</span>: #    cdef float delta_t_alpha # = pow(delta_t, 1.0 / alpha) # correct scalar so we can use standard normal samples for the brownian motion</pre>
 <pre class="cython line score-0">&#xA0;<span class="">0922</span>: #</pre>
 <pre class="cython line score-0">&#xA0;<span class="">0923</span>: #    # Boundary storage for the upper bound</pre>
 <pre class="cython line score-0">&#xA0;<span class="">0924</span>: #    cdef int num_draws = int((max_t / delta_t) + 1)</pre>
@@ -7861,7 +7861,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   PyArrayObject *__pyx_v_v = 0;
   PyArrayObject *__pyx_v_a = 0;
   PyArrayObject *__pyx_v_z = 0;
-  PyArrayObject *__pyx_v_alpha_diff = 0;
+  PyArrayObject *__pyx_v_alpha = 0;
   PyArrayObject *__pyx_v_t = 0;
   PyArrayObject *__pyx_v_deadline = 0;
   float __pyx_v_s;
@@ -7894,7 +7894,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __pyx_v_kwargs = <span class='py_c_api'>PyDict_New</span>(); if (unlikely(!__pyx_v_kwargs)) return NULL;
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_v_kwargs);
   {
-    PyObject **__pyx_pyargnames[] = {&amp;__pyx_n_s_v,&amp;__pyx_n_s_a,&amp;__pyx_n_s_z,&amp;__pyx_n_s_alpha_diff,&amp;__pyx_n_s_t,&amp;__pyx_n_s_deadline,&amp;__pyx_n_s_s,&amp;__pyx_n_s_delta_t,&amp;__pyx_n_s_max_t,&amp;__pyx_n_s_n_samples,&amp;__pyx_n_s_n_trials,&amp;__pyx_n_s_boundary_fun,&amp;__pyx_n_s_boundary_multiplicative,&amp;__pyx_n_s_boundary_params,&amp;__pyx_n_s_random_state,&amp;__pyx_n_s_return_option,&amp;__pyx_n_s_smooth,0};
+    PyObject **__pyx_pyargnames[] = {&amp;__pyx_n_s_v,&amp;__pyx_n_s_a,&amp;__pyx_n_s_z,&amp;__pyx_n_s_alpha,&amp;__pyx_n_s_t,&amp;__pyx_n_s_deadline,&amp;__pyx_n_s_s,&amp;__pyx_n_s_delta_t,&amp;__pyx_n_s_max_t,&amp;__pyx_n_s_n_samples,&amp;__pyx_n_s_n_trials,&amp;__pyx_n_s_boundary_fun,&amp;__pyx_n_s_boundary_multiplicative,&amp;__pyx_n_s_boundary_params,&amp;__pyx_n_s_random_state,&amp;__pyx_n_s_return_option,&amp;__pyx_n_s_smooth,0};
   PyObject* values[17] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
     __pyx_defaults2 *__pyx_dynamic_args = <span class='pyx_c_api'>__Pyx_CyFunction_Defaults</span>(__pyx_defaults2, __pyx_self);
 /* … */
@@ -7914,11 +7914,11 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_4cssm_12levy_flexbound(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_v, PyArrayObject *__pyx_v_a, PyArrayObject *__pyx_v_z, PyArrayObject *__pyx_v_alpha_diff, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_deadline, float __pyx_v_s, float __pyx_v_delta_t, float __pyx_v_max_t, int __pyx_v_n_samples, int __pyx_v_n_trials, PyObject *__pyx_v_boundary_fun, PyObject *__pyx_v_boundary_multiplicative, PyObject *__pyx_v_boundary_params, PyObject *__pyx_v_random_state, PyObject *__pyx_v_return_option, PyObject *__pyx_v_smooth, CYTHON_UNUSED PyObject *__pyx_v_kwargs) {
+static PyObject *__pyx_pf_4cssm_12levy_flexbound(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_v, PyArrayObject *__pyx_v_a, PyArrayObject *__pyx_v_z, PyArrayObject *__pyx_v_alpha, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_deadline, float __pyx_v_s, float __pyx_v_delta_t, float __pyx_v_max_t, int __pyx_v_n_samples, int __pyx_v_n_trials, PyObject *__pyx_v_boundary_fun, PyObject *__pyx_v_boundary_multiplicative, PyObject *__pyx_v_boundary_params, PyObject *__pyx_v_random_state, PyObject *__pyx_v_return_option, PyObject *__pyx_v_smooth, CYTHON_UNUSED PyObject *__pyx_v_kwargs) {
   __Pyx_memviewslice __pyx_v_v_view = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_a_view = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_z_view = { 0, 0, { 0 }, { 0 }, { 0 } };
-  __Pyx_memviewslice __pyx_v_alpha_diff_view = { 0, 0, { 0 }, { 0 }, { 0 } };
+  __Pyx_memviewslice __pyx_v_alpha_view = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_t_view = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_deadline_view = { 0, 0, { 0 }, { 0 }, { 0 } };
   PyObject *__pyx_v_traj = NULL;
@@ -7945,8 +7945,8 @@ static PyObject *__pyx_pf_4cssm_12levy_flexbound(CYTHON_UNUSED PyObject *__pyx_s
   PyObject *__pyx_8genexpr3__pyx_v_key = NULL;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_a;
   __Pyx_Buffer __pyx_pybuffer_a;
-  __Pyx_LocalBuf_ND __pyx_pybuffernd_alpha_diff;
-  __Pyx_Buffer __pyx_pybuffer_alpha_diff;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_alpha;
+  __Pyx_Buffer __pyx_pybuffer_alpha;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_deadline;
   __Pyx_Buffer __pyx_pybuffer_deadline;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_t;
@@ -7968,10 +7968,10 @@ static PyObject *__pyx_pf_4cssm_12levy_flexbound(CYTHON_UNUSED PyObject *__pyx_s
   __pyx_pybuffer_z.refcount = 0;
   __pyx_pybuffernd_z.data = NULL;
   __pyx_pybuffernd_z.rcbuffer = &amp;__pyx_pybuffer_z;
-  __pyx_pybuffer_alpha_diff.pybuffer.buf = NULL;
-  __pyx_pybuffer_alpha_diff.refcount = 0;
-  __pyx_pybuffernd_alpha_diff.data = NULL;
-  __pyx_pybuffernd_alpha_diff.rcbuffer = &amp;__pyx_pybuffer_alpha_diff;
+  __pyx_pybuffer_alpha.pybuffer.buf = NULL;
+  __pyx_pybuffer_alpha.refcount = 0;
+  __pyx_pybuffernd_alpha.data = NULL;
+  __pyx_pybuffernd_alpha.rcbuffer = &amp;__pyx_pybuffer_alpha;
   __pyx_pybuffer_t.pybuffer.buf = NULL;
   __pyx_pybuffer_t.refcount = 0;
   __pyx_pybuffernd_t.data = NULL;
@@ -7997,9 +7997,9 @@ static PyObject *__pyx_pf_4cssm_12levy_flexbound(CYTHON_UNUSED PyObject *__pyx_s
   __pyx_pybuffernd_z.diminfo[0].strides = __pyx_pybuffernd_z.rcbuffer-&gt;pybuffer.strides[0]; __pyx_pybuffernd_z.diminfo[0].shape = __pyx_pybuffernd_z.rcbuffer-&gt;pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(<span class='pyx_c_api'>__Pyx_GetBufferAndValidate</span>(&amp;__pyx_pybuffernd_alpha_diff.rcbuffer-&gt;pybuffer, (PyObject*)__pyx_v_alpha_diff, &amp;__Pyx_TypeInfo_float, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) <span class='error_goto'>__PYX_ERR(0, 1023, __pyx_L1_error)</span>
+    if (unlikely(<span class='pyx_c_api'>__Pyx_GetBufferAndValidate</span>(&amp;__pyx_pybuffernd_alpha.rcbuffer-&gt;pybuffer, (PyObject*)__pyx_v_alpha, &amp;__Pyx_TypeInfo_float, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) <span class='error_goto'>__PYX_ERR(0, 1023, __pyx_L1_error)</span>
   }
-  __pyx_pybuffernd_alpha_diff.diminfo[0].strides = __pyx_pybuffernd_alpha_diff.rcbuffer-&gt;pybuffer.strides[0]; __pyx_pybuffernd_alpha_diff.diminfo[0].shape = __pyx_pybuffernd_alpha_diff.rcbuffer-&gt;pybuffer.shape[0];
+  __pyx_pybuffernd_alpha.diminfo[0].strides = __pyx_pybuffernd_alpha.rcbuffer-&gt;pybuffer.strides[0]; __pyx_pybuffernd_alpha.diminfo[0].shape = __pyx_pybuffernd_alpha.rcbuffer-&gt;pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(<span class='pyx_c_api'>__Pyx_GetBufferAndValidate</span>(&amp;__pyx_pybuffernd_t.rcbuffer-&gt;pybuffer, (PyObject*)__pyx_v_t, &amp;__Pyx_TypeInfo_float, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) <span class='error_goto'>__PYX_ERR(0, 1023, __pyx_L1_error)</span>
@@ -8028,7 +8028,7 @@ static PyObject *__pyx_pf_4cssm_12levy_flexbound(CYTHON_UNUSED PyObject *__pyx_s
     __Pyx_PyThreadState_assign
     <span class='pyx_c_api'>__Pyx_ErrFetch</span>(&amp;__pyx_type, &amp;__pyx_value, &amp;__pyx_tb);
     <span class='pyx_c_api'>__Pyx_SafeReleaseBuffer</span>(&amp;__pyx_pybuffernd_a.rcbuffer-&gt;pybuffer);
-    <span class='pyx_c_api'>__Pyx_SafeReleaseBuffer</span>(&amp;__pyx_pybuffernd_alpha_diff.rcbuffer-&gt;pybuffer);
+    <span class='pyx_c_api'>__Pyx_SafeReleaseBuffer</span>(&amp;__pyx_pybuffernd_alpha.rcbuffer-&gt;pybuffer);
     <span class='pyx_c_api'>__Pyx_SafeReleaseBuffer</span>(&amp;__pyx_pybuffernd_deadline.rcbuffer-&gt;pybuffer);
     <span class='pyx_c_api'>__Pyx_SafeReleaseBuffer</span>(&amp;__pyx_pybuffernd_t.rcbuffer-&gt;pybuffer);
     <span class='pyx_c_api'>__Pyx_SafeReleaseBuffer</span>(&amp;__pyx_pybuffernd_v.rcbuffer-&gt;pybuffer);
@@ -8039,7 +8039,7 @@ static PyObject *__pyx_pf_4cssm_12levy_flexbound(CYTHON_UNUSED PyObject *__pyx_s
   goto __pyx_L2;
   __pyx_L0:;
   <span class='pyx_c_api'>__Pyx_SafeReleaseBuffer</span>(&amp;__pyx_pybuffernd_a.rcbuffer-&gt;pybuffer);
-  <span class='pyx_c_api'>__Pyx_SafeReleaseBuffer</span>(&amp;__pyx_pybuffernd_alpha_diff.rcbuffer-&gt;pybuffer);
+  <span class='pyx_c_api'>__Pyx_SafeReleaseBuffer</span>(&amp;__pyx_pybuffernd_alpha.rcbuffer-&gt;pybuffer);
   <span class='pyx_c_api'>__Pyx_SafeReleaseBuffer</span>(&amp;__pyx_pybuffernd_deadline.rcbuffer-&gt;pybuffer);
   <span class='pyx_c_api'>__Pyx_SafeReleaseBuffer</span>(&amp;__pyx_pybuffernd_t.rcbuffer-&gt;pybuffer);
   <span class='pyx_c_api'>__Pyx_SafeReleaseBuffer</span>(&amp;__pyx_pybuffernd_v.rcbuffer-&gt;pybuffer);
@@ -8048,7 +8048,7 @@ static PyObject *__pyx_pf_4cssm_12levy_flexbound(CYTHON_UNUSED PyObject *__pyx_s
   __PYX_XCLEAR_MEMVIEW(&amp;__pyx_v_v_view, 1);
   __PYX_XCLEAR_MEMVIEW(&amp;__pyx_v_a_view, 1);
   __PYX_XCLEAR_MEMVIEW(&amp;__pyx_v_z_view, 1);
-  __PYX_XCLEAR_MEMVIEW(&amp;__pyx_v_alpha_diff_view, 1);
+  __PYX_XCLEAR_MEMVIEW(&amp;__pyx_v_alpha_view, 1);
   __PYX_XCLEAR_MEMVIEW(&amp;__pyx_v_t_view, 1);
   __PYX_XCLEAR_MEMVIEW(&amp;__pyx_v_deadline_view, 1);
   <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_v_traj);
@@ -8068,7 +8068,7 @@ static PyObject *__pyx_pf_4cssm_12levy_flexbound(CYTHON_UNUSED PyObject *__pyx_s
   return __pyx_r;
 }
 /* … */
-  __pyx_tuple__35 = <span class='py_c_api'>PyTuple_Pack</span>(46, __pyx_n_s_v, __pyx_n_s_a, __pyx_n_s_z, __pyx_n_s_alpha_diff, __pyx_n_s_t, __pyx_n_s_deadline, __pyx_n_s_s, __pyx_n_s_delta_t, __pyx_n_s_max_t, __pyx_n_s_n_samples, __pyx_n_s_n_trials, __pyx_n_s_boundary_fun, __pyx_n_s_boundary_multiplicative, __pyx_n_s_boundary_params, __pyx_n_s_random_state, __pyx_n_s_return_option, __pyx_n_s_smooth, __pyx_n_s_kwargs, __pyx_n_s_v_view, __pyx_n_s_a_view, __pyx_n_s_z_view, __pyx_n_s_alpha_diff_view, __pyx_n_s_t_view, __pyx_n_s_deadline_view, __pyx_n_s_traj, __pyx_n_s_traj_view, __pyx_n_s_rts, __pyx_n_s_choices, __pyx_n_s_rts_view, __pyx_n_s_choices_view, __pyx_n_s_delta_t_alpha, __pyx_n_s_num_draws, __pyx_n_s_t_s, __pyx_n_s_boundary, __pyx_n_s_boundary_view, __pyx_n_s_y, __pyx_n_s_t_particle, __pyx_n_s_smooth_u, __pyx_n_s_deadline_tmp, __pyx_n_s_n, __pyx_n_s_ix, __pyx_n_s_k, __pyx_n_s_m, __pyx_n_s_alpha_stable_values, __pyx_n_s_boundary_params_tmp, __pyx_n_s_key);<span class='error_goto'> if (unlikely(!__pyx_tuple__35)) __PYX_ERR(0, 1023, __pyx_L1_error)</span>
+  __pyx_tuple__35 = <span class='py_c_api'>PyTuple_Pack</span>(46, __pyx_n_s_v, __pyx_n_s_a, __pyx_n_s_z, __pyx_n_s_alpha, __pyx_n_s_t, __pyx_n_s_deadline, __pyx_n_s_s, __pyx_n_s_delta_t, __pyx_n_s_max_t, __pyx_n_s_n_samples, __pyx_n_s_n_trials, __pyx_n_s_boundary_fun, __pyx_n_s_boundary_multiplicative, __pyx_n_s_boundary_params, __pyx_n_s_random_state, __pyx_n_s_return_option, __pyx_n_s_smooth, __pyx_n_s_kwargs, __pyx_n_s_v_view, __pyx_n_s_a_view, __pyx_n_s_z_view, __pyx_n_s_alpha_view, __pyx_n_s_t_view, __pyx_n_s_deadline_view, __pyx_n_s_traj, __pyx_n_s_traj_view, __pyx_n_s_rts, __pyx_n_s_choices, __pyx_n_s_rts_view, __pyx_n_s_choices_view, __pyx_n_s_delta_t_alpha, __pyx_n_s_num_draws, __pyx_n_s_t_s, __pyx_n_s_boundary, __pyx_n_s_boundary_view, __pyx_n_s_y, __pyx_n_s_t_particle, __pyx_n_s_smooth_u, __pyx_n_s_deadline_tmp, __pyx_n_s_n, __pyx_n_s_ix, __pyx_n_s_k, __pyx_n_s_m, __pyx_n_s_alpha_stable_values, __pyx_n_s_boundary_params_tmp, __pyx_n_s_key);<span class='error_goto'> if (unlikely(!__pyx_tuple__35)) __PYX_ERR(0, 1023, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_tuple__35);
   <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_tuple__35);
 /* … */
@@ -8078,7 +8078,7 @@ static PyObject *__pyx_pf_4cssm_12levy_flexbound(CYTHON_UNUSED PyObject *__pyx_s
   __pyx_codeobj__36 = (PyObject*)<span class='pyx_c_api'>__Pyx_PyCode_New</span>(17, 0, 0, 46, 0, CO_OPTIMIZED|CO_NEWLOCALS|CO_VARKEYWORDS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__35, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_cssm_pyx, __pyx_n_s_levy_flexbound, 1023, __pyx_empty_bytes);<span class='error_goto'> if (unlikely(!__pyx_codeobj__36)) __PYX_ERR(0, 1023, __pyx_L1_error)</span>
 </pre><pre class="cython line score-0">&#xA0;<span class="">1024</span>:                    np.ndarray[float, ndim = 1] a,</pre>
 <pre class="cython line score-0">&#xA0;<span class="">1025</span>:                    np.ndarray[float, ndim = 1] z,</pre>
-<pre class="cython line score-0">&#xA0;<span class="">1026</span>:                    np.ndarray[float, ndim = 1] alpha_diff,</pre>
+<pre class="cython line score-0">&#xA0;<span class="">1026</span>:                    np.ndarray[float, ndim = 1] alpha,</pre>
 <pre class="cython line score-0">&#xA0;<span class="">1027</span>:                    np.ndarray[float, ndim = 1] t,</pre>
 <pre class="cython line score-0">&#xA0;<span class="">1028</span>:                    np.ndarray[float, ndim = 1] deadline,</pre>
 <pre class="cython line score-5" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">1029</span>:                    float s = 1, # strictly speaking this is a variance multiplier here, not THE variance !</pre>
@@ -8185,7 +8185,7 @@ static PyObject *__pyx_pf_4cssm_12levy_flexbound(CYTHON_UNUSED PyObject *__pyx_s
         }
         CYTHON_FALLTHROUGH;
         case  3:
-        if (likely((values[3] = <span class='pyx_c_api'>__Pyx_GetKwValue_FASTCALL</span>(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_alpha_diff)) != 0)) {
+        if (likely((values[3] = <span class='pyx_c_api'>__Pyx_GetKwValue_FASTCALL</span>(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_alpha)) != 0)) {
           (void)<span class='pyx_c_api'>__Pyx_Arg_NewRef_FASTCALL</span>(values[3]);
           kw_args--;
         }
@@ -8332,7 +8332,7 @@ static PyObject *__pyx_pf_4cssm_12levy_flexbound(CYTHON_UNUSED PyObject *__pyx_s
     __pyx_v_v = ((PyArrayObject *)values[0]);
     __pyx_v_a = ((PyArrayObject *)values[1]);
     __pyx_v_z = ((PyArrayObject *)values[2]);
-    __pyx_v_alpha_diff = ((PyArrayObject *)values[3]);
+    __pyx_v_alpha = ((PyArrayObject *)values[3]);
     __pyx_v_t = ((PyArrayObject *)values[4]);
     __pyx_v_deadline = ((PyArrayObject *)values[5]);
     if (values[6]) {
@@ -8387,10 +8387,10 @@ static PyObject *__pyx_pf_4cssm_12levy_flexbound(CYTHON_UNUSED PyObject *__pyx_s
   if (unlikely(!<span class='pyx_c_api'>__Pyx_ArgTypeTest</span>(((PyObject *)__pyx_v_v), __pyx_ptype_5numpy_ndarray, 1, "v", 0))) <span class='error_goto'>__PYX_ERR(0, 1023, __pyx_L1_error)</span>
   if (unlikely(!<span class='pyx_c_api'>__Pyx_ArgTypeTest</span>(((PyObject *)__pyx_v_a), __pyx_ptype_5numpy_ndarray, 1, "a", 0))) <span class='error_goto'>__PYX_ERR(0, 1024, __pyx_L1_error)</span>
   if (unlikely(!<span class='pyx_c_api'>__Pyx_ArgTypeTest</span>(((PyObject *)__pyx_v_z), __pyx_ptype_5numpy_ndarray, 1, "z", 0))) <span class='error_goto'>__PYX_ERR(0, 1025, __pyx_L1_error)</span>
-  if (unlikely(!<span class='pyx_c_api'>__Pyx_ArgTypeTest</span>(((PyObject *)__pyx_v_alpha_diff), __pyx_ptype_5numpy_ndarray, 1, "alpha_diff", 0))) <span class='error_goto'>__PYX_ERR(0, 1026, __pyx_L1_error)</span>
+  if (unlikely(!<span class='pyx_c_api'>__Pyx_ArgTypeTest</span>(((PyObject *)__pyx_v_alpha), __pyx_ptype_5numpy_ndarray, 1, "alpha", 0))) <span class='error_goto'>__PYX_ERR(0, 1026, __pyx_L1_error)</span>
   if (unlikely(!<span class='pyx_c_api'>__Pyx_ArgTypeTest</span>(((PyObject *)__pyx_v_t), __pyx_ptype_5numpy_ndarray, 1, "t", 0))) <span class='error_goto'>__PYX_ERR(0, 1027, __pyx_L1_error)</span>
   if (unlikely(!<span class='pyx_c_api'>__Pyx_ArgTypeTest</span>(((PyObject *)__pyx_v_deadline), __pyx_ptype_5numpy_ndarray, 1, "deadline", 0))) <span class='error_goto'>__PYX_ERR(0, 1028, __pyx_L1_error)</span>
-  __pyx_r = __pyx_pf_4cssm_12levy_flexbound(__pyx_self, __pyx_v_v, __pyx_v_a, __pyx_v_z, __pyx_v_alpha_diff, __pyx_v_t, __pyx_v_deadline, __pyx_v_s, __pyx_v_delta_t, __pyx_v_max_t, __pyx_v_n_samples, __pyx_v_n_trials, __pyx_v_boundary_fun, __pyx_v_boundary_multiplicative, __pyx_v_boundary_params, __pyx_v_random_state, __pyx_v_return_option, __pyx_v_smooth, __pyx_v_kwargs);
+  __pyx_r = __pyx_pf_4cssm_12levy_flexbound(__pyx_self, __pyx_v_v, __pyx_v_a, __pyx_v_z, __pyx_v_alpha, __pyx_v_t, __pyx_v_deadline, __pyx_v_s, __pyx_v_delta_t, __pyx_v_max_t, __pyx_v_n_samples, __pyx_v_n_trials, __pyx_v_boundary_fun, __pyx_v_boundary_multiplicative, __pyx_v_boundary_params, __pyx_v_random_state, __pyx_v_return_option, __pyx_v_smooth, __pyx_v_kwargs);
 </pre><pre class="cython line score-0">&#xA0;<span class="">1038</span>:                    return_option = 'full',</pre>
 <pre class="cython line score-0">&#xA0;<span class="">1039</span>:                    smooth = False,</pre>
 <pre class="cython line score-0">&#xA0;<span class="">1040</span>:                    **kwargs):</pre>
@@ -8416,9 +8416,9 @@ static PyObject *__pyx_pf_4cssm_12levy_flexbound(CYTHON_UNUSED PyObject *__pyx_s
   __pyx_v_z_view = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
-</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">1048</span>:     cdef float[:] alpha_diff_view = alpha_diff</pre>
-<pre class='cython code score-2 '>  __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyObject_to_MemoryviewSlice_ds_float</span>(((PyObject *)__pyx_v_alpha_diff), PyBUF_WRITABLE);<span class='error_goto'> if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 1048, __pyx_L1_error)</span>
-  __pyx_v_alpha_diff_view = __pyx_t_2;
+</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">1048</span>:     cdef float[:] alpha_view = alpha</pre>
+<pre class='cython code score-2 '>  __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyObject_to_MemoryviewSlice_ds_float</span>(((PyObject *)__pyx_v_alpha), PyBUF_WRITABLE);<span class='error_goto'> if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 1048, __pyx_L1_error)</span>
+  __pyx_v_alpha_view = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
 </pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">1049</span>:     cdef float[:] t_view = t</pre>
@@ -8571,7 +8571,7 @@ static PyObject *__pyx_pf_4cssm_12levy_flexbound(CYTHON_UNUSED PyObject *__pyx_s
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
 </pre><pre class="cython line score-0">&#xA0;<span class="">1062</span>: </pre>
-<pre class="cython line score-0">&#xA0;<span class="">1063</span>:     cdef float delta_t_alpha # = pow(delta_t, 1.0 / alpha_diff) # correct scalar so we can use standard normal samples for the brownian motion</pre>
+<pre class="cython line score-0">&#xA0;<span class="">1063</span>:     cdef float delta_t_alpha # = pow(delta_t, 1.0 / alpha) # correct scalar so we can use standard normal samples for the brownian motion</pre>
 <pre class="cython line score-0">&#xA0;<span class="">1064</span>: </pre>
 <pre class="cython line score-0">&#xA0;<span class="">1065</span>:     # Boundary storage for the upper bound</pre>
 <pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">1066</span>:     cdef int num_draws = int((max_t / delta_t) + 1)</pre>
@@ -8680,9 +8680,9 @@ static PyObject *__pyx_pf_4cssm_12levy_flexbound(CYTHON_UNUSED PyObject *__pyx_s
 <pre class='cython code score-0 '>  __pyx_v_m = 0;
 </pre><pre class="cython line score-0">&#xA0;<span class="">1076</span>:     #cdef int n, ix</pre>
 <pre class="cython line score-0">&#xA0;<span class="">1077</span>:     #cdef int m = 0</pre>
-<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">1078</span>:     cdef float[:] alpha_stable_values = draw_random_stable(num_draws, alpha_diff_view[0])</pre>
+<pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">1078</span>:     cdef float[:] alpha_stable_values = draw_random_stable(num_draws, alpha_view[0])</pre>
 <pre class='cython code score-0 '>  __pyx_t_12 = 0;
-  __pyx_t_2 = __pyx_f_4cssm_draw_random_stable(__pyx_v_num_draws, (*((float *) ( /* dim=0 */ (__pyx_v_alpha_diff_view.data + __pyx_t_12 * __pyx_v_alpha_diff_view.strides[0]) ))));<span class='error_goto'> if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 1078, __pyx_L1_error)</span>
+  __pyx_t_2 = __pyx_f_4cssm_draw_random_stable(__pyx_v_num_draws, (*((float *) ( /* dim=0 */ (__pyx_v_alpha_view.data + __pyx_t_12 * __pyx_v_alpha_view.strides[0]) ))));<span class='error_goto'> if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 1078, __pyx_L1_error)</span>
   __pyx_v_alpha_stable_values = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
@@ -8692,9 +8692,9 @@ static PyObject *__pyx_pf_4cssm_12levy_flexbound(CYTHON_UNUSED PyObject *__pyx_s
   __pyx_t_13 = __pyx_t_11;
   for (__pyx_t_14 = 0; __pyx_t_14 &lt; __pyx_t_13; __pyx_t_14+=1) {
     __pyx_v_k = __pyx_t_14;
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">1081</span>:         delta_t_alpha = s * pow(delta_t, 1.0 / alpha_diff_view[k])</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">1081</span>:         delta_t_alpha = s * pow(delta_t, 1.0 / alpha_view[k])</pre>
 <pre class='cython code score-0 '>    __pyx_t_12 = __pyx_v_k;
-    __pyx_v_delta_t_alpha = (__pyx_v_s * pow(__pyx_v_delta_t, (1.0 / ((double)(*((float *) ( /* dim=0 */ (__pyx_v_alpha_diff_view.data + __pyx_t_12 * __pyx_v_alpha_diff_view.strides[0]) )))))));
+    __pyx_v_delta_t_alpha = (__pyx_v_s * pow(__pyx_v_delta_t, (1.0 / ((double)(*((float *) ( /* dim=0 */ (__pyx_v_alpha_view.data + __pyx_t_12 * __pyx_v_alpha_view.strides[0]) )))))));
 </pre><pre class="cython line score-27" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">1082</span>:         boundary_params_tmp = {key: boundary_params[key][k] for key in boundary_params.keys()}</pre>
 <pre class='cython code score-27 '>    { /* enter inner scope */
       __pyx_t_5 = <span class='py_c_api'>PyDict_New</span>();<span class='error_goto'> if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1082, __pyx_L7_error)</span>
@@ -8986,9 +8986,9 @@ static PyObject *__pyx_pf_4cssm_12levy_flexbound(CYTHON_UNUSED PyObject *__pyx_s
 /* … */
         }
       }
-</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">1112</span>:                     alpha_stable_values = draw_random_stable(num_draws, alpha_diff_view[k])</pre>
+</pre><pre class="cython line score-0" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">1112</span>:                     alpha_stable_values = draw_random_stable(num_draws, alpha_view[k])</pre>
 <pre class='cython code score-0 '>          __pyx_t_12 = __pyx_v_k;
-          __pyx_t_2 = __pyx_f_4cssm_draw_random_stable(__pyx_v_num_draws, (*((float *) ( /* dim=0 */ (__pyx_v_alpha_diff_view.data + __pyx_t_12 * __pyx_v_alpha_diff_view.strides[0]) ))));<span class='error_goto'> if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 1112, __pyx_L1_error)</span>
+          __pyx_t_2 = __pyx_f_4cssm_draw_random_stable(__pyx_v_num_draws, (*((float *) ( /* dim=0 */ (__pyx_v_alpha_view.data + __pyx_t_12 * __pyx_v_alpha_view.strides[0]) ))));<span class='error_goto'> if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 1112, __pyx_L1_error)</span>
           __PYX_XCLEAR_MEMVIEW(&amp;__pyx_v_alpha_stable_values, 1);
           __pyx_v_alpha_stable_values = __pyx_t_2;
           __pyx_t_2.memview = NULL;
@@ -9084,8 +9084,8 @@ static PyObject *__pyx_pf_4cssm_12levy_flexbound(CYTHON_UNUSED PyObject *__pyx_s
 <pre class='cython code score-5 '>    if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_1, __pyx_n_u_z, ((PyObject *)__pyx_v_z)) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 1132, __pyx_L1_error)</span>
 </pre><pre class="cython line score-5" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">1135</span>:                                                             't': t,</pre>
 <pre class='cython code score-5 '>    if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_1, __pyx_n_u_t, ((PyObject *)__pyx_v_t)) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 1132, __pyx_L1_error)</span>
-</pre><pre class="cython line score-5" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">1136</span>:                                                             'alpha_diff': alpha_diff,</pre>
-<pre class='cython code score-5 '>    if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_1, __pyx_n_u_alpha_diff, ((PyObject *)__pyx_v_alpha_diff)) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 1132, __pyx_L1_error)</span>
+</pre><pre class="cython line score-5" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">1136</span>:                                                             'alpha': alpha,</pre>
+<pre class='cython code score-5 '>    if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_1, __pyx_n_u_alpha, ((PyObject *)__pyx_v_alpha)) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 1132, __pyx_L1_error)</span>
 </pre><pre class="cython line score-11" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">1137</span>:                                                             's': s,</pre>
 <pre class='cython code score-11 '>    __pyx_t_4 = <span class='py_c_api'>PyFloat_FromDouble</span>(__pyx_v_s);<span class='error_goto'> if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1137, __pyx_L1_error)</span>
     <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_4);
