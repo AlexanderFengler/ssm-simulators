@@ -15575,8 +15575,8 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   PyArrayObject *__pyx_v_g = 0;
   PyArrayObject *__pyx_v_b = 0;
   PyArrayObject *__pyx_v_t = 0;
-  PyArrayObject *__pyx_v_deadline = 0;
   PyArrayObject *__pyx_v_s = 0;
+  PyArrayObject *__pyx_v_deadline = 0;
   float __pyx_v_delta_t;
   float __pyx_v_max_t;
   int __pyx_v_n_samples;
@@ -15606,7 +15606,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __pyx_v_kwargs = <span class='py_c_api'>PyDict_New</span>(); if (unlikely(!__pyx_v_kwargs)) return NULL;
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_v_kwargs);
   {
-    PyObject **__pyx_pyargnames[] = {&amp;__pyx_n_s_v,&amp;__pyx_n_s_a,&amp;__pyx_n_s_z,&amp;__pyx_n_s_g,&amp;__pyx_n_s_b,&amp;__pyx_n_s_t,&amp;__pyx_n_s_deadline,&amp;__pyx_n_s_s,&amp;__pyx_n_s_delta_t,&amp;__pyx_n_s_max_t,&amp;__pyx_n_s_n_samples,&amp;__pyx_n_s_n_trials,&amp;__pyx_n_s_boundary_fun,&amp;__pyx_n_s_boundary_multiplicative,&amp;__pyx_n_s_boundary_params,&amp;__pyx_n_s_random_state,&amp;__pyx_n_s_return_option,&amp;__pyx_n_s_smooth,0};
+    PyObject **__pyx_pyargnames[] = {&amp;__pyx_n_s_v,&amp;__pyx_n_s_a,&amp;__pyx_n_s_z,&amp;__pyx_n_s_g,&amp;__pyx_n_s_b,&amp;__pyx_n_s_t,&amp;__pyx_n_s_s,&amp;__pyx_n_s_deadline,&amp;__pyx_n_s_delta_t,&amp;__pyx_n_s_max_t,&amp;__pyx_n_s_n_samples,&amp;__pyx_n_s_n_trials,&amp;__pyx_n_s_boundary_fun,&amp;__pyx_n_s_boundary_multiplicative,&amp;__pyx_n_s_boundary_params,&amp;__pyx_n_s_random_state,&amp;__pyx_n_s_return_option,&amp;__pyx_n_s_smooth,0};
   PyObject* values[18] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
     __pyx_defaults7 *__pyx_dynamic_args = <span class='pyx_c_api'>__Pyx_CyFunction_Defaults</span>(__pyx_defaults7, __pyx_self);
 /* … */
@@ -15626,7 +15626,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_4cssm_22lca(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_v, PyArrayObject *__pyx_v_a, PyArrayObject *__pyx_v_z, PyArrayObject *__pyx_v_g, PyArrayObject *__pyx_v_b, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_deadline, PyArrayObject *__pyx_v_s, float __pyx_v_delta_t, float __pyx_v_max_t, int __pyx_v_n_samples, int __pyx_v_n_trials, PyObject *__pyx_v_boundary_fun, PyObject *__pyx_v_boundary_multiplicative, PyObject *__pyx_v_boundary_params, PyObject *__pyx_v_random_state, PyObject *__pyx_v_return_option, PyObject *__pyx_v_smooth, CYTHON_UNUSED PyObject *__pyx_v_kwargs) {
+static PyObject *__pyx_pf_4cssm_22lca(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_v, PyArrayObject *__pyx_v_a, PyArrayObject *__pyx_v_z, PyArrayObject *__pyx_v_g, PyArrayObject *__pyx_v_b, PyArrayObject *__pyx_v_t, PyArrayObject *__pyx_v_s, PyArrayObject *__pyx_v_deadline, float __pyx_v_delta_t, float __pyx_v_max_t, int __pyx_v_n_samples, int __pyx_v_n_trials, PyObject *__pyx_v_boundary_fun, PyObject *__pyx_v_boundary_multiplicative, PyObject *__pyx_v_boundary_params, PyObject *__pyx_v_random_state, PyObject *__pyx_v_return_option, PyObject *__pyx_v_smooth, CYTHON_UNUSED PyObject *__pyx_v_kwargs) {
   __Pyx_memviewslice __pyx_v_v_view = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_a_view = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_z_view = { 0, 0, { 0 }, { 0 }, { 0 } };
@@ -15709,14 +15709,14 @@ static PyObject *__pyx_pf_4cssm_22lca(CYTHON_UNUSED PyObject *__pyx_self, PyArra
   __pyx_pybuffer_t.refcount = 0;
   __pyx_pybuffernd_t.data = NULL;
   __pyx_pybuffernd_t.rcbuffer = &amp;__pyx_pybuffer_t;
-  __pyx_pybuffer_deadline.pybuffer.buf = NULL;
-  __pyx_pybuffer_deadline.refcount = 0;
-  __pyx_pybuffernd_deadline.data = NULL;
-  __pyx_pybuffernd_deadline.rcbuffer = &amp;__pyx_pybuffer_deadline;
   __pyx_pybuffer_s.pybuffer.buf = NULL;
   __pyx_pybuffer_s.refcount = 0;
   __pyx_pybuffernd_s.data = NULL;
   __pyx_pybuffernd_s.rcbuffer = &amp;__pyx_pybuffer_s;
+  __pyx_pybuffer_deadline.pybuffer.buf = NULL;
+  __pyx_pybuffer_deadline.refcount = 0;
+  __pyx_pybuffernd_deadline.data = NULL;
+  __pyx_pybuffernd_deadline.rcbuffer = &amp;__pyx_pybuffer_deadline;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(<span class='pyx_c_api'>__Pyx_GetBufferAndValidate</span>(&amp;__pyx_pybuffernd_v.rcbuffer-&gt;pybuffer, (PyObject*)__pyx_v_v, &amp;__Pyx_TypeInfo_float, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) <span class='error_goto'>__PYX_ERR(0, 1800, __pyx_L1_error)</span>
@@ -15749,14 +15749,14 @@ static PyObject *__pyx_pf_4cssm_22lca(CYTHON_UNUSED PyObject *__pyx_self, PyArra
   __pyx_pybuffernd_t.diminfo[0].strides = __pyx_pybuffernd_t.rcbuffer-&gt;pybuffer.strides[0]; __pyx_pybuffernd_t.diminfo[0].shape = __pyx_pybuffernd_t.rcbuffer-&gt;pybuffer.shape[0]; __pyx_pybuffernd_t.diminfo[1].strides = __pyx_pybuffernd_t.rcbuffer-&gt;pybuffer.strides[1]; __pyx_pybuffernd_t.diminfo[1].shape = __pyx_pybuffernd_t.rcbuffer-&gt;pybuffer.shape[1];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(<span class='pyx_c_api'>__Pyx_GetBufferAndValidate</span>(&amp;__pyx_pybuffernd_deadline.rcbuffer-&gt;pybuffer, (PyObject*)__pyx_v_deadline, &amp;__Pyx_TypeInfo_float, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) <span class='error_goto'>__PYX_ERR(0, 1800, __pyx_L1_error)</span>
-  }
-  __pyx_pybuffernd_deadline.diminfo[0].strides = __pyx_pybuffernd_deadline.rcbuffer-&gt;pybuffer.strides[0]; __pyx_pybuffernd_deadline.diminfo[0].shape = __pyx_pybuffernd_deadline.rcbuffer-&gt;pybuffer.shape[0]; __pyx_pybuffernd_deadline.diminfo[1].strides = __pyx_pybuffernd_deadline.rcbuffer-&gt;pybuffer.strides[1]; __pyx_pybuffernd_deadline.diminfo[1].shape = __pyx_pybuffernd_deadline.rcbuffer-&gt;pybuffer.shape[1];
-  {
-    __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(<span class='pyx_c_api'>__Pyx_GetBufferAndValidate</span>(&amp;__pyx_pybuffernd_s.rcbuffer-&gt;pybuffer, (PyObject*)__pyx_v_s, &amp;__Pyx_TypeInfo_float, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) <span class='error_goto'>__PYX_ERR(0, 1800, __pyx_L1_error)</span>
   }
   __pyx_pybuffernd_s.diminfo[0].strides = __pyx_pybuffernd_s.rcbuffer-&gt;pybuffer.strides[0]; __pyx_pybuffernd_s.diminfo[0].shape = __pyx_pybuffernd_s.rcbuffer-&gt;pybuffer.shape[0]; __pyx_pybuffernd_s.diminfo[1].strides = __pyx_pybuffernd_s.rcbuffer-&gt;pybuffer.strides[1]; __pyx_pybuffernd_s.diminfo[1].shape = __pyx_pybuffernd_s.rcbuffer-&gt;pybuffer.shape[1];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(<span class='pyx_c_api'>__Pyx_GetBufferAndValidate</span>(&amp;__pyx_pybuffernd_deadline.rcbuffer-&gt;pybuffer, (PyObject*)__pyx_v_deadline, &amp;__Pyx_TypeInfo_float, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) <span class='error_goto'>__PYX_ERR(0, 1800, __pyx_L1_error)</span>
+  }
+  __pyx_pybuffernd_deadline.diminfo[0].strides = __pyx_pybuffernd_deadline.rcbuffer-&gt;pybuffer.strides[0]; __pyx_pybuffernd_deadline.diminfo[0].shape = __pyx_pybuffernd_deadline.rcbuffer-&gt;pybuffer.shape[0];
 /* … */
   /* function exit code */
   __pyx_L1_error:;
@@ -15829,7 +15829,7 @@ static PyObject *__pyx_pf_4cssm_22lca(CYTHON_UNUSED PyObject *__pyx_self, PyArra
   return __pyx_r;
 }
 /* … */
-  __pyx_tuple__45 = <span class='py_c_api'>PyTuple_Pack</span>(61, __pyx_n_s_v, __pyx_n_s_a, __pyx_n_s_z, __pyx_n_s_g, __pyx_n_s_b, __pyx_n_s_t, __pyx_n_s_deadline, __pyx_n_s_s, __pyx_n_s_delta_t, __pyx_n_s_max_t, __pyx_n_s_n_samples, __pyx_n_s_n_trials, __pyx_n_s_boundary_fun, __pyx_n_s_boundary_multiplicative, __pyx_n_s_boundary_params, __pyx_n_s_random_state, __pyx_n_s_return_option, __pyx_n_s_smooth, __pyx_n_s_kwargs, __pyx_n_s_v_view, __pyx_n_s_a_view, __pyx_n_s_z_view, __pyx_n_s_g_view, __pyx_n_s_b_view, __pyx_n_s_t_view, __pyx_n_s_s_view, __pyx_n_s_deadline_view, __pyx_n_s_n_particles, __pyx_n_s_traj, __pyx_n_s_traj_view, __pyx_n_s_rts, __pyx_n_s_rts_view, __pyx_n_s_choices, __pyx_n_s_choices_view, __pyx_n_s_particles, __pyx_n_s_particles_view, __pyx_n_s_particles_reduced_sum, __pyx_n_s_particles_reduced_sum_view, __pyx_n_s_delta_t_sqrt, __pyx_n_s_sqrt_st, __pyx_n_s_sqrt_st_view, __pyx_n_s_n, __pyx_n_s_i, __pyx_n_s_ix, __pyx_n_s_k, __pyx_n_s_m, __pyx_n_s_t_par, __pyx_n_s_particles_sum, __pyx_n_s_smooth_u, __pyx_n_s_deadline_tmp, __pyx_n_s_num_steps, __pyx_n_s_t_s, __pyx_n_s_boundary, __pyx_n_s_boundary_view, __pyx_n_s_num_draws, __pyx_n_s_gaussian_values, __pyx_n_s_boundary_params_tmp, __pyx_n_s_t_particle, __pyx_n_s_v_dict, __pyx_n_s_z_dict, __pyx_n_s_key);<span class='error_goto'> if (unlikely(!__pyx_tuple__45)) __PYX_ERR(0, 1800, __pyx_L1_error)</span>
+  __pyx_tuple__45 = <span class='py_c_api'>PyTuple_Pack</span>(61, __pyx_n_s_v, __pyx_n_s_a, __pyx_n_s_z, __pyx_n_s_g, __pyx_n_s_b, __pyx_n_s_t, __pyx_n_s_s, __pyx_n_s_deadline, __pyx_n_s_delta_t, __pyx_n_s_max_t, __pyx_n_s_n_samples, __pyx_n_s_n_trials, __pyx_n_s_boundary_fun, __pyx_n_s_boundary_multiplicative, __pyx_n_s_boundary_params, __pyx_n_s_random_state, __pyx_n_s_return_option, __pyx_n_s_smooth, __pyx_n_s_kwargs, __pyx_n_s_v_view, __pyx_n_s_a_view, __pyx_n_s_z_view, __pyx_n_s_g_view, __pyx_n_s_b_view, __pyx_n_s_t_view, __pyx_n_s_s_view, __pyx_n_s_deadline_view, __pyx_n_s_n_particles, __pyx_n_s_traj, __pyx_n_s_traj_view, __pyx_n_s_rts, __pyx_n_s_rts_view, __pyx_n_s_choices, __pyx_n_s_choices_view, __pyx_n_s_particles, __pyx_n_s_particles_view, __pyx_n_s_particles_reduced_sum, __pyx_n_s_particles_reduced_sum_view, __pyx_n_s_delta_t_sqrt, __pyx_n_s_sqrt_st, __pyx_n_s_sqrt_st_view, __pyx_n_s_n, __pyx_n_s_i, __pyx_n_s_ix, __pyx_n_s_k, __pyx_n_s_m, __pyx_n_s_t_par, __pyx_n_s_particles_sum, __pyx_n_s_smooth_u, __pyx_n_s_deadline_tmp, __pyx_n_s_num_steps, __pyx_n_s_t_s, __pyx_n_s_boundary, __pyx_n_s_boundary_view, __pyx_n_s_num_draws, __pyx_n_s_gaussian_values, __pyx_n_s_boundary_params_tmp, __pyx_n_s_t_particle, __pyx_n_s_v_dict, __pyx_n_s_z_dict, __pyx_n_s_key);<span class='error_goto'> if (unlikely(!__pyx_tuple__45)) __PYX_ERR(0, 1800, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_tuple__45);
   <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_tuple__45);
 /* … */
@@ -15842,8 +15842,8 @@ static PyObject *__pyx_pf_4cssm_22lca(CYTHON_UNUSED PyObject *__pyx_self, PyArra
 <pre class="cython line score-0">&#xA0;<span class="">1803</span>:         np.ndarray[float, ndim = 2] g, # decay parameter</pre>
 <pre class="cython line score-0">&#xA0;<span class="">1804</span>:         np.ndarray[float, ndim = 2] b, # inhibition parameter</pre>
 <pre class="cython line score-0">&#xA0;<span class="">1805</span>:         np.ndarray[float, ndim = 2] t,</pre>
-<pre class="cython line score-0">&#xA0;<span class="">1806</span>:         np.ndarray[float, ndim = 2] deadline,</pre>
-<pre class="cython line score-0">&#xA0;<span class="">1807</span>:         np.ndarray[float, ndim = 2] s, # variance (can be one value or np.array of size as v and w)</pre>
+<pre class="cython line score-0">&#xA0;<span class="">1806</span>:         np.ndarray[float, ndim = 2] s, # variance (can be one value or np.array of size as v and w)</pre>
+<pre class="cython line score-0">&#xA0;<span class="">1807</span>:         np.ndarray[float, ndim = 1] deadline,</pre>
 <pre class="cython line score-5" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">1808</span>:         float delta_t = 0.001, # time-step size in simulator</pre>
 <pre class='cython code score-5 '>  __pyx_t_1 = <span class='py_c_api'>PyFloat_FromDouble</span>(((double)0.001));<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1808, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
@@ -15977,7 +15977,7 @@ static PyObject *__pyx_pf_4cssm_22lca(CYTHON_UNUSED PyObject *__pyx_self, PyArra
         }
         CYTHON_FALLTHROUGH;
         case  6:
-        if (likely((values[6] = <span class='pyx_c_api'>__Pyx_GetKwValue_FASTCALL</span>(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_deadline)) != 0)) {
+        if (likely((values[6] = <span class='pyx_c_api'>__Pyx_GetKwValue_FASTCALL</span>(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_s)) != 0)) {
           (void)<span class='pyx_c_api'>__Pyx_Arg_NewRef_FASTCALL</span>(values[6]);
           kw_args--;
         }
@@ -15987,7 +15987,7 @@ static PyObject *__pyx_pf_4cssm_22lca(CYTHON_UNUSED PyObject *__pyx_self, PyArra
         }
         CYTHON_FALLTHROUGH;
         case  7:
-        if (likely((values[7] = <span class='pyx_c_api'>__Pyx_GetKwValue_FASTCALL</span>(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_s)) != 0)) {
+        if (likely((values[7] = <span class='pyx_c_api'>__Pyx_GetKwValue_FASTCALL</span>(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_deadline)) != 0)) {
           (void)<span class='pyx_c_api'>__Pyx_Arg_NewRef_FASTCALL</span>(values[7]);
           kw_args--;
         }
@@ -16110,8 +16110,8 @@ static PyObject *__pyx_pf_4cssm_22lca(CYTHON_UNUSED PyObject *__pyx_self, PyArra
     __pyx_v_g = ((PyArrayObject *)values[3]);
     __pyx_v_b = ((PyArrayObject *)values[4]);
     __pyx_v_t = ((PyArrayObject *)values[5]);
-    __pyx_v_deadline = ((PyArrayObject *)values[6]);
-    __pyx_v_s = ((PyArrayObject *)values[7]);
+    __pyx_v_s = ((PyArrayObject *)values[6]);
+    __pyx_v_deadline = ((PyArrayObject *)values[7]);
     if (values[8]) {
       __pyx_v_delta_t = __pyx_<span class='py_c_api'>PyFloat_AsFloat</span>(values[8]); if (unlikely((__pyx_v_delta_t == (float)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(0, 1808, __pyx_L3_error)</span>
     } else {
@@ -16162,9 +16162,9 @@ static PyObject *__pyx_pf_4cssm_22lca(CYTHON_UNUSED PyObject *__pyx_self, PyArra
   if (unlikely(!<span class='pyx_c_api'>__Pyx_ArgTypeTest</span>(((PyObject *)__pyx_v_g), __pyx_ptype_5numpy_ndarray, 1, "g", 0))) <span class='error_goto'>__PYX_ERR(0, 1803, __pyx_L1_error)</span>
   if (unlikely(!<span class='pyx_c_api'>__Pyx_ArgTypeTest</span>(((PyObject *)__pyx_v_b), __pyx_ptype_5numpy_ndarray, 1, "b", 0))) <span class='error_goto'>__PYX_ERR(0, 1804, __pyx_L1_error)</span>
   if (unlikely(!<span class='pyx_c_api'>__Pyx_ArgTypeTest</span>(((PyObject *)__pyx_v_t), __pyx_ptype_5numpy_ndarray, 1, "t", 0))) <span class='error_goto'>__PYX_ERR(0, 1805, __pyx_L1_error)</span>
-  if (unlikely(!<span class='pyx_c_api'>__Pyx_ArgTypeTest</span>(((PyObject *)__pyx_v_deadline), __pyx_ptype_5numpy_ndarray, 1, "deadline", 0))) <span class='error_goto'>__PYX_ERR(0, 1806, __pyx_L1_error)</span>
-  if (unlikely(!<span class='pyx_c_api'>__Pyx_ArgTypeTest</span>(((PyObject *)__pyx_v_s), __pyx_ptype_5numpy_ndarray, 1, "s", 0))) <span class='error_goto'>__PYX_ERR(0, 1807, __pyx_L1_error)</span>
-  __pyx_r = __pyx_pf_4cssm_22lca(__pyx_self, __pyx_v_v, __pyx_v_a, __pyx_v_z, __pyx_v_g, __pyx_v_b, __pyx_v_t, __pyx_v_deadline, __pyx_v_s, __pyx_v_delta_t, __pyx_v_max_t, __pyx_v_n_samples, __pyx_v_n_trials, __pyx_v_boundary_fun, __pyx_v_boundary_multiplicative, __pyx_v_boundary_params, __pyx_v_random_state, __pyx_v_return_option, __pyx_v_smooth, __pyx_v_kwargs);
+  if (unlikely(!<span class='pyx_c_api'>__Pyx_ArgTypeTest</span>(((PyObject *)__pyx_v_s), __pyx_ptype_5numpy_ndarray, 1, "s", 0))) <span class='error_goto'>__PYX_ERR(0, 1806, __pyx_L1_error)</span>
+  if (unlikely(!<span class='pyx_c_api'>__Pyx_ArgTypeTest</span>(((PyObject *)__pyx_v_deadline), __pyx_ptype_5numpy_ndarray, 1, "deadline", 0))) <span class='error_goto'>__PYX_ERR(0, 1807, __pyx_L1_error)</span>
+  __pyx_r = __pyx_pf_4cssm_22lca(__pyx_self, __pyx_v_v, __pyx_v_a, __pyx_v_z, __pyx_v_g, __pyx_v_b, __pyx_v_t, __pyx_v_s, __pyx_v_deadline, __pyx_v_delta_t, __pyx_v_max_t, __pyx_v_n_samples, __pyx_v_n_trials, __pyx_v_boundary_fun, __pyx_v_boundary_multiplicative, __pyx_v_boundary_params, __pyx_v_random_state, __pyx_v_return_option, __pyx_v_smooth, __pyx_v_kwargs);
 </pre><pre class="cython line score-0">&#xA0;<span class="">1816</span>:         return_option = 'full',</pre>
 <pre class="cython line score-0">&#xA0;<span class="">1817</span>:         smooth = False,</pre>
 <pre class="cython line score-0">&#xA0;<span class="">1818</span>:         **kwargs):</pre>
