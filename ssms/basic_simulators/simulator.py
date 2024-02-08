@@ -118,11 +118,15 @@ def make_boundary_dict(model_config, model, theta):
 def make_drift_dict(model_config, model, theta):
     if "drift_name" in model_config[model].keys():
         drift_name = model_config[model]["drift_name"]
+        # print(drift_name)
+        # print({param_name: value
+        # for param_name, value in theta.items()})
         drift_params = {
             param_name: value
             for param_name, value in theta.items()
             if param_name in drift_config[drift_name]["params"]
         }
+        # print('testing drift_params:', drift_params)
         drift_fun = drift_config[drift_name]["fun"]
         drift_dict = {"drift_fun": drift_fun, "drift_params": drift_params}
     else:

@@ -233,7 +233,7 @@ model_config = {
         ],
         "boundary_name": "angle",
         "boundary": bf.angle,
-        "drift_name": df.ds_conflict_drift,
+        "drift_name": "ds_conflict_drift",
         "drift_fun": df.ds_conflict_drift,
         "n_params": 10,
         "default_params": [2.0, 0.5, 1.0, 2.0, 2.0, 2.0, 2.0, 3.0, 0.5, -0.5, 0.0],
