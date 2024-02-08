@@ -365,7 +365,8 @@ def simulator(
     elif isinstance(theta, dict):
         theta = _make_valid_dict(deepcopy(theta))
     elif isinstance(theta, pd.DataFrame):
-        theta = theta.to_dict("list")
+        theta = theta.to_dict(orient = "list")
+        theta =  {k:np.array(v).astype(np.float32) for k,v in theta.items()}
     else:
         try:
             import torch
