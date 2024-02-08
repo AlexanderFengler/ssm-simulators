@@ -755,10 +755,10 @@ def simulator(
         sim_param_dict["s"] = noise_dict["1_particles"]
         theta["zh"], theta["zl1"], theta["zl2"] = [z_vec, z_vec, z_vec]
 
-    print(theta)
-    print(boundary_dict)
-    print(drift_dict)
-    print(sim_param_dict)
+    # print(theta)
+    # print(boundary_dict)
+    # print(drift_dict)
+    # print(sim_param_dict)
     # Call to the simulator
     x = model_config[model]["simulator"](
         **theta,
