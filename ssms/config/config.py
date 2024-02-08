@@ -278,7 +278,7 @@ model_config = {
     },
     "race_2": {
         "name": "race_2",
-        "params": ["v0", "v1", "a", "z0", "z1", "ndt"],
+        "params": ["v0", "v1", "a", "z0", "z1", "t"],
         "param_bounds": [
             [0.0, 0.0, 1.0, 0.0, 0.0, 0.0],
             [2.5, 2.5, 3.0, 0.9, 0.9, 2.0],
@@ -292,7 +292,7 @@ model_config = {
     },
     "race_no_bias_2": {
         "name": "race_no_bias_2",
-        "params": ["v0", "v1", "a", "z", "ndt"],
+        "params": ["v0", "v1", "a", "z", "t"],
         "param_bounds": [
             [0.0, 0.0, 1.0, 0.0, 0.0],
             [2.5, 2.5, 3.0, 0.9, 2.0],
@@ -306,7 +306,7 @@ model_config = {
     },
     "race_no_z_2": {
         "name": "race_no_z_2",
-        "params": ["v0", "v1", "a", "ndt"],
+        "params": ["v0", "v1", "a", "t"],
         "param_bounds": [
             [0.0, 0.0, 1.0, 0.0],
             [2.5, 2.5, 3.0, 2.0],
@@ -320,7 +320,7 @@ model_config = {
     },
     "race_no_bias_angle_2": {
         "name": "race_no_bias_angle_2",
-        "params": ["v0", "v1", "a", "z", "ndt", "theta"],
+        "params": ["v0", "v1", "a", "z", "t", "theta"],
         "param_bounds": [
             [0.0, 0.0, 1.0, 0.0, 0.0, -0.1],
             [2.5, 2.5, 3.0, 0.9, 2.0, 1.45],
@@ -334,7 +334,7 @@ model_config = {
     },
     "race_no_z_angle_2": {
         "name": "race_no_z_angle_2",
-        "params": ["v0", "v1", "a", "ndt", "theta"],
+        "params": ["v0", "v1", "a", "t", "theta"],
         "param_bounds": [
             [0.0, 0.0, 1.0, 0.0, -0.1],
             [2.5, 2.5, 3.0, 2.0, 1.45],
@@ -348,7 +348,7 @@ model_config = {
     },
     "race_3": {
         "name": "race_3",
-        "params": ["v0", "v1", "v2", "a", "z0", "z1", "z2", "ndt"],
+        "params": ["v0", "v1", "v2", "a", "z0", "z1", "z2", "t"],
         "param_bounds": [
             [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0],
             [2.5, 2.5, 2.5, 3.0, 0.9, 0.9, 0.9, 2.0],
@@ -362,7 +362,7 @@ model_config = {
     },
     "race_no_bias_3": {
         "name": "race_no_bias_3",
-        "params": ["v0", "v1", "v2", "a", "z", "ndt"],
+        "params": ["v0", "v1", "v2", "a", "z", "t"],
         "param_bounds": [
             [0.0, 0.0, 0.0, 1.0, 0.0, 0.0],
             [2.5, 2.5, 2.5, 3.0, 0.9, 2.0],
@@ -376,7 +376,7 @@ model_config = {
     },
     "race_no_z_3": {
         "name": "race_no_z_3",
-        "params": ["v0", "v1", "v2", "a", "ndt"],
+        "params": ["v0", "v1", "v2", "a", "t"],
         "param_bounds": [
             [0.0, 0.0, 0.0, 1.0, 0.0],
             [2.5, 2.5, 2.5, 3.0, 2.0],
@@ -390,7 +390,7 @@ model_config = {
     },
     "race_no_bias_angle_3": {
         "name": "race_no_bias_angle_3",
-        "params": ["v0", "v1", "v2", "a", "z", "ndt", "theta"],
+        "params": ["v0", "v1", "v2", "a", "z", "t", "theta"],
         "param_bounds": [
             [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, -0.1],
             [2.5, 2.5, 2.5, 3.0, 0.9, 2.0, 1.45],
@@ -404,7 +404,7 @@ model_config = {
     },
     "race_no_z_angle_3": {
         "name": "race_no_z_angle_3",
-        "params": ["v0", "v1", "v2", "a", "ndt", "theta"],
+        "params": ["v0", "v1", "v2", "a", "t", "theta"],
         "param_bounds": [
             [0.0, 0.0, 0.0, 1.0, 0.0, -0.1],
             [2.5, 2.5, 2.5, 3.0, 2.0, 1.45],
@@ -418,7 +418,7 @@ model_config = {
     },
     "race_4": {
         "name": "race_4",
-        "params": ["v0", "v1", "v2", "v3", "a", "z0", "z1", "z2", "z3", "ndt"],
+        "params": ["v0", "v1", "v2", "v3", "a", "z0", "z1", "z2", "z3", "t"],
         "param_bounds": [
             [0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0],
             [2.5, 2.5, 2.5, 2.5, 3.0, 0.9, 0.9, 0.9, 0.9, 2.0],
@@ -432,7 +432,7 @@ model_config = {
     },
     "race_no_bias_4": {
         "name": "race_no_bias_4",
-        "params": ["v0", "v1", "v2", "v3", "a", "z", "ndt"],
+        "params": ["v0", "v1", "v2", "v3", "a", "z", "t"],
         "param_bounds": [
             [0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0],
             [2.5, 2.5, 2.5, 2.5, 3.0, 0.9, 2.0],
@@ -446,7 +446,7 @@ model_config = {
     },
     "race_no_z_4": {
         "name": "race_no_z_4",
-        "params": ["v0", "v1", "v2", "v3", "a", "ndt"],
+        "params": ["v0", "v1", "v2", "v3", "a", "t"],
         "param_bounds": [
             [0.0, 0.0, 0.0, 0.0, 1.0, 0.0],
             [2.5, 2.5, 2.5, 2.5, 3.0, 2.0],
@@ -460,7 +460,7 @@ model_config = {
     },
     "race_no_bias_angle_4": {
         "name": "race_no_bias_angle_4",
-        "params": ["v0", "v1", "v2", "v3", "a", "z", "ndt", "theta"],
+        "params": ["v0", "v1", "v2", "v3", "a", "z", "t", "theta"],
         "param_bounds": [
             [0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, -0.1],
             [2.5, 2.5, 2.5, 2.5, 3.0, 0.9, 2.0, 1.45],
@@ -474,7 +474,7 @@ model_config = {
     },
     "race_no_z_angle_4": {
         "name": "race_no_z_angle_4",
-        "params": ["v0", "v1", "v2", "v3", "a", "ndt", "theta"],
+        "params": ["v0", "v1", "v2", "v3", "a", "t", "theta"],
         "param_bounds": [
             [0.0, 0.0, 0.0, 0.0, 1.0, 0.0, -0.1],
             [2.5, 2.5, 2.5, 2.5, 3.0, 2.0, 1.45],
@@ -488,7 +488,7 @@ model_config = {
     },
     "lca_3": {
         "name": "lca_3",
-        "params": ["v0", "v1", "v2", "a", "z0", "z1", "z2", "g", "b", "ndt"],
+        "params": ["v0", "v1", "v2", "a", "z0", "z1", "z2", "g", "b", "t"],
         "param_bounds": [
             [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, -1.0, -1.0, 0.0],
             [2.5, 2.5, 2.5, 3.0, 0.9, 0.9, 0.9, 1.0, 1.0, 2.0],
@@ -502,7 +502,7 @@ model_config = {
     },
     "lca_no_bias_3": {
         "name": "lca_no_bias_3",
-        "params": ["v0", "v1", "v2", "a", "z", "g", "b", "ndt"],
+        "params": ["v0", "v1", "v2", "a", "z", "g", "b", "t"],
         "param_bounds": [
             [0.0, 0.0, 0.0, 1.0, 0.0, -1.0, -1.0, 0.0],
             [2.5, 2.5, 2.5, 3.0, 0.9, 1.0, 1.0, 2.0],
@@ -516,7 +516,7 @@ model_config = {
     },
     "lca_no_z_3": {
         "name": "lca_no_z_3",
-        "params": ["v0", "v1", "v2", "a", "g", "b", "ndt"],
+        "params": ["v0", "v1", "v2", "a", "g", "b", "t"],
         "param_bounds": [
             [0.0, 0.0, 0.0, 1.0, -1.0, -1.0, 0.0],
             [2.5, 2.5, 2.5, 3.0, 1.0, 1.0, 2.0],
@@ -530,7 +530,7 @@ model_config = {
     },
     "lca_no_bias_angle_3": {
         "name": "lca_no_bias_angle_3",
-        "params": ["v0", "v1", "v2", "a", "z", "g", "b", "ndt", "theta"],
+        "params": ["v0", "v1", "v2", "a", "z", "g", "b", "t", "theta"],
         "param_bounds": [
             [0.0, 0.0, 0.0, 1.0, 0.0, -1.0, -1.0, 0.0, -1.0],
             [2.5, 2.5, 2.5, 3.0, 0.9, 1.0, 1.0, 2.0, 1.45],
@@ -544,7 +544,7 @@ model_config = {
     },
     "lca_no_z_angle_3": {
         "name": "lca_no_z_angle_3",
-        "params": ["v0", "v1", "v2", "a", "g", "b", "ndt", "theta"],
+        "params": ["v0", "v1", "v2", "a", "g", "b", "t", "theta"],
         "param_bounds": [
             [0.0, 0.0, 0.0, 1.0, -1.0, -1.0, 0.0, -1.0],
             [2.5, 2.5, 2.5, 3.0, 1.0, 1.0, 2.0, 1.45],
@@ -570,7 +570,7 @@ model_config = {
             "z3",
             "g",
             "b",
-            "ndt",
+            "t",
         ],
         "param_bounds": [
             [0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, -1.0, -1.0, 0.0],
@@ -585,7 +585,7 @@ model_config = {
     },
     "lca_no_bias_4": {
         "name": "lca_no_bias_4",
-        "params": ["v0", "v1", "v2", "v3", "a", "z", "g", "b", "ndt"],
+        "params": ["v0", "v1", "v2", "v3", "a", "z", "g", "b", "t"],
         "param_bounds": [
             [0.0, 0.0, 0.0, 0.0, 1.0, 0.0, -1.0, -1.0, 0.0],
             [2.5, 2.5, 2.5, 2.5, 3.0, 0.9, 1.0, 1.0, 2.0],
@@ -599,7 +599,7 @@ model_config = {
     },
     "lca_no_z_4": {
         "name": "lca_no_z_4",
-        "params": ["v0", "v1", "v2", "v3", "a", "g", "b", "ndt"],
+        "params": ["v0", "v1", "v2", "v3", "a", "g", "b", "t"],
         "param_bounds": [
             [0.0, 0.0, 0.0, 0.0, 1.0, -1.0, -1.0, 0.0],
             [2.5, 2.5, 2.5, 2.5, 3.0, 1.0, 1.0, 2.0],
@@ -613,7 +613,7 @@ model_config = {
     },
     "lca_no_bias_angle_4": {
         "name": "lca_no_bias_angle_4",
-        "params": ["v0", "v1", "v2", "v3", "a", "z", "g", "b", "ndt", "theta"],
+        "params": ["v0", "v1", "v2", "v3", "a", "z", "g", "b", "t", "theta"],
         "param_bounds": [
             [0.0, 0.0, 0.0, 0.0, 1.0, 0.0, -1.0, -1.0, 0.0, -0.1],
             [2.5, 2.5, 2.5, 2.5, 3.0, 0.9, 1.0, 1.0, 2.0, 1.45],
@@ -627,7 +627,7 @@ model_config = {
     },
     "lca_no_z_angle_4": {
         "name": "lca_no_z_angle_4",
-        "params": ["v0", "v1", "v2", "v3", "a", "g", "b", "ndt", "theta"],
+        "params": ["v0", "v1", "v2", "v3", "a", "g", "b", "t", "theta"],
         "param_bounds": [
             [0.0, 0.0, 0.0, 0.0, 1.0, -1.0, -1.0, 0.0, -0.1],
             [2.5, 2.5, 2.5, 2.5, 3.0, 1.0, 1.0, 2.0, 1.45],
