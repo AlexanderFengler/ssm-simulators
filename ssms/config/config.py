@@ -167,6 +167,7 @@ model_config = {
         "n_params": 7,
         "default_params": [0.0, 1.0, 0.5, 0.25, 5.0, 0.5, 1.0],
         "nchoices": 2,
+        "simulator": cssm.ddm_flex,
     },
     "gamma_drift_angle": {
         "name": "gamma_drift_angle",
@@ -182,6 +183,7 @@ model_config = {
         "n_params": 7,
         "default_params": [0.0, 1.0, 0.5, 0.25, 0.0, 5.0, 0.5, 1.0],
         "nchoices": 2,
+        "simulator": cssm.ddm_flex,
     },
     "ds_conflict_drift": {
         "name": "ds_conflict_drift",
