@@ -500,7 +500,7 @@ def simulator(
         theta["t"] = np.expand_dims(theta["t"], axis=1)
         theta["a"] = np.expand_dims(theta["a"], axis=1)
 
-    if model in ["race_no_bias_2", "race_no_bias_2_angle"]:
+    if model in ["race_no_bias_2", "race_no_bias_angle_2"]:
         sim_param_dict["s"] = noise_dict["2_particles"]
         theta["z"] = np.column_stack([theta["z"], theta["z"]])
         theta["v"] = np.column_stack([theta["v0"], theta["v1"]])
@@ -755,10 +755,10 @@ def simulator(
         sim_param_dict["s"] = noise_dict["1_particles"]
         theta["zh"], theta["zl1"], theta["zl2"] = [z_vec, z_vec, z_vec]
 
-    # print(theta)
-    # print(boundary_dict)
-    # print(drift_dict)
-    # print(sim_param_dict)
+    print(theta)
+    print(boundary_dict)
+    print(drift_dict)
+    print(sim_param_dict)
     # Call to the simulator
     x = model_config[model]["simulator"](
         **theta,
