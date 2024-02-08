@@ -649,7 +649,7 @@ def simulator(
         "ddm_seq2_no_bias",
         "ddm_seq2_angle_no_bias",
         "ddm_seq2_weibull_no_bias",
-        "ddm_seq2_cnoflict_gamma_no_bias",
+        "ddm_seq2_conflict_gamma_no_bias",
     ]:
         sim_param_dict["s"] = noise_dict["1_particles"]
         theta["zh"], theta["zl1"], theta["zl2"] = [z_vec, z_vec, z_vec]
