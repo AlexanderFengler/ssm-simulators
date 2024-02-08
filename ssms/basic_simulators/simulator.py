@@ -758,6 +758,36 @@ def simulator(
         **sim_param_dict,
     )
 
+    # Additional model outputs, easy to compute:
+    # Choice probability
+    x["choice_p"] = np.zeros((n_trials, len(x["metadata"]["possible_choices"])))
+    x["choice_p_no_omission"] = np.zeros((n_trials, len(x["metadata"]["possible_choices"])))
+    x["omission_p"] = np.zeros((n_trials, 1))
+    x["nogo_p"] = np.zeros((n_trials, 1))
+    x["go_p"] = np.zeros((n_trials, 1))
+
+    for k in range(n_trials):
+        out_len = x["rts"][:, k, :].shape[0]
+        out_len_no_omission = x["rts"][:, k, :][x["rts"][:, k, :] != -999].shape[0]
+
+        for n, choice in enumerate(x["metadata"]["possible_choices"]):
+            x["choice_p"][k, n] = (x["choices"][:, k, :] == choice).sum() / out_len
+            if out_len_no_omission > 0:
+                x["choice_p_no_omission"][k, n] = (
+                    x["choices"][:, k, :][x["rts"][:, k, :] != -999] == choice
+                ).sum() / out_len_no_omission
+            else:
+                x["choice_p_no_omission"][k, n] = -999
+
+    x["omission_p"][k, 0] = (x["rts"][:, k, :] == -999).sum() / out_len
+    x["nogo_p"][k, 0] = (
+        (x["choices"][:, k, :] != max(x["metadata"]["possible_choices"])) | (x["rts"][:, k, :] == -999)
+    ).sum() / out_len
+    x["go_p"][k, 0] = 1 - x["nogo_p"][k, 0]
+
+    # Choice probability no-omission
+    # Calculate choice probability only from rts that did not pass a given deadline
+
     # Output compatibility
     if n_trials == 1:
         x["rts"] = np.squeeze(x["rts"], axis=1)
@@ -768,44 +798,12 @@ def simulator(
 
     x["metadata"]["model"] = model
 
-    # Additional model outputs, easy to compute:
-
-    # Choice probability
-    x["choice_p"] = np.zeros((1, len(x["metadata"]["possible_choices"])))
-    x["choice_p_no_omission"] = np.zeros((1, len(x["metadata"]["possible_choices"])))
-    x["omission_p"] = np.zeros((1, 1))
-    x["nogo_p"] = np.zeros((1, 1))
-    x["go_p"] = np.zeros((1, 1))
-    out_len = x["rts"].shape[0]
-    out_len_no_omission = x["rts"][x["rts"] != -999].shape[0]
-    for k, choice in enumerate(x["metadata"]["possible_choices"]):
-        x["choice_p"][0, k] = (x["choices"] == choice).sum() / out_len
-        if out_len_no_omission > 0:
-            x["choice_p_no_omission"][0, k] = (
-                x["choices"][x["rts"] != -999] == choice
-            ).sum() / out_len_no_omission
-        else:
-            x["choice_p_no_omission"][0, k] = -999
-
-    x["omission_p"][0, 0] = (x["rts"] == -999).sum() / out_len
-    x["nogo_p"][0, 0] = (
-        (x["choices"] != max(x["metadata"]["possible_choices"])) | (x["rts"] == -999)
-    ).sum() / out_len
-    x["go_p"][0, 0] = 1 - x["nogo_p"][0, 0]
-
     x["binned_128"] = np.expand_dims(
         bin_simulator_output(x, nbins=128, max_t=-1, freq_cnt=True), axis=0
     )
     x["binned_256"] = np.expand_dims(
         bin_simulator_output(x, nbins=256, max_t=-1, freq_cnt=True), axis=0
     )
-
-    # Choice probability no-omission
-    # Calculate choice probability only from rts that did not pass a given deadline
-
-    # Omission probability
-
-    # Nogo probability
 
     # Adjust in output to binning choice
     if bin_dim == 0 or bin_dim is None:
