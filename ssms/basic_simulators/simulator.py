@@ -761,7 +761,9 @@ def simulator(
     # Additional model outputs, easy to compute:
     # Choice probability
     x["choice_p"] = np.zeros((n_trials, len(x["metadata"]["possible_choices"])))
-    x["choice_p_no_omission"] = np.zeros((n_trials, len(x["metadata"]["possible_choices"])))
+    x["choice_p_no_omission"] = np.zeros(
+        (n_trials, len(x["metadata"]["possible_choices"]))
+    )
     x["omission_p"] = np.zeros((n_trials, 1))
     x["nogo_p"] = np.zeros((n_trials, 1))
     x["go_p"] = np.zeros((n_trials, 1))
@@ -781,7 +783,8 @@ def simulator(
 
     x["omission_p"][k, 0] = (x["rts"][:, k, :] == -999).sum() / out_len
     x["nogo_p"][k, 0] = (
-        (x["choices"][:, k, :] != max(x["metadata"]["possible_choices"])) | (x["rts"][:, k, :] == -999)
+        (x["choices"][:, k, :] != max(x["metadata"]["possible_choices"]))
+        | (x["rts"][:, k, :] == -999)
     ).sum() / out_len
     x["go_p"][k, 0] = 1 - x["nogo_p"][k, 0]
 
