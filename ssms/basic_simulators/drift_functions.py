@@ -84,13 +84,13 @@ def ds_support_analytic(t=np.arange(0, 10, 0.001), init_p=0, fix_point=1, slope=
 
 def ds_conflict_drift(
     t=np.arange(0, 10, 0.001),
-    init_p_t=0,
-    init_p_d=0,
-    slope_t=1,
-    slope_d=1,
-    fixed_p_t=1,
-    coherence_t=1.5,
-    coherence_d=1.5,
+    tinit=0,
+    dinit=0,
+    tslope=1,
+    dslope=1,
+    tfixedp=1,
+    tcoh=1.5,
+    dcoh=1.5,
 ):
     """This drift is inspired by a conflict task which
        involves a target and a distractor stimuli both presented
@@ -125,10 +125,10 @@ def ds_conflict_drift(
          The full drift timecourse evaluated at the supplied timepoints t.
     """
 
-    w_t = ds_support_analytic(t=t, init_p=init_p_t, fix_point=fixed_p_t, slope=slope_t)
+    w_t = ds_support_analytic(t=t, init_p=tinit, fix_point=tfixedp, slope=tslope)
 
-    w_d = ds_support_analytic(t=t, init_p=init_p_d, fix_point=0, slope=slope_d)
+    w_d = ds_support_analytic(t=t, init_p=dinit, fix_point=0, slope=dslope)
 
-    v_t = (w_t * coherence_t) + (w_d * coherence_d)
+    v_t = (w_t * tcoh) + (w_d * dcoh)
 
     return v_t  # , w_t, w_d

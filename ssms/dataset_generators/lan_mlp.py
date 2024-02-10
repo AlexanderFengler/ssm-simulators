@@ -1,6 +1,7 @@
-from ssms.basic_simulators.simulator import simulator, bin_simulator_output
+from ssms.basic_simulators.simulator import simulator  # , bin_simulator_output
 from ssms.support_utils import kde_class
 import numpy as np
+from copy import deepcopy
 import pickle
 import uuid
 import os
@@ -66,8 +67,18 @@ class data_generator:
             print("No generator_config specified")
             return
         else:
-            self.generator_config = generator_config
-            self.model_config = model_config
+            self.generator_config = deepcopy(generator_config)
+            self.model_config = deepcopy(model_config)
+            # Account for deadline if in model name
+            if "deadline" in self.generator_config["model"]:
+                self.model_config["params"].append("deadline")
+                self.model_config["param_bounds"][0].append(0.001)
+                self.model_config["param_bounds"][1].append(10)
+                self.model_config["default_params"].append(10)
+                self.model_config["name"] += "_deadline"
+                self.model_config["n_params"] += 1
+                print(self.model_config)
+
             self._build_simulator()
             self._get_ncpus()
 
@@ -122,7 +133,10 @@ class data_generator:
         keep = 1
         n_sim = simulations["rts"].shape[0]
         for choice_tmp in simulations["metadata"]["possible_choices"]:
-            tmp_rts = simulations["rts"][simulations["choices"] == choice_tmp]
+            tmp_rts = simulations["rts"][
+                (simulations["choices"] == choice_tmp) & (simulations["rts"] != -999)
+            ]
+
             tmp_n_c = len(tmp_rts)
             if tmp_n_c > 0:
                 mode_, mode_cnt_ = mode(tmp_rts, keepdims=False)
@@ -180,9 +194,7 @@ class data_generator:
 
         out[:, : len(theta)] = np.tile(theta, (n_kde + n_unif_up + n_unif_down, 1))
 
-        tmp_kde = kde_class.LogKDE(
-            (simulations["rts"], simulations["choices"], simulations["metadata"])
-        )
+        tmp_kde = kde_class.LogKDE(simulations)
 
         # Get kde part
         samples_kde = tmp_kde.kde_sample(n_samples=n_kde)
@@ -199,8 +211,8 @@ class data_generator:
                 ).astype(int)
                 r_cnt += 1
         else:
-            out[:n_kde, -3] = samples_kde[0].ravel()
-            out[:n_kde, -2] = samples_kde[1].ravel()
+            out[:n_kde, -3] = samples_kde["rts"].ravel()
+            out[:n_kde, -2] = samples_kde["choices"].ravel()
 
         out[:n_kde, -1] = likelihoods_kde
 
@@ -216,7 +228,9 @@ class data_generator:
         else:
             rt_tmp = np.random.uniform(low=0.0001, high=100, size=n_unif_up)
 
-        likelihoods_unif = tmp_kde.kde_eval(data=(rt_tmp, choice_tmp)).ravel()
+        likelihoods_unif = tmp_kde.kde_eval(
+            data={"rts": rt_tmp, "choices": choice_tmp}
+        ).ravel()
 
         out[n_kde : (n_kde + n_unif_up), -3] = rt_tmp
         out[n_kde : (n_kde + n_unif_up), -2] = choice_tmp
@@ -244,35 +258,39 @@ class data_generator:
                     high=self.model_config["param_bounds"][1],
                 )
             )
+            theta_dict = {
+                name: val for name, val in zip(self.model_config["params"], theta)
+            }
 
             simulations = self.get_simulations(
-                theta=theta, random_seed=random_seed_tuple[1]
+                theta=theta_dict, random_seed=random_seed_tuple[1]
             )
             keep, stats = self._filter_simulations(simulations)
 
         kde_data = self._make_kde_data(simulations=simulations, theta=theta)
 
-        choice_p = np.array(
-            [
-                (simulations["choices"] == 1.0).sum()
-                / simulations["choices"].flatten().shape[0]
-            ]
-        )
-        binned_128 = np.expand_dims(
-            bin_simulator_output(simulations, nbins=128, max_t=-1, freq_cnt=True),
-            axis=0,
-        )
-        binned_256 = np.expand_dims(
-            bin_simulator_output(simulations, nbins=256, max_t=-1, freq_cnt=True),
-            axis=0,
-        )
+        if len(simulations["metadata"]["possible_choices"]) == 2:
+            cpn_labels = np.expand_dims(simulations["choice_p"][0, 0], axis=0)
+            cpn_no_omission_labels = np.expand_dims(
+                simulations["choice_p_no_omission"][0, 0], axis=0
+            )
+        else:
+            cpn_labels = simulations["choice_p"]
+            cpn_no_omission_labels = simulations["choice_p_no_omission"]
 
         return {
-            "data": kde_data[:, :-1],
-            "labels": kde_data[:, -1],
-            "choice_p": choice_p,
-            "binned_128": binned_128,
-            "binned_256": binned_256,
+            "lan_data": kde_data[:, :-1],
+            "lan_labels": kde_data[:, -1],
+            "cpn_data": np.expand_dims(theta, axis=0),
+            "cpn_labels": cpn_labels,
+            "cpn_no_omission_data": np.expand_dims(theta, axis=0),
+            "cpn_no_omission_labels": cpn_no_omission_labels,
+            "opn_data": np.expand_dims(theta, axis=0),
+            "opn_labels": simulations["omission_p"],
+            "gonogo_data": np.expand_dims(theta, axis=0),
+            "gonogo_labels": simulations["nogo_p"],
+            "binned_128": simulations["binned_128"],
+            "binned_256": simulations["binned_256"],
             "theta": np.expand_dims(theta, axis=0),
         }
 
@@ -286,21 +304,72 @@ class data_generator:
                 high=self.model_config["param_bounds"][1],
             )
         )
+        theta_dict = {
+            name: val for name, val in zip(self.model_config["params"], theta)
+        }
+
         # Run the simulator
         simulations = self.get_simulations(
-            theta=theta, random_seed=random_seed_tuple[1]
+            theta=theta_dict, random_seed=random_seed_tuple[1]
         )
 
         # Compute the choice probabilities
-        choice_p = np.array(
-            [
-                (simulations["choices"] == 1.0).sum()
-                / simulations["choices"].flatten().shape[0]
-            ]
+        out_dict = {}
+        out_dict["choice_p"] = np.zeros(
+            (1, len(simulations["metadata"]["possible_choices"]))
         )
+        out_dict["choice_p_no_omission"] = np.zeros(
+            (1, len(simulations["metadata"]["possible_choices"]))
+        )
+        out_dict["omission_p"] = {}
+        out_dict["theta"] = np.expand_dims(theta, axis=0)
+
+        for k, choice in enumerate(simulations["metadata"]["possible_choices"]):
+            out_dict["choice_p"][k] = np.array(
+                [
+                    (simulations["choices"] == choice).sum()
+                    / simulations["choices"].flatten().shape[0]
+                ]
+            )
+            out_dict["choice_p_no_omission"][k] = np.array(
+                [
+                    (simulations["choices"][simulations["rts"] != -999] == choice).sum()
+                    / simulations["choices"].flatten().shape[0]
+                ]
+            )
+
+        out_dict["omission_p"] = np.expand_dims(
+            np.array(
+                [
+                    (simulations["rts"] == -999).sum()
+                    / simulations["choices"].flatten().shape[0]
+                ]
+            ),
+            axis=0,
+        )
+        out_dict["nogo_p"] = np.expand_dims(
+            np.array(
+                [
+                    (simulations["rts"] == -999)
+                    | (
+                        simulations["choices"]
+                        != simulations["metadata"]["possible_choices"][0]
+                    )
+                ]
+            ),
+            axis=0,
+        )
+        out_dict["go_p"] = 1 - out_dict["nogo_p"]
 
         return {
-            "choice_p": choice_p,
+            "cpn_data": np.expand_dims(theta, axis=0),
+            "cpn_labels": out_dict["choice_p"],
+            "cpn_no_omission_data": np.expand_dims(theta, axis=0),
+            "cpn_no_omission_labels": out_dict["choice_p_no_omission"],
+            "opn_data": np.expand_dims(theta, axis=0),
+            "opn_labels": out_dict["omission_p"],
+            "gonogo_data": np.expand_dims(theta, axis=0),
+            "gonogo_labels": out_dict["nogo_p"],
             "theta": np.expand_dims(theta, axis=0),
         }
 
@@ -406,8 +475,29 @@ class data_generator:
         data = {}
 
         # Choice probabilities and theta are always needed
-        data["choice_p"] = np.concatenate(
-            [out_list[k]["choice_p"] for k in range(len(out_list))]
+        data["cpn_data"] = np.concatenate(
+            [out_list[k]["cpn_data"] for k in range(len(out_list))]
+        ).astype(np.float32)
+        data["cpn_labels"] = np.concatenate(
+            [out_list[k]["cpn_labels"] for k in range(len(out_list))]
+        ).astype(np.float32)
+        data["cpn_no_omission_data"] = np.concatenate(
+            [out_list[k]["cpn_no_omission_data"] for k in range(len(out_list))]
+        ).astype(np.float32)
+        data["cpn_no_omission_labels"] = np.concatenate(
+            [out_list[k]["cpn_no_omission_labels"] for k in range(len(out_list))]
+        ).astype(np.float32)
+        data["opn_data"] = np.concatenate(
+            [out_list[k]["opn_data"] for k in range(len(out_list))]
+        ).astype(np.float32)
+        data["opn_labels"] = np.concatenate(
+            [out_list[k]["opn_labels"] for k in range(len(out_list))]
+        ).astype(np.float32)
+        data["gonogo_data"] = np.concatenate(
+            [out_list[k]["gonogo_data"] for k in range(len(out_list))]
+        ).astype(np.float32)
+        data["gonogo_labels"] = np.concatenate(
+            [out_list[k]["gonogo_labels"] for k in range(len(out_list))]
         ).astype(np.float32)
         data["thetas"] = np.concatenate(
             [out_list[k]["theta"] for k in range(len(out_list))]
@@ -416,11 +506,11 @@ class data_generator:
         # Only if not cpn_only, do we need the rest of the data
         # (which is not computed if cpn_only is selected)
         if not cpn_only:
-            data["data"] = np.concatenate(
-                [out_list[k]["data"] for k in range(len(out_list))]
+            data["lan_data"] = np.concatenate(
+                [out_list[k]["lan_data"] for k in range(len(out_list))]
             ).astype(np.float32)
-            data["labels"] = np.concatenate(
-                [out_list[k]["labels"] for k in range(len(out_list))]
+            data["lan_labels"] = np.concatenate(
+                [out_list[k]["lan_labels"] for k in range(len(out_list))]
             ).astype(np.float32)
             data["binned_128"] = np.concatenate(
                 [out_list[k]["binned_128"] for k in range(len(out_list))]
