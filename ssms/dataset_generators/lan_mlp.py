@@ -323,16 +323,16 @@ class data_generator:
             cpn_no_omission_labels = simulations["choice_p_no_omission"]
 
         return {
-                "cpn_data": np.expand_dims(theta, axis=0),
-                "cpn_labels": cpn_labels,
-                "cpn_no_omission_data": np.expand_dims(theta, axis=0),
-                "cpn_no_omission_labels": cpn_no_omission_labels,
-                "opn_data": np.expand_dims(theta, axis=0),
-                "opn_labels": simulations["omission_p"],
-                "gonogo_data": np.expand_dims(theta, axis=0),
-                "gonogo_labels": simulations["nogo_p"],
-                "theta": np.expand_dims(theta, axis=0),
-            }
+            "cpn_data": np.expand_dims(theta, axis=0),
+            "cpn_labels": cpn_labels,
+            "cpn_no_omission_data": np.expand_dims(theta, axis=0),
+            "cpn_no_omission_labels": cpn_no_omission_labels,
+            "opn_data": np.expand_dims(theta, axis=0),
+            "opn_labels": simulations["omission_p"],
+            "gonogo_data": np.expand_dims(theta, axis=0),
+            "gonogo_labels": simulations["nogo_p"],
+            "theta": np.expand_dims(theta, axis=0),
+        }
 
     def _get_rejected_parameter_setups(self, random_seed_tuple):
         np.random.seed(random_seed_tuple[0])
