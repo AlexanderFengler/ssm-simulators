@@ -270,9 +270,9 @@ class data_generator:
         kde_data = self._make_kde_data(simulations=simulations, theta=theta)
 
         if len(simulations["metadata"]["possible_choices"]) == 2:
-            cpn_labels = np.expand_dims(simulations["choice_p"][0, 0], axis=0)
+            cpn_labels = np.expand_dims(simulations["choice_p"][0, 1], axis=0)
             cpn_no_omission_labels = np.expand_dims(
-                simulations["choice_p_no_omission"][0, 0], axis=0
+                simulations["choice_p_no_omission"][0, 1], axis=0
             )
         else:
             cpn_labels = simulations["choice_p"]
