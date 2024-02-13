@@ -270,9 +270,9 @@ class data_generator:
         kde_data = self._make_kde_data(simulations=simulations, theta=theta)
 
         if len(simulations["metadata"]["possible_choices"]) == 2:
-            cpn_labels = np.expand_dims(simulations["choice_p"][0, 0], axis=0)
+            cpn_labels = np.expand_dims(simulations["choice_p"][0, 1], axis=0)
             cpn_no_omission_labels = np.expand_dims(
-                simulations["choice_p_no_omission"][0, 0], axis=0
+                simulations["choice_p_no_omission"][0, 1], axis=0
             )
         else:
             cpn_labels = simulations["choice_p"]
@@ -313,63 +313,24 @@ class data_generator:
             theta=theta_dict, random_seed=random_seed_tuple[1]
         )
 
-        # Compute the choice probabilities
-        out_dict = {}
-        out_dict["choice_p"] = np.zeros(
-            (1, len(simulations["metadata"]["possible_choices"]))
-        )
-        out_dict["choice_p_no_omission"] = np.zeros(
-            (1, len(simulations["metadata"]["possible_choices"]))
-        )
-        out_dict["omission_p"] = {}
-        out_dict["theta"] = np.expand_dims(theta, axis=0)
-
-        for k, choice in enumerate(simulations["metadata"]["possible_choices"]):
-            out_dict["choice_p"][k] = np.array(
-                [
-                    (simulations["choices"] == choice).sum()
-                    / simulations["choices"].flatten().shape[0]
-                ]
+        if len(simulations["metadata"]["possible_choices"]) == 2:
+            cpn_labels = np.expand_dims(simulations["choice_p"][0, 1], axis=0)
+            cpn_no_omission_labels = np.expand_dims(
+                simulations["choice_p_no_omission"][0, 1], axis=0
             )
-            out_dict["choice_p_no_omission"][k] = np.array(
-                [
-                    (simulations["choices"][simulations["rts"] != -999] == choice).sum()
-                    / simulations["choices"].flatten().shape[0]
-                ]
-            )
-
-        out_dict["omission_p"] = np.expand_dims(
-            np.array(
-                [
-                    (simulations["rts"] == -999).sum()
-                    / simulations["choices"].flatten().shape[0]
-                ]
-            ),
-            axis=0,
-        )
-        out_dict["nogo_p"] = np.expand_dims(
-            np.array(
-                [
-                    (simulations["rts"] == -999)
-                    | (
-                        simulations["choices"]
-                        != simulations["metadata"]["possible_choices"][0]
-                    )
-                ]
-            ),
-            axis=0,
-        )
-        out_dict["go_p"] = 1 - out_dict["nogo_p"]
+        else:
+            cpn_labels = simulations["choice_p"]
+            cpn_no_omission_labels = simulations["choice_p_no_omission"]
 
         return {
             "cpn_data": np.expand_dims(theta, axis=0),
-            "cpn_labels": out_dict["choice_p"],
+            "cpn_labels": cpn_labels,
             "cpn_no_omission_data": np.expand_dims(theta, axis=0),
-            "cpn_no_omission_labels": out_dict["choice_p_no_omission"],
+            "cpn_no_omission_labels": cpn_no_omission_labels,
             "opn_data": np.expand_dims(theta, axis=0),
-            "opn_labels": out_dict["omission_p"],
+            "opn_labels": simulations["omission_p"],
             "gonogo_data": np.expand_dims(theta, axis=0),
-            "gonogo_labels": out_dict["nogo_p"],
+            "gonogo_labels": simulations["nogo_p"],
             "theta": np.expand_dims(theta, axis=0),
         }
 
