@@ -245,6 +245,15 @@ class data_generator:
                 )
             )
 
+            if self.model_config["name"] == "rlwm_lba_race_wo_ndt_v1":
+                theta[0:3] = theta[0:3]/np.sum(theta[0:3])
+                theta[3:6] = theta[3:6]/np.sum(theta[3:6])
+
+                if theta[6] <= theta[7]:
+                    tmp = theta[6]
+                    theta[6] = theta[7]
+                    theta[7] = tmp
+
             simulations = self.get_simulations(
                 theta=theta, random_seed=random_seed_tuple[1]
             )

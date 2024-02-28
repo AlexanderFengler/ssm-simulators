@@ -795,6 +795,35 @@ def simulator(
                             n_trials = n_trials,
                             max_t = 3
                             )
+    
+    if model == 'rlwm_lba_race_wo_ndt_v1':
+        # === perform checks ===
+        # check if number of drift rates matches number of actions
+        if 3 != theta[:, :3].shape[1]:
+            raise ValueError('Number of actions does not match number of drift rates')
+        
+        if 3 != theta[:, 3:6].shape[1]:
+            raise ValueError('Number of actions does not match number of drift rates')
+        
+        # check if drift rates sum to 1
+        v_sum_RL = np.sum(theta[:, 0:3], axis = 1)
+        v_sum_WM = np.sum(theta[:, 3:6], axis = 1)
+        if np.any(v_sum_RL <= 0.99) or np.any(v_sum_RL >= 1.01) or np.any(v_sum_WM <= 0.99) or np.any(v_sum_WM >= 1.01):
+            raise ValueError('Drift rates do not sum to 1 for each trial')
+        
+        # check if z < a for all trials
+        if np.any(theta[:, [7]] >= theta[:, [6]]):
+            raise ValueError('Starting point z >= a for at least one trial')
+        
+        x = cssm.rlwm_lba_race_wo_ndt(v_RL = theta[:, 0:3],
+                            v_WM = theta[:, 3:6],
+                            a = theta[:, [6]],
+                            z = theta[:, [7]],
+                            sd = lba_sd,
+                            n_samples = n_samples,
+                            n_trials = n_trials,
+                            max_t = 3
+                            )
 
     # 2 Choice
     if no_noise:

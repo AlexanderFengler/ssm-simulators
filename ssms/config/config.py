@@ -266,6 +266,15 @@ model_config = {
         'hddm_include': ["v0", "v1", "v2", "a", "z", "theta"],
         'nchoices': 3
         },
+    "rlwm_lba_race_wo_ndt_v1": {'name': 'rlwm_lba_race_wo_ndt_v1', # RLWM_Race_LBA_3 without ndt; sum of all v_RL = 1 and sum of all v_WM = 1
+        'params': ["v_RL_0", "v_RL_1", "v_RL_2", "v_WM_0", "v_WM_1", "v_WM_2", "a", "z"],
+        'param_bounds': [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.05, 0.0], [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.1, 0.5]],
+        'boundary': bf.constant,
+        'n_params': 8,
+        'default_params': [0.34, 0.33, 0.33, 0.34, 0.33, 0.33, 0.5, 0.2],
+        'hddm_include': ["v_RL_0", "v_RL_1", "v_RL_2", "v_WM_0", "v_WM_1", "v_WM_2", "a", "z"],
+        'nchoices': 3
+        },
     "race_2": {
         "name": "race_2",
         "params": ["v0", "v1", "a", "z0", "z1", "ndt"],

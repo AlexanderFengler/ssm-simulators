@@ -3401,6 +3401,75 @@ def lba_angle_wo_ndt(np.ndarray[float, ndim = 2] v, # drift parameters (np.array
                                                          }}
 
 
+# Simulate (rt, choice) tuples from: RLWM LBA Race Model without ndt -----------------------------
+def rlwm_lba_race_wo_ndt(np.ndarray[float, ndim = 2] v_RL, # RL drift parameters (np.array expect: one column of floats)
+        np.ndarray[float, ndim = 2] v_WM, # WM drift parameters (np.array expect: one column of floats)
+        np.ndarray[float, ndim = 2] a, # criterion height
+        np.ndarray[float, ndim = 2] z, # initial bias parameters (np.array expect: one column of floats)
+        float sd, # std dev of Normal from where we sample vs
+        int nact = 3,
+        int n_samples = 2000,
+        int n_trials = 1,
+        float max_t = 5
+        ):
+
+    # v_t = np.random.normal(v, sd)
+    # print(len(z), nact, np.array([z]*nact).transpose().shape)
+    # z_t = np.random.uniform(np.zeros((len(z), nact)), np.array([z]*nact).transpose(), (len(z), nact))
+
+    # Param views
+    cdef float[:, :] v_RL_view = v_RL
+    cdef float[:, :] v_WM_view = v_WM
+    cdef float[:, :] a_view = a
+    cdef float[:, :] z_view = z
+
+    cdef np.ndarray[float, ndim = 1] zs
+    cdef np.ndarray[double, ndim = 2] x_t_RL
+    cdef np.ndarray[double, ndim = 2] x_t_WM
+    cdef np.ndarray[double, ndim = 1] vs_RL
+    cdef np.ndarray[double, ndim = 1] vs_WM
+
+    rts = np.zeros((n_samples, n_trials, 1), dtype = DTYPE)
+    cdef float[:, :, :] rts_view = rts
+    
+    choices = np.zeros((n_samples, n_trials, 1), dtype = np.intc)
+    cdef int[:, :, :] choices_view = choices
+    
+    cdef Py_ssize_t n, k, i
+
+    for k in range(n_trials):
+        
+        for n in range(n_samples):
+            zs = np.random.uniform(0, z_view[k], nact).astype(DTYPE)
+
+            vs_RL = np.abs(np.random.normal(v_RL_view[k], sd)) # np.abs() to avoid negative vs
+            vs_WM = np.abs(np.random.normal(v_WM_view[k], sd)) # np.abs() to avoid negative vs
+
+            x_t_RL = ([a_view[k]]*nact - zs)/vs_RL
+            x_t_WM = ([a_view[k]]*nact - zs)/vs_WM
+
+            if np.min(x_t_RL) <= np.min(x_t_WM):
+                rts_view[n, k, 0] = np.min(x_t_RL)  # store reaction time for sample n
+                choices_view[n, k, 0] = np.argmin(x_t_RL) # store choices for sample n
+            else:
+                rts_view[n, k, 0] = np.min(x_t_WM)  # store reaction time for sample n
+                choices_view[n, k, 0] = np.argmin(x_t_WM) # store choices for sample n  
+        
+
+    v_dict = {}    
+    for i in range(nact):
+        v_dict['v_RL_' + str(i)] = v_RL[:, i]
+        v_dict['v_WM_' + str(i)] = v_WM[:, i]
+
+    return {'rts': rts, 'choices': choices, 'metadata': {**v_dict,
+                                                         'a': a,
+                                                         'z': z,
+                                                         'sd': sd,
+                                                         'n_samples': n_samples,
+                                                         'simulator' : 'rlwm_lba_race_wo_ndt',
+                                                         'possible_choices': list(np.arange(0, nact, 1)),
+                                                         'max_t': max_t,
+                                                         }}
 
 
 # -----------------------------------------------------------------------------------------------
