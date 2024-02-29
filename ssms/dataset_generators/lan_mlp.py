@@ -247,6 +247,23 @@ class data_generator:
         out[(n_kde + n_unif_up) :, -2] = choice_tmp
         out[(n_kde + n_unif_up) :, -1] = self.generator_config["negative_rt_cutoff"]
         return out.astype(np.float32)
+    
+    def parameter_transform_for_data_gen(self, theta):
+        '''
+        Function to impose constraints on the parameters for data generation.
+        '''
+
+        # For LBA-based models, we need to ensure that the drift rates sum to 1
+        if self.model_config["name"] == "rlwm_lba_race_wo_ndt_v1":
+            theta[0:3] = theta[0:3]/np.sum(theta[0:3])
+            theta[3:6] = theta[3:6]/np.sum(theta[3:6])
+
+            if theta[6] <= theta[7]:
+                tmp = theta[6]
+                theta[6] = theta[7]
+                theta[7] = tmp
+        
+        return theta
 
     def _mlp_get_processed_data_for_theta(self, random_seed_tuple):
         np.random.seed(random_seed_tuple[0])
@@ -258,6 +275,10 @@ class data_generator:
                     high=self.model_config["param_bounds"][1],
                 )
             )
+
+            theta = parameter_transform_for_data_gen(theta)
+
+
             theta_dict = {
                 name: val for name, val in zip(self.model_config["params"], theta)
             }

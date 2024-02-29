@@ -299,6 +299,36 @@ def bin_arbitrary_fptd(
     return counts
 
 
+def validate_ssm_parameters(model, theta):
+
+    def check_num_drifts_and_actions(drifts, num_actions):
+        drifts = np.array(drifts)
+        if drifts.shape[1] != num_actions:
+            raise ValueError('Number of drift rates does not match number of actions')
+
+    def check_lba_drifts_sum(drifts):
+        v_sum = np.sum(drifts, axis = 1)
+        if np.any(v_sum <= 0.99) or np.any(v_sum >= 1.01):
+            raise ValueError('Drift rates do not sum to 1 for each trial')
+    
+    def check_if_z_gt_a(z, a):
+        if np.any(z >= a):
+            raise ValueError('Starting point z >= a for at least one trial')
+
+
+    if model in ['lba_3_v1', 'lba_angle_3_v1', 'rlwm_lba_race_wo_ndt_v1']:
+        if model in ['lba_3_v1', 'lba_angle_3_v1']:
+            # check_num_drifts_and_actions(theta['v'], model_config[model]['nchoices'])
+            check_lba_drifts_sum(theta['v'])
+            check_if_z_gt_a(theta['z'], theta['a'])
+        elif model in ['rlwm_lba_race_wo_ndt_v1']:
+            # check_num_drifts_and_actions(theta['v_RL'], model_config[model]['nchoices'])
+            # check_num_drifts_and_actions(theta['v_WM'], model_config[model]['nchoices'])
+            check_lba_drifts_sum(theta['v_RL'])
+            check_lba_drifts_sum(theta['v_WM'])
+            check_if_z_gt_a(theta['z'], theta['a'])
+
+
 def simulator(
     theta,
     model="angle",
@@ -458,6 +488,7 @@ def simulator(
             ),
             (n_trials, 1),
         ),
+        "lba_based_models": 0.1,
     }
 
     if no_noise:
@@ -491,6 +522,32 @@ def simulator(
         theta["v"] = np.tile(np.array([0], dtype=np.float32), n_trials)
 
     # Multi-particle models
+
+    #   LBA-based models 
+        
+    # lba_sd = 0.1
+    if model == "lba_3_v1":
+        sim_param_dict["sd"] = noise_dict["lba_based_models"]
+        theta["v"] = np.column_stack([theta["v0"], theta["v1"], theta["v2"]])
+        theta["a"] = np.expand_dims(theta["a"], axis=1)
+        theta["z"] = np.expand_dims(theta["z"], axis=1)
+    
+    if model == "lba_angle_3_v1":
+        sim_param_dict["sd"] = noise_dict["lba_based_models"]
+        theta["v"] = np.column_stack([theta["v0"], theta["v1"], theta["v2"]])
+        theta["a"] = np.expand_dims(theta["a"], axis=1)
+        theta["z"] = np.expand_dims(theta["z"], axis=1)
+
+    if model == "rlwm_lba_race_wo_ndt_v1":
+        sim_param_dict["sd"] = noise_dict["lba_based_models"]
+        theta["v_RL"] = np.column_stack([theta["v_RL_0"], theta["v_RL_1"], theta["v_RL_2"]])
+        theta["v_WM"] = np.column_stack([theta["v_WM_0"], theta["v_WM_1"], theta["v_WM_2"]])
+        theta["a"] = np.expand_dims(theta["a"], axis=1)
+        theta["z"] = np.expand_dims(theta["z"], axis=1)
+
+
+    validate_ssm_parameters(model, theta)
+
 
     # 2 Choice
     if model == "race_2":
