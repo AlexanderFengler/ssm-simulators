@@ -105,6 +105,7 @@ def make_boundary_dict(model_config, model, theta):
         for param_name, value in theta.items()
         if param_name in boundary_config[boundary_name]["params"]
     }
+
     boundary_fun = boundary_config[boundary_name]["fun"]
     boundary_multiplicative = boundary_config[boundary_name]["multiplicative"]
     boundary_dict = {
@@ -536,6 +537,7 @@ def simulator(
         theta["v"] = np.column_stack([theta["v0"], theta["v1"], theta["v2"]])
         theta["a"] = np.expand_dims(theta["a"], axis=1)
         theta["z"] = np.expand_dims(theta["z"], axis=1)
+        theta["theta"] = np.expand_dims(theta["theta"], axis=1)
 
     if model == "rlwm_lba_race_wo_ndt_v1":
         sim_param_dict["sd"] = noise_dict["lba_based_models"]
@@ -813,10 +815,12 @@ def simulator(
         sim_param_dict["s"] = noise_dict["1_particles"]
         theta["zh"], theta["zl1"], theta["zl2"] = [z_vec, z_vec, z_vec]
 
+
     # print(theta)
     # print(boundary_dict)
     # print(drift_dict)
     # print(sim_param_dict)
+        
     # Call to the simulator
     x = model_config[model]["simulator"](
         **theta,

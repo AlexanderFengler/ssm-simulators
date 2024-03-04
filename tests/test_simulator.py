@@ -18,23 +18,14 @@ def sim_input_data():
 
         # Dictionary with all scalar values
         theta_dict_all_scalars = {
-            param: np.mean(
-                [
-                    model_config[key]["param_bounds"][0][i],
-                    model_config[key]["param_bounds"][1][i],
-                ]
-            )
+            param: model_config[key]["default_params"][i]
             for i, param in enumerate(model_param_list)
         }
+
         # Dictionary with all vectors
         theta_dict_all_vectors = {
             param: np.tile(
-                np.mean(
-                    [
-                        model_config[key]["param_bounds"][0][i],
-                        model_config[key]["param_bounds"][1][i],
-                    ]
-                ),
+                np.array(model_config[key]["default_params"][i]),
                 100,
             )
             for i, param in enumerate(model_param_list)
@@ -63,12 +54,7 @@ def sim_input_data():
 
         # Input is list
         theta_list = [
-            np.mean(
-                [
-                    model_config[key]["param_bounds"][0][i],
-                    model_config[key]["param_bounds"][1][i],
-                ]
-            )
+            model_config[key]["default_params"][i]
             for i, param in enumerate(model_param_list)
         ]
 
@@ -92,6 +78,7 @@ def sim_input_data():
             "theta_pd_1": theta_pd_1,
             "theta_pd_n": theta_pd_n,
         }
+        
     return data
 
 
@@ -102,8 +89,8 @@ def test_simulator_runs(sim_input_data):
         # Go over different types of input data
         # (listed above in sim_input_data() fixture)
         for subkey in sim_input_data[key].keys():
-            print(subkey)
-            print(key)
+            print(key, ' -> ', subkey)
+            
             # Go over different number of samples
             if subkey == "theta_dict_uneven":
                 for n_samples in [1, 10]:

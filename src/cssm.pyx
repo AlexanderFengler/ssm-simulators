@@ -3324,9 +3324,9 @@ def ddm_flexbound_mic2_ornstein_multinoise(np.ndarray[float, ndim = 1] vh,
 
 
 # Simulate (rt, choice) tuples from: Vanilla LBA Model without ndt -----------------------------
-def lba_vanilla_wo_ndt(np.ndarray[float, ndim = 2] v, # drift parameters (np.array expect: one column of floats)
-        np.ndarray[float, ndim = 2] a, # criterion height
-        np.ndarray[float, ndim = 2] z, # initial bias parameters (np.array expect: one column of floats)
+def lba_vanilla_wo_ndt(np.ndarray[float, ndim = 2] v, 
+        np.ndarray[float, ndim = 2] a, 
+        np.ndarray[float, ndim = 2] z, 
         np.ndarray[float, ndim = 1] deadline,
         float sd, # std dev of Normal from where we sample vs
         int nact = 3,
@@ -3390,9 +3390,9 @@ def lba_vanilla_wo_ndt(np.ndarray[float, ndim = 2] v, # drift parameters (np.arr
 
 
 # Simulate (rt, choice) tuples from: Collapsing bound angle LBA Model -----------------------------
-def lba_angle_wo_ndt(np.ndarray[float, ndim = 2] v, # drift parameters (np.array expect: one column of floats)
-        np.ndarray[float, ndim = 2] a, # criterion height
-        np.ndarray[float, ndim = 2] z, # initial bias parameters (np.array expect: one column of floats)
+def lba_angle_wo_ndt(np.ndarray[float, ndim = 2] v, 
+        np.ndarray[float, ndim = 2] a, 
+        np.ndarray[float, ndim = 2] z,  
         np.ndarray[float, ndim = 2] theta,
         np.ndarray[float, ndim = 1] deadline,
         float sd, # std dev 

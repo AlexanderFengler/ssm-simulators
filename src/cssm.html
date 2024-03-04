@@ -28040,7 +28040,7 @@ static PyObject *__pyx_pf_4cssm_32ddm_flexbound_mic2_ornstein_multinoise(CYTHON_
 <pre class="cython line score-0">&#xA0;<span class="">3324</span>: </pre>
 <pre class="cython line score-0">&#xA0;<span class="">3325</span>: </pre>
 <pre class="cython line score-0">&#xA0;<span class="">3326</span>: # Simulate (rt, choice) tuples from: Vanilla LBA Model without ndt -----------------------------</pre>
-<pre class="cython line score-275" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">3327</span>: def lba_vanilla_wo_ndt(np.ndarray[float, ndim = 2] v, # drift parameters (np.array expect: one column of floats)</pre>
+<pre class="cython line score-275" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">3327</span>: def lba_vanilla_wo_ndt(np.ndarray[float, ndim = 2] v,</pre>
 <pre class='cython code score-275 '>/* Python wrapper */
 static PyObject *__pyx_pw_4cssm_35lba_vanilla_wo_ndt(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
@@ -28415,8 +28415,8 @@ static PyObject *__pyx_pf_4cssm_34lba_vanilla_wo_ndt(CYTHON_UNUSED PyObject *__p
   if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_d, __pyx_n_s_lba_vanilla_wo_ndt, __pyx_t_10) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 3327, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_10); __pyx_t_10 = 0;
   __pyx_codeobj__58 = (PyObject*)<span class='pyx_c_api'>__Pyx_PyCode_New</span>(9, 0, 0, 25, 0, CO_OPTIMIZED|CO_NEWLOCALS|CO_VARKEYWORDS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__57, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_cssm_pyx, __pyx_n_s_lba_vanilla_wo_ndt, 3327, __pyx_empty_bytes);<span class='error_goto'> if (unlikely(!__pyx_codeobj__58)) __PYX_ERR(0, 3327, __pyx_L1_error)</span>
-</pre><pre class="cython line score-0">&#xA0;<span class="">3328</span>:         np.ndarray[float, ndim = 2] a, # criterion height</pre>
-<pre class="cython line score-0">&#xA0;<span class="">3329</span>:         np.ndarray[float, ndim = 2] z, # initial bias parameters (np.array expect: one column of floats)</pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">3328</span>:         np.ndarray[float, ndim = 2] a,</pre>
+<pre class="cython line score-0">&#xA0;<span class="">3329</span>:         np.ndarray[float, ndim = 2] z,</pre>
 <pre class="cython line score-0">&#xA0;<span class="">3330</span>:         np.ndarray[float, ndim = 1] deadline,</pre>
 <pre class="cython line score-0">&#xA0;<span class="">3331</span>:         float sd, # std dev of Normal from where we sample vs</pre>
 <pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">3332</span>:         int nact = 3,</pre>
@@ -28944,7 +28944,7 @@ __pyx_t_8 = __pyx_memoryview_fromslice(__pyx_t_2, 1, (PyObject *(*)(char *)) __p
 <pre class="cython line score-0">&#xA0;<span class="">3390</span>: </pre>
 <pre class="cython line score-0">&#xA0;<span class="">3391</span>: </pre>
 <pre class="cython line score-0">&#xA0;<span class="">3392</span>: # Simulate (rt, choice) tuples from: Collapsing bound angle LBA Model -----------------------------</pre>
-<pre class="cython line score-298" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">3393</span>: def lba_angle_wo_ndt(np.ndarray[float, ndim = 2] v, # drift parameters (np.array expect: one column of floats)</pre>
+<pre class="cython line score-298" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">3393</span>: def lba_angle_wo_ndt(np.ndarray[float, ndim = 2] v,</pre>
 <pre class='cython code score-298 '>/* Python wrapper */
 static PyObject *__pyx_pw_4cssm_37lba_angle_wo_ndt(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
@@ -29350,8 +29350,8 @@ static PyObject *__pyx_pf_4cssm_36lba_angle_wo_ndt(CYTHON_UNUSED PyObject *__pyx
   if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_d, __pyx_n_s_lba_angle_wo_ndt, __pyx_t_4) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 3393, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_codeobj__60 = (PyObject*)<span class='pyx_c_api'>__Pyx_PyCode_New</span>(10, 0, 0, 27, 0, CO_OPTIMIZED|CO_NEWLOCALS|CO_VARKEYWORDS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__59, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_cssm_pyx, __pyx_n_s_lba_angle_wo_ndt, 3393, __pyx_empty_bytes);<span class='error_goto'> if (unlikely(!__pyx_codeobj__60)) __PYX_ERR(0, 3393, __pyx_L1_error)</span>
-</pre><pre class="cython line score-0">&#xA0;<span class="">3394</span>:         np.ndarray[float, ndim = 2] a, # criterion height</pre>
-<pre class="cython line score-0">&#xA0;<span class="">3395</span>:         np.ndarray[float, ndim = 2] z, # initial bias parameters (np.array expect: one column of floats)</pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">3394</span>:         np.ndarray[float, ndim = 2] a,</pre>
+<pre class="cython line score-0">&#xA0;<span class="">3395</span>:         np.ndarray[float, ndim = 2] z,</pre>
 <pre class="cython line score-0">&#xA0;<span class="">3396</span>:         np.ndarray[float, ndim = 2] theta,</pre>
 <pre class="cython line score-0">&#xA0;<span class="">3397</span>:         np.ndarray[float, ndim = 1] deadline,</pre>
 <pre class="cython line score-0">&#xA0;<span class="">3398</span>:         float sd, # std dev</pre>
