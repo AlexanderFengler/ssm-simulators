@@ -78,7 +78,7 @@ def sim_input_data():
             "theta_pd_1": theta_pd_1,
             "theta_pd_n": theta_pd_n,
         }
-        
+
     return data
 
 
@@ -89,8 +89,8 @@ def test_simulator_runs(sim_input_data):
         # Go over different types of input data
         # (listed above in sim_input_data() fixture)
         for subkey in sim_input_data[key].keys():
-            print(key, ' -> ', subkey)
-            
+            print(key, " -> ", subkey)
+
             # Go over different number of samples
             if subkey == "theta_dict_uneven":
                 for n_samples in [1, 10]:
