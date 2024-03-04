@@ -279,7 +279,7 @@ model_config = {
     "lba_3_v1": {
         "name": "lba_3_v1",  # LBA_3 without ndt; sum of all v = 1
         "params": ["v0", "v1", "v2", "a", "z"],
-        "param_bound": [[0.0, 0.0, 0.0, 0.1, 0.1], [1.0, 1.0, 1.0, 1.1, 0.50]],
+        "param_bounds": [[0.0, 0.0, 0.0, 0.1, 0.1], [1.0, 1.0, 1.0, 1.1, 0.50]],
         "boundary_name": "constant",
         "boundary": bf.constant,
         "n_params": 5,
