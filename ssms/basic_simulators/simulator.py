@@ -316,12 +316,12 @@ def validate_ssm_parameters(model, theta):
         if np.any(z >= a):
             raise ValueError("Starting point z >= a for at least one trial")
 
-    if model in ["lba_3_v1", "lba_angle_3_v1", "rlwm_lba_race_wo_ndt_v1"]:
+    if model in ["lba_3_v1", "lba_angle_3_v1", "rlwm_lba_race_v1"]:
         if model in ["lba_3_v1", "lba_angle_3_v1"]:
             # check_num_drifts_and_actions(theta['v'], model_config[model]['nchoices'])
             check_lba_drifts_sum(theta["v"])
             check_if_z_gt_a(theta["z"], theta["a"])
-        elif model in ["rlwm_lba_race_wo_ndt_v1"]:
+        elif model in ["rlwm_lba_race_v1"]:
             # check_num_drifts_and_actions(theta['v_RL'], model_config[model]['nchoices'])
             # check_num_drifts_and_actions(theta['v_WM'], model_config[model]['nchoices'])
             check_lba_drifts_sum(theta["v_RL"])
@@ -539,7 +539,7 @@ def simulator(
         theta["z"] = np.expand_dims(theta["z"], axis=1)
         theta["theta"] = np.expand_dims(theta["theta"], axis=1)
 
-    if model == "rlwm_lba_race_wo_ndt_v1":
+    if model == "rlwm_lba_race_v1":
         sim_param_dict["sd"] = noise_dict["lba_based_models"]
         theta["v_RL"] = np.column_stack(
             [theta["v_RL_0"], theta["v_RL_1"], theta["v_RL_2"]]

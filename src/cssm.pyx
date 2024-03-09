@@ -3324,11 +3324,12 @@ def ddm_flexbound_mic2_ornstein_multinoise(np.ndarray[float, ndim = 1] vh,
 
 
 # Simulate (rt, choice) tuples from: Vanilla LBA Model without ndt -----------------------------
-def lba_vanilla_wo_ndt(np.ndarray[float, ndim = 2] v, 
+def lba_vanilla(np.ndarray[float, ndim = 2] v, 
         np.ndarray[float, ndim = 2] a, 
         np.ndarray[float, ndim = 2] z, 
         np.ndarray[float, ndim = 1] deadline,
         float sd, # std dev of Normal from where we sample vs
+        float ndt = 0, # ndt is supposed to be 0 by default because of parameter identifiability issues
         int nact = 3,
         int n_samples = 2000,
         int n_trials = 1,
@@ -3365,7 +3366,7 @@ def lba_vanilla_wo_ndt(np.ndarray[float, ndim = 2] v,
             x_t = ([a_view[k]]*nact - zs)/vs
         
             choices_view[n, k, 0] = np.argmin(x_t) # store choices for sample n
-            rts_view[n, k, 0] = np.min(x_t)  # store reaction time for sample n
+            rts_view[n, k, 0] = np.min(x_t) + ndt  # store reaction time for sample n
 
             # If the rt exceeds the deadline, set rt to -999
             if rts_view[n, k, 0] >= deadline_view[k]:
@@ -3390,12 +3391,13 @@ def lba_vanilla_wo_ndt(np.ndarray[float, ndim = 2] v,
 
 
 # Simulate (rt, choice) tuples from: Collapsing bound angle LBA Model -----------------------------
-def lba_angle_wo_ndt(np.ndarray[float, ndim = 2] v, 
+def lba_angle(np.ndarray[float, ndim = 2] v, 
         np.ndarray[float, ndim = 2] a, 
         np.ndarray[float, ndim = 2] z,  
         np.ndarray[float, ndim = 2] theta,
         np.ndarray[float, ndim = 1] deadline,
         float sd, # std dev 
+        float ndt = 0, # ndt is supposed to be 0 by default because of parameter identifiability issues
         int nact = 3,
         int n_samples = 2000,
         int n_trials = 1,
@@ -3428,7 +3430,7 @@ def lba_angle_wo_ndt(np.ndarray[float, ndim = 2] v,
             x_t = ([a_view[k]]*nact - zs)/(vs + np.tan(theta_view[k, 0]))
         
             choices_view[n, k, 0] = np.argmin(x_t) # store choices for sample n
-            rts_view[n, k, 0] = np.min(x_t) # store reaction time for sample n
+            rts_view[n, k, 0] = np.min(x_t) + ndt # store reaction time for sample n
 
             # If the rt exceeds the deadline, set rt to -999
             if rts_view[n, k, 0] >= deadline_view[k]:
@@ -3455,12 +3457,13 @@ def lba_angle_wo_ndt(np.ndarray[float, ndim = 2] v,
 
 
 # Simulate (rt, choice) tuples from: RLWM LBA Race Model without ndt -----------------------------
-def rlwm_lba_race_wo_ndt(np.ndarray[float, ndim = 2] v_RL, # RL drift parameters (np.array expect: one column of floats)
+def rlwm_lba_race(np.ndarray[float, ndim = 2] v_RL, # RL drift parameters (np.array expect: one column of floats)
         np.ndarray[float, ndim = 2] v_WM, # WM drift parameters (np.array expect: one column of floats)
         np.ndarray[float, ndim = 2] a, # criterion height
         np.ndarray[float, ndim = 2] z, # initial bias parameters (np.array expect: one column of floats)
         np.ndarray[float, ndim = 1] deadline,
         float sd, # std dev of Normal from where we sample vs
+        float ndt = 0, # ndt is supposed to be 0 by default because of parameter identifiability issues
         int nact = 3,
         int n_samples = 2000,
         int n_trials = 1,
@@ -3506,10 +3509,10 @@ def rlwm_lba_race_wo_ndt(np.ndarray[float, ndim = 2] v_RL, # RL drift parameters
             x_t_WM = ([a_view[k]]*nact - zs)/vs_WM
 
             if np.min(x_t_RL) <= np.min(x_t_WM):
-                rts_view[n, k, 0] = np.min(x_t_RL)  # store reaction time for sample n
+                rts_view[n, k, 0] = np.min(x_t_RL) + ndt  # store reaction time for sample n
                 choices_view[n, k, 0] = np.argmin(x_t_RL) # store choices for sample n
             else:
-                rts_view[n, k, 0] = np.min(x_t_WM)  # store reaction time for sample n
+                rts_view[n, k, 0] = np.min(x_t_WM) + ndt  # store reaction time for sample n
                 choices_view[n, k, 0] = np.argmin(x_t_WM) # store choices for sample n  
             
             # If the rt exceeds the deadline, set rt to -999
