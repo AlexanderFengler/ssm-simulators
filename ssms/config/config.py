@@ -285,7 +285,7 @@ model_config = {
         "n_params": 5,
         "default_params": [0.5, 0.3, 0.2, 0.5, 0.2],
         "nchoices": 3,
-        "simulator": cssm.lba_vanilla_wo_ndt,
+        "simulator": cssm.lba_vanilla,
     },
     "lba_angle_3_v1": {
         "name": "lba_angle_3_v1",  # LBA_Angle_3 without ndt; sum of all v = 1
@@ -296,9 +296,9 @@ model_config = {
         "n_params": 6,
         "default_params": [0.5, 0.3, 0.2, 0.5, 0.2, 0.0],
         "nchoices": 3,
-        "simulator": cssm.lba_angle_wo_ndt,
+        "simulator": cssm.lba_angle,
     },
-    "rlwm_lba_race_wo_ndt_v1": {
+    "rlwm_lba_race_v1": {
         "name": "rlwm_lba_race_wo_ndt_v1",  # RLWM_Race_LBA_3 without ndt; sum of all v_RL = 1 and sum of all v_WM = 1
         "params": [
             "v_RL_0",
@@ -319,7 +319,7 @@ model_config = {
         "n_params": 8,
         "default_params": [0.5, 0.3, 0.2, 0.5, 0.3, 0.2, 0.5, 0.2],
         "nchoices": 3,
-        "simulator": cssm.rlwm_lba_race_wo_ndt,
+        "simulator": cssm.rlwm_lba_race,
     },
     "race_2": {
         "name": "race_2",
