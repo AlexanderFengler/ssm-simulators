@@ -195,9 +195,9 @@ def DMC_drift(t=np.arange(0, 20, 0.1), vc=0.3, peak=0.5, shape=3, tau=0.1,congru
 
     t = t.clip(1e-3)
     term1 = peak * congruency * np.exp(-t/tau)
-    term2 = (t * np.e) / ((shape-1) * tau)
+    term2 = np.power((t * np.e) / ((shape-1) * tau),(shape-1))
     term3 = ((shape-1) / t) - (1/tau)
-    va = term1 * term2**(shape-1) * term3
+    va = term1 * term2* term3
 
     v = va + vc
     return v
