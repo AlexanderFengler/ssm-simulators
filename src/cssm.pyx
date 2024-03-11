@@ -2538,7 +2538,7 @@ def ddm_flexbound_mic2_ornstein(np.ndarray[float, ndim = 1] vh,
     cdef float[:] bias_trace_l2_view = bias_trace_l2
 
     cdef float y_h, y_l, y_l1, y_l2
-    cdef float v_l, v_l1, v_l2, 
+    cdef float v_l, v_l1, v_l2,
     cdef float t_h, t_l, t_l1, t_l2, smooth_u, deadline_tmp
     cdef Py_ssize_t n, ix, ix1, ix2, ix_l, ix_tmp, ix1_tmp, ix2_tmp, k
     cdef Py_ssize_t m = 0
@@ -3320,6 +3320,221 @@ def ddm_flexbound_mic2_ornstein_multinoise(np.ndarray[float, ndim = 1] vh,
                              }}
     else:
         raise ValueError('return_option must be either "full" or "minimal"')
+# ----------------------------------------------------------------------------------------------------
+
+
+# Simulate (rt, choice) tuples from: Vanilla LBA Model without ndt -----------------------------
+def lba_vanilla(np.ndarray[float, ndim = 2] v, 
+        np.ndarray[float, ndim = 2] a, 
+        np.ndarray[float, ndim = 2] z, 
+        np.ndarray[float, ndim = 1] deadline,
+        float sd, # std dev of Normal from where we sample vs
+        float ndt = 0, # ndt is supposed to be 0 by default because of parameter identifiability issues
+        int nact = 3,
+        int n_samples = 2000,
+        int n_trials = 1,
+        float max_t = 20,
+        **kwargs
+        ):
+
+    # v_t = np.random.normal(v, sd)
+    # print(len(z), nact, np.array([z]*nact).transpose().shape)
+    # z_t = np.random.uniform(np.zeros((len(z), nact)), np.array([z]*nact).transpose(), (len(z), nact))
+
+    # Param views
+    cdef float[:, :] v_view = v
+    cdef float[:, :] a_view = a
+    cdef float[:, :] z_view = z
+
+    cdef float[:] deadline_view = deadline
+
+    rts = np.zeros((n_samples, n_trials, 1), dtype = DTYPE)
+    cdef float[:, :, :] rts_view = rts
+    
+    choices = np.zeros((n_samples, n_trials, 1), dtype = np.intc)
+    cdef int[:, :, :] choices_view = choices
+    
+    cdef Py_ssize_t n, k, i
+
+    for k in range(n_trials):
+        
+        for n in range(n_samples):
+            zs = np.random.uniform(0, z_view[k], nact)
+
+            vs = np.abs(np.random.normal(v_view[k], sd)) # np.abs() to avoid negative vs
+
+            x_t = ([a_view[k]]*nact - zs)/vs
+        
+            choices_view[n, k, 0] = np.argmin(x_t) # store choices for sample n
+            rts_view[n, k, 0] = np.min(x_t) + ndt  # store reaction time for sample n
+
+            # If the rt exceeds the deadline, set rt to -999
+            if rts_view[n, k, 0] >= deadline_view[k]:
+                rts_view[n, k, 0] = -999
+        
+
+    v_dict = {}    
+    for i in range(nact):
+        v_dict['v_' + str(i)] = v[:, i]
+
+    return {'rts': rts, 'choices': choices, 'metadata': {**v_dict,
+                                                         'a': a,
+                                                         'z': z,
+                                                         'deadline': deadline,
+                                                         'sd': sd,
+                                                         'n_samples': n_samples,
+                                                         'simulator' : 'lba_vanilla',
+                                                         'possible_choices': list(np.arange(0, nact, 1)),
+                                                         'max_t': max_t,
+                                                         }}
+
+
+
+# Simulate (rt, choice) tuples from: Collapsing bound angle LBA Model -----------------------------
+def lba_angle(np.ndarray[float, ndim = 2] v, 
+        np.ndarray[float, ndim = 2] a, 
+        np.ndarray[float, ndim = 2] z,  
+        np.ndarray[float, ndim = 2] theta,
+        np.ndarray[float, ndim = 1] deadline,
+        float sd, # std dev 
+        float ndt = 0, # ndt is supposed to be 0 by default because of parameter identifiability issues
+        int nact = 3,
+        int n_samples = 2000,
+        int n_trials = 1,
+        float max_t = 20,
+        **kwargs
+        ):
+
+    # Param views
+    cdef float[:, :] v_view = v
+    cdef float[:, :] a_view = a
+    cdef float[:, :] z_view = z
+    cdef float[:, :] theta_view = theta
+
+    cdef float[:] deadline_view = deadline
+
+    rts = np.zeros((n_samples, n_trials, 1), dtype = DTYPE)
+    cdef float[:, :, :] rts_view = rts
+    
+    choices = np.zeros((n_samples, n_trials, 1), dtype = np.intc)
+    cdef int[:, :, :] choices_view = choices
+    
+    cdef Py_ssize_t n, k, i
+
+    for k in range(n_trials):
+        
+        for n in range(n_samples):
+            zs = np.random.uniform(0, z_view[k], nact)
+
+            vs = np.abs(np.random.normal(v_view[k], sd)) # np.abs() to avoid negative vs
+            x_t = ([a_view[k]]*nact - zs)/(vs + np.tan(theta_view[k, 0]))
+        
+            choices_view[n, k, 0] = np.argmin(x_t) # store choices for sample n
+            rts_view[n, k, 0] = np.min(x_t) + ndt # store reaction time for sample n
+
+            # If the rt exceeds the deadline, set rt to -999
+            if rts_view[n, k, 0] >= deadline_view[k]:
+                rts_view[n, k, 0] = -999
+
+            # if np.min(x_t) <= 0:
+            #     print("\n ssms sim error: ", a[k], zs, vs, np.tan(theta[k]))
+    
+    v_dict = {}  
+    for i in range(nact):
+        v_dict['v_' + str(i)] = v[:, i]
+
+    return {'rts': rts, 'choices': choices, 'metadata': {**v_dict,
+                                                         'a': a,
+                                                         'z': z,
+                                                         'theta': theta,
+                                                         'deadline': deadline,
+                                                         'sd': sd,
+                                                         'n_samples': n_samples,
+                                                         'simulator' : 'lba_angle',
+                                                         'possible_choices': list(np.arange(0, nact, 1)),
+                                                         'max_t': max_t,
+                                                         }}
+
+
+# Simulate (rt, choice) tuples from: RLWM LBA Race Model without ndt -----------------------------
+def rlwm_lba_race(np.ndarray[float, ndim = 2] v_RL, # RL drift parameters (np.array expect: one column of floats)
+        np.ndarray[float, ndim = 2] v_WM, # WM drift parameters (np.array expect: one column of floats)
+        np.ndarray[float, ndim = 2] a, # criterion height
+        np.ndarray[float, ndim = 2] z, # initial bias parameters (np.array expect: one column of floats)
+        np.ndarray[float, ndim = 1] deadline,
+        float sd, # std dev of Normal from where we sample vs
+        float ndt = 0, # ndt is supposed to be 0 by default because of parameter identifiability issues
+        int nact = 3,
+        int n_samples = 2000,
+        int n_trials = 1,
+        float max_t = 20,
+        **kwargs
+        ):
+
+    # v_t = np.random.normal(v, sd)
+    # print(len(z), nact, np.array([z]*nact).transpose().shape)
+    # z_t = np.random.uniform(np.zeros((len(z), nact)), np.array([z]*nact).transpose(), (len(z), nact))
+
+    # Param views
+    cdef float[:, :] v_RL_view = v_RL
+    cdef float[:, :] v_WM_view = v_WM
+    cdef float[:, :] a_view = a
+    cdef float[:, :] z_view = z
+
+    cdef float[:] deadline_view = deadline
+
+    cdef np.ndarray[float, ndim = 1] zs
+    cdef np.ndarray[double, ndim = 2] x_t_RL
+    cdef np.ndarray[double, ndim = 2] x_t_WM
+    cdef np.ndarray[double, ndim = 1] vs_RL
+    cdef np.ndarray[double, ndim = 1] vs_WM
+
+    rts = np.zeros((n_samples, n_trials, 1), dtype = DTYPE)
+    cdef float[:, :, :] rts_view = rts
+    
+    choices = np.zeros((n_samples, n_trials, 1), dtype = np.intc)
+    cdef int[:, :, :] choices_view = choices
+    
+    cdef Py_ssize_t n, k, i
+
+    for k in range(n_trials):
+        
+        for n in range(n_samples):
+            zs = np.random.uniform(0, z_view[k], nact).astype(DTYPE)
+
+            vs_RL = np.abs(np.random.normal(v_RL_view[k], sd)) # np.abs() to avoid negative vs
+            vs_WM = np.abs(np.random.normal(v_WM_view[k], sd)) # np.abs() to avoid negative vs
+
+            x_t_RL = ([a_view[k]]*nact - zs)/vs_RL
+            x_t_WM = ([a_view[k]]*nact - zs)/vs_WM
+
+            if np.min(x_t_RL) <= np.min(x_t_WM):
+                rts_view[n, k, 0] = np.min(x_t_RL) + ndt  # store reaction time for sample n
+                choices_view[n, k, 0] = np.argmin(x_t_RL) # store choices for sample n
+            else:
+                rts_view[n, k, 0] = np.min(x_t_WM) + ndt  # store reaction time for sample n
+                choices_view[n, k, 0] = np.argmin(x_t_WM) # store choices for sample n  
+            
+            # If the rt exceeds the deadline, set rt to -999
+            if rts_view[n, k, 0] >= deadline_view[k]:
+                rts_view[n, k, 0] = -999
+        
+
+    v_dict = {}    
+    for i in range(nact):
+        v_dict['v_RL_' + str(i)] = v_RL[:, i]
+        v_dict['v_WM_' + str(i)] = v_WM[:, i]
+
+    return {'rts': rts, 'choices': choices, 'metadata': {**v_dict,
+                                                         'a': a,
+                                                         'z': z,
+                                                         'deadline': deadline,
+                                                         'sd': sd,
+                                                         'n_samples': n_samples,
+                                                         'simulator' : 'rlwm_lba_race',
+                                                         'possible_choices': list(np.arange(0, nact, 1)),
+                                                         'max_t': max_t,
+                                                         }}
 # ----------------------------------------------------------------------------------------------------
 
 # Simulate (rt, choice) tuples from: DDM WITH FLEXIBLE BOUNDARIES ------------------------------------
