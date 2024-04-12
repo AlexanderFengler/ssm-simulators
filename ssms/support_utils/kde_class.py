@@ -524,6 +524,7 @@ def bandwidth_silverman(
 
     return np.power((4 / 3), 1 / 5) * std * np.power(n, (-1 / 5))
 
+# (n * (d + 2) / 4.)**(-1. / (d + 4)).
 
 # # Generate class for log_kdes
 # class LogKDE:
