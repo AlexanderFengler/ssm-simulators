@@ -2182,19 +2182,19 @@ def ddm_flexbound_seq2(np.ndarray[float, ndim = 1] vh,
             else:
                 smooth_u = 0.0
 
-                rts_view[n, k, 0] = t_particle + t_view[k] + smooth_u
+            rts_view[n, k, 0] = t_particle + t_view[k] + smooth_u
 
-                # The probability of making a 'mistake' 1 - (relative y position)
-                # y at upper bound --> choices_view[n, k, 0] add one deterministically
-                # y at lower bound --> choice_view[n, k, 0] stays the same deterministically
-                
-                # If boundary is negative (or 0) already, we flip a coin
-                if boundary_view[ix] <= 0:
-                    if random_uniform() <= 0.5:
-                        choices_view[n, k, 0] += 1
-                # Otherwise apply rule from above
-                elif random_uniform() <= ((y_l + boundary_view[ix]) / (2 * boundary_view[ix])):
+            # The probability of making a 'mistake' 1 - (relative y position)
+            # y at upper bound --> choices_view[n, k, 0] add one deterministically
+            # y at lower bound --> choice_view[n, k, 0] stays the same deterministically
+            
+            # If boundary is negative (or 0) already, we flip a coin
+            if boundary_view[ix] <= 0:
+                if random_uniform() <= 0.5:
                     choices_view[n, k, 0] += 1
+            # Otherwise apply rule from above
+            elif random_uniform() <= ((y_l + boundary_view[ix]) / (2 * boundary_view[ix])):
+                choices_view[n, k, 0] += 1
 
             if (rts_view[n, k, 0] >= deadline_view[k]) | (deadline_view[k] <= 0):
                     rts_view[n, k, 0] = -999
