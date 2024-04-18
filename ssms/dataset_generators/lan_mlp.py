@@ -280,7 +280,7 @@ class data_generator:
                 )
             )
 
-            theta = parameter_transform_for_data_gen(theta)
+            theta = self.parameter_transform_for_data_gen(theta)
 
             theta_dict = {
                 name: val for name, val in zip(self.model_config["params"], theta)
