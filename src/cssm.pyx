@@ -808,8 +808,8 @@ def ddm_flex(np.ndarray[float, ndim = 1] v,
 
             # Random walker
             y_s = {}
+            y_test = []
             while (y >= (-1) * boundary_view[ix]) and (y <= boundary_view[ix]) and (t_particle <= deadline_tmp):
-                y_test = []
                 y += (drift_view[ix] * delta_t) + (sqrt_st * gaussian_values[m])
                 y_test.append(y)
                 t_particle += delta_t
@@ -861,7 +861,8 @@ def ddm_flex(np.ndarray[float, ndim = 1] v,
                                                             'possible_choices': [-1, 1],
                                                             'trajectory': traj,
                                                             'drift': drift,
-                                                            'boundary': boundary}}
+                                                            'boundary': boundary},
+                                                            'y_s': y_s}
     elif return_option == 'minimal':
         return {'rts': rts, 'choices': choices,  'metadata': {'simulator': 'ddm_flex',
                                                              'possible_choices': [-1, 1],
