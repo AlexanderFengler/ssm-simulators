@@ -796,6 +796,7 @@ def ddm_flex(np.ndarray[float, ndim = 1] v,
             boundary[:] = np.add(a_view[k], boundary_fun(t = t_s, **boundary_params_tmp)).astype(DTYPE)
 
         deadline_tmp = min(max_t, deadline_view[k] - t_view[k])
+        y_values_dict = {}
         for n in range(n_samples):
             y = (-1) * boundary_view[0] + (z_view[k] * 2 * (boundary_view[0]))  # reset starting position
             t_particle = 0.0 # reset time
@@ -824,6 +825,7 @@ def ddm_flex(np.ndarray[float, ndim = 1] v,
                 if m == num_draws:
                     gaussian_values = draw_gaussian(num_draws)
                     m = 0
+            y_values_dict[f"sample {n}"] = y_test
             if smooth:
                 if t_particle == 0.0:
                     smooth_u = random_uniform() * 0.5 * delta_t
@@ -860,7 +862,7 @@ def ddm_flex(np.ndarray[float, ndim = 1] v,
                                                             'trajectory': traj,
                                                             'drift': drift,
                                                             'boundary': boundary,
-                                                            'y_s': y_test}
+                                                            'y_s': y_values_dict}
                 }
     elif return_option == 'minimal':
         return {'rts': rts, 'choices': choices,  'metadata': {'simulator': 'ddm_flex',
