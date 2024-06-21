@@ -808,10 +808,10 @@ def ddm_flex(np.ndarray[float, ndim = 1] v,
                     traj_view[0, 0] = y
 
             # Random walker
-            y_test = []
+            # y_test = []
             while (y >= (-1) * boundary_view[ix]) and (y <= boundary_view[ix]) and (t_particle <= deadline_tmp):
                 y += (drift_view[ix] * delta_t) + (sqrt_st * gaussian_values[m])
-                y_test.append(y)
+                # y_test.append(y)
                 t_particle += delta_t
                 ix += 1
                 m += 1
@@ -825,7 +825,7 @@ def ddm_flex(np.ndarray[float, ndim = 1] v,
                 if m == num_draws:
                     gaussian_values = draw_gaussian(num_draws)
                     m = 0
-            y_values_dict[f"sample {n}"] = y_test
+            # y_values_dict[f"sample {n}"] = y_test
             if smooth:
                 if t_particle == 0.0:
                     smooth_u = random_uniform() * 0.5 * delta_t
@@ -861,8 +861,9 @@ def ddm_flex(np.ndarray[float, ndim = 1] v,
                                                             'possible_choices': [-1, 1],
                                                             'trajectory': traj,
                                                             'drift': drift,
-                                                            'boundary': boundary,
-                                                            'y_s': y_values_dict}
+                                                            'boundary': boundary
+                                                              }
+                                                            # 'y_s': y_values_dict}
                 }
     elif return_option == 'minimal':
         return {'rts': rts, 'choices': choices,  'metadata': {'simulator': 'ddm_flex',
@@ -878,6 +879,8 @@ def ddm_flex(np.ndarray[float, ndim = 1] v,
 
 
 # ----------------------------------------------------------------------------------------------------
+
+
 # Simulate (rt, choice) tuples from: Levy Flight with Flex Bound -------------------------------------
 # @cythonboundscheck(False)
 # @cythonwraparound(False)

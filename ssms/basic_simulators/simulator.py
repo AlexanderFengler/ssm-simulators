@@ -75,7 +75,6 @@ def _theta_dict_to_array(theta=dict(), model_param_list=None):
         np.float32
     )
 
-
 def _theta_array_to_dict(theta=None, model_param_list=None):
     """Converts theta array to dictionary for use with simulator function"""
     if model_param_list is None:
@@ -113,6 +112,7 @@ def make_boundary_dict(model_config, model, theta):
         "boundary_fun": boundary_fun,
         "boundary_multiplicative": boundary_multiplicative,
     }
+    print("Boundary Dict:",boundary_dict)
     return boundary_dict
 
 
@@ -514,8 +514,10 @@ def simulator(
         "ornstein_angle",
         "gamma_drift",
         "gamma_drift_angle",
+        "ulrich",
+        "shrink_spot"
     ]:
-        sim_param_dict["s"] = noise_dict["1_particles"]
+        sim_param_dict["s"] = noise_dict["1_particles"] #scaling factor of variance
 
     if model in ["ds_conflict_drift", "ds_conflict_drift_angle"]:
         sim_param_dict["s"] = noise_dict["1_particles"]

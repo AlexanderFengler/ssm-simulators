@@ -132,3 +132,6 @@ def ds_conflict_drift(
     v_t = (w_t * tcoh) + (w_d * dcoh)
 
     return v_t  # , w_t, w_d
+
+
+# def attend_drift()
