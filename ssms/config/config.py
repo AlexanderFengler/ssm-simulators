@@ -61,11 +61,11 @@ drift_config = {
     "ds_conflict_drift": {
         "fun": df.ds_conflict_drift,
         "params": ["tinit", "dinit", "tslope", "dslope", "tfixedp", "tcoh", "dcoh"],
+    },
+    "attend_drift": {
+        "fun": df.attend_drift,
+        "params": ["p_outer", "p_inner", "p_target", "r", "sda"]
     }
-    # "attend_drift": {
-    #     "fun": df.attend_drift,
-    #     "params": ["p_outer", "p_inner", "p_target", "r", "sda"]
-    # }
 }
 
 # Configuration dictionary for simulators
@@ -201,9 +201,9 @@ model_config = {
         "drift_name": "attend_drift",
         "drift_fun": df.attend_drift,
         "n_params": 9,
-        "default_params": [],
+        "default_params": [0.0, 1.0, 0.5, 0.25, -0.3, -0.3, 0.3, 0.05, 2],
         "nchoices": 2,
-        "simulator": cssm.,
+        "simulator": cssm.ddm_attend,
     },
 
     "gamma_drift_angle": {

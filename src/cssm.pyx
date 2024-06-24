@@ -876,7 +876,156 @@ def ddm_flex(np.ndarray[float, ndim = 1] v,
     else:
         raise ValueError('return_option must be either "full" or "minimal"')
 # # ----------------------------------------------------------------------------------------------------
+def ddm_attend(np.ndarray[float, ndim = 1] v,
+             np.ndarray[float, ndim = 1] a,
+             np.ndarray[float, ndim = 1] z,
+             np.ndarray[float, ndim = 1] t,
+             np.ndarray[float, ndim = 1] deadline,
+             float s = 1,
+             float delta_t = 0.001,
+             float max_t = 20,
+             int n_samples = 20000,
+             int n_trials = 1,
+             boundary_fun = None, # function of t (and potentially other parameters) that takes in (t, *args)
+             drift_fun = None,
+             boundary_multiplicative = True,
+             boundary_params = {},
+             drift_params = {},
+             random_state = None,
+             return_option = 'full',
+             smooth = False,
+             **kwargs):
+    set_seed(random_state)
 
+    # Param views:
+    cdef float[:] v_view  = v
+    cdef float[:] a_view = a
+    cdef float[:] z_view = z
+    cdef float[:] t_view = t
+    cdef float[:] deadline_view = deadline
+
+    traj = np.zeros((int(max_t / delta_t) + 1, 1), dtype = DTYPE)
+    traj[:, :] = -999
+    cdef float[:,:] traj_view = traj
+
+    rts = np.zeros((n_samples, n_trials, 1), dtype = DTYPE)
+    choices = np.zeros((n_samples, n_trials, 1), dtype = np.intc)
+
+    cdef float[:, :, :] rts_view = rts
+    cdef int[:, :, :] choices_view = choices
+
+    cdef float delta_t_sqrt = sqrt(delta_t) # correct scalar so we can use standard normal samples for the brownian motion
+    cdef float sqrt_st = delta_t_sqrt * s # scalar to ensure the correct variance for the gaussian step
+
+    # Boundary storage for the upper bound
+    cdef int num_draws = int((max_t / delta_t) + 1)
+    t_s = np.arange(0, max_t + delta_t, delta_t).astype(DTYPE)
+    boundary = np.zeros(t_s.shape, dtype = DTYPE)
+    drift = np.zeros(t_s.shape, dtype = DTYPE)
+    cdef float y, t_particle, smooth_u, deadline_tmp
+    cdef Py_ssize_t n
+    cdef Py_ssize_t ix
+    cdef Py_ssize_t m = 0
+    cdef Py_ssize_t k
+    cdef float[:] gaussian_values = draw_gaussian(num_draws)
+    cdef float[:] boundary_view = boundary
+    cdef float[:] drift_view = drift
+
+    # Loop over samples
+    for k in range(n_trials):
+        # Precompute boundary evaluations and drift evaluations
+
+        # Drift
+        drift_params_tmp = {key: drift_params[key][k] for key in drift_params.keys()}
+        drift[:] = np.add(v_view[k], drift_fun(t = t_s, **drift_params_tmp)).astype(DTYPE)
+
+        # Boundary
+        boundary_params_tmp = {key: boundary_params[key][k] for key in boundary_params.keys()}
+        if boundary_multiplicative:
+            boundary[:] = np.multiply(a_view[k], boundary_fun(t = t_s, **boundary_params_tmp)).astype(DTYPE)
+        else:
+            boundary[:] = np.add(a_view[k], boundary_fun(t = t_s, **boundary_params_tmp)).astype(DTYPE)
+
+        deadline_tmp = min(max_t, deadline_view[k] - t_view[k])
+        y_values_dict = {}
+        for n in range(n_samples):
+            y = (-1) * boundary_view[0] + (z_view[k] * 2 * (boundary_view[0]))  # reset starting position
+            t_particle = 0.0 # reset time
+            ix = 0 # reset boundary index
+
+            # Can improve with less checks
+            if n == 0:
+                if k == 0:
+                    traj_view[0, 0] = y
+
+            # Random walker
+            # y_test = []
+            while (y >= (-1) * boundary_view[ix]) and (y <= boundary_view[ix]) and (t_particle <= deadline_tmp):
+                y += (drift_view[ix] * delta_t) + (sqrt_st * gaussian_values[m])
+                # y_test.append(y)
+                t_particle += delta_t
+                ix += 1
+                m += 1
+
+                # Can improve with less checks
+                if n == 0:
+                    if k == 0:
+                        traj_view[ix, 0] = y
+
+                # Can improve with less checks
+                if m == num_draws:
+                    gaussian_values = draw_gaussian(num_draws)
+                    m = 0
+            # y_values_dict[f"sample {n}"] = y_test
+            if smooth:
+                if t_particle == 0.0:
+                    smooth_u = random_uniform() * 0.5 * delta_t
+                elif t_particle < deadline_tmp:
+                    smooth_u = (0.5 - random_uniform()) * delta_t
+                else:
+                    smooth_u = 0.0
+            else:
+                smooth_u = 0.0
+
+            rts_view[n, k, 0] = t_particle + t_view[k] + smooth_u # Store rt
+            choices_view[n, k, 0] = sign(y) # Store choice
+
+            if (rts_view[n, k, 0] >= deadline_view[k]) | (deadline_view[k] <= 0):
+                rts_view[n, k, 0] = -999
+
+    if return_option == 'full':
+        return {'rts': rts, 'choices': choices,  'metadata': {'v': v,
+                                                            'a': a,
+                                                            'z': z,
+                                                            't': t,
+                                                            'deadline': deadline,
+                                                            's': s,
+                                                            **boundary_params,
+                                                            **drift_params,
+                                                            'delta_t': delta_t,
+                                                            'max_t': max_t,
+                                                            'n_samples': n_samples,
+                                                            'n_trials': n_trials,
+                                                            'simulator': 'ddm_flex',
+                                                            'boundary_fun_type': boundary_fun.__name__,
+                                                            'drift_fun_type': boundary_fun.__name__,
+                                                            'possible_choices': [-1, 1],
+                                                            'trajectory': traj,
+                                                            'drift': drift,
+                                                            'boundary': boundary
+                                                              }
+                                                            # 'y_s': y_values_dict}
+                }
+    elif return_option == 'minimal':
+        return {'rts': rts, 'choices': choices,  'metadata': {'simulator': 'ddm_flex',
+                                                             'possible_choices': [-1, 1],
+                                                             'boundary_fun_type': boundary_fun.__name__,
+                                                             'drift_fun_type': boundary_fun.__name__,
+                                                             'n_samples': n_samples,
+                                                             'n_trials': n_trials,
+                                                             }}
+    else:
+        raise ValueError('return_option must be either "full" or "minimal"')
 
 
 
