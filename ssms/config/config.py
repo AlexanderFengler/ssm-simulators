@@ -189,22 +189,22 @@ model_config = {
         "nchoices": 2,
         "simulator": cssm.ddm_flex,
     },
-    # "shrink_spot": {
-    #     "name": "shrink_spot",
-    #     "params": ["v", "a", "z", "t", "p_outer", "p_inner", "p_target", "r", "sda")],
-    #     "param_bounds": [
-    #     [-3.0, 0.3,0.1,1e-3, 0.1, ],
-    #     [3.0,3.0,0.9,2.0,0.9, ],
-    #     ],
-    #     "boundary_name": "constant",
-    #     "boundary": bf.constant,
-    #     "drift_name": "attend_drift",
-    #     "drift_fun": df.attend_drift,
-    #     "n_params": 9,
-    #     "default_params": [],
-    #     "nchoices": 2,
-    #     "simulator": cssm.,
-    # }
+    "shrink_spot": {
+        "name": "shrink_spot",
+        "params": ["v", "a", "z", "t", "p_outer", "p_inner", "p_target", "r", "sda"],
+        "param_bounds": [
+        [-3.0, 0.3, 0.1, 1e-3, -1, -1, -1, 0.1, 1e-3],
+        [3.0, 3.0, 0.9, 2.0, 1, 1, 1, 0.9, 0.9],
+        ],
+        "boundary_name": "constant",
+        "boundary": bf.constant,
+        "drift_name": "attend_drift",
+        "drift_fun": df.attend_drift,
+        "n_params": 9,
+        "default_params": [],
+        "nchoices": 2,
+        "simulator": cssm.,
+    },
 
     "gamma_drift_angle": {
         "name": "gamma_drift_angle",

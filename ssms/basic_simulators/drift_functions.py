@@ -1,5 +1,6 @@
 # External
 import numpy as np
+from scipy.stats import norm
 
 """
 This module defines a collection of drift functions for the simulators in the package.
@@ -134,4 +135,20 @@ def ds_conflict_drift(
     return v_t  # , w_t, w_d
 
 
-# def attend_drift()
+def attend_drift(t=np.arange(0, 20, 0.1),
+                 p_outer=0,
+                 p_inner=0,
+                 p_target=0,
+                 r=0,
+                 sda=0):
+
+    a_outer = norm.sf(1.5, loc=0, scale=sda)
+    a_inner = norm.cdf(1.5, loc=0, scale=sda) - norm.cdf(0.5, loc=0, scale=sda)
+    a_target = norm.cdf(0.5, loc=0, scale=sda) - norm.cdf(-0.5, loc=0, scale=sda)
+
+
+    v_t = 2*p_outer*a_outer + 2*p_inner*a_inner + p_target*a_target
+
+    return v_t
+
+
