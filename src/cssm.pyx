@@ -2009,6 +2009,7 @@ def ddm_flexbound_seq2(np.ndarray[float, ndim = 1] vh,
 
     cdef float[:, :, :] rts_view = rts
     cdef int[:, :, :] choices_view = choices
+    cdef int decision_taken = 0
 
     # TD: Add Trajectory
     traj = np.zeros((int(max_t / delta_t) + 1, 3), dtype = DTYPE)
@@ -2044,10 +2045,11 @@ def ddm_flexbound_seq2(np.ndarray[float, ndim = 1] vh,
         
         # Loop over samples
         for n in range(n_samples):
+            decision_taken = 0
             t_particle = 0.0 # reset time
             ix = 0 # reset boundary index
 
-            # Random walker 1
+            # Random walker 1 (high dimensional)
             y_h = (-1) * boundary_view[0] + (zh_view[k] * 2 * (boundary_view[0]))  # reset starting position 
             
             if n == 0:
@@ -2086,6 +2088,7 @@ def ddm_flexbound_seq2(np.ndarray[float, ndim = 1] vh,
                     if random_uniform() <= zl2_view[k]:
                         choices_view[n, k, 0] += 1
                 rts_view[n, k, 0] = t_particle
+                decision_taken = 1
             else:
                 # If boundary is negative (or 0) already, we flip a coin
                 if boundary_view[ix] <= 0:
@@ -2103,30 +2106,23 @@ def ddm_flexbound_seq2(np.ndarray[float, ndim = 1] vh,
                 ix2 = ix
                 t_particle2 = t_particle
                 
+                # Figure out negative bound for low level
                 if choices_view[n, k, 0] == 0:
-                    # ix1 = ix
-                    # t_particle1 = t_particle
-                    #v_l = vl1_view[k]
-                    #z_l = zl1_view[k]
-                    
                     # In case boundary is negative already, we flip a coin with bias determined by w_l_ parameter
                     if (y_l1 >= boundary_view[ix]) or (y_l1 <= ((-1) * boundary_view[ix])):
                         if random_uniform() < zl1_view[k]:
                             choices_view[n, k, 0] += 1
+                        decision_taken = 1
                     
                     if n == 0:
                         if k == 0:
                             traj_view[ix, 1] = y_l1
                 else:
-                    # ix2 = ix
-                    # t_particle2 = t_particle
-                    # v_l = vl2_view[k]
-                    # z_l = zl2_view[k]
-                    
                     # In case boundary is negative already, we flip a coin with bias determined by w_l_ parameter
                     if (y_l2 >= boundary_view[ix]) or (y_l2 <= ((-1) * boundary_view[ix])):
                         if random_uniform() < zl2_view[k]:
                             choices_view[n, k, 0] += 1
+                        decision_taken = 1
 
                     if n == 0:
                         if k == 0:
@@ -2182,22 +2178,25 @@ def ddm_flexbound_seq2(np.ndarray[float, ndim = 1] vh,
             else:
                 smooth_u = 0.0
 
+            # Add nondecision time and smoothing of rt
             rts_view[n, k, 0] = t_particle + t_view[k] + smooth_u
+
+            # Take account of deadline
+            if (rts_view[n, k, 0] >= deadline_view[k]) | (deadline_view[k] <= 0):
+                    rts_view[n, k, 0] = -999
 
             # The probability of making a 'mistake' 1 - (relative y position)
             # y at upper bound --> choices_view[n, k, 0] add one deterministically
             # y at lower bound --> choice_view[n, k, 0] stays the same deterministically
             
             # If boundary is negative (or 0) already, we flip a coin
-            if boundary_view[ix] <= 0:
-                if random_uniform() <= 0.5:
+            if not decision_taken:
+                if boundary_view[ix] <= 0:
+                    if random_uniform() <= 0.5:
+                        choices_view[n, k, 0] += 1
+                # Otherwise apply rule from above
+                elif random_uniform() <= ((y_l + boundary_view[ix]) / (2 * boundary_view[ix])):
                     choices_view[n, k, 0] += 1
-            # Otherwise apply rule from above
-            elif random_uniform() <= ((y_l + boundary_view[ix]) / (2 * boundary_view[ix])):
-                choices_view[n, k, 0] += 1
-
-            if (rts_view[n, k, 0] >= deadline_view[k]) | (deadline_view[k] <= 0):
-                    rts_view[n, k, 0] = -999
 
     if return_option == 'full':
         return {'rts': rts, 'choices': choices, 'metadata': {'vh': vh,
