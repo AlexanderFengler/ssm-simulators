@@ -141,13 +141,12 @@ def attend_drift(t=np.arange(0, 20, 0.1),
                  p_target=0.3,
                  r=0.5,
                  sda=2):
-    new_sda = sda - r*t
 
+    new_sda = sda - r*t
 
     a_outer = norm.sf(1.5, loc=0, scale=new_sda)
     a_inner = norm.cdf(1.5, loc=0, scale=new_sda) - norm.cdf(0.5, loc=0, scale=new_sda)
     a_target = norm.cdf(0.5, loc=0, scale=new_sda) - norm.cdf(-0.5, loc=0, scale=new_sda)
-
 
     v_t = 2 * p_outer * a_outer + 2 * p_inner * a_inner + p_target * a_target
 
