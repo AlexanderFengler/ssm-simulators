@@ -203,7 +203,7 @@ model_config = {
         "n_params": 9,
         "default_params": [0.0, 1.0, 0.5, 0.25, -0.3, -0.3, 0.3, 0.05, 2],
         "nchoices": 2,
-        "simulator": cssm.ddm_attend,
+        "simulator": cssm.ddm_flex
     },
 
     "gamma_drift_angle": {
