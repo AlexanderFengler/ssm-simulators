@@ -135,24 +135,49 @@ def ds_conflict_drift(
     return v_t  # , w_t, w_d
 
 
-def attend_drift(t=np.arange(0, 20, 0.1),
-                 p_outer=-0.3,
-                 p_inner=-0.3,
-                 p_target=0.3,
-                 r=0.5,
-                 sda=2):
+def attend_drift(
+    t=np.arange(0, 20, 0.1),
+    p_outer=-0.3,
+    p_inner=-0.3,
+    p_target=0.3,
+    r=0.5,
+    sda=2,
+    alpha=1,
+):  # add a scaling factor
+    """Drift function for shrinking spotlight model, which involves a time varying
+    function dependent on a linearly decreasing standard deviation of attention.
 
-    new_sda = sda - r*t
+    Arguments
+    --------
+        t: np.ndarray <default=np.arange(0, 20, 0.1)>
+            Timepoints at which to evaluate the drift.
+            Usually np.arange() of some sort.
+        p_outer: float <default=-0.3>
+            perceptual input for outer flankers
+        p_inner: float <default=-0.3>
+            perceptual input for inner flankers
+        p_target: float <default=0.3>
+            perceptual input for target flanker
+        r: float <default=0.5>
+            rate parameter for sda decrease
+        sda: float <default=2>
+            width of attentional spotlight
+        alpha: float <default=1>
+            scaling factor of overall drift rate
+    Return
+    ------
+    np.ndarray
+        Drift evaluated at timepoints t
+    """
 
-    # if np.any(new_sda <= 0.01):
-    #     new_sda = 0
+    new_sda = sda - r * t  # make sure that the sda doesn't go below 0
+
     a_outer = norm.sf(1.5, loc=0, scale=new_sda)
     a_inner = norm.cdf(1.5, loc=0, scale=new_sda) - norm.cdf(0.5, loc=0, scale=new_sda)
-    a_target = norm.cdf(0.5, loc=0, scale=new_sda) - norm.cdf(-0.5, loc=0, scale=new_sda)
+    a_target = norm.cdf(0.5, loc=0, scale=new_sda) - norm.cdf(
+        -0.5, loc=0, scale=new_sda
+    )
 
-    v_t = 2 * p_outer * a_outer + 2 * p_inner * a_inner + p_target * a_target
-    print(new_sda)
+    v_t = alpha * (2 * p_outer * a_outer + 2 * p_inner * a_inner + p_target * a_target)
 
     return v_t
-
-

@@ -64,8 +64,8 @@ drift_config = {
     },
     "attend_drift": {
         "fun": df.attend_drift,
-        "params": ["p_outer", "p_inner", "p_target", "r", "sda"]
-    }
+        "params": ["p_outer", "p_inner", "p_target", "r", "sda", "alpha"],
+    },
 }
 
 # Configuration dictionary for simulators
@@ -173,39 +173,33 @@ model_config = {
         "nchoices": 2,
         "simulator": cssm.ddm_flex,
     },
-    "ulrich": {
-        "name": "ulrich",
-        "params": ["v", "a", "z", "t", "shape", "scale", "c"],
-        "param_bounds": [
-            [-3.0, 0.3, 0.1, 1e-3, 2.0, 0.01, -3.0],
-            [3.0, 3.0, 0.9, 2.0, 10.0, 1.0, 3.0],
-        ],
-        "boundary_name": "constant",
-        "boundary": bf.constant,
-        "drift_name": "gamma_drift",
-        "drift_fun": df.gamma_drift,
-        "n_params": 7,
-        "default_params": [0.0, 1.0, 0.5, 0.25, 5.0, 0.5, 1.0],
-        "nchoices": 2,
-        "simulator": cssm.ddm_flex,
-    },
     "shrink_spot": {
         "name": "shrink_spot",
-        "params": ["v", "a", "z", "t", "p_outer", "p_inner", "p_target", "r", "sda"],
+        "params": [
+            "v",
+            "a",
+            "z",
+            "t",
+            "p_outer",
+            "p_inner",
+            "p_target",
+            "r",
+            "sda",
+            "alpha",
+        ],
         "param_bounds": [
-        [-3.0, 0.3, 0.1, 1e-3, -1, -1, -1, 0.1, 1e-3],
-        [3.0, 3.0, 0.9, 2.0, 1, 1, 1, 0.9, 0.9],
+            [-3.0, 0.3, 0.1, 1e-3, -1, -1, -1, 1e-3, 1e-3, 1e-3],
+            [3.0, 3.0, 0.9, 2.0, 1, 1, 1, 3, 3, 5],
         ],
         "boundary_name": "constant",
         "boundary": bf.constant,
         "drift_name": "attend_drift",
         "drift_fun": df.attend_drift,
-        "n_params": 9,
-        "default_params": [0.0, 1.0, 0.5, 0.25, -0.3, -0.3, 0.3, 0.05, 2],
+        "n_params": 10,
+        "default_params": [0.0, 1.0, 0.5, 0.25, -0.3, -0.3, 0.3, 0.05, 2, 1],
         "nchoices": 2,
-        "simulator": cssm.ddm_flex
+        "simulator": cssm.ddm_flex,
     },
-
     "gamma_drift_angle": {
         "name": "gamma_drift_angle",
         "params": ["v", "a", "z", "t", "theta", "shape", "scale", "c"],
