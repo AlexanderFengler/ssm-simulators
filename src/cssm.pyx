@@ -599,7 +599,7 @@ def ddm_flexbound(np.ndarray[float, ndim = 1] v,
                   random_state = None,
                   return_option = 'full',
                   smooth = False,
-                  # **kwargs,
+                  **kwargs,
                   ):
 
     set_seed(random_state)
