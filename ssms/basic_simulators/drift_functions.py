@@ -170,8 +170,8 @@ def attend_drift(
         Drift evaluated at timepoints t
     """
 
-    new_sda = sda - r * t  # make sure that the sda doesn't go below 0
-
+    new_sda = np.maximum(sda - r * t, 0.01)  # make sure that the sda doesn't go below 0
+    # print(new_sda)
     a_outer = norm.sf(1.5, loc=0, scale=new_sda)
     a_inner = norm.cdf(1.5, loc=0, scale=new_sda) - norm.cdf(0.5, loc=0, scale=new_sda)
     a_target = norm.cdf(0.5, loc=0, scale=new_sda) - norm.cdf(
