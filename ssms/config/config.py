@@ -196,7 +196,7 @@ model_config = {
         "drift_name": "attend_drift",
         "drift_fun": df.attend_drift,
         "n_params": 10,
-        "default_params": [0.0, 1.0, 0.5, 0.25, -0.3, -0.3, 0.3, 0.05, 2, 1],
+        "default_params": [0.0, 1.0, 0.5, 0.25, -1, -1, 1, 0.05, 2, 1],
         "nchoices": 2,
         "simulator": cssm.ddm_flex,
     },

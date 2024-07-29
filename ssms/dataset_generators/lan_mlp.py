@@ -33,7 +33,7 @@ class data_generator:
     Methods
     -------
         generate_data_training_uniform(save=False, verbose=True, cpn_only=False)
-            Generates training data for LANs.
+            Generates training data for LANs.'
         get_simulations(theta=None, random_seed=None)
             Generates simulations for a given parameter set.
         _filter_simulations(simulations=None)
@@ -411,7 +411,7 @@ class data_generator:
         seed_args = [(seeds_1[i], seeds_2[i]) for i in range(seeds_1.shape[0])]
 
         # Inits
-        subrun_n = (
+        subrun_n = ( #feel like this should be renamed to subrun_size 
             self.generator_config["n_parameter_sets"]
             // self.generator_config["n_subruns"]
         )
