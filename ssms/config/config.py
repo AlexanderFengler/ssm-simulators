@@ -176,7 +176,7 @@ model_config = {
     "shrink_spot": {
         "name": "shrink_spot",
         "params": [
-            "v",
+            "v", #take v out 
             "a",
             "z",
             "t",
@@ -185,11 +185,10 @@ model_config = {
             "p_target",
             "r",
             "sda",
-            "alpha",
         ],
         "param_bounds": [
-            [-3.0, 0.3, 0.1, 1e-3, -1, -1, -1, 1e-3, 1e-3, 1e-3],
-            [3.0, 3.0, 0.9, 2.0, 1, 1, 1, 3, 3, 5],
+            [0, 0.3, 0.1, 1e-3, -1, -1, -1, 1e-3, 1e-3, 1e-3],
+            [0, 3.0, 0.9, 2.0, 1, 1, 1, 3, 3, 5],
         ],
         "boundary_name": "constant",
         "boundary": bf.constant,
