@@ -194,9 +194,9 @@ model_config = {
         "drift_name": "attend_drift",
         "drift_fun": df.attend_drift,
         "n_params": 8,
-        "default_params": [0, 1.0, 0.5, 0.25, 0.5, -0.5, -0.5, 0.5, 2],
+        "default_params": [1.0, 0.5, 0.25, 0.5, -0.5, -0.5, 0.5, 2],
         "nchoices": 2,
-        "simulator": cssm.ddm_flex_no_v
+        "simulator": cssm.ddm_flex_no_v,
     },
     "gamma_drift_angle": {
         "name": "gamma_drift_angle",

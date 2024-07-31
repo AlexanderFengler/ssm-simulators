@@ -411,7 +411,7 @@ class data_generator:
         seed_args = [(seeds_1[i], seeds_2[i]) for i in range(seeds_1.shape[0])]
 
         # Inits
-        subrun_n = ( #feel like this should be renamed to subrun_size 
+        subrun_n = (  # feel like this should be renamed to subrun_size
             self.generator_config["n_parameter_sets"]
             // self.generator_config["n_subruns"]
         )

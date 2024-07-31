@@ -467,7 +467,7 @@ def simulator(
     # the actual model string.
 
     noise_dict = {
-        "1_particles": 1.0, #need to add a scalar that scales the diffusion coefficient 
+        "1_particles": 1.0,  # need to add a scalar that scales the diffusion coefficient
         "2_particles": np.tile(
             np.array(
                 [1.0] * 2,
@@ -821,7 +821,7 @@ def simulator(
     # print(theta)
     # print(boundary_dict)
     # print(drift_dict)
-    print("This is the sim param dict:",sim_param_dict)
+    print("This is the sim param dict:", sim_param_dict)
 
     # Call to the simulator
     x = model_config[model]["simulator"](

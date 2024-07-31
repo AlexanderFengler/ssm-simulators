@@ -170,7 +170,7 @@ def attend_drift(
     """
 
     new_sda = np.maximum(sda - r * t, 0.01)  # make sure that the sda doesn't go below 0
-    ratio = new_sda / r 
+    ratio = new_sda / r
     print(f"These are the ratios {ratio}")
     print(f" These are the sdas: {new_sda}")
     a_outer = norm.sf(1.5, loc=0, scale=new_sda)
@@ -181,6 +181,6 @@ def attend_drift(
     print(f"This is a_outer: {a_outer}")
     print(f"This is a_inner: {a_inner}")
     print(f"This is a_target: {a_target}")
-    v_t = (2 * p_outer * a_outer + 2 * p_inner * a_inner + p_target * a_target)
+    v_t = 2 * p_outer * a_outer + 2 * p_inner * a_inner + p_target * a_target
 
     return v_t
