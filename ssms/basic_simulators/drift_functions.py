@@ -136,13 +136,12 @@ def ds_conflict_drift(
 
 
 def attend_drift(
-    t=np.arange(0, 20, 0.1),
+    t=np.arange(0, 200, 0.1),
+    p_target=-0.3,
     p_outer=-0.3,
-    p_inner=-0.3,
-    p_target=0.3,
+    p_inner=0.3,
     r=0.5,
     sda=2,
-    alpha=1,
 ):  # add a scaling factor
     """Drift function for shrinking spotlight model, which involves a time varying
     function dependent on a linearly decreasing standard deviation of attention.
@@ -182,6 +181,6 @@ def attend_drift(
     print(f"This is a_outer: {a_outer}")
     print(f"This is a_inner: {a_inner}")
     print(f"This is a_target: {a_target}")
-    v_t = alpha * (2 * p_outer * a_outer + 2 * p_inner * a_inner + p_target * a_target)
+    v_t = (2 * p_outer * a_outer + 2 * p_inner * a_inner + p_target * a_target)
 
     return v_t
