@@ -519,6 +519,7 @@ def simulator(
         "shrink_spot",
     ]:
         sim_param_dict["s"] = noise_dict["1_particles"]  # scaling factor of variance
+        # sim_param_dict['s'] = 0.1
 
     if model in ["ds_conflict_drift", "ds_conflict_drift_angle"]:
         sim_param_dict["s"] = noise_dict["1_particles"]
