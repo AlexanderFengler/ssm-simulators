@@ -517,6 +517,7 @@ def simulator(
         "ornstein_uhlenbeck",
         "ornstein_angle",
         "gamma_drift",
+        "shrink_spot",
         "gamma_drift_angle",
     ]:
         sim_param_dict["s"] = noise_dict["1_particles"]
