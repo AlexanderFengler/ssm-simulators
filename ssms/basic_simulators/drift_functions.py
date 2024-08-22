@@ -1,6 +1,7 @@
 # External
 import numpy as np
 from scipy.stats import norm
+
 """
 This module defines a collection of drift functions for the simulators in the package.
 """
@@ -133,6 +134,7 @@ def ds_conflict_drift(
 
     return v_t  # , w_t, w_d
 
+
 def attend_drift(
     t=np.arange(0, 20, 0.1),
     p_target=-0.3,
@@ -140,7 +142,7 @@ def attend_drift(
     p_inner=0.3,
     r=0.5,
     sda=2,
-):  
+):
     """Drift function for shrinking spotlight model, which involves a time varying
     function dependent on a linearly decreasing standard deviation of attention.
 
@@ -165,16 +167,14 @@ def attend_drift(
         Drift evaluated at timepoints t
     """
 
-    new_sda = np.maximum(
-        sda - r * t, 0.001
-    )  
+    new_sda = np.maximum(sda - r * t, 0.001)
 
     a_outer = norm.sf(1.5, loc=0, scale=new_sda)
     a_inner = norm.cdf(1.5, loc=0, scale=new_sda) - norm.cdf(0.5, loc=0, scale=new_sda)
     a_target = norm.cdf(0.5, loc=0, scale=new_sda) - norm.cdf(
         -0.5, loc=0, scale=new_sda
     )
-  
+
     v_t = 2 * p_outer * a_outer + 2 * p_inner * a_inner + p_target * a_target
 
     return v_t
