@@ -62,7 +62,7 @@ drift_config = {
         "fun": df.ds_conflict_drift,
         "params": ["tinit", "dinit", "tslope", "dslope", "tfixedp", "tcoh", "dcoh"],
     },
-     "attend_drift": {
+    "attend_drift": {
         "fun": df.attend_drift,
         "params": ["p_target", "p_outer", "p_inner", "r", "sda"],
     },
@@ -198,7 +198,6 @@ model_config = {
         "nchoices": 2,
         "simulator": cssm.ddm_flex_no_v,
     },
-
     "gamma_drift_angle": {
         "name": "gamma_drift_angle",
         "params": ["v", "a", "z", "t", "theta", "shape", "scale", "c"],
