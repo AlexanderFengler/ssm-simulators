@@ -62,6 +62,10 @@ drift_config = {
         "fun": df.ds_conflict_drift,
         "params": ["tinit", "dinit", "tslope", "dslope", "tfixedp", "tcoh", "dcoh"],
     },
+     "attend_drift": {
+        "fun": df.attend_drift,
+        "params": ["p_target", "p_outer", "p_inner", "r", "sda"],
+    },
 }
 
 # Configuration dictionary for simulators
@@ -169,6 +173,32 @@ model_config = {
         "nchoices": 2,
         "simulator": cssm.ddm_flex,
     },
+    "shrink_spot": {
+        "name": "shrink_spot",
+        "params": [
+            "a",
+            "z",
+            "t",
+            "p_target",
+            "p_outer",
+            "p_inner",
+            "r",
+            "sda",
+        ],
+        "param_bounds": [
+            [0.3, 0.1, 1e-3, 2.0, -5.5, -5.5, 1e-2, 1],
+            [3.0, 0.9, 2.0, 5.5, 5.5, 5.5, 0.05, 3],
+        ],
+        "boundary_name": "constant",
+        "boundary": bf.constant,
+        "drift_name": "attend_drift",
+        "drift_fun": df.attend_drift,
+        "n_params": 8,
+        "default_params": [0.7, 0.5, 0.25, 2.0, -2.0, -2.0, 0.01, 1],
+        "nchoices": 2,
+        "simulator": cssm.ddm_flex_no_v,
+    },
+
     "gamma_drift_angle": {
         "name": "gamma_drift_angle",
         "params": ["v", "a", "z", "t", "theta", "shape", "scale", "c"],
