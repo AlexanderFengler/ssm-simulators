@@ -328,6 +328,13 @@ def validate_ssm_parameters(model, theta):
             check_lba_drifts_sum(theta["v_WM"])
             check_if_z_gt_a(theta["z"], theta["a"])
 
+    def check_if_A_gt_b(A, b):
+        if np.any(A <= b):
+            raise ValueError(
+                "Upper limit for starting point A >= b the threshold height,"
+                " for at least one trial"
+            )
+
 
 def simulator(
     theta,
@@ -524,6 +531,19 @@ def simulator(
     # Multi-particle models
 
     #   LBA-based models
+    if model == "lba2":
+        sim_param_dict["sd"] = noise_dict["lba_based_models"]
+        sim_param_dict["nact"] = 2
+        theta["v"] = np.column_stack([theta["v0"], theta["v1"]])
+        theta["z"] = np.expand_dims(theta["A"], axis=1)
+        theta["a"] = np.expand_dims(theta["b"], axis=1)
+
+    if model == "lba3":
+        sim_param_dict["sd"] = noise_dict["lba_based_models"]
+        sim_param_dict["nact"] = 3
+        theta["v"] = np.column_stack([theta["v0"], theta["v1"], theta["v2"]])
+        theta["z"] = np.expand_dims(theta["A"], axis=1)
+        theta["a"] = np.expand_dims(theta["b"], axis=1)
 
     # lba_sd = 0.1
     if model == "lba_3_v1":

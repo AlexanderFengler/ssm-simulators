@@ -276,6 +276,28 @@ model_config = {
         "nchoices": 2,
         "simulator": cssm.ddm_sdv,
     },
+    "lba2": {
+        "name": "lba2",  # LBA_3 without ndt; sum of all v = 1
+        "params": ["A", "b", "v0", "v1"],
+        "param_bounds": [[0.0, 0.0, 0.0, 0.1], [1.0, 1.0, 1.0, 1.1]],
+        "boundary_name": "constant",
+        "boundary": bf.constant,
+        "n_params": 4,
+        "default_params": [0.3, 0.5, 0.5, 0.5],
+        "nchoices": 3,
+        "simulator": cssm.lba_vanilla,
+    },
+    "lba3": {
+        "name": "lba3",  # LBA_3 without ndt; sum of all v = 1
+        "params": ["A", "b", "v0", "v1", "v2"],
+        "param_bounds": [[0.0, 0.0, 0.0, 0.1, 0.1], [1.0, 1.0, 1.0, 1.1, 0.50]],
+        "boundary_name": "constant",
+        "boundary": bf.constant,
+        "n_params": 5,
+        "default_params": [0.3, 0.5, 0.25, 0.5, 0.25],
+        "nchoices": 3,
+        "simulator": cssm.lba_vanilla,
+    },
     "lba_3_v1": {
         "name": "lba_3_v1",  # LBA_3 without ndt; sum of all v = 1
         "params": ["v0", "v1", "v2", "a", "z"],
