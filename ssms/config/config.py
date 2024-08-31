@@ -284,7 +284,7 @@ model_config = {
         "boundary": bf.constant,
         "n_params": 4,
         "default_params": [0.3, 0.5, 0.5, 0.5],
-        "nchoices": 3,
+        "nchoices": 2,
         "simulator": cssm.lba_vanilla,
     },
     "lba3": {
