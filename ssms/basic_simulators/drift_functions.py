@@ -1,5 +1,6 @@
 # External
 import numpy as np
+from scipy.stats import norm
 
 """
 This module defines a collection of drift functions for the simulators in the package.
@@ -132,3 +133,48 @@ def ds_conflict_drift(
     v_t = (w_t * tcoh) + (w_d * dcoh)
 
     return v_t  # , w_t, w_d
+
+
+def attend_drift(
+    t=np.arange(0, 20, 0.1),
+    p_target=-0.3,
+    p_outer=-0.3,
+    p_inner=0.3,
+    r=0.5,
+    sda=2,
+):
+    """Drift function for shrinking spotlight model, which involves a time varying
+    function dependent on a linearly decreasing standard deviation of attention.
+
+    Arguments
+    --------
+        t: np.ndarray <default=np.arange(0, 20, 0.1)>
+            Timepoints at which to evaluate the drift.
+            Usually np.arange() of some sort.
+        p_outer: float <default=-0.3>
+            perceptual input for outer flankers
+        p_inner: float <default=-0.3>
+            perceptual input for inner flankers
+        p_target: float <default=0.3>
+            perceptual input for target flanker
+        r: float <default=0.5>
+            rate parameter for sda decrease
+        sda: float <default=2>
+            width of attentional spotlight
+    Return
+    ------
+    np.ndarray
+        Drift evaluated at timepoints t
+    """
+
+    new_sda = np.maximum(sda - r * t, 0.001)
+
+    a_outer = norm.sf(1.5, loc=0, scale=new_sda)
+    a_inner = norm.cdf(1.5, loc=0, scale=new_sda) - norm.cdf(0.5, loc=0, scale=new_sda)
+    a_target = norm.cdf(0.5, loc=0, scale=new_sda) - norm.cdf(
+        -0.5, loc=0, scale=new_sda
+    )
+
+    v_t = 2 * p_outer * a_outer + 2 * p_inner * a_inner + p_target * a_target
+
+    return v_t
