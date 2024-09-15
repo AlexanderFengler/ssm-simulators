@@ -16,15 +16,16 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-22.04, windows-2022, macos-11]
+        # macos-13 is an intel runner, macos-14 is apple silicon
+        os: [ubuntu-22.04, windows-2022, macos-13, macos-14]
 
     steps:
       - uses: actions/checkout@v4
 
       - name: Build wheels
-        uses: pypa/cibuildwheel@v2.16.5
+        uses: pypa/cibuildwheel@v2.21.0
         env:
-          CIBW_BUILD: cp39-* cp310-* cp311-*
+          CIBW_BUILD: cp310-* cp311-* cp312-*
           CIBW_ARCHS_MACOS: "x86_64 universal2 arm64"
           CIBW_ARCHS_LINUX: auto64
           CIBW_ARCHS_WINDOWS: auto64
