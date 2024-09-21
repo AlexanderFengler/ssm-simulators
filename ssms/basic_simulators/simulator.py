@@ -510,6 +510,7 @@ def simulator(
         "full_ddm2",
         "full_ddm_legacy",
         "full_ddm_hddm_base",
+        "ddm_st",
         "ddm_sdv",
         "ornstein",
         "ornstein_uhlenbeck",

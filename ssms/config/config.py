@@ -157,6 +157,21 @@ model_config = {
         "nchoices": 2,
         "simulator": cssm.full_ddm,
     },
+    "ddm_st": {
+        "name": "full_st",
+        "params": ["v", "a", "z", "t", "st"],
+        "param_bounds": [
+            [-3.0, 0.3, 0.3, 0.25, 1e-3],
+            [3.0, 2.5, 0.7, 2.25, 0.25],
+        ],
+        "boundary_name": "constant",
+        "boundary": bf.constant,
+        "n_params": 5,
+        "default_params": [0.0, 1.0, 0.5, 0.25, 1e-3],
+        "nchoices": 2,
+        "simulator": cssm.full_ddm,
+        "simulator_fixed_params": {"sz": 0, "sv": 0},
+    },
     "gamma_drift": {
         "name": "gamma_drift",
         "params": ["v", "a", "z", "t", "shape", "scale", "c"],

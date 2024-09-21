@@ -13,6 +13,7 @@ from libc.time cimport time
 import numpy as np
 cimport numpy as np
 import numbers
+from scipy.stats cimport truncnorm
 #import pandas as pd
 
 DTYPE = np.float32
