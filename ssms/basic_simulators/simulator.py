@@ -510,7 +510,6 @@ def simulator(
         "full_ddm2",
         "full_ddm_legacy",
         "full_ddm_hddm_base",
-        "ddm_st",
         "ddm_sdv",
         "ornstein",
         "ornstein_uhlenbeck",
@@ -524,6 +523,42 @@ def simulator(
     if model in ["ds_conflict_drift", "ds_conflict_drift_angle"]:
         sim_param_dict["s"] = noise_dict["1_particles"]
         theta["v"] = np.tile(np.array([0], dtype=np.float32), n_trials)
+
+    if model in ["ddm_st"]:
+        sim_param_dict["s"] = model_config["ddm_st"]["simulator_fixed_params"]["s"]
+        theta["z_dist"] = model_config["ddm_st"]["simulator_fixed_params"]["z_dist"]
+        theta["v_dist"] = model_config["ddm_st"]["simulator_fixed_params"]["v_dist"]
+        # turn st from param values to corresponding random variable
+        theta["t_dist"] = model_config["ddm_st"]["simulator_param_mappings"]["t_dist"](
+            theta["st"]
+        )
+
+    if model in ["ddm_rayleight"]:
+        sim_param_dict["s"] = model_config["ddm_rayleight"]["simulator_fixed_params"][
+            "s"
+        ]
+        theta["z_dist"] = model_config["ddm_rayleight"]["simulator_fixed_params"][
+            "z_dist"
+        ]
+        theta["v_dist"] = model_config["ddm_rayleight"]["simulator_fixed_params"][
+            "v_dist"
+        ]
+        # turn st from param values to corresponding random variable
+        theta["t_dist"] = model_config["ddm_rayleight"]["simulator_param_mappings"][
+            "t_dist"
+        ](theta["st"])
+
+    if model in ["ddm_truncnormt"]:
+        sim_param_dict["s"] = model_config["ddm_truncnormt"]["simulator_fixed_params"][
+            "s"
+        ]
+        theta["z_dist"] = model_config["ddm_truncnormt"]["simulator_fixed_params"]["sz"]
+        theta["v_dist"] = model_config["ddm_truncnormt"]["simulator_fixed_params"]["sv"]
+        # turn st from param values to corresponding random variable
+        theta["t_dist"] = model_config["ddm_truncnormt"]["simulator_param_mappings"][
+            "t_dist"
+        ](theta["mt"], theta["st"])
+        theta["t"] = np.array([0], dtype=np.float32)
 
     # Multi-particle models
 

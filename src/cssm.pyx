@@ -13,7 +13,7 @@ from libc.time cimport time
 import numpy as np
 cimport numpy as np
 import numbers
-from scipy.stats cimport truncnorm
+#from scipy.stats cimport truncnorm
 #import pandas as pd
 
 DTYPE = np.float32
@@ -1304,6 +1304,182 @@ def levy_flexbound(np.ndarray[float, ndim = 1] v,
     else:
         raise ValueError('return_option must be either "full" or "minimal"')
 # -------------------------------------------------------------------------------------------------
+
+# Simulate (rt, choice) tuples from: Full DDM with flexible bounds --------------------------------
+# @cythonboundscheck(False)
+# @cythonwraparound(False)
+def full_ddm_rv(np.ndarray[float, ndim = 1] v, # = 0,
+                np.ndarray[float, ndim = 1] a, # = 1,
+                np.ndarray[float, ndim = 1] z, # = 0.5,
+                np.ndarray[float, ndim = 1] t, # = 0.0,
+                z_dist, # = 0.05,
+                v_dist, # = 0.1,
+                t_dist, # = 0.0,
+                np.ndarray[float, ndim = 1] deadline,
+                float s = 1,
+                float delta_t = 0.001,
+                float max_t = 20,
+                int n_samples = 20000,
+                int n_trials = 1,
+                boundary_fun = None, # function of t (and potentially other parameters) that takes in (t, *args)
+                boundary_multiplicative = True,
+                boundary_params = {},
+                random_state = None,
+                return_option = 'full',
+                smooth = False,
+                **kwargs):
+
+    set_seed(random_state)
+    # cdef int cov_length = np.max([v.size, a.size, w.size, t.size]).astype(int)
+    # Param views
+    #set_random_state(random_state)
+    cdef float[:] v_view = v
+    cdef float[:] a_view = a
+    cdef float[:] z_view = z
+    cdef float[:] t_view = t
+    # cdef float[:] sz_view = sz
+    # cdef float[:] sv_view = sv
+    # cdef float[:] st_view = st
+    cdef float[:] deadline_view = deadline
+
+    sz_samplewise = np.zeros((n_trials, n_samples), dtype = DTYPE)
+    sv_samplewise = np.zeros((n_trials, n_samples), dtype = DTYPE)
+    st_samplewise = np.zeros((n_trials, n_samples), dtype = DTYPE)
+
+    cdef float[:, :] sz_samplewise_view = sz_samplewise
+    cdef float[:, :] sv_samplewise_view = sv_samplewise
+    cdef float[:, :] st_samplewise_view = st_samplewise
+
+    # Data-structs for trajectory storage
+    traj = np.zeros((int(max_t / delta_t) + 1, 1), dtype = DTYPE)
+    traj[:, :] = -999 
+    cdef float[:, :] traj_view = traj
+
+    rts = np.zeros((n_samples, n_trials, 1), dtype = DTYPE)
+    choices = np.zeros((n_samples, n_trials, 1), dtype = np.intc)
+
+    cdef float[:, :, :] rts_view = rts
+    cdef int[:, :, :] choices_view = choices
+
+    cdef float delta_t_sqrt = sqrt(delta_t) # correct scalar so we can use standard normal samples for the brownian motion
+    cdef float sqrt_st = delta_t_sqrt * s # scalar to ensure the correct variance for the gaussian step
+
+    # Boundary storage for the upper bound
+    cdef int num_draws = int((max_t / delta_t) + 1)
+    t_s = np.arange(0, max_t + delta_t, delta_t).astype(DTYPE)
+    boundary = np.zeros(t_s.shape, dtype = DTYPE)
+    cdef float[:] boundary_view = boundary
+
+    cdef float y, t_particle, t_tmp, smooth_u, deadline_tmp
+    cdef Py_ssize_t n, ix, k
+    cdef Py_ssize_t m = 0
+    cdef float drift_increment = 0.0
+    cdef float[:] gaussian_values = draw_gaussian(num_draws)
+
+    # Loop over trials
+    sv_samplewise[:, :] = v_dist(size = (n_trials, n_samples))
+    sz_samplewise[:, :] = z_dist(size = (n_trials, n_samples))
+    st_samplewise[:, :] = t_dist(size = (n_trials, n_samples))
+
+    for k in range(n_trials):
+        boundary_params_tmp = {key: boundary_params[key][k] for key in boundary_params.keys()}
+
+        # Precompute boundary evaluations
+        if boundary_multiplicative:
+            # print(a)
+            boundary[:] = np.multiply(a_view[k], boundary_fun(t = t_s, **boundary_params_tmp)).astype(DTYPE)
+        else:
+            # print(a)
+            boundary[:] = np.add(a_view[k], boundary_fun(t = t_s, **boundary_params_tmp)).astype(DTYPE)
+        
+        deadline_tmp = min(max_t, deadline_view[k] - t_view[k])
+       
+        # Loop over samples
+        for n in range(n_samples):
+            # displaced_starting_point
+            y = (-1) * boundary_view[0] + ((z_view[k] + sz_samplewise_view[k, n]) * 2.0 * (boundary_view[0]))
+            
+            # displaced drift
+            drift_increment = (v_view[k] + sv_samplewise_view[k, n]) * delta_t
+
+            # displaced t
+            t_tmp = t_view[k] + st_samplewise_view[k, n]
+            
+            # increment m appropriately
+            m += 1
+            if m == num_draws:
+                    gaussian_values = draw_gaussian(num_draws)
+                    m = 0
+            
+            t_particle = 0.0 # reset time
+            ix = 0 # reset boundary index
+            
+            if n == 0:
+                if k == 0:
+                    traj_view[0, 0] = y
+
+            # Random walker
+            while y >= (-1) * boundary_view[ix] and y <= boundary_view[ix] and t_particle <= deadline_tmp:
+                y += drift_increment + (sqrt_st * gaussian_values[m])
+                t_particle += delta_t
+                ix += 1
+                m += 1
+                
+                if n == 0:
+                    if k == 0:
+                        traj_view[ix, 0] = y
+                if m == num_draws:
+                    gaussian_values = draw_gaussian(num_draws)
+                    m = 0
+
+            if smooth:
+                if t_particle == 0.0:
+                    smooth_u = random_uniform() * 0.5 * delta_t
+                elif t_particle < deadline_tmp:
+                    smooth_u = (0.5 - random_uniform()) * delta_t
+                else:
+                    smooth_u = 0.0
+            else:
+                smooth_u = 0.0
+
+            rts_view[n, k, 0] = t_particle + t_tmp + smooth_u # Store rt
+            choices_view[n, k, 0] = np.sign(y) # Store choice
+
+            if (rts_view[n, k, 0] >= deadline_view[k]) | (deadline_view[k] <= 0):
+                rts_view[n, k, 0] = -999
+    
+    if return_option == 'full':
+        return {'rts': rts, 'choices': choices, 'metadata': {'v': v,
+                                                            'a': a,
+                                                            'z': z,
+                                                            't': t,
+                                                            'z_dist': z_dist,
+                                                            'v_dist': v_dist,
+                                                            't_dist': t_dist,
+                                                            'deadline': deadline,
+                                                            's': s,
+                                                            **boundary_params,
+                                                            'delta_t': delta_t,
+                                                            'max_t': max_t,
+                                                            'n_samples': n_samples,
+                                                            'n_trials': n_trials,
+                                                            'simulator': 'full_ddm_rv',
+                                                            'boundary_fun_type': boundary_fun.__name__,
+                                                            'possible_choices': [-1, 1],
+                                                            'trajectory': traj,
+                                                            'boundary': boundary}}
+    elif return_option == 'minimal':
+        return {'rts': rts, 'choices': choices,  'metadata': {'simulator': 'full_ddm_rv', 
+                                                             'possible_choices': [-1, 1],
+                                                             'boundary_fun_type': boundary_fun.__name__,
+                                                             'n_samples': n_samples,
+                                                             'n_trials': n_trials,
+                                                             }}
+    else:
+        raise ValueError('return_option must be either "full" or "minimal"')
+
+# -------------------------------------------------------------------------------------------------
+
 
 # Simulate (rt, choice) tuples from: Full DDM with flexible bounds --------------------------------
 # @cythonboundscheck(False)
