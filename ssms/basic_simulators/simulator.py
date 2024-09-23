@@ -510,7 +510,7 @@ def simulator(
         "full_ddm2",
         "full_ddm_legacy",
         "full_ddm_hddm_base",
-        "ddm_sdv",
+        # "ddm_sdv",
         "ornstein",
         "ornstein_uhlenbeck",
         "ornstein_angle",
@@ -552,16 +552,28 @@ def simulator(
         sim_param_dict["s"] = model_config["ddm_truncnormt"]["simulator_fixed_params"][
             "s"
         ]
-        theta["z_dist"] = model_config["ddm_truncnormt"]["simulator_fixed_params"]["sz"]
-        theta["v_dist"] = model_config["ddm_truncnormt"]["simulator_fixed_params"]["sv"]
+        theta["z_dist"] = model_config["ddm_truncnormt"]["simulator_fixed_params"][
+            "z_dist"
+        ]
+        theta["v_dist"] = model_config["ddm_truncnormt"]["simulator_fixed_params"][
+            "v_dist"
+        ]
         # turn st from param values to corresponding random variable
         theta["t_dist"] = model_config["ddm_truncnormt"]["simulator_param_mappings"][
             "t_dist"
         ](theta["mt"], theta["st"])
         theta["t"] = np.array([0], dtype=np.float32)
 
-    # Multi-particle models
+    if model in ["ddm_sdv"]:
+        sim_param_dict["s"] = noise_dict["1_particles"]
+        theta["z_dist"] = model_config["ddm_sdv"]["simulator_fixed_params"]["z_dist"]
+        theta["t_dist"] = model_config["ddm_sdv"]["simulator_fixed_params"]["t_dist"]
+        # turn st from param values to corresponding random variable
+        theta["v_dist"] = model_config["ddm_sdv"]["simulator_param_mappings"]["v_dist"](
+            theta["sv"]
+        )
 
+    # Multi-particle models
     #   LBA-based models
     if model == "lba2":
         sim_param_dict["sd"] = noise_dict["lba_based_models"]

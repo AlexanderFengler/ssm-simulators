@@ -238,6 +238,29 @@ model_config = {
             ),
         },
     },
+    "ddm_sdv": {
+        "name": "ddm_sdv",
+        "params": ["v", "a", "z", "t", "sv"],
+        "param_bounds": [[-3.0, 0.3, 0.1, 1e-3, 1e-3], [3.0, 2.5, 0.9, 2.0, 2.5]],
+        "boundary_name": "constant",
+        "boundary": bf.constant,
+        "n_params": 5,
+        "default_params": [0.0, 1.0, 0.5, 1e-3, 1e-3],
+        "nchoices": 2,
+        "simulator": cssm.full_ddm_rv,
+        "simulator_fixed_params": {
+            "z_dist": functools.partial(sps.norm.rvs, loc=0, scale=0),
+            "t_dist": functools.partial(sps.norm.rvs, loc=0, scale=0),
+            "s": 1,
+        },
+        "simulator_param_mappings": {
+            "v_dist": lambda sv: functools.partial(
+                sps.norm.rvs,
+                loc=0,
+                scale=sv,
+            ),
+        },
+    },
     "gamma_drift": {
         "name": "gamma_drift",
         "params": ["v", "a", "z", "t", "shape", "scale", "c"],
@@ -374,17 +397,6 @@ model_config = {
         "default_params": [0.0, 1.0, 0.5, 0.0, 1e-3, 0.1],
         "nchoices": 2,
         "simulator": cssm.ornstein_uhlenbeck,
-    },
-    "ddm_sdv": {
-        "name": "ddm_sdv",
-        "params": ["v", "a", "z", "t", "sv"],
-        "param_bounds": [[-3.0, 0.3, 0.1, 1e-3, 1e-3], [3.0, 2.5, 0.9, 2.0, 2.5]],
-        "boundary_name": "constant",
-        "boundary": bf.constant,
-        "n_params": 5,
-        "default_params": [0.0, 1.0, 0.5, 1e-3, 1e-3],
-        "nchoices": 2,
-        "simulator": cssm.ddm_sdv,
     },
     "lba2": {
         "name": "lba2",  # LBA_3 without ndt; sum of all v = 1
