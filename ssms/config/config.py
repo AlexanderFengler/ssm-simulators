@@ -177,6 +177,34 @@ model_config = {
         "nchoices": 2,
         "simulator": cssm.full_ddm,
     },
+    "full_ddm_rv": {
+        "name": "full_ddm_rv",
+        "params": ["v", "a", "z", "t", "sv", "st"],
+        "param_bounds": [
+            [-3.0, 0.3, 0.3, 0.25, 1e-3, 1e-3],
+            [3.0, 2.5, 0.7, 2.25, 2.0, 0.25],
+        ],
+        "boundary_name": "constant",
+        "boundary": bf.constant,
+        "n_params": 6,
+        "default_params": [0.0, 1.0, 0.5, 0.25, 1e-3, 1e-3],
+        "nchoices": 2,
+        "simulator": cssm.full_ddm_rv,
+        "simulator_fixed_params": {},
+        "simulator_param_mappings": {
+            "t_dist": lambda st: functools.partial(
+                sps.uniform.rvs, loc=(-1) * st, scale=2 * st
+            ),
+            "v_dist": lambda sv: functools.partial(
+                sps.norm.rvs,
+                loc=0,
+                scale=sv,
+            ),
+            "z_dist": lambda sz: functools.partial(
+                sps.uniform.rvs, loc=(-1) * sz, scale=2 * sz
+            ),
+        },
+    },
     "ddm_st": {
         "name": "ddm_st",
         "params": ["v", "a", "z", "t", "st"],
@@ -196,8 +224,8 @@ model_config = {
             "s": 1,
         },
         "simulator_param_mappings": {
-            "t_dist": lambda x: functools.partial(
-                sps.uniform.rvs, loc=(-1) * x, scale=2 * x
+            "t_dist": lambda st: functools.partial(
+                sps.uniform.rvs, loc=(-1) * st, scale=2 * st
             ),
         },
     },
@@ -309,6 +337,31 @@ model_config = {
         "param_bounds": [
             [0.3, 0.1, 1e-3, 2.0, -5.5, -5.5, 1e-2, 1],
             [3.0, 0.9, 2.0, 5.5, 5.5, 5.5, 0.05, 3],
+        ],
+        "boundary_name": "constant",
+        "boundary": bf.constant,
+        "drift_name": "attend_drift",
+        "drift_fun": df.attend_drift,
+        "n_params": 8,
+        "default_params": [0.7, 0.5, 0.25, 2.0, -2.0, -2.0, 0.01, 1],
+        "nchoices": 2,
+        "simulator": cssm.ddm_flex,
+    },
+    "shrink_spot_extended": {
+        "name": "shrink_spot",
+        "params": [
+            "a",
+            "z",
+            "t",
+            "p.target",
+            "p.outer",
+            "p.inner",
+            "r",
+            "sda",
+        ],
+        "param_bounds": [
+            [0.3, 0.1, 1e-3, 2.0, -5.5, -5.5, 0.01, 1],
+            [3.0, 0.9, 2.0, 5.5, 5.5, 5.5, 1.0, 3],
         ],
         "boundary_name": "constant",
         "boundary": bf.constant,

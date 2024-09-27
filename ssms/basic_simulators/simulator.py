@@ -573,7 +573,19 @@ def simulator(
             theta["sv"]
         )
 
-    if model in ["shrink_spot"]:
+    if model in ["full_ddm_rv"]:
+        sim_param_dict["s"] = noise_dict["1_particles"]
+        theta["z_dist"] = model_config["full_ddm_rv"]["simulator_param_mappings"][
+            "z_dist"
+        ](theta["sz"])
+        theta["t_dist"] = model_config["full_ddm_rv"]["simulator_param_mappings"][
+            "t_dist"
+        ](theta["st"])
+        theta["v_dist"] = model_config["full_ddm_rv"]["simulator_param_mappings"][
+            "v_dist"
+        ](theta["sv"])
+
+    if model in ["shrink_spot", "shrink_spot_extended"]:
         sim_param_dict["s"] = noise_dict["1_particles"]
         theta["v"] = np.tile(np.array([0], dtype=np.float32), n_trials)
 
