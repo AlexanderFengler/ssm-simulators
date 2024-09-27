@@ -5,6 +5,7 @@ from .config import (
     data_generator_config,
     boundary_config,
     drift_config,
+    boundary_config_to_function_params,
 )
 
 __all__ = [
@@ -13,4 +14,5 @@ __all__ = [
     "data_generator_config",
     "boundary_config",
     "drift_config",
+    "boundary_config_to_function_params",
 ]

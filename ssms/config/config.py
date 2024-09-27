@@ -5,8 +5,6 @@ import scipy.stats as sps
 import cssm
 import numpy as np
 
-# I need a generic docstring here
-
 """
     Configuration dictionary for simulators
 
@@ -23,6 +21,25 @@ import numpy as np
         Supposed to serve as a starting point and example, which the user then
         modifies to their needs.
 """
+
+
+def boundary_config_to_function_params(boundary_config: dict) -> dict:
+    """
+    Convert boundary configuration to function parameters
+
+    Parameters:
+    -----------
+    boundary_config: dict
+        Dictionary containing the boundary configuration
+
+    Returns:
+    --------
+    dict
+        Dictionary with adjusted key names so that they match function parameters names
+        directly.
+    """
+    return {"boundary_" + k: boundary_config[k] for k in boundary_config.keys()}
+
 
 boundary_config = {
     "constant": {
@@ -283,9 +300,9 @@ model_config = {
             "a",
             "z",
             "t",
-            "p_target",
-            "p_outer",
-            "p_inner",
+            "p.target",
+            "p.outer",
+            "p.inner",
             "r",
             "sda",
         ],
@@ -300,7 +317,7 @@ model_config = {
         "n_params": 8,
         "default_params": [0.7, 0.5, 0.25, 2.0, -2.0, -2.0, 0.01, 1],
         "nchoices": 2,
-        "simulator": cssm.ddm_flex_no_v,
+        "simulator": cssm.ddm_flex,
     },
     "gamma_drift_angle": {
         "name": "gamma_drift_angle",

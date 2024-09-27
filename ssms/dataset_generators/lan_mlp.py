@@ -117,8 +117,8 @@ class data_generator:
             # configs always have dictionary format for parameter
             # bounds
             if isinstance(self.model_config["param_bounds"], list):
-                bounds_tmp = self.model_config["ddm"]["param_bounds"]
-                names_tmp = self.model_config["ddm"]["params"]
+                bounds_tmp = self.model_config["param_bounds"]
+                names_tmp = self.model_config["params"]
                 self.model_config["constrained_param_space"] = {
                     names_tmp[i]: (bounds_tmp[0][i], bounds_tmp[1][i])
                     for i in range(len(names_tmp))
@@ -277,7 +277,8 @@ class data_generator:
             out = np.zeros((n_kde + n_unif_up + n_unif_down, 3 + len(theta.items())))
 
         out[:, : len(theta.items())] = np.tile(
-            theta, (n_kde + n_unif_up + n_unif_down, 1)
+            np.stack([theta[key_] for key_ in self.model_config["params"]], axis=1),
+            (n_kde + n_unif_up + n_unif_down, 1),
         )
 
         tmp_kde = kde_class.LogKDE(simulations)

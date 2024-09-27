@@ -515,7 +515,7 @@ def simulator(
         "ornstein_uhlenbeck",
         "ornstein_angle",
         "gamma_drift",
-        "shrink_spot",
+        # "shrink_spot",
         "gamma_drift_angle",
     ]:
         sim_param_dict["s"] = noise_dict["1_particles"]
@@ -572,6 +572,10 @@ def simulator(
         theta["v_dist"] = model_config["ddm_sdv"]["simulator_param_mappings"]["v_dist"](
             theta["sv"]
         )
+
+    if model in ["shrink_spot"]:
+        sim_param_dict["s"] = noise_dict["1_particles"]
+        theta["v"] = np.tile(np.array([0], dtype=np.float32), n_trials)
 
     # Multi-particle models
     #   LBA-based models
