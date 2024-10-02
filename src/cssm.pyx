@@ -1377,9 +1377,9 @@ def full_ddm_rv(np.ndarray[float, ndim = 1] v, # = 0,
     cdef float[:] gaussian_values = draw_gaussian(num_draws)
 
     # Loop over trials
-    sv_samplewise[:, :] = v_dist(size = (n_trials, n_samples))
-    sz_samplewise[:, :] = z_dist(size = (n_trials, n_samples))
-    st_samplewise[:, :] = t_dist(size = (n_trials, n_samples))
+    sv_samplewise[:, :] = v_dist(size = (n_samples, n_trials)).T
+    sz_samplewise[:, :] = z_dist(size = (n_samples, n_trials)).T
+    st_samplewise[:, :] = t_dist(size = (n_samples, n_trials)).T
 
     for k in range(n_trials):
         boundary_params_tmp = {key: boundary_params[key][k] for key in boundary_params.keys()}
@@ -1391,9 +1391,7 @@ def full_ddm_rv(np.ndarray[float, ndim = 1] v, # = 0,
         else:
             # print(a)
             boundary[:] = np.add(a_view[k], boundary_fun(t = t_s, **boundary_params_tmp)).astype(DTYPE)
-        
-        deadline_tmp = min(max_t, deadline_view[k] - t_view[k])
-       
+
         # Loop over samples
         for n in range(n_samples):
             # displaced_starting_point
@@ -1404,6 +1402,7 @@ def full_ddm_rv(np.ndarray[float, ndim = 1] v, # = 0,
 
             # displaced t
             t_tmp = t_view[k] + st_samplewise_view[k, n]
+            deadline_tmp = min(max_t, deadline_view[k] - t_tmp)
             
             # increment m appropriately
             m += 1

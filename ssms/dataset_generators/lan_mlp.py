@@ -6,13 +6,15 @@ import pickle
 import uuid
 import os
 from scipy.stats import mode
-from multiprocessing import Pool
+from pathos.multiprocessing import ProcessingPool as Pool
 import psutil
 
 from functools import partial
 
 from ssms.support_utils.utils import sample_parameters_from_constraints
 from ssms.basic_simulators.simulator import _theta_dict_to_array
+from ssms.config import KDE_NO_DISPLACE_T
+
 
 """
     This module defines a data generator class for use with LANs. 
@@ -116,6 +118,8 @@ class data_generator:
             # AF-COMMENT: This will eventually be replaced so that
             # configs always have dictionary format for parameter
             # bounds
+            # print(self.model_config)
+            # print(type(self.model_config))
             if isinstance(self.model_config["param_bounds"], list):
                 bounds_tmp = self.model_config["param_bounds"]
                 names_tmp = self.model_config["params"]
@@ -123,14 +127,14 @@ class data_generator:
                     names_tmp[i]: (bounds_tmp[0][i], bounds_tmp[1][i])
                     for i in range(len(names_tmp))
                 }
-            elif not isinstance(self.model_config["param_bounds"], dict):
+            elif isinstance(self.model_config["param_bounds"], dict):
                 self.model_config["constrained_param_space"] = self.model_config[
                     "param_bounds"
                 ]
             else:
                 raise ValueError("param_bounds must be a list or a dictionary")
 
-            print(self.model_config)
+            # print(self.model_config)
 
             self._build_simulator()
             self._get_ncpus()
@@ -281,7 +285,15 @@ class data_generator:
             (n_kde + n_unif_up + n_unif_down, 1),
         )
 
-        tmp_kde = kde_class.LogKDE(simulations)
+        tmp_kde = kde_class.LogKDE(
+            simulations,
+            displace_t=(
+                True
+                if self.model_config["name"].split("_deadline")[0]
+                not in KDE_NO_DISPLACE_T
+                else False
+            ),
+        )
 
         # Get kde part
         samples_kde = tmp_kde.kde_sample(n_samples=n_kde)

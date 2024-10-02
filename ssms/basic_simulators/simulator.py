@@ -543,6 +543,7 @@ def simulator(
         theta["v_dist"] = model_config["ddm_rayleight"]["simulator_fixed_params"][
             "v_dist"
         ]
+        theta["t"] = model_config["ddm_rayleight"]["simulator_fixed_params"]["t"]
         # turn st from param values to corresponding random variable
         theta["t_dist"] = model_config["ddm_rayleight"]["simulator_param_mappings"][
             "t_dist"
