@@ -1,40 +1,46 @@
 # External
 import numpy as np
 from scipy.stats import norm
+from typing import Callable
 
 """
 This module defines a collection of drift functions for the simulators in the package.
 """
 
 
-def constant(t=np.arange(0, 20, 0.1)):
+def constant(t: np.ndarray = np.arange(0, 20, 0.1)) -> np.ndarray:
     """constant drift function
 
     Arguments
     ---------
-        t (_type_, optional): _description_. Defaults to np.arange(0, 20, 0.1).
+        t: np.ndarray, optional
+            Timepoints at which to evaluate the drift. Defaults to np.arange(0, 20, 0.1).
 
     Returns
     -------
-        np.array: Array of drift values, same length as t
-
+        np.ndarray: Array of drift values, same length as t
     """
     return np.zeros(t.shape[0])
 
 
-def gamma_drift(t=np.arange(0, 20, 0.1), shape=2, scale=0.01, c=1.5):
+def gamma_drift(
+    t: np.ndarray = np.arange(0, 20, 0.1),
+    shape: float = 2,
+    scale: float = 0.01,
+    c: float = 1.5,
+) -> np.ndarray:
     """Drift function that follows a scaled gamma distribution
 
     Arguments
     ---------
-        t: np.ndarray <default=np.arange(0, 20, 0.1)>
+        t: np.ndarray
             Timepoints at which to evaluate the drift.
             Usually np.arange() of some sort.
-        shape: float <default=2>
+        shape: float
             Shape parameter of the gamma distribution
-        scale: float <default=0.01>
+        scale: float
             Scale parameter of the gamma distribution
-        c: float <default=1.5>
+        c: float
             Scalar parameter that scales the peak of
             the gamma distribution.
             (Note this function follows a gamma distribution
@@ -44,7 +50,6 @@ def gamma_drift(t=np.arange(0, 20, 0.1), shape=2, scale=0.01, c=1.5):
     ------
         np.ndarray
             The gamma drift evaluated at the supplied timepoints t.
-
     """
 
     num_ = np.power(t, shape - 1) * np.exp(np.divide(-t, scale))
@@ -56,7 +61,12 @@ def gamma_drift(t=np.arange(0, 20, 0.1), shape=2, scale=0.01, c=1.5):
     return c * np.divide(num_, div_)
 
 
-def ds_support_analytic(t=np.arange(0, 10, 0.001), init_p=0, fix_point=1, slope=2):
+def ds_support_analytic(
+    t: np.ndarray = np.arange(0, 10, 0.001),
+    init_p: float = 0,
+    fix_point: float = 1,
+    slope: float = 2,
+) -> np.ndarray:
     """Solution to differential equation of the form:
        x' = slope*(fix_point - x),
        with initial condition init_p.
@@ -65,34 +75,33 @@ def ds_support_analytic(t=np.arange(0, 10, 0.001), init_p=0, fix_point=1, slope=
 
     Arguments
     ---------
-        t: np.ndarray <default=np.arange(0, 20, 0.1)>
+        t: np.ndarray
             Timepoints at which to evaluate the drift. Usually np.arange() of some sort.
-        init_p: float <default=0>
+        init_p: float
             Initial condition of dynamical system
-        fix_point: float <default=1>
+        fix_point: float
             Fixed point of dynamical system
-        slope: float <default=0.01>
+        slope: float
             Coefficient in exponent of the solution.
     Return
     ------
     np.ndarray
          The gamma drift evaluated at the supplied timepoints t.
-
     """
 
     return (init_p - fix_point) * np.exp(-(slope * t)) + fix_point
 
 
 def ds_conflict_drift(
-    t=np.arange(0, 10, 0.001),
-    tinit=0,
-    dinit=0,
-    tslope=1,
-    dslope=1,
-    tfixedp=1,
-    tcoh=1.5,
-    dcoh=1.5,
-):
+    t: np.ndarray = np.arange(0, 10, 0.001),
+    tinit: float = 0,
+    dinit: float = 0,
+    tslope: float = 1,
+    dslope: float = 1,
+    tfixedp: float = 1,
+    tcoh: float = 1.5,
+    dcoh: float = 1.5,
+) -> np.ndarray:
     """This drift is inspired by a conflict task which
        involves a target and a distractor stimuli both presented
        simultaneously.
@@ -103,22 +112,22 @@ def ds_conflict_drift(
 
     Arguments
     ---------
-        t: np.ndarray <default=np.arange(0, 20, 0.1)>
+        t: np.ndarray
             Timepoints at which to evaluate the drift.
             Usually np.arange() of some sort.
-        init_p_t: float <default=0>
+        tinit: float
             Initial condition of target drift timecourse
-        init_p_d: float <default=0>
+        dinit: float
             Initial condition of distractor drift timecourse
-        slope_t: float <default=1>
+        tslope: float
             Slope parameter for target drift timecourse
-        slope_d: float <default=1>
+        dslope: float
             Slope parameter for distractor drift timecourse
-        fixed_p_t: float <default=1>
+        tfixedp: float
             Fixed point for target drift timecourse
-        coherence_t: float <default=1.0>
+        tcoh: float
             Coefficient for the target drift timecourse
-        coherence_d: float <default=-1.0>
+        dcoh: float
             Coefficient for the distractor drift timecourse
     Return
     ------
@@ -136,30 +145,30 @@ def ds_conflict_drift(
 
 
 def attend_drift(
-    t=np.arange(0, 20, 0.1),
-    p_target=-0.3,
-    p_outer=-0.3,
-    p_inner=0.3,
-    r=0.5,
-    sda=2,
-):
+    t: np.ndarray = np.arange(0, 20, 0.1),
+    p_target: float = -0.3,
+    p_outer: float = -0.3,
+    p_inner: float = 0.3,
+    r: float = 0.5,
+    sda: float = 2,
+) -> np.ndarray:
     """Drift function for shrinking spotlight model, which involves a time varying
     function dependent on a linearly decreasing standard deviation of attention.
 
     Arguments
     --------
-        t: np.ndarray <default=np.arange(0, 20, 0.1)>
+        t: np.ndarray
             Timepoints at which to evaluate the drift.
             Usually np.arange() of some sort.
-        p_outer: float <default=-0.3>
+        p_outer: float
             perceptual input for outer flankers
-        p_inner: float <default=-0.3>
+        p_inner: float
             perceptual input for inner flankers
-        p_target: float <default=0.3>
+        p_target: float
             perceptual input for target flanker
-        r: float <default=0.5>
+        r: float
             rate parameter for sda decrease
-        sda: float <default=2>
+        sda: float
             width of attentional spotlight
     Return
     ------
@@ -178,3 +187,13 @@ def attend_drift(
     v_t = 2 * p_outer * a_outer + 2 * p_inner * a_inner + p_target * a_target
 
     return v_t
+
+
+# Type alias for drift functions
+DriftFunction = Callable[..., np.ndarray]
+
+attend_drift: DriftFunction = attend_drift
+constant: DriftFunction = constant
+gamma_drift: DriftFunction = gamma_drift
+ds_support_analytic: DriftFunction = ds_support_analytic
+ds_conflict_drift: DriftFunction = ds_conflict_drift
