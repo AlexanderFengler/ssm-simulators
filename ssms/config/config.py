@@ -1,5 +1,6 @@
 from ssms.basic_simulators import boundary_functions as bf
 from ssms.basic_simulators import drift_functions as df
+from ssms.basic_simulators import theta_processors as tp
 import functools
 import scipy.stats as sps
 import cssm
@@ -100,7 +101,9 @@ model_config = {
         "n_params": 4,
         "default_params": [0.0, 1.0, 0.5, 1e-3],
         "nchoices": 2,
+        "n_particles": 1,
         "simulator": cssm.ddm_flexbound,
+        "theta_processor": tp.DefaultThetaProcessor(),
     },
     "ddm_legacy": {
         "name": "ddm_legacy",
@@ -111,7 +114,9 @@ model_config = {
         "n_params": 4,
         "default_params": [0.0, 1.0, 0.5, 1e-3],
         "nchoices": 2,
+        "n_particles": 1,
         "simulator": cssm.ddm,
+        "theta_processor": tp.DefaultThetaProcessor(),
     },
     "angle": {
         "name": "angle",
@@ -122,7 +127,9 @@ model_config = {
         "n_params": 5,
         "default_params": [0.0, 1.0, 0.5, 1e-3, 0.0],
         "nchoices": 2,
+        "n_particles": 1,
         "simulator": cssm.ddm_flexbound,
+        "theta_processor": tp.DefaultThetaProcessor(),
     },
     "weibull": {
         "name": "weibull",
@@ -136,7 +143,9 @@ model_config = {
         "n_params": 6,
         "default_params": [0.0, 1.0, 0.5, 1e-3, 3.0, 3.0],
         "nchoices": 2,
+        "n_particles": 1,
         "simulator": cssm.ddm_flexbound,
+        "theta_processor": tp.DefaultThetaProcessor(),
     },
     "levy": {
         "name": "levy",
@@ -147,7 +156,9 @@ model_config = {
         "n_params": 5,
         "default_params": [0.0, 1.0, 0.5, 1.5, 0.1],
         "nchoices": 2,
+        "n_particles": 1,
         "simulator": cssm.levy_flexbound,
+        "theta_processor": tp.DefaultThetaProcessor(),
     },
     "levy_angle": {
         "name": "levy_angle",
@@ -161,7 +172,9 @@ model_config = {
         "n_params": 6,
         "default_params": [0.0, 1.0, 0.5, 1.5, 0.1, 0.01],
         "nchoices": 2,
+        "n_particles": 1,
         "simulator": cssm.levy_flexbound,
+        "theta_processor": tp.DefaultThetaProcessor(),
     },
     "full_ddm": {
         "name": "full_ddm",
@@ -175,7 +188,9 @@ model_config = {
         "n_params": 7,
         "default_params": [0.0, 1.0, 0.5, 0.25, 1e-3, 1e-3, 1e-3],
         "nchoices": 2,
+        "n_particles": 1,
         "simulator": cssm.full_ddm,
+        "theta_processor": tp.DefaultThetaProcessor(),
     },
     "full_ddm_rv": {
         "name": "full_ddm_rv",
@@ -194,6 +209,7 @@ model_config = {
         "n_params": 6,
         "default_params": [0.0, 1.0, 0.5, 0.25, 1e-3, 1e-3, 1e-3],
         "nchoices": 2,
+        "n_particles": 1,
         "simulator": cssm.full_ddm_rv,
         "simulator_fixed_params": {},
         "simulator_param_mappings": {
@@ -222,11 +238,11 @@ model_config = {
         "n_params": 5,
         "default_params": [0.0, 1.0, 0.5, 0.25, 1e-3],
         "nchoices": 2,
+        "n_particles": 1,
         "simulator": cssm.full_ddm_rv,
         "simulator_fixed_params": {
             "z_dist": functools.partial(sps.norm.rvs, loc=0, scale=0),
             "v_dist": functools.partial(sps.norm.rvs, loc=0, scale=0),
-            "s": 1,
         },
         "simulator_param_mappings": {
             "t_dist": lambda st: functools.partial(
@@ -246,11 +262,12 @@ model_config = {
         "n_params": 5,
         "default_params": [0.0, 1.0, 0.5, 0.25, 1e-3],
         "nchoices": 2,
+        "n_particles": 1,
         "simulator": cssm.full_ddm_rv,
         "simulator_fixed_params": {
             "z_dist": functools.partial(sps.norm.rvs, loc=0, scale=0),
             "v_dist": functools.partial(sps.norm.rvs, loc=0, scale=0),
-            "s": 1,
+            "t": 0.0,
         },
         "simulator_param_mappings": {
             "t_dist": lambda mt, st: functools.partial(
@@ -274,12 +291,12 @@ model_config = {
         "n_params": 5,
         "default_params": [0.0, 1.0, 0.5, 0.25, 0.2],
         "nchoices": 2,
+        "n_particles": 1,
         "simulator": cssm.full_ddm_rv,
         "simulator_fixed_params": {
             "z_dist": functools.partial(sps.norm.rvs, loc=0, scale=0),
             "v_dist": functools.partial(sps.norm.rvs, loc=0, scale=0),
-            "s": 1,
-            "t": np.array([0.0], np.float32),
+            "t": 0.0,
         },
         "simulator_param_mappings": {
             "t_dist": lambda st: functools.partial(
@@ -298,11 +315,11 @@ model_config = {
         "n_params": 5,
         "default_params": [0.0, 1.0, 0.5, 1e-3, 1e-3],
         "nchoices": 2,
+        "n_particles": 1,
         "simulator": cssm.full_ddm_rv,
         "simulator_fixed_params": {
             "z_dist": functools.partial(sps.norm.rvs, loc=0, scale=0),
             "t_dist": functools.partial(sps.norm.rvs, loc=0, scale=0),
-            "s": 1,
         },
         "simulator_param_mappings": {
             "v_dist": lambda sv: functools.partial(
@@ -326,7 +343,9 @@ model_config = {
         "n_params": 7,
         "default_params": [0.0, 1.0, 0.5, 0.25, 5.0, 0.5, 1.0],
         "nchoices": 2,
+        "n_particles": 1,
         "simulator": cssm.ddm_flex,
+        "theta_processor": tp.DefaultThetaProcessor(),
     },
     "shrink_spot": {
         "name": "shrink_spot",
@@ -351,6 +370,7 @@ model_config = {
         "n_params": 8,
         "default_params": [0.7, 0.5, 0.25, 2.0, -2.0, -2.0, 0.01, 1],
         "nchoices": 2,
+        "n_particles": 1,
         "simulator": cssm.ddm_flex,
     },
     "shrink_spot_extended": {
@@ -376,6 +396,7 @@ model_config = {
         "n_params": 8,
         "default_params": [0.7, 0.5, 0.25, 2.0, -2.0, -2.0, 0.01, 1],
         "nchoices": 2,
+        "n_particles": 1,
         "simulator": cssm.ddm_flex,
     },
     "gamma_drift_angle": {
@@ -392,7 +413,9 @@ model_config = {
         "n_params": 7,
         "default_params": [0.0, 1.0, 0.5, 0.25, 0.0, 5.0, 0.5, 1.0],
         "nchoices": 2,
+        "n_particles": 1,
         "simulator": cssm.ddm_flex,
+        "theta_processor": tp.DefaultThetaProcessor(),
     },
     "ds_conflict_drift": {
         "name": "ds_conflict_drift",
@@ -419,6 +442,7 @@ model_config = {
         "n_params": 10,
         "default_params": [2.0, 0.5, 1.0, 2.0, 2.0, 2.0, 2.0, 3.0, 0.5, -0.5],
         "nchoices": 2,
+        "n_particles": 1,
         "simulator": cssm.ddm_flex,
     },
     "ds_conflict_drift_angle": {
@@ -447,6 +471,7 @@ model_config = {
         "n_params": 10,
         "default_params": [2.0, 0.5, 1.0, 2.0, 2.0, 2.0, 2.0, 3.0, 0.5, -0.5, 0.0],
         "nchoices": 2,
+        "n_particles": 1,
         "simulator": cssm.ddm_flex,
     },
     "ornstein": {
@@ -458,7 +483,9 @@ model_config = {
         "n_params": 5,
         "default_params": [0.0, 1.0, 0.5, 0.0, 1e-3],
         "nchoices": 2,
+        "n_particles": 1,
         "simulator": cssm.ornstein_uhlenbeck,
+        "theta_processor": tp.DefaultThetaProcessor(),
     },
     "ornstein_angle": {
         "name": "ornstein_angle",
@@ -472,7 +499,9 @@ model_config = {
         "n_params": 6,
         "default_params": [0.0, 1.0, 0.5, 0.0, 1e-3, 0.1],
         "nchoices": 2,
+        "n_particles": 1,
         "simulator": cssm.ornstein_uhlenbeck,
+        "theta_processor": tp.DefaultThetaProcessor(),
     },
     "lba2": {
         "name": "lba2",  # LBA_3 without ndt; sum of all v = 1
@@ -483,6 +512,7 @@ model_config = {
         "n_params": 4,
         "default_params": [0.3, 0.5, 0.5, 0.5],
         "nchoices": 2,
+        "n_particles": 2,
         "simulator": cssm.lba_vanilla,
     },
     "lba3": {
@@ -494,6 +524,7 @@ model_config = {
         "n_params": 5,
         "default_params": [0.3, 0.5, 0.25, 0.5, 0.25],
         "nchoices": 3,
+        "n_particles": 3,
         "simulator": cssm.lba_vanilla,
     },
     "lba_3_v1": {
@@ -505,6 +536,7 @@ model_config = {
         "n_params": 5,
         "default_params": [0.5, 0.3, 0.2, 0.5, 0.2],
         "nchoices": 3,
+        "n_particles": 3,
         "simulator": cssm.lba_vanilla,
     },
     "lba_angle_3_v1": {
@@ -516,6 +548,7 @@ model_config = {
         "n_params": 6,
         "default_params": [0.5, 0.3, 0.2, 0.5, 0.2, 0.0],
         "nchoices": 3,
+        "n_particles": 3,
         "simulator": cssm.lba_angle,
     },
     "rlwm_lba_race_v1": {
@@ -539,6 +572,7 @@ model_config = {
         "n_params": 8,
         "default_params": [0.5, 0.3, 0.2, 0.5, 0.3, 0.2, 0.5, 0.2],
         "nchoices": 3,
+        "n_particles": 3,
         "simulator": cssm.rlwm_lba_race,
     },
     "race_2": {
@@ -553,6 +587,7 @@ model_config = {
         "n_params": 6,
         "default_params": [0.0, 0.0, 2.0, 0.5, 0.5, 1e-3],
         "nchoices": 2,
+        "n_particles": 2,
         "simulator": cssm.race_model,
     },
     "race_no_bias_2": {
@@ -567,6 +602,7 @@ model_config = {
         "n_params": 5,
         "default_params": [0.0, 0.0, 2.0, 0.5, 1e-3],
         "nchoices": 2,
+        "n_particles": 2,
         "simulator": cssm.race_model,
     },
     "race_no_z_2": {
@@ -581,6 +617,7 @@ model_config = {
         "n_params": 4,
         "default_params": [0.0, 0.0, 2.0, 1e-3],
         "nchoices": 2,
+        "n_particles": 2,
         "simulator": cssm.race_model,
     },
     "race_no_bias_angle_2": {
@@ -595,6 +632,7 @@ model_config = {
         "n_params": 6,
         "default_params": [0.0, 0.0, 2.0, 0.5, 1e-3, 0.0],
         "nchoices": 2,
+        "n_particles": 2,
         "simulator": cssm.race_model,
     },
     "race_no_z_angle_2": {
@@ -609,6 +647,7 @@ model_config = {
         "n_params": 5,
         "default_params": [0.0, 0.0, 2.0, 1e-3, 0.0],
         "nchoices": 2,
+        "n_particles": 2,
         "simulator": cssm.race_model,
     },
     "race_3": {
@@ -623,6 +662,7 @@ model_config = {
         "n_params": 8,
         "default_params": [0.0, 0.0, 0.0, 2.0, 0.5, 0.5, 0.5, 1e-3],
         "nchoices": 3,
+        "n_particles": 3,
         "simulator": cssm.race_model,
     },
     "race_no_bias_3": {
@@ -635,6 +675,7 @@ model_config = {
         "boundary_name": "constant",
         "boundary": bf.constant,
         "n_params": 6,
+        "n_particles": 3,
         "default_params": [0.0, 0.0, 0.0, 2.0, 0.5, 1e-3],
         "nchoices": 3,
         "simulator": cssm.race_model,
@@ -651,6 +692,7 @@ model_config = {
         "n_params": 5,
         "default_params": [0.0, 0.0, 0.0, 2.0, 1e-3],
         "nchoices": 3,
+        "n_particles": 3,
         "simulator": cssm.race_model,
     },
     "race_no_bias_angle_3": {
@@ -665,6 +707,7 @@ model_config = {
         "n_params": 7,
         "default_params": [0.0, 0.0, 0.0, 2.0, 0.5, 1e-3, 0.0],
         "nchoices": 3,
+        "n_particles": 3,
         "simulator": cssm.race_model,
     },
     "race_no_z_angle_3": {
@@ -679,6 +722,7 @@ model_config = {
         "n_params": 6,
         "default_params": [0.0, 0.0, 0.0, 2.0, 1e-3, 0.0],
         "nchoices": 3,
+        "n_particles": 3,
         "simulator": cssm.race_model,
     },
     "race_4": {
@@ -693,6 +737,7 @@ model_config = {
         "n_params": 10,
         "default_params": [0.0, 0.0, 0.0, 0.0, 2.0, 0.5, 0.5, 0.5, 0.5, 1e-3],
         "nchoices": 4,
+        "n_particles": 4,
         "simulator": cssm.race_model,
     },
     "race_no_bias_4": {
@@ -707,6 +752,7 @@ model_config = {
         "n_params": 7,
         "default_params": [0.0, 0.0, 0.0, 0.0, 2.0, 0.5, 1e-3],
         "nchoices": 4,
+        "n_particles": 4,
         "simulator": cssm.race_model,
     },
     "race_no_z_4": {
@@ -721,6 +767,7 @@ model_config = {
         "n_params": 6,
         "default_params": [0.0, 0.0, 0.0, 0.0, 2.0, 1e-3],
         "nchoices": 4,
+        "n_particles": 4,
         "simulator": cssm.race_model,
     },
     "race_no_bias_angle_4": {
@@ -735,6 +782,7 @@ model_config = {
         "n_params": 8,
         "default_params": [0.0, 0.0, 0.0, 0.0, 2.0, 0.5, 1e-3, 0.0],
         "nchoices": 4,
+        "n_particles": 4,
         "simulator": cssm.race_model,
     },
     "race_no_z_angle_4": {
@@ -749,6 +797,7 @@ model_config = {
         "n_params": 7,
         "default_params": [0.0, 0.0, 0.0, 0.0, 2.0, 1e-3, 0.0],
         "nchoices": 4,
+        "n_particles": 4,
         "simulator": cssm.race_model,
     },
     "lca_3": {
@@ -763,6 +812,7 @@ model_config = {
         "n_params": 10,
         "default_params": [0.0, 0.0, 0.0, 2.0, 0.5, 0.5, 0.5, 0.0, 0.0, 1e-3],
         "nchoices": 3,
+        "n_particles": 3,
         "simulator": cssm.lca,
     },
     "lca_no_bias_3": {
@@ -777,6 +827,7 @@ model_config = {
         "n_params": 8,
         "default_params": [0.0, 0.0, 0.0, 2.0, 0.5, 0.0, 0.0, 1e-3],
         "nchoices": 3,
+        "n_particles": 3,
         "simulator": cssm.lca,
     },
     "lca_no_z_3": {
@@ -791,6 +842,7 @@ model_config = {
         "n_params": 7,
         "default_params": [0.0, 0.0, 0.0, 2.0, 0.0, 0.0, 1e-3],
         "nchoices": 3,
+        "n_particles": 3,
         "simulator": cssm.lca,
     },
     "lca_no_bias_angle_3": {
@@ -805,6 +857,7 @@ model_config = {
         "n_params": 9,
         "default_params": [0.0, 0.0, 0.0, 2.0, 0.5, 0.0, 0.0, 1e-3, 0.0],
         "nchoices": 3,
+        "n_particles": 3,
         "simulator": cssm.lca,
     },
     "lca_no_z_angle_3": {
@@ -819,6 +872,7 @@ model_config = {
         "n_params": 8,
         "default_params": [0.0, 0.0, 0.0, 2.0, 0.0, 0.0, 1e-3, 0.0],
         "nchoices": 3,
+        "n_particles": 3,
         "simulator": cssm.lca,
     },
     "lca_4": {
@@ -846,6 +900,7 @@ model_config = {
         "n_params": 12,
         "default_params": [0.0, 0.0, 0.0, 0.0, 2.0, 0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 1e-3],
         "nchoices": 4,
+        "n_particles": 4,
         "simulator": cssm.lca,
     },
     "lca_no_bias_4": {
@@ -860,6 +915,7 @@ model_config = {
         "n_params": 9,
         "default_params": [0.0, 0.0, 0.0, 0.0, 2.0, 0.5, 0.0, 0.0, 1e-3],
         "nchoices": 4,
+        "n_particles": 4,
         "simulator": cssm.lca,
     },
     "lca_no_z_4": {
@@ -874,6 +930,7 @@ model_config = {
         "n_params": 8,
         "default_params": [0.0, 0.0, 0.0, 0.0, 2.0, 0.0, 0.0, 1e-3],
         "nchoices": 4,
+        "n_particles": 4,
         "simulator": cssm.lca,
     },
     "lca_no_bias_angle_4": {
@@ -888,6 +945,7 @@ model_config = {
         "n_params": 10,
         "default_params": [0.0, 0.0, 0.0, 0.0, 2.0, 0.5, 0.0, 0.0, 1e-3, 0.0],
         "nchoices": 4,
+        "n_particles": 4,
         "simulator": cssm.lca,
     },
     "lca_no_z_angle_4": {
@@ -902,6 +960,7 @@ model_config = {
         "n_params": 9,
         "default_params": [0.0, 0.0, 0.0, 0.0, 2.0, 0.0, 0.0, 1e-3, 0.0],
         "nchoices": 4,
+        "n_particles": 4,
         "simulator": cssm.lca,
     },
     "ddm_par2": {
@@ -916,6 +975,7 @@ model_config = {
         "n_params": 8,
         "default_params": [0.0, 0.0, 0.0, 1.0, 0.5, 0.5, 0.5, 1.0],
         "nchoices": 4,
+        "n_particles": 1,
         "simulator": cssm.ddm_flexbound_par2,
     },
     "ddm_par2_no_bias": {
@@ -927,6 +987,7 @@ model_config = {
         "n_params": 5,
         "default_params": [0.0, 0.0, 0.0, 1.0, 1.0],
         "nchoices": 4,
+        "n_particles": 1,
         "simulator": cssm.ddm_flexbound_par2,
     },
     "ddm_par2_conflict_gamma_no_bias": {
@@ -951,6 +1012,7 @@ model_config = {
         "n_params": 9,
         "default_params": [0.0, 0.0, 0.0, 1.0, 1.0, 0.5, 1.0, 2, 2],
         "nchoices": 4,
+        "n_particles": 1,
         "simulator": cssm.ddm_flexbound_par2,
     },
     "ddm_par2_angle_no_bias": {
@@ -966,6 +1028,7 @@ model_config = {
         "n_params": 6,
         "default_params": [0.0, 0.0, 0.0, 1.0, 1.0, 0.0],
         "nchoices": 4,
+        "n_particles": 1,
         "simulator": cssm.ddm_flexbound_par2,
     },
     "ddm_par2_weibull_no_bias": {
@@ -981,6 +1044,7 @@ model_config = {
         "n_params": 7,
         "default_params": [0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 3.0],
         "nchoices": 4,
+        "n_particles": 1,
         "simulator": cssm.ddm_flexbound_par2,
     },
     "ddm_seq2": {
@@ -995,6 +1059,7 @@ model_config = {
         "n_params": 8,
         "default_params": [0.0, 0.0, 0.0, 1.0, 0.5, 0.5, 0.5, 1.0],
         "nchoices": 4,
+        "n_particles": 1,
         "simulator": cssm.ddm_flexbound_seq2,
     },
     "ddm_seq2_no_bias": {
@@ -1006,6 +1071,7 @@ model_config = {
         "n_params": 5,
         "default_params": [0.0, 0.0, 0.0, 1.0, 1.0],
         "nchoices": 4,
+        "n_particles": 1,
         "simulator": cssm.ddm_flexbound_seq2,
     },
     "ddm_seq2_conflict_gamma_no_bias": {
@@ -1030,6 +1096,7 @@ model_config = {
         "n_params": 9,
         "default_params": [0.0, 0.0, 0.0, 1.0, 1.0, 0.5, 1.0, 2, 2],
         "nchoices": 4,
+        "n_particles": 1,
         "simulator": cssm.ddm_flexbound_seq2,
     },
     "ddm_seq2_angle_no_bias": {
@@ -1045,6 +1112,7 @@ model_config = {
         "n_params": 6,
         "default_params": [0.0, 0.0, 0.0, 1.0, 1.0, 0.0],
         "nchoices": 4,
+        "n_particles": 1,
         "simulator": cssm.ddm_flexbound_seq2,
     },
     "ddm_seq2_weibull_no_bias": {
@@ -1060,6 +1128,7 @@ model_config = {
         "n_params": 7,
         "default_params": [0.0, 0.0, 0.0, 1.0, 1.0, 2.5, 3.5],
         "nchoices": 4,
+        "n_particles": 1,
         "simulator": cssm.ddm_flexbound_seq2,
     },
     "ddm_mic2_adj": {
@@ -1074,6 +1143,7 @@ model_config = {
         "n_params": 9,
         "default_params": [0.0, 0.0, 0.0, 1.0, 0.5, 0.5, 0.5, 0.5, 0.5],
         "nchoices": 4,
+        "n_particles": 1,
         "simulator": cssm.ddm_flexbound_mic2_ornstein,
     },
     "ddm_mic2_adj_no_bias": {
@@ -1088,6 +1158,7 @@ model_config = {
         "n_params": 6,
         "default_params": [0.0, 0.0, 0.0, 1.0, 0.5, 1.0],
         "nchoices": 4,
+        "n_particles": 1,
         "simulator": cssm.ddm_flexbound_mic2_ornstein,
     },
     "ddm_mic2_adj_conflict_gamma_no_bias": {
@@ -1113,6 +1184,7 @@ model_config = {
         "n_params": 10,
         "default_params": [0.0, 0.0, 0.0, 0.5, 1.0, 1.0, 1.0, 1.0, 2, 2],
         "nchoices": 4,
+        "n_particles": 1,
         "simulator": cssm.ddm_flexbound_mic2_ornstein,
     },
     "ddm_mic2_adj_angle_no_bias": {
@@ -1128,6 +1200,7 @@ model_config = {
         "n_params": 7,
         "default_params": [0.0, 0.0, 0.0, 1.0, 0.5, 1.0, 0.0],
         "nchoices": 4,
+        "n_particles": 1,
         "simulator": cssm.ddm_flexbound_mic2_ornstein,
     },
     "ddm_mic2_adj_weibull_no_bias": {
@@ -1143,6 +1216,7 @@ model_config = {
         "n_params": 8,
         "default_params": [0.0, 0.0, 0.0, 1.0, 0.5, 1.0, 2.5, 3.5],
         "nchoices": 4,
+        "n_particles": 1,
         "simulator": cssm.ddm_flexbound_mic2_ornstein,
     },
     "ddm_mic2_ornstein": {
@@ -1157,6 +1231,7 @@ model_config = {
         "n_params": 10,
         "default_params": [0.0, 0.0, 0.0, 1.0, 0.5, 0.5, 0.5, 0.5, 1.5, 0.5],
         "nchoices": 4,
+        "n_particles": 1,
         "simulator": cssm.ddm_flexbound_mic2_ornstein,
     },
     "ddm_mic2_ornstein_no_bias": {
@@ -1171,6 +1246,7 @@ model_config = {
         "n_params": 7,
         "default_params": [0.0, 0.0, 0.0, 1.0, 0.5, 1.5, 1.0],
         "nchoices": 4,
+        "n_particles": 1,
         "simulator": cssm.ddm_flexbound_mic2_ornstein,
     },
     "ddm_mic2_ornstein_conflict_gamma_no_bias": {
@@ -1197,6 +1273,7 @@ model_config = {
         "n_params": 11,
         "default_params": [0.0, 0.0, 0.0, 0.5, 1.5, 1.0, 1.0, 1.0, 1.0, 2, 2],
         "nchoices": 4,
+        "n_particles": 1,
         "simulator": cssm.ddm_flexbound_mic2_ornstein,
     },
     "ddm_mic2_ornstein_angle_no_bias": {
@@ -1212,6 +1289,7 @@ model_config = {
         "n_params": 8,
         "default_params": [0.0, 0.0, 0.0, 1.0, 0.5, 1.5, 1.0, 0.0],
         "nchoices": 4,
+        "n_particles": 1,
         "simulator": cssm.ddm_flexbound_mic2_ornstein,
     },
     "ddm_mic2_ornstein_weibull_no_bias": {
@@ -1227,6 +1305,7 @@ model_config = {
         "n_params": 9,
         "default_params": [0.0, 0.0, 0.0, 1.0, 0.5, 1.5, 1.0, 2.5, 3.5],
         "nchoices": 4,
+        "n_particles": 1,
         "simulator": cssm.ddm_flexbound_mic2_ornstein,
     },
     # -----
@@ -1242,6 +1321,7 @@ model_config = {
         "n_params": 6,
         "default_params": [0.0, 0.0, 0.0, 1.0, 0.5, 1.0],
         "nchoices": 4,
+        "n_particles": 1,
         "simulator": cssm.ddm_flexbound_mic2_multinoise,
     },
     "ddm_mic2_multinoise_conflict_gamma_no_bias": {
@@ -1267,6 +1347,7 @@ model_config = {
         "n_params": 10,
         "default_params": [0.0, 0.0, 0.0, 0.5, 1.0, 1.0, 1.0, 1.0, 2, 2],
         "nchoices": 4,
+        "n_particles": 1,
         "simulator": cssm.ddm_flexbound_mic2_multinoise,
     },
     "ddm_mic2_multinoise_angle_no_bias": {
@@ -1282,6 +1363,7 @@ model_config = {
         "n_params": 7,
         "default_params": [0.0, 0.0, 0.0, 1.0, 0.5, 1.0, 0.0],
         "nchoices": 4,
+        "n_particles": 1,
         "simulator": cssm.ddm_flexbound_mic2_multinoise,
     },
     "ddm_mic2_multinoise_weibull_no_bias": {
@@ -1297,6 +1379,7 @@ model_config = {
         "n_params": 8,
         "default_params": [0.0, 0.0, 0.0, 1.0, 0.5, 1.0, 2.5, 3.5],
         "nchoices": 4,
+        "n_particles": 1,
         "simulator": cssm.ddm_flexbound_mic2_multinoise,
     },
     # -----
@@ -1312,6 +1395,7 @@ model_config = {
         "n_params": 9,
         "default_params": [0.0, 0.0, 0.0, 1.0, 0.5, 0.5, 0.5, 0.5, 0.5],
         "nchoices": 4,
+        "n_particles": 1,
         "simulator": cssm.ddm_flexbound_mic2_ornstein,
     },
     "ddm_mic2_leak_no_bias": {
@@ -1326,6 +1410,7 @@ model_config = {
         "n_params": 6,
         "default_params": [0.0, 0.0, 0.0, 1.0, 0.5, 1.0],
         "nchoices": 4,
+        "n_particles": 1,
         "simulator": cssm.ddm_flexbound_mic2_ornstein,
     },
     "ddm_mic2_leak_conflict_gamma_no_bias": {
@@ -1351,6 +1436,7 @@ model_config = {
         "n_params": 10,
         "default_params": [0.0, 0.0, 0.0, 0.5, 1.0, 1.0, 1.0, 1.0, 2, 2],
         "nchoices": 4,
+        "n_particles": 1,
         "simulator": cssm.ddm_flexbound_mic2_ornstein,
     },
     "ddm_mic2_leak_angle_no_bias": {
@@ -1366,6 +1452,7 @@ model_config = {
         "n_params": 7,
         "default_params": [0.0, 0.0, 0.0, 1.0, 0.5, 1.0, 0.0],
         "nchoices": 4,
+        "n_particles": 1,
         "simulator": cssm.ddm_flexbound_mic2_ornstein,
     },
     "ddm_mic2_leak_weibull_no_bias": {
@@ -1381,6 +1468,7 @@ model_config = {
         "n_params": 8,
         "default_params": [0.0, 0.0, 0.0, 1.0, 0.5, 1.0, 2.5, 3.5],
         "nchoices": 4,
+        "n_particles": 1,
         "simulator": cssm.ddm_flexbound_mic2_ornstein,
     },
     # -----
@@ -1396,6 +1484,7 @@ model_config = {
         "n_params": 6,
         "default_params": [0.0, 0.0, 0.0, 1.0, 0.5, 1.0],
         "nchoices": 4,
+        "n_particles": 1,
         "simulator": cssm.ddm_flexbound_tradeoff,
     },
     "tradeoff_angle_no_bias": {
@@ -1411,6 +1500,7 @@ model_config = {
         "n_params": 7,
         "default_params": [0.0, 0.0, 0.0, 1.0, 0.5, 1.0, 0.0],
         "nchoices": 4,
+        "n_particles": 1,
         "simulator": cssm.ddm_flexbound_tradeoff,
     },
     "tradeoff_weibull_no_bias": {
@@ -1426,6 +1516,7 @@ model_config = {
         "n_params": 8,
         "default_params": [0.0, 0.0, 0.0, 1.0, 0.5, 1.0, 2.5, 3.5],
         "nchoices": 4,
+        "n_particles": 1,
         "simulator": cssm.ddm_flexbound_tradeoff,
     },
     "tradeoff_conflict_gamma_no_bias": {
@@ -1452,6 +1543,7 @@ model_config = {
         "n_params": 10,
         "default_params": [0.0, 0.0, 0.0, 0.5, 1.0, 1.0, 1.0, 1.0, 2, 2],
         "nchoices": 4,
+        "n_particles": 1,
         "simulator": cssm.ddm_flexbound_tradeoff,
     },
     # "glob": {
