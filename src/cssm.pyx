@@ -13,15 +13,17 @@ from libc.time cimport time
 import numpy as np
 cimport numpy as np
 import numbers
-#from scipy.stats cimport truncnorm
-#import pandas as pd
 
 DTYPE = np.float32
 
 cdef set_seed(random_state):
     """
-    if random state is provided,
-    this function sets a random state globally for the function. 
+    Set the random seed for the simulation.
+
+    Args:
+        random_state: An integer seed or None. If None, the current time is used as seed.
+
+    This function sets a random state globally for the simulation.
     """
     if random_state is None:
         return srand(time(NULL))
@@ -30,13 +32,34 @@ cdef set_seed(random_state):
 
 # Method to draw random samples from a gaussian
 cdef float random_uniform():
+    """
+    Generate a random float from a uniform distribution between 0 and 1.
+
+    Returns:
+        float: A random float between 0 and 1.
+    """
     cdef float r = rand()
     return r / RAND_MAX
 
 cdef float random_exponential():
+    """
+    Generate a random float from an exponential distribution with rate 1.
+
+    Returns:
+        float: A random float from an exponential distribution.
+    """
     return - log(random_uniform())
 
 cdef float random_stable(float alpha):
+    """
+    Generate a random float from a stable distribution.
+
+    Args:
+        alpha (float): The stability parameter of the distribution.
+
+    Returns:
+        float: A random float from a stable distribution.
+    """
     cdef float eta, u, w, x
 
     u = M_PI * (random_uniform() - 0.5)
@@ -50,7 +73,16 @@ cdef float random_stable(float alpha):
     return x
 
 cdef float[:] draw_random_stable(int n, float alpha):
+    """
+    Generate an array of random floats from a stable distribution.
 
+    Args:
+        n (int): The number of random floats to generate.
+        alpha (float): The stability parameter of the distribution.
+
+    Returns:
+        float[:]: An array of random floats from a stable distribution.
+    """
     cdef int i
     cdef float[:] result = np.zeros(n, dtype = DTYPE)
 
@@ -59,6 +91,12 @@ cdef float[:] draw_random_stable(int n, float alpha):
     return result
 
 cdef float random_gaussian():
+    """
+    Generate a random float from a standard normal distribution.
+
+    Returns:
+        float: A random float from a standard normal distribution.
+    """
     cdef float x1, x2, w
     w = 2.0
 
@@ -71,9 +109,27 @@ cdef float random_gaussian():
     return x1 * w
 
 cdef int sign(float x):
+    """
+    Determine the sign of a float.
+
+    Args:
+        x (float): The input float.
+
+    Returns:
+        int: 1 if x is positive, -1 if x is negative, 0 if x is zero.
+    """
     return (x > 0) - (x < 0)
 
 cdef float csum(float[:] x):
+    """
+    Calculate the sum of elements in an array.
+
+    Args:
+        x (float[:]): The input array.
+
+    Returns:
+        float: The sum of all elements in the array.
+    """
     cdef int i
     cdef int n = x.shape[0]
     cdef float total = 0
@@ -85,6 +141,13 @@ cdef float csum(float[:] x):
 
 ## @cythonboundscheck(False)
 cdef void assign_random_gaussian_pair(float[:] out, int assign_ix):
+    """
+    Generate a pair of random floats from a standard normal distribution and assign them to an array.
+
+    Args:
+        out (float[:]): The output array to store the generated values.
+        assign_ix (int): The starting index in the output array to assign the values.
+    """
     cdef float x1, x2, w
     w = 2.0
 
@@ -99,6 +162,15 @@ cdef void assign_random_gaussian_pair(float[:] out, int assign_ix):
 
 # @cythonboundscheck(False)
 cdef float[:] draw_gaussian(int n):
+    """
+    Generate an array of random floats from a standard normal distribution.
+
+    Args:
+        n (int): The number of random floats to generate.
+
+    Returns:
+        float[:]: An array of random floats from a standard normal distribution.
+    """
     # Draws standard normal variables - need to have the variance rescaled
     cdef int i
     cdef float[:] result = np.zeros(n, dtype=DTYPE)
@@ -130,6 +202,31 @@ def full_ddm_hddm_base(np.ndarray[float, ndim = 1] v, # = 0,
                        return_option = 'full', # 'full' or 'minimal'
                        **kwargs,
                        ):
+    """
+    Simulate reaction times and choices from a full drift diffusion model with flexible bounds.
+
+    Args:
+        v (np.ndarray): Drift rate for each trial.
+        a (np.ndarray): Boundary separation for each trial.
+        z (np.ndarray): Starting point bias for each trial (between 0 and 1).
+        t (np.ndarray): Non-decision time for each trial.
+        sz (np.ndarray): Variability in starting point for each trial.
+        sv (np.ndarray): Variability in drift rate for each trial.
+        st (np.ndarray): Variability in non-decision time for each trial.
+        deadline (np.ndarray): Maximum allowed reaction time for each trial.
+        s (np.ndarray): Diffusion coefficient (noise) for each trial.
+        delta_t (float): Time step for simulation.
+        max_t (float): Maximum time for simulation.
+        n_samples (int): Number of samples to simulate per trial.
+        n_trials (int): Number of trials to simulate.
+        random_state (int or None): Seed for random number generator.
+        smooth_unif (bool): Whether to apply uniform smoothing to reaction times.
+        return_option (str): 'full' for complete output, 'minimal' for basic output.
+        **kwargs: Additional keyword arguments.
+
+    Returns:
+        dict: A dictionary containing simulated reaction times, choices, and metadata.
+    """
 
     set_seed(random_state)
     # cdef int cov_length = np.max([v.size, a.size, w.size, t.size]).astype(int)
@@ -282,6 +379,32 @@ def ddm(np.ndarray[float, ndim = 1] v, # drift by timestep 'delta_t'
         return_option = 'full', # 'full' or 'minimal'
         smooth_unif  = False,
         **kwargs):
+    """
+    Simulate reaction times and choices from a simple drift diffusion model (DDM).
+
+    Args:
+        v (np.ndarray): Drift rate for each trial.
+        a (np.ndarray): Boundary separation for each trial.
+        z (np.ndarray): Starting point (between 0 and 1) for each trial.
+        t (np.ndarray): Non-decision time for each trial.
+        deadline (np.ndarray): Maximum reaction time allowed for each trial.
+        s (np.ndarray): Noise standard deviation for each trial.
+        max_t (float): Maximum simulation time (default: 20).
+        delta_t (float): Time step size (default: 0.001).
+        n_samples (int): Number of samples per trial (default: 20000).
+        n_trials (int): Number of trials to simulate (default: 10).
+        random_state (int or None): Seed for random number generator (default: None).
+        return_option (str): 'full' or 'minimal' return format (default: 'full').
+        smooth_unif (bool): Whether to apply uniform smoothing to reaction times (default: False).
+        **kwargs: Additional keyword arguments.
+
+    Returns:
+        dict: A dictionary containing simulated reaction times, choices, and metadata.
+              The exact contents depend on the return_option.
+
+    Raises:
+        ValueError: If return_option is neither 'full' nor 'minimal'.
+    """
 
     set_seed(random_state)
     # Param views
@@ -407,6 +530,31 @@ def ddm_flexbound(np.ndarray[float, ndim = 1] v,
                   smooth_unif  = False,
                   **kwargs,
                   ):
+    """
+    Simulate reaction times and choices from a drift diffusion model with flexible boundaries.
+
+    Args:
+        v (np.ndarray): Drift rate for each trial.
+        a (np.ndarray): Boundary separation for each trial.
+        z (np.ndarray): Starting point bias for each trial (between 0 and 1).
+        t (np.ndarray): Non-decision time for each trial.
+        deadline (np.ndarray): Maximum allowed reaction time for each trial.
+        s (np.ndarray): Noise (sigma) for each trial.
+        max_t (float): Maximum time for simulation.
+        delta_t (float): Time step for simulation.
+        n_samples (int): Number of samples to simulate per trial.
+        n_trials (int): Number of trials to simulate.
+        boundary_fun (callable): Function defining the shape of the boundary.
+        boundary_multiplicative (bool): If True, boundary function is multiplied by 'a', else added to 'a'.
+        boundary_params (dict): Parameters for the boundary function.
+        random_state (int or None): Seed for random number generator.
+        return_option (str): 'full' for complete output, 'minimal' for basic output.
+        smooth_unif (bool): Whether to apply uniform smoothing to reaction times.
+        **kwargs: Additional keyword arguments.
+
+    Returns:
+        dict: A dictionary containing simulated reaction times, choices, and metadata.
+    """
 
     set_seed(random_state)
     #cdef int cov_length = np.max([v.size, a.size, w.size, t.size]).astype(int)
@@ -528,7 +676,6 @@ def ddm_flexbound(np.ndarray[float, ndim = 1] v,
         raise ValueError('return_option must be either "full" or "minimal"')
 ## ----------------------------------------------------------------------------------------------------
 
-
 # Simulate (rt, choice) tuples from: DDM WITH FLEXIBLE BOUNDARIES AND FLEXIBLE SLOPE -----------------
 # @cythonboundscheck(False)
 # @cythonwraparound(False)
@@ -551,6 +698,37 @@ def ddm_flex(np.ndarray[float, ndim = 1] v,
              return_option = 'full',
              smooth_unif  = False,
              **kwargs):
+    """
+    Simulate reaction times and choices from a drift diffusion model with flexible boundaries and flexible drift.
+
+    Args:
+        v (np.ndarray): Drift rate for each trial.
+        a (np.ndarray): Boundary separation for each trial.
+        z (np.ndarray): Starting point (between 0 and 1) for each trial.
+        t (np.ndarray): Non-decision time for each trial.
+        deadline (np.ndarray): Maximum reaction time allowed for each trial.
+        s (np.ndarray): Noise standard deviation for each trial.
+        delta_t (float): Time step size (default: 0.001).
+        max_t (float): Maximum simulation time (default: 20).
+        n_samples (int): Number of samples per trial (default: 20000).
+        n_trials (int): Number of trials to simulate (default: 1).
+        boundary_fun (callable): Function defining the decision boundary over time.
+        drift_fun (callable): Function defining the drift rate over time.
+        boundary_multiplicative (bool): If True, boundary function is multiplicative; if False, additive.
+        boundary_params (dict): Parameters for the boundary function.
+        drift_params (dict): Parameters for the drift function.
+        random_state (int or None): Seed for random number generator (default: None).
+        return_option (str): 'full' or 'minimal' return format (default: 'full').
+        smooth_unif (bool): Whether to apply uniform smoothing to reaction times (default: False).
+        **kwargs: Additional keyword arguments.
+
+    Returns:
+        dict: A dictionary containing simulated reaction times, choices, and metadata.
+              The exact contents depend on the return_option.
+
+    Raises:
+        ValueError: If return_option is neither 'full' nor 'minimal'.
+    """
 
     set_seed(random_state)
     # Param views:
@@ -701,6 +879,36 @@ def levy_flexbound(np.ndarray[float, ndim = 1] v,
                    return_option = 'full',
                    smooth_unif = False,
                    **kwargs):
+    """
+    Simulate reaction times and choices from a Levy Flight model with flexible boundaries.
+
+    Args:
+        v (np.ndarray): Drift rate for each trial.
+        a (np.ndarray): Boundary separation for each trial.
+        z (np.ndarray): Starting point (between 0 and 1) for each trial.
+        alpha (np.ndarray): Stability parameter for each trial (0 < alpha <= 2).
+        t (np.ndarray): Non-decision time for each trial.
+        deadline (np.ndarray): Maximum reaction time allowed for each trial.
+        s (np.ndarray): Noise scale parameter for each trial.
+        delta_t (float): Time step size for simulation (default: 0.001).
+        max_t (float): Maximum time for simulation (default: 20).
+        n_samples (int): Number of samples to simulate per trial (default: 20000).
+        n_trials (int): Number of trials to simulate (default: 1).
+        boundary_fun (callable): Function defining the shape of the boundary over time.
+        boundary_multiplicative (bool): If True, boundary function is multiplicative; if False, additive.
+        boundary_params (dict): Parameters for the boundary function.
+        random_state (int or None): Seed for random number generator (default: None).
+        return_option (str): 'full' for complete output, 'minimal' for basic output (default: 'full').
+        smooth_unif (bool): Whether to apply uniform smoothing to reaction times (default: False).
+        **kwargs: Additional keyword arguments.
+
+    Returns:
+        dict: A dictionary containing simulated reaction times, choices, and metadata.
+              The exact contents depend on the return_option.
+
+    Raises:
+        ValueError: If return_option is neither 'full' nor 'minimal'.
+    """
 
     set_seed(random_state)
     #cdef int cov_length = np.max([v.size, a.size, w.size, t.size]).astype(int)
@@ -812,7 +1020,6 @@ def levy_flexbound(np.ndarray[float, ndim = 1] v,
                                                              }}
     else:
         raise ValueError('return_option must be either "full" or "minimal"')
-# -------------------------------------------------------------------------------------------------
 
 # Simulate (rt, choice) tuples from: Full DDM with flexible bounds --------------------------------
 # @cythonboundscheck(False)
@@ -837,6 +1044,38 @@ def full_ddm_rv(np.ndarray[float, ndim = 1] v, # = 0,
                 return_option = 'full',
                 smooth_unif = False,
                 **kwargs):
+    """
+    Simulate reaction times and choices from a full drift diffusion model with flexible boundaries and random variability.
+
+    Args:
+        v (np.ndarray): Drift rate for each trial.
+        a (np.ndarray): Boundary separation for each trial.
+        z (np.ndarray): Starting point (between 0 and 1) for each trial.
+        t (np.ndarray): Non-decision time for each trial.
+        z_dist: Distribution function for starting point variability.
+        v_dist: Distribution function for drift rate variability.
+        t_dist: Distribution function for non-decision time variability.
+        deadline (np.ndarray): Maximum reaction time allowed for each trial.
+        s (np.ndarray): Noise standard deviation for each trial.
+        delta_t (float): Time step size for simulation (default: 0.001).
+        max_t (float): Maximum simulation time (default: 20).
+        n_samples (int): Number of samples per trial (default: 20000).
+        n_trials (int): Number of trials to simulate (default: 1).
+        boundary_fun (callable): Function defining the decision boundary over time.
+        boundary_multiplicative (bool): If True, boundary function is multiplicative; if False, additive.
+        boundary_params (dict): Parameters for the boundary function.
+        random_state (int or None): Seed for random number generator (default: None).
+        return_option (str): 'full' or 'minimal' return format (default: 'full').
+        smooth_unif (bool): Whether to apply uniform smoothing to reaction times (default: False).
+        **kwargs: Additional keyword arguments.
+
+    Returns:
+        dict: A dictionary containing simulated reaction times, choices, and metadata.
+              The exact contents depend on the return_option.
+
+    Raises:
+        ValueError: If return_option is neither 'full' nor 'minimal'.
+    """
 
     set_seed(random_state)
     # cdef int cov_length = np.max([v.size, a.size, w.size, t.size]).astype(int)
@@ -1011,6 +1250,38 @@ def full_ddm(np.ndarray[float, ndim = 1] v, # = 0,
              return_option = 'full',
              smooth_unif = False,
              **kwargs):
+    """
+    Simulate reaction times and choices from a full drift diffusion model with flexible boundaries.
+
+    Args:
+        v (np.ndarray): Drift rate for each trial.
+        a (np.ndarray): Boundary separation for each trial.
+        z (np.ndarray): Starting point (between 0 and 1) for each trial.
+        t (np.ndarray): Non-decision time for each trial.
+        sz (np.ndarray): Variability in starting point for each trial.
+        sv (np.ndarray): Variability in drift rate for each trial.
+        st (np.ndarray): Variability in non-decision time for each trial.
+        deadline (np.ndarray): Maximum reaction time allowed for each trial.
+        s (np.ndarray): Noise standard deviation for each trial.
+        delta_t (float): Time step size for simulation (default: 0.001).
+        max_t (float): Maximum time for simulation (default: 20).
+        n_samples (int): Number of samples to simulate per trial (default: 20000).
+        n_trials (int): Number of trials to simulate (default: 1).
+        boundary_fun (callable): Function defining the shape of the boundary over time.
+        boundary_multiplicative (bool): If True, boundary function is multiplicative; if False, additive.
+        boundary_params (dict): Parameters for the boundary function.
+        random_state (int or None): Seed for random number generator (default: None).
+        return_option (str): 'full' for complete output, 'minimal' for basic output (default: 'full').
+        smooth_unif (bool): Whether to apply uniform smoothing to reaction times (default: False).
+        **kwargs: Additional keyword arguments.
+
+    Returns:
+        dict: A dictionary containing simulated reaction times, choices, and metadata.
+              The exact contents depend on the return_option.
+
+    Raises:
+        ValueError: If return_option is neither 'full' nor 'minimal'.
+    """
 
     set_seed(random_state)
     # cdef int cov_length = np.max([v.size, a.size, w.size, t.size]).astype(int)
@@ -1174,6 +1445,36 @@ def ddm_sdv(np.ndarray[float, ndim = 1] v,
             return_option = 'full',
             smooth_unif = False,
             **kwargs):
+    """
+    Simulate reaction times and choices from a drift diffusion model with flexible boundaries and inter-trial variability in drift rate.
+
+    Args:
+        v (np.ndarray): Drift rate for each trial.
+        a (np.ndarray): Boundary separation for each trial.
+        z (np.ndarray): Starting point (between 0 and 1) for each trial.
+        t (np.ndarray): Non-decision time for each trial.
+        sv (np.ndarray): Standard deviation of drift rate for each trial.
+        deadline (np.ndarray): Maximum reaction time allowed for each trial.
+        s (np.ndarray): Noise standard deviation for each trial.
+        delta_t (float): Time step size for simulation (default: 0.001).
+        max_t (float): Maximum time for simulation (default: 20).
+        n_samples (int): Number of samples to simulate per trial (default: 20000).
+        n_trials (int): Number of trials to simulate (default: 1).
+        boundary_fun (callable): Function defining the shape of the boundary over time.
+        boundary_multiplicative (bool): If True, boundary function is multiplicative; if False, additive.
+        boundary_params (dict): Parameters for the boundary function.
+        random_state (int or None): Seed for random number generator (default: None).
+        return_option (str): 'full' for complete output, 'minimal' for basic output (default: 'full').
+        smooth_unif (bool): Whether to apply uniform smoothing to reaction times (default: False).
+        **kwargs: Additional keyword arguments.
+
+    Returns:
+        dict: A dictionary containing simulated reaction times, choices, and metadata.
+              The exact contents depend on the return_option.
+
+    Raises:
+        ValueError: If return_option is neither 'full' nor 'minimal'.
+    """
 
     set_seed(random_state)
     # Data-structs for trajectory storage
@@ -1325,6 +1626,36 @@ def ornstein_uhlenbeck(np.ndarray[float, ndim = 1] v, # drift parameter
                        return_option = 'full',
                        smooth_unif = False,
                        **kwargs):
+    """
+    Simulate reaction times and choices from an Ornstein-Uhlenbeck process with flexible boundaries.
+
+    Args:
+        v (np.ndarray): Drift parameter for each trial.
+        a (np.ndarray): Initial boundary separation for each trial.
+        z (np.ndarray): Starting point bias for each trial.
+        g (np.ndarray): Decay parameter for each trial.
+        t (np.ndarray): Non-decision time for each trial.
+        deadline (np.ndarray): Maximum reaction time allowed for each trial.
+        s (np.ndarray): Noise sigma for each trial.
+        delta_t (float): Size of timestep for simulation (default: 0.001).
+        max_t (float): Maximum time for simulation (default: 20).
+        n_samples (int): Number of samples to simulate per trial (default: 20000).
+        n_trials (int): Number of trials to simulate (default: 1).
+        boundary_fun (callable): Function defining the shape of the boundary over time.
+        boundary_multiplicative (bool): If True, boundary function is multiplicative; if False, additive.
+        boundary_params (dict): Parameters for the boundary function.
+        random_state (int or None): Seed for random number generator (default: None).
+        return_option (str): 'full' for complete output, 'minimal' for basic output (default: 'full').
+        smooth_unif (bool): Whether to apply uniform smoothing to reaction times (default: False).
+        **kwargs: Additional keyword arguments.
+
+    Returns:
+        dict: A dictionary containing simulated reaction times, choices, and metadata.
+              The exact contents depend on the return_option.
+
+    Raises:
+        ValueError: If return_option is not 'full' or 'minimal'.
+    """
 
     set_seed(random_state)
     # Data-structs for trajectory storage
@@ -1452,8 +1783,18 @@ def ornstein_uhlenbeck(np.ndarray[float, ndim = 1] v, # drift parameter
 
 # Function that checks boundary crossing of particles
 cdef bint check_finished(float[:] particles, float boundary, int n):
-    cdef int i # ,n
-    #n = particles.shape[0]
+    """
+    Check if any particle has crossed the boundary.
+
+    Args:
+        particles (float[:]): Array of particle positions.
+        boundary (float): Boundary value to check against.
+        n (int): Number of particles.
+
+    Returns:
+        bool: True if any particle has crossed the boundary, False otherwise.
+    """
+    cdef int i
     for i in range(n):
         if particles[i] > boundary:
             return True
@@ -1492,6 +1833,35 @@ def race_model(np.ndarray[float, ndim = 2] v,  # np.array expected, one column o
                return_option = 'full',
                smooth_unif = False,
                **kwargs):
+    """
+    Simulate reaction times and choices from a race model with N samples.
+
+    Args:
+        v (np.ndarray): Drift rates for each accumulator and trial.
+        a (np.ndarray): Initial boundary separation for each trial.
+        z (np.ndarray): Starting points for each accumulator and trial.
+        t (np.ndarray): Non-decision time for each trial.
+        s (np.ndarray): Noise standard deviation for each accumulator and trial.
+        deadline (np.ndarray): Maximum reaction time allowed for each trial.
+        delta_t (float): Time increment step for simulation (default: 0.001).
+        max_t (float): Maximum time for simulation (default: 20).
+        n_samples (int): Number of samples to simulate per trial (default: 2000).
+        n_trials (int): Number of trials to simulate (default: 1).
+        boundary_fun (callable): Function defining the shape of the boundary over time.
+        boundary_multiplicative (bool): If True, boundary function is multiplicative; if False, additive.
+        boundary_params (dict): Parameters for the boundary function.
+        random_state (int or None): Seed for random number generator (default: None).
+        return_option (str): 'full' for complete output, 'minimal' for basic output (default: 'full').
+        smooth_unif (bool): Whether to apply uniform smoothing to reaction times (default: False).
+        **kwargs: Additional keyword arguments.
+
+    Returns:
+        dict: A dictionary containing simulated reaction times, choices, and metadata.
+              The exact contents depend on the return_option.
+
+    Raises:
+        ValueError: If return_option is not 'full' or 'minimal'.
+    """
 
     set_seed(random_state)
     # Param views
@@ -1654,6 +2024,54 @@ def lca(np.ndarray[float, ndim = 2] v, # drift parameters (np.array expect: one 
         return_option = 'full',
         smooth_unif = False,
         **kwargs):
+    """
+    Simulate reaction times and choices from a Leaky Competing Accumulator (LCA) model.
+
+    Parameters:
+    -----------
+    v : np.ndarray, shape (n_trials, n_particles)
+        Drift rate parameters for each particle.
+    a : np.ndarray, shape (n_trials, 1)
+        Criterion height (decision threshold).
+    z : np.ndarray, shape (n_trials, n_particles)
+        Initial bias parameters for each particle.
+    g : np.ndarray, shape (n_trials, 1)
+        Decay parameter.
+    b : np.ndarray, shape (n_trials, 1)
+        Inhibition parameter.
+    t : np.ndarray, shape (n_trials, 1)
+        Non-decision time.
+    s : np.ndarray, shape (n_trials, n_particles)
+        Standard deviation of the diffusion process.
+    deadline : np.ndarray, shape (n_trials,)
+        Deadline for each trial.
+    delta_t : float, optional
+        Time step size for the simulation (default: 0.001).
+    max_t : float, optional
+        Maximum time for the simulation (default: 20).
+    n_samples : int, optional
+        Number of samples to simulate (default: 2000).
+    n_trials : int, optional
+        Number of trials to simulate (default: 1).
+    boundary_fun : callable, optional
+        Boundary function that takes time as input (default: None).
+    boundary_multiplicative : bool, optional
+        If True, the boundary function is multiplicative; if False, it's additive (default: True).
+    boundary_params : dict, optional
+        Parameters for the boundary function (default: {}).
+    random_state : int or None, optional
+        Seed for random number generation (default: None).
+    return_option : str, optional
+        Determines the amount of data returned. Can be 'full' or 'minimal' (default: 'full').
+    smooth_unif : bool, optional
+        If True, applies uniform smoothing to reaction times (default: False).
+
+    Returns:
+    --------
+    dict
+        A dictionary containing simulated reaction times, choices, and metadata.
+        The exact contents depend on the 'return_option' parameter.
+    """
 
     set_seed(random_state)
     # Param views
@@ -1830,6 +2248,56 @@ def ddm_flexbound_seq2(np.ndarray[float, ndim = 1] vh,
                        return_option = 'full',
                        smooth_unif = False,
                        **kwargs):
+    """
+    Simulate reaction times and choices from a sequential two-stage drift diffusion model with flexible boundaries.
+
+    Parameters:
+    -----------
+    vh : np.ndarray, shape (n_trials,)
+        Drift rate for the high-level decision.
+    vl1, vl2 : np.ndarray, shape (n_trials,)
+        Drift rates for the two low-level decisions.
+    a : np.ndarray, shape (n_trials,)
+        Initial boundary separation.
+    zh : np.ndarray, shape (n_trials,)
+        Starting point bias for the high-level decision.
+    zl1, zl2 : np.ndarray, shape (n_trials,)
+        Starting point biases for the two low-level decisions.
+    t : np.ndarray, shape (n_trials,)
+        Non-decision time.
+    deadline : np.ndarray, shape (n_trials,)
+        Deadline for each trial.
+    s : np.ndarray, shape (n_trials,)
+        Diffusion coefficient (standard deviation of the diffusion process).
+    delta_t : float, optional
+        Size of the time step in the simulation (default: 0.001).
+    max_t : float, optional
+        Maximum time for the simulation (default: 20).
+    n_samples : int, optional
+        Number of samples to simulate (default: 20000).
+    n_trials : int, optional
+        Number of trials to simulate (default: 1).
+    print_info : bool, optional
+        Whether to print information during the simulation (default: True).
+    boundary_fun : callable, optional
+        Function that determines the decision boundary over time (default: None).
+    boundary_multiplicative : bool, optional
+        If True, the boundary function is multiplicative; if False, it's additive (default: True).
+    boundary_params : dict, optional
+        Parameters for the boundary function (default: {}).
+    random_state : int or None, optional
+        Seed for the random number generator (default: None).
+    return_option : str, optional
+        Determines the amount of data returned. Can be 'full' or 'minimal' (default: 'full').
+    smooth_unif : bool, optional
+        If True, applies uniform smoothing to reaction times (default: False).
+
+    Returns:
+    --------
+    dict
+        A dictionary containing simulated reaction times, choices, and metadata.
+        The exact contents depend on the 'return_option' parameter.
+    """
 
     set_seed(random_state)
     # Param views
@@ -2094,6 +2562,56 @@ def ddm_flexbound_par2(np.ndarray[float, ndim = 1] vh,
                        return_option = 'full',
                        smooth_unif = False,
                        **kwargs):
+    """
+    Simulate a parallel diffusion decision model with flexible boundaries.
+
+    This function simulates a two-stage decision process where a high-dimensional choice
+    is made first, followed by a low-dimensional choice. The process uses a flexible
+    boundary that can change over time.
+
+    Parameters:
+    -----------
+    vh, vl1, vl2 : np.ndarray
+        Drift rates for high-dimensional and two low-dimensional choices.
+    a : np.ndarray
+        Initial boundary separation.
+    zh, zl1, zl2 : np.ndarray
+        Starting points for high-dimensional and two low-dimensional choices.
+    t : np.ndarray
+        Non-decision time.
+    deadline : np.ndarray
+        Time limit for each trial.
+    s : np.ndarray
+        Noise standard deviation.
+    delta_t : float, optional
+        Size of time steps in simulation. Default is 0.001.
+    max_t : float, optional
+        Maximum time for each trial. Default is 20.
+    n_samples : int, optional
+        Number of simulations per trial. Default is 20000.
+    n_trials : int, optional
+        Number of trials to simulate. Default is 1.
+    print_info : bool, optional
+        Whether to print information during simulation. Default is True.
+    boundary_fun : callable, optional
+        Function defining the decision boundary over time.
+    boundary_multiplicative : bool, optional
+        If True, boundary function is multiplied by 'a'. If False, it's added. Default is True.
+    boundary_params : dict, optional
+        Additional parameters for the boundary function.
+    random_state : int or None, optional
+        Seed for random number generator. Default is None.
+    return_option : str, optional
+        Determines the content of the returned dictionary. Can be 'full' or 'minimal'. Default is 'full'.
+    smooth_unif : bool, optional
+        If True, adds uniform noise to simulate continuous time. Default is False.
+
+    Returns:
+    --------
+    dict
+        A dictionary containing simulation results. The exact contents depend on the return_option.
+        'full' returns all simulation data and parameters, while 'minimal' returns only essential outputs.
+    """
 
     set_seed(random_state)
     # Param views
@@ -2331,6 +2849,57 @@ def ddm_flexbound_mic2_ornstein(np.ndarray[float, ndim = 1] vh,
                                 return_option = 'full',
                                 smooth_unif = False,
                                 **kwargs):
+    """
+    Simulate (rt, choice) tuples from a DDM with flexible boundaries and Ornstein-Uhlenbeck process.
+
+    Parameters:
+    -----------
+    vh, vl1, vl2 : np.ndarray, shape (n_trials,)
+        Drift rates for high-level, low-level 1, and low-level 2 processes.
+    a : np.ndarray, shape (n_trials,)
+        Initial boundary separation.
+    zh, zl1, zl2 : np.ndarray, shape (n_trials,)
+        Starting points for high-level, low-level 1, and low-level 2 processes.
+    d : np.ndarray, shape (n_trials,)
+        Damping parameter (1: no drift on low level until high level done, 0: full drift on low level).
+    g : np.ndarray, shape (n_trials,)
+        Inhibition parameter for the low-dimensional choice process while high-dimensional is running.
+    t : np.ndarray, shape (n_trials,)
+        Non-decision time.
+    deadline : np.ndarray, shape (n_trials,)
+        Response deadline.
+    s_pre_high_level_choice : np.ndarray, shape (n_trials,)
+        Noise level before high-level choice is made.
+    s : np.ndarray, shape (n_trials,)
+        Noise level (sigma).
+    delta_t : float, optional
+        Size of time steps for simulation (default: 0.001).
+    max_t : float, optional
+        Maximum time for simulation (default: 20).
+    n_samples : int, optional
+        Number of samples to simulate (default: 20000).
+    n_trials : int, optional
+        Number of trials to simulate (default: 1).
+    print_info : bool, optional
+        Whether to print information during simulation (default: True).
+    boundary_fun : callable, optional
+        Boundary function of t and potentially other parameters (default: None).
+    boundary_multiplicative : bool, optional
+        Whether the boundary function is multiplicative (default: True).
+    boundary_params : dict, optional
+        Parameters for the boundary function (default: {}).
+    random_state : int or None, optional
+        Random seed for reproducibility (default: None).
+    return_option : str, optional
+        Determines what to return, either 'full' or 'minimal' (default: 'full').
+    smooth_unif : bool, optional
+        Whether to use smooth uniform distribution for RT jitter (default: False).
+
+    Returns:
+    --------
+    dict
+        Dictionary containing simulated data and metadata. The exact contents depend on the return_option.
+    """
 
     set_seed(random_state)
     # Param views
@@ -2592,8 +3161,6 @@ def ddm_flexbound_mic2_ornstein(np.ndarray[float, ndim = 1] vh,
                              }}
     else:
         raise ValueError('return_option must be either "full" or "minimal"')
-# ----------------------------------------------------------------------------------------------------
-
 
 # Simulate (rt, choice) tuples from: DDM WITH FLEXIBLE BOUNDARIES ------------------------------------
 # @cythonboundscheck(False)
@@ -2605,22 +3172,81 @@ def ddm_flexbound_mic2_multinoise(np.ndarray[float, ndim = 1] vh,
                                   np.ndarray[float, ndim = 1] zh,
                                   np.ndarray[float, ndim = 1] zl1,
                                   np.ndarray[float, ndim = 1] zl2,
-                                  np.ndarray[float, ndim = 1] d, # damper (1 --> no drift on low level until high level done, 0 --> full drift on low level)
+                                  np.ndarray[float, ndim = 1] d,
                                   np.ndarray[float, ndim = 1] t,
                                   np.ndarray[float, ndim = 1] deadline,
-                                  np.ndarray[float, ndim = 1] s, # noise sigma
+                                  np.ndarray[float, ndim = 1] s,
                                   float delta_t = 0.001,
                                   float max_t = 20,
                                   int n_samples = 20000,
                                   int n_trials = 1,
                                   print_info = True,
-                                  boundary_fun = None, # function of t (and potentially other parameters) that takes in (t, *args)
+                                  boundary_fun = None,
                                   boundary_multiplicative = True,
                                   boundary_params = {},
                                   random_state = None,
                                   return_option = 'full',
                                   smooth_unif = False,
                                   **kwargs):
+    """
+    Simulates a multi-level decision-making process using a drift-diffusion model with flexible boundaries.
+
+    Parameters:
+    -----------
+    vh, vl1, vl2 : np.ndarray, shape (n_trials,)
+        Drift rates for high-level, low-level 1, and low-level 2 processes.
+    a : np.ndarray, shape (n_trials,)
+        Initial boundary separation.
+    zh, zl1, zl2 : np.ndarray, shape (n_trials,)
+        Starting points for high-level, low-level 1, and low-level 2 processes.
+    d : np.ndarray, shape (n_trials,)
+        Damping parameter (1: no drift on low level until high level done, 0: full drift on low level).
+    t : np.ndarray, shape (n_trials,)
+        Non-decision time.
+    deadline : np.ndarray, shape (n_trials,)
+        Response deadline.
+    s : np.ndarray, shape (n_trials,)
+        Noise level (standard deviation).
+    delta_t : float, optional
+        Size of time steps for simulation (default: 0.001).
+    max_t : float, optional
+        Maximum time for each trial (default: 20).
+    n_samples : int, optional
+        Number of samples to simulate (default: 20000).
+    n_trials : int, optional
+        Number of trials to simulate (default: 1).
+    print_info : bool, optional
+        Whether to print information during simulation (default: True).
+    boundary_fun : callable, optional
+        Function defining the decision boundary (default: None).
+    boundary_multiplicative : bool, optional
+        Whether the boundary function is multiplicative (default: True).
+    boundary_params : dict, optional
+        Parameters for the boundary function (default: {}).
+    random_state : int or None, optional
+        Seed for random number generator (default: None).
+    return_option : str, optional
+        Determines what to return, either 'full' or 'minimal' (default: 'full').
+    smooth_unif : bool, optional
+        Whether to use smooth uniform distribution for certain calculations (default: False).
+
+    Returns:
+    --------
+    dict
+        A dictionary containing simulation results. The exact contents depend on the return_option:
+        - 'full': Contains 'rts', 'choices', 'rts_high', 'rts_low', and detailed 'metadata'.
+        - 'minimal': Contains 'rts', 'choices', 'rts_high', 'rts_low', and minimal 'metadata'.
+
+    Raises:
+    -------
+    ValueError
+        If an invalid return_option is provided.
+
+    Notes:
+    ------
+    This function implements a complex drift-diffusion model for multi-level decision-making,
+    incorporating flexible boundaries and multiple noise sources.
+    """
 
     set_seed(random_state)
     # Param views
@@ -2911,6 +3537,67 @@ def ddm_flexbound_mic2_ornstein_multinoise(np.ndarray[float, ndim = 1] vh,
                                            return_option = 'full',
                                            smooth_unif = False,
                                            **kwargs):
+    """
+    Simulate reaction times and choices from a DDM with flexible boundaries and multiple noise sources.
+
+    This function implements a drift diffusion model (DDM) with flexible boundaries, incorporating
+    both high-dimensional and low-dimensional choice processes, and multiple noise sources.
+
+    Parameters:
+    -----------
+    vh, vl1, vl2 : np.ndarray[float, ndim=1]
+        Drift rates for high-dimensional and two low-dimensional processes.
+    a : np.ndarray[float, ndim=1]
+        Initial boundary separation.
+    zh, zl1, zl2 : np.ndarray[float, ndim=1]
+        Starting points for high-dimensional and two low-dimensional processes.
+    d : np.ndarray[float, ndim=1]
+        Damping parameter for low-dimensional drift.
+    g : np.ndarray[float, ndim=1]
+        Inhibition parameter for low-dimensional choice process.
+    t : np.ndarray[float, ndim=1]
+        Non-decision time.
+    deadline : np.ndarray[float, ndim=1]
+        Maximum allowed decision time.
+    s : np.ndarray[float, ndim=1]
+        Noise standard deviation.
+    delta_t : float, optional
+        Time step for simulation (default is 0.001).
+    max_t : float, optional
+        Maximum time to simulate (default is 20).
+    n_samples : int, optional
+        Number of samples to generate (default is 20000).
+    n_trials : int, optional
+        Number of trials to simulate (default is 1).
+    print_info : bool, optional
+        Whether to print simulation information (default is True).
+    boundary_fun : callable, optional
+        Function defining the decision boundary over time.
+    boundary_multiplicative : bool, optional
+        Whether the boundary function is multiplicative (default is True).
+    boundary_params : dict, optional
+        Parameters for the boundary function.
+    random_state : int or None, optional
+        Seed for random number generator.
+    return_option : str, optional
+        Determines the amount of data returned ('full' or 'minimal', default is 'full').
+    smooth_unif : bool, optional
+        Whether to use smooth uniform distribution for certain calculations (default is False).
+    **kwargs : dict
+        Additional keyword arguments.
+
+    Returns:
+    --------
+    dict
+        A dictionary containing simulated reaction times, choices, and metadata.
+        The exact contents depend on the 'return_option' parameter.
+
+    Notes:
+    ------
+    This function implements a complex DDM with multiple interacting processes and flexible
+    boundaries. It's designed for advanced cognitive modeling scenarios where both
+    high-dimensional and low-dimensional choice processes are of interest.
+    """
 
     set_seed(random_state)
     # Param views
@@ -3181,6 +3868,42 @@ def lba_vanilla(np.ndarray[float, ndim = 2] v,
         float max_t = 20,
         **kwargs
         ):
+    """
+    Simulate reaction times and choices from a vanilla Linear Ballistic Accumulator (LBA) model.
+
+    Parameters:
+    -----------
+    v : np.ndarray[float, ndim=2]
+        Drift rate for each accumulator.
+    a : np.ndarray[float, ndim=2]
+        Starting point of the decision boundary.
+    z : np.ndarray[float, ndim=2]
+        Starting point distribution.
+    deadline : np.ndarray[float, ndim=1]
+        Maximum allowed decision time.
+    sd : np.ndarray[float, ndim=1]
+        Standard deviation of the drift rate distribution.
+    ndt : np.ndarray[float, ndim=1]
+        Non-decision time.
+    nact : int, optional
+        Number of accumulators (default is 3).
+    n_samples : int, optional
+        Number of samples to generate (default is 2000).
+    n_trials : int, optional
+        Number of trials to simulate (default is 1).
+    max_t : float, optional
+        Maximum time to simulate (default is 20).
+    **kwargs : dict
+        Additional keyword arguments.
+
+    Returns:
+    --------
+    dict
+        A dictionary containing:
+        - 'rts': simulated reaction times
+        - 'choices': simulated choices
+        - 'metadata': dictionary with model parameters and simulation details
+    """
 
     # v_t = np.random.normal(v, sd)
     # print(len(z), nact, np.array([z]*nact).transpose().shape)
@@ -3251,6 +3974,42 @@ def lba_angle(np.ndarray[float, ndim = 2] v,
         float max_t = 20,
         **kwargs
         ):
+    """
+    Simulate reaction times and choices from a Linear Ballistic Accumulator (LBA) model with collapsing bounds.
+
+    Parameters:
+    -----------
+    v : np.ndarray[float, ndim=2]
+        Drift rate for each accumulator.
+    a : np.ndarray[float, ndim=2]
+        Starting point of the decision boundary.
+    z : np.ndarray[float, ndim=2]
+        Starting point distribution.
+    theta : np.ndarray[float, ndim=2]
+        Angle parameter for the collapsing bound.
+    deadline : np.ndarray[float, ndim=1]
+        Maximum allowed decision time.
+    sd : np.ndarray[float, ndim=1]
+        Standard deviation of the drift rate distribution.
+    ndt : np.ndarray[float, ndim=1]
+        Non-decision time.
+    nact : int, optional
+        Number of accumulators (default is 3).
+    n_samples : int, optional
+        Number of samples to generate (default is 2000).
+    n_trials : int, optional
+        Number of trials to simulate (default is 1).
+    max_t : float, optional
+        Maximum time to simulate (default is 20).
+
+    Returns:
+    --------
+    dict
+        A dictionary containing:
+        - 'rts': simulated reaction times
+        - 'choices': simulated choices
+        - 'metadata': additional information about the simulation
+    """
 
     # Param views
     cdef float[:, :] v_view = v
@@ -3319,10 +4078,42 @@ def rlwm_lba_race(np.ndarray[float, ndim = 2] v_RL, # RL drift parameters (np.ar
         float max_t = 20,
         **kwargs
         ):
+    """
+    Simulate reaction times and choices from a Reinforcement Learning Working Memory (RLWM) Linear Ballistic Accumulator (LBA) race model.
 
-    # v_t = np.random.normal(v, sd)
-    # print(len(z), nact, np.array([z]*nact).transpose().shape)
-    # z_t = np.random.uniform(np.zeros((len(z), nact)), np.array([z]*nact).transpose(), (len(z), nact))
+    Parameters:
+    -----------
+    v_RL : np.ndarray[float, ndim=2]
+        Drift rate for the Reinforcement Learning (RL) component.
+    v_WM : np.ndarray[float, ndim=2]
+        Drift rate for the Working Memory (WM) component.
+    a : np.ndarray[float, ndim=2]
+        Decision threshold (criterion height).
+    z : np.ndarray[float, ndim=2]
+        Starting point distribution.
+    deadline : np.ndarray[float, ndim=1]
+        Maximum allowed decision time.
+    sd : np.ndarray[float, ndim=1]
+        Standard deviation of the drift rate distribution.
+    ndt : np.ndarray[float, ndim=1]
+        Non-decision time.
+    nact : int, optional
+        Number of accumulators (default is 3).
+    n_samples : int, optional
+        Number of samples to generate (default is 2000).
+    n_trials : int, optional
+        Number of trials to simulate (default is 1).
+    max_t : float, optional
+        Maximum time to simulate (default is 20).
+
+    Returns:
+    --------
+    dict
+        A dictionary containing:
+        - 'rts': simulated reaction times
+        - 'choices': simulated choices
+        - 'metadata': additional information about the simulation
+    """
 
     # Param views
     cdef float[:, :] v_RL_view = v_RL
@@ -3415,6 +4206,66 @@ def ddm_flexbound_mic2_unnormalized_ornstein_multinoise(np.ndarray[float, ndim =
                                                         return_option = 'full',
                                                         smooth_unif = False,
                                                         **kwargs):
+    """
+    Simulate a Drift Diffusion Model (DDM) with flexible boundaries for a multi-level decision process.
+
+    This function simulates a two-stage decision process where a high-dimensional choice influences
+    two low-dimensional choices through a bias trace. The process incorporates an Ornstein-Uhlenbeck
+    process and multiple noise parameters.
+
+    Parameters:
+    -----------
+    vh, vl1, vl2 : np.ndarray[float, ndim=1]
+        Drift rates for high-dimensional and two low-dimensional choices.
+    a : np.ndarray[float, ndim=1]
+        Initial boundary separation.
+    zh, zl1, zl2 : np.ndarray[float, ndim=1]
+        Starting points for high-dimensional and two low-dimensional choices.
+    d : np.ndarray[float, ndim=1]
+        Damping factor for drift rate on low-level choices.
+    g : np.ndarray[float, ndim=1]
+        Inhibition parameter for low-dimensional choices while high-dimensional is running.
+    t : np.ndarray[float, ndim=1]
+        Non-decision time.
+    deadline : np.ndarray[float, ndim=1]
+        Time limit for each trial.
+    s : np.ndarray[float, ndim=1]
+        Noise standard deviation.
+    delta_t : float, optional
+        Time step for simulation (default: 0.001).
+    max_t : float, optional
+        Maximum time for simulation (default: 20).
+    n_samples : int, optional
+        Number of samples per trial (default: 20000).
+    n_trials : int, optional
+        Number of trials to simulate (default: 1).
+    print_info : bool, optional
+        Whether to print simulation information (default: True).
+    boundary_fun : callable, optional
+        Function defining the decision boundary over time.
+    boundary_multiplicative : bool, optional
+        If True, boundary function is multiplicative; if False, additive (default: True).
+    boundary_params : dict, optional
+        Parameters for the boundary function.
+    random_state : int or None, optional
+        Seed for random number generator (default: None).
+    return_option : str, optional
+        Determines the amount of data returned ('full' or 'minimal', default: 'full').
+    smooth_unif : bool, optional
+        If True, applies uniform smoothing to reaction times (default: False).
+
+    Returns:
+    --------
+    dict
+        A dictionary containing simulated reaction times, choices, and metadata.
+        The exact contents depend on the 'return_option' parameter.
+
+    Notes:
+    ------
+    This function implements a complex DDM with multiple interacting decision processes,
+    flexible boundaries, and Ornstein-Uhlenbeck dynamics. It's particularly suited for
+    modeling hierarchical decision-making scenarios.
+    """
 
     set_seed(random_state)
     # Param views
@@ -3697,6 +4548,67 @@ def ddm_flexbound_tradeoff(np.ndarray[float, ndim = 1] vh,
                            return_option = 'full',
                            smooth_unif = False,
                            **kwargs):
+    """
+    Simulate a Drift Diffusion Model (DDM) with flexible boundaries for a tradeoff scenario.
+
+    This function simulates a two-stage decision process where the first stage (high-dimensional)
+    influences the second stage (low-dimensional) through a bias trace.
+
+    Parameters:
+    -----------
+    vh, vl1, vl2 : np.ndarray[float, ndim=1]
+        Drift rates for high-dimensional and two low-dimensional choices.
+    a : np.ndarray[float, ndim=1]
+        Initial boundary separation.
+    zh, zl1, zl2 : np.ndarray[float, ndim=1]
+        Starting points for high-dimensional and two low-dimensional choices.
+    d : np.ndarray[float, ndim=1]
+        Damping factor for drift rate.
+    t : np.ndarray[float, ndim=1]
+        Non-decision time.
+    deadline : np.ndarray[float, ndim=1]
+        Time limit for each trial.
+    s : np.ndarray[float, ndim=1]
+        Noise standard deviation.
+    delta_t : float, optional
+        Size of time steps (default: 0.001).
+    max_t : float, optional
+        Maximum time for a trial (default: 20).
+    n_samples : int, optional
+        Number of samples to simulate (default: 20000).
+    n_trials : int, optional
+        Number of trials to simulate (default: 1).
+    print_info : bool, optional
+        Whether to print simulation information (default: True).
+    boundary_fun : callable, optional
+        Function defining the decision boundary over time.
+    boundary_multiplicative : bool, optional
+        Whether the boundary function is multiplicative (default: True).
+    boundary_params : dict, optional
+        Parameters for the boundary function.
+    random_state : int or None, optional
+        Seed for random number generation (default: None).
+    return_option : str, optional
+        Determines the format of returned data ('full' or 'minimal', default: 'full').
+    smooth_unif : bool, optional
+        Whether to use smooth uniform distribution for small time increments (default: False).
+
+    Returns:
+    --------
+    dict
+        A dictionary containing simulated reaction times, choices, and metadata.
+        The exact contents depend on the 'return_option' parameter.
+
+    Raises:
+    -------
+    ValueError
+        If an invalid 'return_option' is provided.
+
+    Notes:
+    ------
+    This function implements a complex DDM with flexible boundaries and a two-stage
+    decision process, suitable for modeling tradeoff scenarios in decision-making.
+    """
 
     set_seed(random_state)
     # Param views

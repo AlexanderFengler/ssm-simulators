@@ -1,6 +1,5 @@
 from ssms.basic_simulators import boundary_functions as bf
 from ssms.basic_simulators import drift_functions as df
-from ssms.basic_simulators import theta_processors as tp
 import functools
 import scipy.stats as sps
 import cssm
@@ -103,7 +102,6 @@ model_config = {
         "nchoices": 2,
         "n_particles": 1,
         "simulator": cssm.ddm_flexbound,
-        "theta_processor": tp.DefaultThetaProcessor(),
     },
     "ddm_legacy": {
         "name": "ddm_legacy",
@@ -116,7 +114,6 @@ model_config = {
         "nchoices": 2,
         "n_particles": 1,
         "simulator": cssm.ddm,
-        "theta_processor": tp.DefaultThetaProcessor(),
     },
     "angle": {
         "name": "angle",
@@ -129,7 +126,6 @@ model_config = {
         "nchoices": 2,
         "n_particles": 1,
         "simulator": cssm.ddm_flexbound,
-        "theta_processor": tp.DefaultThetaProcessor(),
     },
     "weibull": {
         "name": "weibull",
@@ -145,7 +141,6 @@ model_config = {
         "nchoices": 2,
         "n_particles": 1,
         "simulator": cssm.ddm_flexbound,
-        "theta_processor": tp.DefaultThetaProcessor(),
     },
     "levy": {
         "name": "levy",
@@ -158,7 +153,6 @@ model_config = {
         "nchoices": 2,
         "n_particles": 1,
         "simulator": cssm.levy_flexbound,
-        "theta_processor": tp.DefaultThetaProcessor(),
     },
     "levy_angle": {
         "name": "levy_angle",
@@ -174,7 +168,6 @@ model_config = {
         "nchoices": 2,
         "n_particles": 1,
         "simulator": cssm.levy_flexbound,
-        "theta_processor": tp.DefaultThetaProcessor(),
     },
     "full_ddm": {
         "name": "full_ddm",
@@ -190,7 +183,6 @@ model_config = {
         "nchoices": 2,
         "n_particles": 1,
         "simulator": cssm.full_ddm,
-        "theta_processor": tp.DefaultThetaProcessor(),
     },
     "full_ddm_rv": {
         "name": "full_ddm_rv",
@@ -345,7 +337,6 @@ model_config = {
         "nchoices": 2,
         "n_particles": 1,
         "simulator": cssm.ddm_flex,
-        "theta_processor": tp.DefaultThetaProcessor(),
     },
     "shrink_spot": {
         "name": "shrink_spot",
@@ -415,7 +406,6 @@ model_config = {
         "nchoices": 2,
         "n_particles": 1,
         "simulator": cssm.ddm_flex,
-        "theta_processor": tp.DefaultThetaProcessor(),
     },
     "ds_conflict_drift": {
         "name": "ds_conflict_drift",
@@ -485,7 +475,6 @@ model_config = {
         "nchoices": 2,
         "n_particles": 1,
         "simulator": cssm.ornstein_uhlenbeck,
-        "theta_processor": tp.DefaultThetaProcessor(),
     },
     "ornstein_angle": {
         "name": "ornstein_angle",
@@ -501,7 +490,6 @@ model_config = {
         "nchoices": 2,
         "n_particles": 1,
         "simulator": cssm.ornstein_uhlenbeck,
-        "theta_processor": tp.DefaultThetaProcessor(),
     },
     "lba2": {
         "name": "lba2",  # LBA_3 without ndt; sum of all v = 1
