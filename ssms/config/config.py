@@ -540,7 +540,7 @@ model_config = {
         "simulator": cssm.lba_angle,
     },
     "rlwm_lba_race_v1": {
-        "name": "rlwm_lba_race_wo_ndt_v1",  # RLWM_Race_LBA_3 without ndt; sum of all v_RL = 1 and sum of all v_WM = 1
+        "name": "rlwm_lba_race_v1",  # RLWM_Race_LBA_3 without ndt; sum of all v_RL = 1 and sum of all v_WM = 1
         "params": [
             "v_RL_0",
             "v_RL_1",

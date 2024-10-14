@@ -3860,7 +3860,7 @@ def lba_vanilla(np.ndarray[float, ndim = 2] v,
         np.ndarray[float, ndim = 2] a, 
         np.ndarray[float, ndim = 2] z, 
         np.ndarray[float, ndim = 1] deadline,
-        np.ndarray[float, ndim = 1] sd, # noise sigma
+        np.ndarray[float, ndim = 2] sd, # noise sigma
         np.ndarray[float, ndim = 1] ndt, # non-decision time
         int nact = 3,
         int n_samples = 2000,
@@ -3913,9 +3913,9 @@ def lba_vanilla(np.ndarray[float, ndim = 2] v,
     cdef float[:, :] v_view = v
     cdef float[:, :] a_view = a
     cdef float[:, :] z_view = z
-    cdef float[:, :] ndt_view = ndt
+    cdef float[:] ndt_view = ndt
     cdef float[:] deadline_view = deadline
-    cdef float[:] sd_view = sd
+    cdef float[:, :] sd_view = sd
 
     rts = np.zeros((n_samples, n_trials, 1), dtype = DTYPE)
     cdef float[:, :, :] rts_view = rts
@@ -3966,7 +3966,7 @@ def lba_angle(np.ndarray[float, ndim = 2] v,
         np.ndarray[float, ndim = 2] z,  
         np.ndarray[float, ndim = 2] theta,
         np.ndarray[float, ndim = 1] deadline,
-        np.ndarray[float, ndim = 1] sd, # noise sigma
+        np.ndarray[float, ndim = 2] sd, # noise sigma
         np.ndarray[float, ndim = 1] ndt, # non-decision time
         int nact = 3,
         int n_samples = 2000,
@@ -4016,10 +4016,10 @@ def lba_angle(np.ndarray[float, ndim = 2] v,
     cdef float[:, :] a_view = a
     cdef float[:, :] z_view = z
     cdef float[:, :] theta_view = theta
-    cdef float[:, :] ndt_view = ndt
+    cdef float[:] ndt_view = ndt
 
     cdef float[:] deadline_view = deadline
-    cdef float[:] sd_view = sd
+    cdef float[:, :] sd_view = sd
 
     rts = np.zeros((n_samples, n_trials, 1), dtype = DTYPE)
     cdef float[:, :, :] rts_view = rts
@@ -4030,10 +4030,11 @@ def lba_angle(np.ndarray[float, ndim = 2] v,
     cdef Py_ssize_t n, k, i
 
     for k in range(n_trials):
-        
+        print(sd_view[k])
+        print(v_view[k])
         for n in range(n_samples):
             zs = np.random.uniform(0, z_view[k], nact)
-
+            
             vs = np.abs(np.random.normal(v_view[k], sd_view[k])) # np.abs() to avoid negative vs
             x_t = ([a_view[k]]*nact - zs)/(vs + np.tan(theta_view[k, 0]))
         
@@ -4070,7 +4071,7 @@ def rlwm_lba_race(np.ndarray[float, ndim = 2] v_RL, # RL drift parameters (np.ar
         np.ndarray[float, ndim = 2] a, # criterion height
         np.ndarray[float, ndim = 2] z, # initial bias parameters (np.array expect: one column of floats)
         np.ndarray[float, ndim = 1] deadline,
-        np.ndarray[float, ndim = 1] sd, # noise sigma
+        np.ndarray[float, ndim = 2] sd, # noise sigma
         np.ndarray[float, ndim = 1] ndt, # non-decision time
         int nact = 3,
         int n_samples = 2000,
@@ -4120,10 +4121,10 @@ def rlwm_lba_race(np.ndarray[float, ndim = 2] v_RL, # RL drift parameters (np.ar
     cdef float[:, :] v_WM_view = v_WM
     cdef float[:, :] a_view = a
     cdef float[:, :] z_view = z
-    cdef float[:, :] ndt_view = ndt
+    cdef float[:] ndt_view = ndt
 
     cdef float[:] deadline_view = deadline
-    cdef float[:] sd_view = sd
+    cdef float[:, :] sd_view = sd
     cdef np.ndarray[float, ndim = 1] zs
     cdef np.ndarray[double, ndim = 2] x_t_RL
     cdef np.ndarray[double, ndim = 2] x_t_WM

@@ -84,7 +84,9 @@ class SimpleThetaProcessor(AbstractThetaProcessor):
         if model in ["ddm_rayleight"]:
             theta["z_dist"] = model_config["simulator_fixed_params"]["z_dist"]
             theta["v_dist"] = model_config["simulator_fixed_params"]["v_dist"]
-            theta["t"] = model_config["simulator_fixed_params"]["t"]
+            theta["t"] = (
+                np.ones(n_trials) * model_config["simulator_fixed_params"]["t"]
+            ).astype(np.float32)
             # turn st from param values to corresponding random variable
             theta["t_dist"] = model_config["simulator_param_mappings"]["t_dist"](
                 theta["st"]
@@ -128,6 +130,7 @@ class SimpleThetaProcessor(AbstractThetaProcessor):
             theta["v"] = np.column_stack([theta["v0"], theta["v1"]])
             theta["z"] = np.expand_dims(theta["A"], axis=1)
             theta["a"] = np.expand_dims(theta["b"], axis=1)
+            theta["ndt"] = np.zeros(n_trials).astype(np.float32)
 
             del theta["A"]
             del theta["b"]
@@ -138,6 +141,7 @@ class SimpleThetaProcessor(AbstractThetaProcessor):
 
             theta["z"] = np.expand_dims(theta["A"], axis=1)
             theta["a"] = np.expand_dims(theta["b"], axis=1)
+            theta["ndt"] = np.zeros(n_trials).astype(np.float32)
 
             del theta["A"]
             del theta["b"]
@@ -146,12 +150,14 @@ class SimpleThetaProcessor(AbstractThetaProcessor):
             theta["v"] = np.column_stack([theta["v0"], theta["v1"], theta["v2"]])
             theta["a"] = np.expand_dims(theta["a"], axis=1)
             theta["z"] = np.expand_dims(theta["z"], axis=1)
+            theta["ndt"] = np.zeros(n_trials).astype(np.float32)
 
         if model == "lba_angle_3_v1":
             theta["v"] = np.column_stack([theta["v0"], theta["v1"], theta["v2"]])
             theta["a"] = np.expand_dims(theta["a"], axis=1)
             theta["z"] = np.expand_dims(theta["z"], axis=1)
             theta["theta"] = np.expand_dims(theta["theta"], axis=1)
+            theta["ndt"] = np.zeros(n_trials).astype(np.float32)
 
         if model == "rlwm_lba_race_v1":
             theta["v_RL"] = np.column_stack(
@@ -162,6 +168,7 @@ class SimpleThetaProcessor(AbstractThetaProcessor):
             )
             theta["a"] = np.expand_dims(theta["a"], axis=1)
             theta["z"] = np.expand_dims(theta["z"], axis=1)
+            theta["ndt"] = np.zeros(n_trials).astype(np.float32)
 
         # 2 Choice
         if model == "race_2":

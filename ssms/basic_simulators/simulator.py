@@ -541,12 +541,17 @@ def validate_ssm_parameters(model: str, theta: dict) -> None:
 def make_noise_vec(
     noise_level: float | np.ndarray, n_trials: int, n_particles: int
 ) -> np.ndarray:
+    if n_particles == 1 or n_particles is None:
+        shape_tuple = n_trials
+    else:
+        shape_tuple = (n_trials, 1)
+
     noise_vec = np.tile(
         np.array(
             [noise_level] * n_particles,
             dtype=np.float32,
         ),
-        (n_trials, 1),
+        shape_tuple,
     )
     return noise_vec
 
@@ -631,6 +636,7 @@ def simulator(
     # Initialize dictionary that collects
     # simulator inputs that are commong across simulator functions
     sim_param_dict = deepcopy(DEFAULT_SIM_PARAMS)
+
     # Update all values of sim_param_dict that are defined in locals()
     locals_dict = locals()
     sim_param_dict = {
@@ -654,21 +660,16 @@ def simulator(
     else:
         theta["s"] = noise_vec
 
+    # Process theta
+    theta = SimpleThetaProcessor().process_theta(theta, model_config_local, n_trials)
+
     # Make boundary dictionary
     boundary_dict = make_boundary_dict(model_config_local, theta)
     # Make drift dictionary
     drift_dict = make_drift_dict(model_config_local, theta)
 
-    # Process theta
-    theta = SimpleThetaProcessor().process_theta(theta, model_config_local, n_trials)
-    print(f"{theta}=")
     # Check if parameters are valid
     validate_ssm_parameters(model, theta)
-
-    # print(theta)
-    # print(boundary_dict)
-    # print(drift_dict)
-    # print(sim_param_dict)
 
     # Call to the simulator
     x = model_config_local["simulator"](
@@ -678,6 +679,7 @@ def simulator(
         **sim_param_dict,
     )
 
+    # Postprocess simulator output ----------------------------
     # Additional model outputs, easy to compute:
     # Choice probability
     x["choice_p"] = np.zeros((n_trials, len(x["metadata"]["possible_choices"])))
