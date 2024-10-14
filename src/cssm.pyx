@@ -2663,10 +2663,8 @@ def ddm_flexbound_par2(np.ndarray[float, ndim = 1] vh,
 
         # Precompute boundary evaluations
         if boundary_multiplicative:
-            # print(a)
             boundary[:] = np.multiply(a_view[k], boundary_fun(t = t_s, **boundary_params_tmp)).astype(DTYPE)
         else:
-            # print(a)
             boundary[:] = np.add(a_view[k], boundary_fun(t = t_s, **boundary_params_tmp)).astype(DTYPE)
         
         deadline_tmp = min(max_t, deadline_view[k] - t_view[k])
@@ -3905,10 +3903,6 @@ def lba_vanilla(np.ndarray[float, ndim = 2] v,
         - 'metadata': dictionary with model parameters and simulation details
     """
 
-    # v_t = np.random.normal(v, sd)
-    # print(len(z), nact, np.array([z]*nact).transpose().shape)
-    # z_t = np.random.uniform(np.zeros((len(z), nact)), np.array([z]*nact).transpose(), (len(z), nact))
-
     # Param views
     cdef float[:, :] v_view = v
     cdef float[:, :] a_view = a
@@ -4030,8 +4024,6 @@ def lba_angle(np.ndarray[float, ndim = 2] v,
     cdef Py_ssize_t n, k, i
 
     for k in range(n_trials):
-        print(sd_view[k])
-        print(v_view[k])
         for n in range(n_samples):
             zs = np.random.uniform(0, z_view[k], nact)
             
@@ -4715,8 +4707,6 @@ def ddm_flexbound_tradeoff(np.ndarray[float, ndim = 1] vh,
                 while ix_tmp < num_draws:
                     bias_trace_view[ix_tmp] = 1.0 - bias_trace_view[ix_tmp]
                     ix_tmp += 1
-
-                #print('new bias_trace: ', bias_trace)
             
             # Random walks until the y_l corresponding to y_h hits bound
             ix = 0
