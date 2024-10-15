@@ -6,10 +6,15 @@ import pickle
 import uuid
 import os
 from scipy.stats import mode
-from multiprocessing import Pool
+from pathos.multiprocessing import ProcessingPool as Pool
 import psutil
 
 from functools import partial
+
+from ssms.support_utils.utils import sample_parameters_from_constraints
+from ssms.basic_simulators.simulator import _theta_dict_to_array
+from ssms.config import KDE_NO_DISPLACE_T
+
 
 """
     This module defines a data generator class for use with LANs. 
@@ -61,23 +66,75 @@ class data_generator:
         data_generator object
     """
 
-    def __init__(self, generator_config=None, model_config=None):
+    def __init__(
+        self, generator_config: dict | None = None, model_config: dict | None = None
+    ):
+        """Initialize data generator class.
+
+        Arguments
+        ---------
+        generator_config: dict
+            Configuration dictionary for the data generator.
+            (For an example load ssms.config.data_generator_config['lan'])
+        model_config: dict
+            Configuration dictionary for the model to be simulated.
+            (For an example load ssms.config.model_config['ddm'])
+
+        Raises
+        ------
+        ValueError
+            If no generator_config or model_config is specified.
+
+        Returns
+        -------
+        data_generator object
+        """
         # INIT -----------------------------------------
         if generator_config is None:
-            print("No generator_config specified")
-            return
+            raise ValueError("No generator_config specified")
+        elif model_config is None:
+            raise ValueError("No model_config specified")
         else:
             self.generator_config = deepcopy(generator_config)
             self.model_config = deepcopy(model_config)
+
             # Account for deadline if in model name
             if "deadline" in self.generator_config["model"]:
                 self.model_config["params"].append("deadline")
-                self.model_config["param_bounds"][0].append(0.001)
-                self.model_config["param_bounds"][1].append(10)
-                self.model_config["default_params"].append(10)
-                self.model_config["name"] += "_deadline"
-                self.model_config["n_params"] += 1
-                print(self.model_config)
+                if isinstance(self.model_config["param_bounds"], list):
+                    self.model_config["param_bounds"][0].append(0.001)
+                    self.model_config["param_bounds"][1].append(10)
+                    self.model_config["default_params"].append(10)
+                    self.model_config["name"] += "_deadline"
+                    self.model_config["n_params"] += 1
+                elif isinstance(self.model_config["param_bounds"], dict):
+                    self.model_config["param_bounds"]["deadline"] = (0.001, 10)
+                    self.model_config["default_params"].append(10)
+                    self.model_config["name"] += "_deadline"
+                    self.model_config["n_params"] += 1
+
+            # Define constrained parameter space as dictionary
+            # and add to internal model config
+            # AF-COMMENT: This will eventually be replaced so that
+            # configs always have dictionary format for parameter
+            # bounds
+            # print(self.model_config)
+            # print(type(self.model_config))
+            if isinstance(self.model_config["param_bounds"], list):
+                bounds_tmp = self.model_config["param_bounds"]
+                names_tmp = self.model_config["params"]
+                self.model_config["constrained_param_space"] = {
+                    names_tmp[i]: (bounds_tmp[0][i], bounds_tmp[1][i])
+                    for i in range(len(names_tmp))
+                }
+            elif isinstance(self.model_config["param_bounds"], dict):
+                self.model_config["constrained_param_space"] = self.model_config[
+                    "param_bounds"
+                ]
+            else:
+                raise ValueError("param_bounds must be a list or a dictionary")
+
+            # print(self.model_config)
 
             self._build_simulator()
             self._get_ncpus()
@@ -99,6 +156,7 @@ class data_generator:
                 os.makedirs(folder_partial)
 
     def _get_ncpus(self):
+        """Get the number cpus to use for parallelization."""
         # Get number of cpus
         if self.generator_config["n_cpus"] == "all":
             n_cpus = psutil.cpu_count(logical=False)
@@ -109,6 +167,7 @@ class data_generator:
         self.generator_config["n_cpus"] = n_cpus
 
     def _build_simulator(self):
+        """Build simulator function for LANs."""
         self.simulator = partial(
             simulator,
             n_samples=self.generator_config["n_samples"],
@@ -118,7 +177,10 @@ class data_generator:
             smooth_unif=self.generator_config["smooth_unif"],
         )
 
-    def get_simulations(self, theta=None, random_seed=None):
+    def get_simulations(
+        self, theta: dict | None = None, random_seed: int | None = None
+    ):
+        """Generates simulations for a given parameter set."""
         out = self.simulator(
             theta=theta,
             model=self.model_config["name"],
@@ -128,8 +190,13 @@ class data_generator:
 
     def _filter_simulations(
         self,
-        simulations=None,
+        simulations: dict | None = None,
     ):
+        """Filters simulations according to the criteria
+        specified in the generator_config."""
+        if simulations is None:
+            raise ValueError("No simulations provided")
+
         keep = 1
         n_sim = simulations["rts"].shape[0]
         for choice_tmp in simulations["metadata"]["possible_choices"]:
@@ -175,7 +242,28 @@ class data_generator:
             [mode_, mean_, std_, mode_cnt_rel_, tmp_n_c, n_sim], dtype=np.float32
         )
 
-    def _make_kde_data(self, simulations=None, theta=None):
+    def _make_kde_data(
+        self, simulations: dict | None = None, theta: dict | None = None
+    ):
+        """Generates KDE data from simulations.
+
+        Arguments
+        ---------
+        simulations: dict
+            Dictionary containing the simulations.
+        theta: dict
+            Dictionary containing the parameters.
+
+        Returns
+        -------
+        out: np.array
+            Array containing the KDE data.
+        """
+        if simulations is None:
+            raise ValueError("No simulations provided")
+        if theta is None:
+            raise ValueError("No theta provided")
+
         n = self.generator_config["n_training_samples_by_parameter_set"]
         p = self.generator_config["kde_data_mixture_probabilities"]
         n_kde = int(n * p[0])
@@ -186,15 +274,26 @@ class data_generator:
             out = np.zeros(
                 (
                     n_kde + n_unif_up + n_unif_down,
-                    2 + self.model_config["nchoices"] + len(theta),
+                    2 + self.model_config["nchoices"] + len(theta.items()),
                 )
             )
         else:
-            out = np.zeros((n_kde + n_unif_up + n_unif_down, 3 + len(theta)))
+            out = np.zeros((n_kde + n_unif_up + n_unif_down, 3 + len(theta.items())))
 
-        out[:, : len(theta)] = np.tile(theta, (n_kde + n_unif_up + n_unif_down, 1))
+        out[:, : len(theta.items())] = np.tile(
+            np.stack([theta[key_] for key_ in self.model_config["params"]], axis=1),
+            (n_kde + n_unif_up + n_unif_down, 1),
+        )
 
-        tmp_kde = kde_class.LogKDE(simulations)
+        tmp_kde = kde_class.LogKDE(
+            simulations,
+            displace_t=(
+                True
+                if self.model_config["name"].split("_deadline")[0]
+                not in KDE_NO_DISPLACE_T
+                else False
+            ),
+        )
 
         # Get kde part
         samples_kde = tmp_kde.kde_sample(n_samples=n_kde)
@@ -248,9 +347,19 @@ class data_generator:
         out[(n_kde + n_unif_up) :, -1] = self.generator_config["negative_rt_cutoff"]
         return out.astype(np.float32)
 
-    def parameter_transform_for_data_gen(self, theta):
+    def parameter_transform_for_data_gen(self, theta: dict):
         """
         Function to impose constraints on the parameters for data generation.
+
+        Arguments
+        ---------
+            theta: dict
+                Dictionary containing the parameters.
+
+        Returns
+        -------
+            theta: dict
+                Dictionary containing the transformed parameters.
         """
 
         if self.model_config["name"] == "lba_angle_3_v2":
@@ -270,135 +379,156 @@ class data_generator:
         # For certain LBA-based models, we need to ensure that the drift rates sum to 1
         if self.model_config["name"] == "rlwm_lba_race_wo_ndt_v1":
             # normalize the RL drift rates
-            theta[0:3] = theta[0:3] / np.sum(theta[0:3])
+            v_rl_sum = (
+                np.sum([theta["v_RL_0"], theta["v_RL_1"], theta["v_RL_2"]]).astype(
+                    np.float32
+                )
+                + 1e-20
+            )
+            theta["v_RL_0"] = (theta["v_RL_0"] + (1e-20 / 3)) / v_rl_sum
+            theta["v_RL_1"] = (theta["v_RL_1"] + (1e-20 / 3)) / v_rl_sum
+            theta["v_RL_2"] = (theta["v_RL_2"] + (1e-20 / 3)) / v_rl_sum
+
+            # theta[0:3] = theta[0:3] / np.sum(theta[0:3])
 
             # normalize the WM drift rates
-            theta[3:6] = theta[3:6] / np.sum(theta[3:6])
+            v_wm_sum = (
+                np.sum([theta["v_WM_0"], theta["v_WM_1"], theta["v_WM_2"]]).astype(
+                    np.float32
+                )
+                + 1e-20
+            )
+            theta["v_WM_0"] = (theta["v_WM_0"] + (1e-20 / 3)) / v_wm_sum
+            theta["v_WM_1"] = (theta["v_WM_1"] + (1e-20 / 3)) / v_wm_sum
+            theta["v_WM_2"] = (theta["v_WM_2"] + (1e-20 / 3)) / v_wm_sum
+
+            # theta[3:6] = theta[3:6] / np.sum(theta[3:6])
 
             # ensure that a is always greater than z
-            if theta[6] <= theta[7]:
-                tmp = theta[6]
-                theta[6] = theta[7]
-                theta[7] = tmp
+            # if not true switch position between a and z
+            # AF-COMMENT: Is this keeping the uniform on hypercube in tact?
+            if theta["a"] <= theta["z"]:
+                tmp = theta["a"]
+                theta["a"] = theta["z"]
+                theta["z"] = tmp
 
         return theta
 
-    def _mlp_get_processed_data_for_theta(self, random_seed_tuple):
+    def _mlp_get_processed_data_for_theta(self, random_seed_tuple: tuple | list):
         np.random.seed(random_seed_tuple[0])
         keep = 0
+        # Keep simulating until we are happy with data
         while not keep:
-            theta = np.float32(
-                np.random.uniform(
-                    low=self.model_config["param_bounds"][0],
-                    high=self.model_config["param_bounds"][1],
-                )
+            theta_dict = sample_parameters_from_constraints(
+                self.model_config["constrained_param_space"], 1
             )
+            # Run extra checks on parameters
+            # (currently used only for very specific RLWM model)
+            theta_dict = self.parameter_transform_for_data_gen(theta_dict)
 
-            theta = self.parameter_transform_for_data_gen(theta)
+            # Run simulations
+            simulations = self.get_simulations(
+                theta=deepcopy(theta_dict), random_seed=random_seed_tuple[1]
+            )
+            # Check if simulations pass filter
+            keep, stats = self._filter_simulations(simulations)
 
-            theta_dict = {
-                name: val for name, val in zip(self.model_config["params"], theta)
-            }
+        # Now that we are happy with data
+        # construct KDEs
+        kde_data = self._make_kde_data(simulations=simulations, theta=theta_dict)
+
+        if len(simulations["metadata"]["possible_choices"]) == 2:
+            cpn_labels = np.expand_dims(simulations["choice_p"][0, 1], axis=0)
+            cpn_no_omission_labels = np.expand_dims(
+                simulations["choice_p_no_omission"][0, 1], axis=0
+            )
+        else:
+            cpn_labels = simulations["choice_p"]
+            cpn_no_omission_labels = simulations["choice_p_no_omission"]
+
+        # Make theta array
+        theta_array = _theta_dict_to_array(theta_dict, self.model_config["params"])
+        return {
+            "lan_data": kde_data[:, :-1],
+            "lan_labels": kde_data[:, -1],
+            "cpn_data": theta_array,  # np.expand_dims(theta, axis=0),
+            "cpn_labels": cpn_labels,
+            "cpn_no_omission_data": theta_array,
+            "cpn_no_omission_labels": cpn_no_omission_labels,
+            "opn_data": theta_array,
+            "opn_labels": simulations["omission_p"],
+            "gonogo_data": theta_array,
+            "gonogo_labels": simulations["nogo_p"],
+            "binned_128": simulations["binned_128"],
+            "binned_256": simulations["binned_256"],
+            "theta": theta_array,
+        }
+
+    def _cpn_get_processed_data_for_theta(self, random_seed_tuple: tuple | list):
+        np.random.seed(random_seed_tuple[0])
+        theta_dict = sample_parameters_from_constraints(
+            self.model_config["constrained_param_space"], 1
+        )
+
+        # Run the simulator
+        simulations = self.get_simulations(
+            theta=deepcopy(theta_dict), random_seed=random_seed_tuple[1]
+        )
+
+        if len(simulations["metadata"]["possible_choices"]) == 2:
+            cpn_labels = np.expand_dims(simulations["choice_p"][0, 1], axis=0)
+            cpn_no_omission_labels = np.expand_dims(
+                simulations["choice_p_no_omission"][0, 1], axis=0
+            )
+        else:
+            cpn_labels = simulations["choice_p"]
+            cpn_no_omission_labels = simulations["choice_p_no_omission"]
+
+        # Make theta array
+        theta_array = _theta_dict_to_array(theta_dict, self.model_config["params"])
+
+        return {
+            "cpn_data": theta_array,
+            "cpn_labels": cpn_labels,
+            "cpn_no_omission_data": theta_array,
+            "cpn_no_omission_labels": cpn_no_omission_labels,
+            "opn_data": theta_array,
+            "opn_labels": simulations["omission_p"],
+            "gonogo_data": theta_array,
+            "gonogo_labels": simulations["nogo_p"],
+            "theta": theta_array,
+        }
+
+    def _get_rejected_parameter_setups(self, random_seed_tuple: tuple | list):
+        np.random.seed(random_seed_tuple[0])
+        rejected_thetas = []
+        keep = 1
+        rej_cnt = 0
+        while rej_cnt < 100:
+            theta_dict = sample_parameters_from_constraints(
+                self.model_config["constrained_param_space"], 1
+            )
+            # Run extra checks on parameters
+            # (currently used only for very specific RLWM model)
+            theta_dict = self.parameter_transform_for_data_gen(theta_dict)
 
             simulations = self.get_simulations(
                 theta=theta_dict, random_seed=random_seed_tuple[1]
             )
             keep, stats = self._filter_simulations(simulations)
 
-        kde_data = self._make_kde_data(simulations=simulations, theta=theta)
-
-        if len(simulations["metadata"]["possible_choices"]) == 2:
-            cpn_labels = np.expand_dims(simulations["choice_p"][0, 1], axis=0)
-            cpn_no_omission_labels = np.expand_dims(
-                simulations["choice_p_no_omission"][0, 1], axis=0
-            )
-        else:
-            cpn_labels = simulations["choice_p"]
-            cpn_no_omission_labels = simulations["choice_p_no_omission"]
-
-        return {
-            "lan_data": kde_data[:, :-1],
-            "lan_labels": kde_data[:, -1],
-            "cpn_data": np.expand_dims(theta, axis=0),
-            "cpn_labels": cpn_labels,
-            "cpn_no_omission_data": np.expand_dims(theta, axis=0),
-            "cpn_no_omission_labels": cpn_no_omission_labels,
-            "opn_data": np.expand_dims(theta, axis=0),
-            "opn_labels": simulations["omission_p"],
-            "gonogo_data": np.expand_dims(theta, axis=0),
-            "gonogo_labels": simulations["nogo_p"],
-            "binned_128": simulations["binned_128"],
-            "binned_256": simulations["binned_256"],
-            "theta": np.expand_dims(theta, axis=0),
-        }
-
-    def _cpn_get_processed_data_for_theta(self, random_seed_tuple):
-        np.random.seed(random_seed_tuple[0])
-
-        # Get a random parameter set
-        theta = np.float32(
-            np.random.uniform(
-                low=self.model_config["param_bounds"][0],
-                high=self.model_config["param_bounds"][1],
-            )
-        )
-        theta_dict = {
-            name: val for name, val in zip(self.model_config["params"], theta)
-        }
-
-        # Run the simulator
-        simulations = self.get_simulations(
-            theta=theta_dict, random_seed=random_seed_tuple[1]
-        )
-
-        if len(simulations["metadata"]["possible_choices"]) == 2:
-            cpn_labels = np.expand_dims(simulations["choice_p"][0, 1], axis=0)
-            cpn_no_omission_labels = np.expand_dims(
-                simulations["choice_p_no_omission"][0, 1], axis=0
-            )
-        else:
-            cpn_labels = simulations["choice_p"]
-            cpn_no_omission_labels = simulations["choice_p_no_omission"]
-
-        return {
-            "cpn_data": np.expand_dims(theta, axis=0),
-            "cpn_labels": cpn_labels,
-            "cpn_no_omission_data": np.expand_dims(theta, axis=0),
-            "cpn_no_omission_labels": cpn_no_omission_labels,
-            "opn_data": np.expand_dims(theta, axis=0),
-            "opn_labels": simulations["omission_p"],
-            "gonogo_data": np.expand_dims(theta, axis=0),
-            "gonogo_labels": simulations["nogo_p"],
-            "theta": np.expand_dims(theta, axis=0),
-        }
-
-    def _get_rejected_parameter_setups(self, random_seed_tuple):
-        np.random.seed(random_seed_tuple[0])
-        rejected_thetas = []
-        keep = 1
-        rej_cnt = 0
-        while rej_cnt < 100:
-            theta = np.float32(
-                np.random.uniform(
-                    low=self.model_config["param_bounds"][0],
-                    high=self.model_config["param_bounds"][1],
-                )
-            )
-            simulations = self.get_simulations(
-                theta=theta, random_seed=random_seed_tuple[1]
-            )
-            keep, stats = self._filter_simulations(simulations)
-
             if keep == 0:
                 print("simulation rejected")
                 print("stats: ", stats)
-                print("theta", theta)
-                rejected_thetas.append(theta)
+                print("theta", theta_dict)
+                rejected_thetas.append(theta_dict)
             rej_cnt += 1
 
         return rejected_thetas
 
-    def generate_data_training_uniform(self, save=False, verbose=True, cpn_only=False):
+    def generate_data_training_uniform(
+        self, save: bool = False, verbose: bool = True, cpn_only: bool = False
+    ):
         """Generates training data for LANs.
 
         Arguments
@@ -546,184 +676,184 @@ class data_generator:
         else:
             return data
 
-    def _nested_get_processed_data(self, random_seed):
-        np.random.seed(random_seed)
-        theta = np.float32(
-            np.random.uniform(
-                low=self.model_config["param_bounds"][0],
-                high=self.model_config["param_bounds"][1],
-            )
-        )
+    # def _nested_get_processed_data(self, random_seed):
+    #     np.random.seed(random_seed)
+    #     theta = np.float32(
+    #         np.random.uniform(
+    #             low=self.model_config["param_bounds"][0],
+    #             high=self.model_config["param_bounds"][1],
+    #         )
+    #     )
 
-        n_components_to_exclude = np.random.choice(
-            self.model_config["components"]["n_components"] + 1
-        )
-        components_to_exclude = np.random.choice(
-            self.model_config["components"]["n_components"],
-            size=n_components_to_exclude,
-            replace=False,
-        )
+    #     n_components_to_exclude = np.random.choice(
+    #         self.model_config["components"]["n_components"] + 1
+    #     )
+    #     components_to_exclude = np.random.choice(
+    #         self.model_config["components"]["n_components"],
+    #         size=n_components_to_exclude,
+    #         replace=False,
+    #     )
 
-        label_tmp = np.array(
-            [1 for i in range(self.model_config["components"]["n_components"])]
-        )
+    #     label_tmp = np.array(
+    #         [1 for i in range(self.model_config["components"]["n_components"])]
+    #     )
 
-        for component_tmp in components_to_exclude:
-            # Get component name
-            component_name = self.model_config["components"]["names"][component_tmp]
-            # Get index number in list of all model parameters
-            component_idx_in_full_params = self.model_config["params"].index(
-                component_name
-            )
-            # Set parameter to the 'off_value' that corresponds to a model
-            # without this particular model component
-            theta[component_idx_in_full_params] = self.model_config["components"][
-                "off_values"
-            ][component_tmp]
-            # Adjust label
-            label_tmp = (
-                label_tmp - self.model_config["components"]["labels"][component_tmp]
-            )
+    #     for component_tmp in components_to_exclude:
+    #         # Get component name
+    #         component_name = self.model_config["components"]["names"][component_tmp]
+    #         # Get index number in list of all model parameters
+    #         component_idx_in_full_params = self.model_config["params"].index(
+    #             component_name
+    #         )
+    #         # Set parameter to the 'off_value' that corresponds to a model
+    #         # without this particular model component
+    #         theta[component_idx_in_full_params] = self.model_config["components"][
+    #             "off_values"
+    #         ][component_tmp]
+    #         # Adjust label
+    #         label_tmp = (
+    #             label_tmp - self.model_config["components"]["labels"][component_tmp]
+    #         )
 
-        # Should allow for binned and unbinned version of this
-        simulations = self.get_simulations(theta=theta)
+    #     # Should allow for binned and unbinned version of this
+    #     simulations = self.get_simulations(theta=theta)
 
-        if self.generator_config["nbins"] > 0:
-            return {
-                "data": np.expand_dims(simulations["data"], axis=0),
-                "label_parameters": theta,
-                "label_components": label_tmp,
-                "metadata": simulations["metadata"],
-            }
-        else:
-            if self.generator_config["separate_response_channels"]:
-                choice_data = np.zeros(
-                    (simulations["rts"].shape, self.model.config["nchoices"])
-                )
+    #     if self.generator_config["nbins"] > 0:
+    #         return {
+    #             "data": np.expand_dims(simulations["data"], axis=0),
+    #             "label_parameters": theta,
+    #             "label_components": label_tmp,
+    #             "metadata": simulations["metadata"],
+    #         }
+    #     else:
+    #         if self.generator_config["separate_response_channels"]:
+    #             choice_data = np.zeros(
+    #                 (simulations["rts"].shape, self.model.config["nchoices"])
+    #             )
 
-                r_cnt = 0
-                for response in simulations["metadata"]["possible_choices"]:
-                    choice_data[:, r_cnt] = (simulations["choices"] == response).astype(
-                        int
-                    )
-                    r_cnt += 1
-                return {
-                    "data": np.column_stack([simulations["rts"], choice_data]),
-                    "label_parameters": theta,
-                    "label_components": label_tmp,
-                    "metadata": simulations["metadata"],
-                }
+    #             r_cnt = 0
+    #             for response in simulations["metadata"]["possible_choices"]:
+    #                 choice_data[:, r_cnt] = (simulations["choices"] == response).astype(
+    #                     int
+    #                 )
+    #                 r_cnt += 1
+    #             return {
+    #                 "data": np.column_stack([simulations["rts"], choice_data]),
+    #                 "label_parameters": theta,
+    #                 "label_components": label_tmp,
+    #                 "metadata": simulations["metadata"],
+    #             }
 
-            else:
-                return {
-                    "data": np.column_stack(
-                        [simulations["rts"], simulations["choices"]]
-                    ),
-                    "label_parameters": theta,
-                    "label_components": label_tmp,
-                    "metadata": simulations["metadata"],
-                }
+    #         else:
+    #             return {
+    #                 "data": np.column_stack(
+    #                     [simulations["rts"], simulations["choices"]]
+    #                 ),
+    #                 "label_parameters": theta,
+    #                 "label_components": label_tmp,
+    #                 "metadata": simulations["metadata"],
+    #             }
 
-    def generate_data_nested(self, save):
-        seeds = np.random.choice(
-            400000000, size=self.generator_config["n_parameter_sets"]
-        )
+    # def generate_data_nested(self, save):
+    #     seeds = np.random.choice(
+    #         400000000, size=self.generator_config["n_parameter_sets"]
+    #     )
 
-        # Inits
-        subrun_n = (
-            self.generator_config["n_parameter_sets"]
-            // self.generator_config["n_subruns"]
-        )
+    #     # Inits
+    #     subrun_n = (
+    #         self.generator_config["n_parameter_sets"]
+    #         // self.generator_config["n_subruns"]
+    #     )
 
-        data_list = []
-        for i in range(self.generator_config["n_subruns"]):
-            print(
-                "simulation round: ", i + 1, " of", self.generator_config["n_subruns"]
-            )
-            with Pool(processes=self.generator_config["n_cpus"]) as pool:
-                data_tmp = pool.map(
-                    self._nested_get_processed_data,
-                    [j for j in seeds[(i * subrun_n) : ((i + 1) * subrun_n)]],
-                )
+    #     data_list = []
+    #     for i in range(self.generator_config["n_subruns"]):
+    #         print(
+    #             "simulation round: ", i + 1, " of", self.generator_config["n_subruns"]
+    #         )
+    #         with Pool(processes=self.generator_config["n_cpus"]) as pool:
+    #             data_tmp = pool.map(
+    #                 self._nested_get_processed_data,
+    #                 [j for j in seeds[(i * subrun_n) : ((i + 1) * subrun_n)]],
+    #             )
 
-                data_tmp_dict = {}
-                data_tmp_dict["data"] = np.float32(
-                    np.concatenate([x["data"] for x in data_tmp])
-                )
-                data_tmp_dict["label_components"] = np.float32(
-                    np.concatenate(
-                        [
-                            np.expand_dims(x["label_components"], axis=0)
-                            for x in data_tmp
-                        ]
-                    )
-                )
-                data_tmp_dict["label_parameters"] = np.float32(
-                    np.concatenate(
-                        [
-                            np.expand_dims(x["label_parameters"], axis=0)
-                            for x in data_tmp
-                        ]
-                    )
-                )
-                data_list.append(data_tmp_dict)
+    #             data_tmp_dict = {}
+    #             data_tmp_dict["data"] = np.float32(
+    #                 np.concatenate([x["data"] for x in data_tmp])
+    #             )
+    #             data_tmp_dict["label_components"] = np.float32(
+    #                 np.concatenate(
+    #                     [
+    #                         np.expand_dims(x["label_components"], axis=0)
+    #                         for x in data_tmp
+    #                     ]
+    #                 )
+    #             )
+    #             data_tmp_dict["label_parameters"] = np.float32(
+    #                 np.concatenate(
+    #                     [
+    #                         np.expand_dims(x["label_parameters"], axis=0)
+    #                         for x in data_tmp
+    #                     ]
+    #                 )
+    #             )
+    #             data_list.append(data_tmp_dict)
 
-        data = {}
+    #     data = {}
 
-        data["data"] = np.float32(np.concatenate([x["data"] for x in data_list]))
-        data["label_components"] = np.float32(
-            np.concatenate([x["label_components"] for x in data_list])
-        )
-        data["label_parameters"] = np.float32(
-            np.concatenate([x["label_parameters"] for x in data_list])
-        )
-        data["generator_config"] = self.generator_config
-        data["model_config"] = self.model_config
+    #     data["data"] = np.float32(np.concatenate([x["data"] for x in data_list]))
+    #     data["label_components"] = np.float32(
+    #         np.concatenate([x["label_components"] for x in data_list])
+    #     )
+    #     data["label_parameters"] = np.float32(
+    #         np.concatenate([x["label_parameters"] for x in data_list])
+    #     )
+    #     data["generator_config"] = self.generator_config
+    #     data["model_config"] = self.model_config
 
-        if save:
-            full_file_name = self._make_save_file_name(
-                unique_tag="nested_training_data_"
-            )
-            print("Writing to file: ", full_file_name)
+    #     if save:
+    #         full_file_name = self._make_save_file_name(
+    #             unique_tag="nested_training_data_"
+    #         )
+    #         print("Writing to file: ", full_file_name)
 
-            pickle.dump(
-                data,
-                open(full_file_name, "wb"),
-                protocol=self.generator_config["pickleprotocol"],
-            )
-            return "Dataset completed"
+    #         pickle.dump(
+    #             data,
+    #             open(full_file_name, "wb"),
+    #             protocol=self.generator_config["pickleprotocol"],
+    #         )
+    #         return "Dataset completed"
 
-        else:
-            return data
+    #     else:
+    #         return data
 
-    def generate_data_ratio_estimator(self, save):
-        seeds = np.random.choice(400000000, size=self.generator_config["n_subdatasets"])
-        print("Starting simulations")
+    # def generate_data_ratio_estimator(self, save):
+    #     seeds = np.random.choice(400000000, size=self.generator_config["n_subdatasets"])
+    #     print("Starting simulations")
 
-        with Pool(processes=self.generator_config["n_cpus"]) as pool:
-            data_tmp = pool.map(self._ratio_estimator_get_processed_data, list(seeds))
+    #     with Pool(processes=self.generator_config["n_cpus"]) as pool:
+    #         data_tmp = pool.map(self._ratio_estimator_get_processed_data, list(seeds))
 
-        data = {}
-        data["data"] = np.float32(np.concatenate([x["data"] for x in data_tmp]))
-        data["labels"] = np.float32(np.concatenate([x["labels"] for x in data_tmp]))
-        data["generator_config"] = self.generator_config
-        data["model_config"] = self.model_config
+    #     data = {}
+    #     data["data"] = np.float32(np.concatenate([x["data"] for x in data_tmp]))
+    #     data["labels"] = np.float32(np.concatenate([x["labels"] for x in data_tmp]))
+    #     data["generator_config"] = self.generator_config
+    #     data["model_config"] = self.model_config
 
-        if save:
-            full_file_name = self._make_save_file_name(
-                unique_tag="ratio_training_data_"
-            )
-            print("Writing to file: ", full_file_name)
+    #     if save:
+    #         full_file_name = self._make_save_file_name(
+    #             unique_tag="ratio_training_data_"
+    #         )
+    #         print("Writing to file: ", full_file_name)
 
-            pickle.dump(
-                data,
-                open(full_file_name, "wb"),
-                protocol=self.generator_config["pickleprotocol"],
-            )
-            return "Dataset completed"
+    #         pickle.dump(
+    #             data,
+    #             open(full_file_name, "wb"),
+    #             protocol=self.generator_config["pickleprotocol"],
+    #         )
+    #         return "Dataset completed"
 
-        else:
-            return data
+    #     else:
+    #         return data
 
     def _training_defective_simulations_get_preprocessed(self, seed):
         np.random.seed(seed)
@@ -760,55 +890,55 @@ class data_generator:
                 pass
         return rejected_thetas
 
-    def _ratio_estimator_get_processed_data(self, random_seed):
-        np.random.seed(random_seed)
-        theta_real = np.float32(
-            np.random.uniform(
-                low=self.model_config["param_bounds"][0],
-                high=self.model_config["param_bounds"][1],
-                size=(
-                    self.generator_config["n_trials_per_dataset"],
-                    len(self.model_config["param_bounds"][0]),
-                ),
-            )
-        )
+    # def _ratio_estimator_get_processed_data(self, random_seed):
+    #     np.random.seed(random_seed)
+    #     theta_real = np.float32(
+    #         np.random.uniform(
+    #             low=self.model_config["param_bounds"][0],
+    #             high=self.model_config["param_bounds"][1],
+    #             size=(
+    #                 self.generator_config["n_trials_per_dataset"],
+    #                 len(self.model_config["param_bounds"][0]),
+    #             ),
+    #         )
+    #     )
 
-        # Should allow for binned and unbinned version of this
-        simulations = self.get_simulations(theta=theta_real)
-        print("simulations finished!")
+    #     # Should allow for binned and unbinned version of this
+    #     simulations = self.get_simulations(theta=theta_real)
+    #     print("simulations finished!")
 
-        # Generate some new thetas
-        theta_fake = np.float32(
-            np.random.uniform(
-                low=self.model_config["param_bounds"][0],
-                high=self.model_config["param_bounds"][1],
-                size=(
-                    self.generator_config["n_trials_per_dataset"] // 2,
-                    len(self.model_config["param_bounds"][0]),
-                ),
-            )
-        )
+    #     # Generate some new thetas
+    #     theta_fake = np.float32(
+    #         np.random.uniform(
+    #             low=self.model_config["param_bounds"][0],
+    #             high=self.model_config["param_bounds"][1],
+    #             size=(
+    #                 self.generator_config["n_trials_per_dataset"] // 2,
+    #                 len(self.model_config["param_bounds"][0]),
+    #             ),
+    #         )
+    #     )
 
-        # Attach new thetas to existing simulations (negative examples)
-        indices_fake = np.random.choice(
-            [0, 1], size=self.generator_config["n_trials_per_dataset"] // 2
-        )
-        theta_real[indices_fake, :] = theta_fake
+    #     # Attach new thetas to existing simulations (negative examples)
+    #     indices_fake = np.random.choice(
+    #         [0, 1], size=self.generator_config["n_trials_per_dataset"] // 2
+    #     )
+    #     theta_real[indices_fake, :] = theta_fake
 
-        if self.generator_config["nbins"] > 0:
-            return (
-                "Error: Generating data for ratio estimators "
-                + "works only for unbinned data at this point"
-            )
-        else:
-            return {
-                "data": np.column_stack(
-                    [simulations["rts"], simulations["choices"], theta_real]
-                ),
-                "labels": np.logical_not(indices_fake).astype(int),
-            }
+    #     if self.generator_config["nbins"] > 0:
+    #         return (
+    #             "Error: Generating data for ratio estimators "
+    #             + "works only for unbinned data at this point"
+    #         )
+    #     else:
+    #         return {
+    #             "data": np.column_stack(
+    #                 [simulations["rts"], simulations["choices"], theta_real]
+    #             ),
+    #             "labels": np.logical_not(indices_fake).astype(int),
+    #         }
 
-    def _make_save_file_name(self, unique_tag=""):
+    def _make_save_file_name(self, unique_tag: str = ""):
         binned = str(0)
         if self.generator_config["nbins"] > 0:
             binned = str(1)
@@ -837,7 +967,19 @@ class data_generator:
         )
         return full_file_name
 
-    def generate_rejected_parameterizations(self, save=False):
+    def generate_rejected_parameterizations(self, save: bool = False):
+        """Generates parameterizations that are rejected by the filter.
+
+        Arguments
+        ---------
+            save: bool
+                If True, the generated data is saved to disk.
+
+        Returns
+        -------
+            rejected_parameterization_list: np.array
+                Array containing the rejected parameterizations.
+        """
         seeds = np.random.choice(
             400000000, size=self.generator_config["n_paramseter_sets_rejected"]
         )

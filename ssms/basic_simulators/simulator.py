@@ -11,29 +11,42 @@ In addition some utility functions are provided that help
 with preprocessing the output of the simulator function.
 """
 
+from typing import Dict, Any
+from ssms.basic_simulators.theta_processor import SimpleThetaProcessor
 
-def _make_valid_dict(dict_in):
+DEFAULT_SIM_PARAMS: Dict[str, Any] = {
+    "max_t": 20.0,
+    "n_samples": 2000,
+    "n_trials": 1000,
+    "delta_t": 0.001,
+    "random_state": None,
+    "return_option": "full",
+    "smooth_unif": False,
+}
+
+
+def _make_valid_dict(dict_in: dict) -> dict:
     """Turn all values in dictionary into numpy arrays and make sure,
     that all thetas are either scalars or vectors of the same length
 
     Arguments:
     ----------
-        dict_in: dictionary
+        dict_in: dict
             Dictionary of parameters, potentially with different length / types per
             parameter (key)
 
     Returns:
     --------
-        dict_in: dictionary
+        dict_in: dict
             Aligned to same size np.float32 np.arrays for every parameter
     """
 
-    collect_lengths = []
+    collect_lengths: list[int] = []
     for key, value in dict_in.items():
         # Turn all values into numpy arrays
         if isinstance(value, list):
             dict_in[key] = np.array(value).astype(np.float32)
-        elif isinstance(value, int) or isinstance(value, float):
+        elif isinstance(value, (int, float)):
             dict_in[key] = np.array([value]).astype(np.float32)
 
         # Squeeze all values to make sure they are 1d arrays
@@ -41,7 +54,7 @@ def _make_valid_dict(dict_in):
 
         # Check if all thetas are either scalars or vectors of the same length
         if dict_in[key].ndim > 1:
-            raise ValueError("Dimension of {} is greater than 1".format(key))
+            raise ValueError(f"Dimension of {key} is greater than 1")
         elif dict_in[key].ndim > 0:
             collect_lengths.append(
                 dict_in[key].shape[0]
@@ -66,8 +79,34 @@ def _make_valid_dict(dict_in):
     return dict_in
 
 
-def _theta_dict_to_array(theta=dict(), model_param_list=None):
-    """Converts theta dictionary to numpy array for use with simulator function"""
+def _theta_dict_to_array(
+    theta: dict = {}, model_param_list: list[str] | None = None
+) -> np.ndarray:
+    """Converts theta dictionary to numpy array for use with simulator function.
+
+    This function takes a dictionary of model parameters and a list of parameter names,
+    and converts them into a 2D numpy array where each row represents a set of parameters
+    and each column represents a specific parameter.
+
+    Args:
+        theta (dict): A dictionary containing model parameters. Default is an empty dict.
+        model_param_list (list[str] | None): A list of parameter names in the desired order.
+            If None, a ValueError will be raised.
+
+    Returns:
+        np.ndarray: A 2D numpy array of model parameters, with shape (n_sets, n_params),
+            where n_sets is the number of parameter sets and n_params is the number of parameters.
+
+    Raises:
+        ValueError: If model_param_list is None.
+
+    Example:
+        >>> theta = {'a': [1, 2], 'b': [3, 4], 'c': [5, 6]}
+        >>> model_param_list = ['a', 'b', 'c']
+        >>> _theta_dict_to_array(theta, model_param_list)
+        array([[1., 3., 5.],
+               [2., 4., 6.]], dtype=float32)
+    """
     if model_param_list is None:
         raise ValueError("model_param_list is not supplied")
 
@@ -76,8 +115,36 @@ def _theta_dict_to_array(theta=dict(), model_param_list=None):
     )
 
 
-def _theta_array_to_dict(theta=None, model_param_list=None):
-    """Converts theta array to dictionary for use with simulator function"""
+def _theta_array_to_dict(
+    theta: np.ndarray | None = None, model_param_list: list[str] | None = None
+) -> dict:
+    """
+    Converts theta array to dictionary for use with simulator function.
+
+    This function takes a numpy array of parameter values and a list of parameter names,
+    and converts them into a dictionary where keys are parameter names and values are
+    the corresponding parameter values.
+
+    Args:
+        theta (np.ndarray | None): A 1D or 2D numpy array of parameter values.
+            If None, a ValueError will be raised.
+        model_param_list (list[str] | None): A list of parameter names.
+            If None, a ValueError will be raised.
+
+    Returns:
+        dict: A dictionary where keys are parameter names and values are the corresponding
+            parameter values from the input theta array.
+
+    Raises:
+        ValueError: If model_param_list is None, theta is None, or if the dimensions
+            of theta do not match the length of model_param_list.
+
+    Example:
+        >>> theta = np.array([[1, 2, 3], [4, 5, 6]])
+        >>> model_param_list = ['a', 'b', 'c']
+        >>> _theta_array_to_dict(theta, model_param_list)
+        {'a': array([1, 4]), 'b': array([2, 5]), 'c': array([3, 6])}
+    """
     if model_param_list is None:
         raise ValueError("model_param_list is not supplied")
     elif theta is None:
@@ -98,8 +165,90 @@ def _theta_array_to_dict(theta=None, model_param_list=None):
         return {param: theta[:, i] for i, param in enumerate(model_param_list)}
 
 
-def make_boundary_dict(model_config, model, theta):
-    boundary_name = model_config[model]["boundary_name"]
+def _preprocess_theta_generic(
+    theta: list | np.ndarray | dict | pd.DataFrame,
+) -> np.ndarray:
+    """
+    Preprocess the input theta to a consistent format.
+
+    This function takes theta in various input formats and converts it to a
+    standardized numpy array or dictionary format for further processing.
+
+    Args:
+        theta (list | np.ndarray | dict | pd.DataFrame): The input theta in
+            various possible formats.
+
+    Returns:
+        np.ndarray | dict: The preprocessed theta in a consistent format.
+
+    Raises:
+        ValueError: If theta is not supplied as a list, numpy array, dictionary,
+            or pandas DataFrame.
+    """
+    if isinstance(theta, list):
+        theta = np.asarray(theta).astype(np.float32)
+    elif isinstance(theta, np.ndarray):
+        theta = theta.astype(np.float32)
+    elif isinstance(theta, dict):
+        theta = _make_valid_dict(deepcopy(theta))
+    elif isinstance(theta, pd.DataFrame):
+        theta = theta.to_dict(orient="list")
+        theta = {k: np.array(v).astype(np.float32) for k, v in theta.items()}
+    else:
+        raise ValueError(
+            "theta is not supplied as list, numpy array, dictionary, or pandas DataFrame!"
+        )
+    return theta
+
+
+def _preprocess_theta_deadline(
+    theta: dict | np.ndarray, deadline: bool, config: dict
+) -> tuple[int, dict]:
+    """
+    Preprocess the input theta to a consistent format.
+
+    This function takes theta in various input formats and converts it to a
+    standardized numpy array or dictionary format for further processing.
+
+    Args:
+        theta (dict | np.ndarray): The input theta in dictionary or numpy array format
+        deadline (bool): Whether the model is a deadline model
+        config (dict): The model configuration
+
+    Returns:
+        tuple[int, dict]: The number of trials and the preprocessed theta in dictionary format
+    """
+    if not isinstance(theta, dict):
+        theta = _theta_array_to_dict(theta, config["params"])
+
+    n_trials = theta[config["params"][0]].shape[0]
+
+    if not deadline:
+        theta["deadline"] = np.tile(np.array([999], dtype=np.float32), n_trials)
+
+    return n_trials, theta
+
+
+def make_boundary_dict(config: dict, theta: dict) -> dict:
+    """
+    Create a dictionary containing boundary-related parameters and functions.
+
+    This function extracts boundary-related parameters from the input theta dictionary,
+    based on the boundary configuration specified in the config. It also retrieves
+    the appropriate boundary function and multiplicative flag from the boundary_config.
+
+    Args:
+        config (dict): A dictionary containing model configuration, including the boundary name.
+        theta (dict): A dictionary of parameter values, potentially including boundary-related parameters.
+
+    Returns:
+        dict: A dictionary containing:
+            - boundary_params (dict): Extracted boundary-related parameters.
+            - boundary_fun (callable): The boundary function corresponding to the specified boundary name.
+            - boundary_multiplicative (bool): Flag indicating if the boundary is multiplicative.
+
+    """
+    boundary_name = config["boundary_name"]
     boundary_params = {
         param_name: value
         for param_name, value in theta.items()
@@ -116,18 +265,31 @@ def make_boundary_dict(model_config, model, theta):
     return boundary_dict
 
 
-def make_drift_dict(model_config, model, theta):
-    if "drift_name" in model_config[model].keys():
-        drift_name = model_config[model]["drift_name"]
-        # print(drift_name)
-        # print({param_name: value
-        # for param_name, value in theta.items()})
+def make_drift_dict(config: dict, theta: dict) -> dict:
+    """
+    Create a dictionary containing drift-related parameters and functions.
+
+    This function extracts drift-related parameters from the input theta dictionary,
+    based on the drift configuration specified in the config. It also retrieves
+    the appropriate drift function from the drift_config.
+
+    Args:
+        config (dict): A dictionary containing model configuration, including the drift name.
+        theta (dict): A dictionary of parameter values, potentially including drift-related parameters.
+
+    Returns:
+        dict: A dictionary containing:
+            - drift_fun (callable): The drift function corresponding to the specified drift name.
+            - drift_params (dict): Extracted drift-related parameters.
+            If no drift name is specified in config, returns an empty dictionary.
+    """
+    if "drift_name" in config.keys():
+        drift_name = config["drift_name"]
         drift_params = {
             param_name: value
             for param_name, value in theta.items()
             if param_name in drift_config[drift_name]["params"]
         }
-        # print('testing drift_params:', drift_params)
         drift_fun = drift_config[drift_name]["fun"]
         drift_dict = {"drift_fun": drift_fun, "drift_params": drift_params}
     else:
@@ -137,10 +299,10 @@ def make_drift_dict(model_config, model, theta):
 
 # Basic simulators and basic preprocessing
 def bin_simulator_output_pointwise(
-    out=[0, 0],
-    bin_dt=0.04,
-    nbins=0,
-):  # ['v', 'a', 'w', 't', 'angle']
+    out: tuple[np.ndarray, np.ndarray] = (np.array([0]), np.array([0])),
+    bin_dt: float = 0.04,
+    nbins: int = 0,
+) -> np.ndarray:  # ['v', 'a', 'w', 't', 'angle']
     """Turns RT part of simulator output into bin-identifier by trial
 
     Arguments
@@ -187,17 +349,17 @@ def bin_simulator_output_pointwise(
 
 
 def bin_simulator_output(
-    out=None,
-    bin_dt=0.04,
-    nbins=0,
-    max_t=-1,
-    freq_cnt=False,
-):  # ['v', 'a', 'w', 't', 'angle']
+    out: dict | None = None,
+    bin_dt: float = 0.04,
+    nbins: int = 0,
+    max_t: float = -1,
+    freq_cnt: bool = False,
+) -> np.ndarray:  # ['v', 'a', 'w', 't', 'angle']
     """Turns RT part of simulator output into bin-identifier by trial
 
     Arguments
     ---------
-        out : tuple
+        out : dict
             Output of the 'simulator' function
         bin_dt : float
             If nbins is 0, this determines the desired
@@ -207,7 +369,7 @@ def bin_simulator_output(
             Number of bins to bin reaction time data into.
             If supplied as 0, bin_dt instead determines the number of
             bins automatically.
-        max_t : int <default=-1>
+        max_t : float <default=-1>
             Override the 'max_t' metadata as part of the simulator output.
             Sometimes useful, but usually default will do the job.
         freq_cnt : bool <default=False>
@@ -218,6 +380,9 @@ def bin_simulator_output(
         A histogram of counts or proportions.
 
     """
+
+    if out is None:
+        raise ValueError("out is not supplied")
 
     if max_t == -1:
         max_t = out["metadata"]["max_t"]
@@ -249,17 +414,17 @@ def bin_simulator_output(
 
 
 def bin_arbitrary_fptd(
-    out=None,
-    bin_dt=0.04,
-    nbins=256,
-    nchoices=2,
-    choice_codes=[-1.0, 1.0],
-    max_t=10.0,
-):  # ['v', 'a', 'w', 't', 'angle']
+    out: np.ndarray | None = None,
+    bin_dt: float = 0.04,
+    nbins: int = 256,
+    nchoices: int = 2,
+    choice_codes: list[float] = [-1.0, 1.0],
+    max_t: float = 10.0,
+) -> np.ndarray:  # ['v', 'a', 'w', 't', 'angle']
     """Takes in simulator output and returns a histogram of bin counts
     Arguments
     ---------
-        out: tuple
+        out: np.ndarray
             Output of the 'simulator' function
         bin_dt : float
             If nbins is 0, this determines the desired bin size
@@ -270,7 +435,7 @@ def bin_arbitrary_fptd(
             bins automatically.
         nchoices: int <default=2>
             Number of choices allowed by the simulator.
-        choice_codes = list <default=[-1.0, 1.0]
+        choice_codes = list[float] <default=[-1.0, 1.0]>
             Choice labels to be used.
         max_t: float
             Maximum RT to consider.
@@ -279,6 +444,9 @@ def bin_arbitrary_fptd(
     -------
         2d array (nbins, nchoices): A histogram of bin counts
     """
+
+    if out is None:
+        raise ValueError("out is not supplied")
 
     # Generate bins
     if nbins == 0:
@@ -300,30 +468,69 @@ def bin_arbitrary_fptd(
     return counts
 
 
-def validate_ssm_parameters(model, theta):
+def validate_ssm_parameters(model: str, theta: dict) -> None:
+    """
+    Validate the parameters for Sequential Sampling Models (SSM).
 
-    def check_num_drifts_and_actions(drifts, num_actions):
+    This function checks the validity of parameters for different SSM models.
+    It performs specific checks based on the model type.
+
+    Args:
+        model (str): The name of the SSM model.
+        theta (dict): A dictionary containing the model parameters.
+
+    Raises:
+        ValueError: If any of the parameter validations fail.
+    """
+
+    def check_num_drifts_and_actions(drifts: np.ndarray, num_actions: int) -> None:
+        """
+        Check if the number of drift rates matches the number of actions.
+
+        Args:
+            drifts (np.ndarray): Array of drift rates.
+            num_actions (int): Number of actions.
+
+        Raises:
+            ValueError: If the number of drift rates doesn't match the number of actions.
+        """
         drifts = np.array(drifts)
         if drifts.shape[1] != num_actions:
             raise ValueError("Number of drift rates does not match number of actions")
 
-    def check_lba_drifts_sum(drifts):
+    def check_lba_drifts_sum(drifts: np.ndarray) -> None:
+        """
+        Check if the drift rates for LBA models sum to 1 for each trial.
+
+        Args:
+            drifts (np.ndarray): Array of drift rates.
+
+        Raises:
+            ValueError: If the drift rates don't sum to 1 for any trial.
+        """
         v_sum = np.sum(drifts, axis=1)
         if np.any(v_sum <= 0.99) or np.any(v_sum >= 1.01):
             raise ValueError("Drift rates do not sum to 1 for each trial")
 
-    def check_if_z_gt_a(z, a):
+    def check_if_z_gt_a(z: np.ndarray, a: np.ndarray) -> None:
+        """
+        Check if the starting point (z) is greater than or equal to the threshold (a).
+
+        Args:
+            z (np.ndarray): Array of starting points.
+            a (np.ndarray): Array of thresholds.
+
+        Raises:
+            ValueError: If z >= a for any trial.
+        """
         if np.any(z >= a):
             raise ValueError("Starting point z >= a for at least one trial")
 
     if model in ["lba_3_v1", "lba_angle_3_v1", "rlwm_lba_race_v1", "rlwm_lba_race_v2"]:
         if model in ["lba_3_v1", "lba_angle_3_v1"]:
-            # check_num_drifts_and_actions(theta['v'], model_config[model]['nchoices'])
             check_lba_drifts_sum(theta["v"])
             check_if_z_gt_a(theta["z"], theta["a"])
         elif model in ["rlwm_lba_race_v1"]:
-            # check_num_drifts_and_actions(theta['v_RL'], model_config[model]['nchoices'])
-            # check_num_drifts_and_actions(theta['v_WM'], model_config[model]['nchoices'])
             check_lba_drifts_sum(theta["v_RL"])
             check_lba_drifts_sum(theta["v_WM"])
             check_if_z_gt_a(theta["z"], theta["a"])
@@ -333,19 +540,37 @@ def validate_ssm_parameters(model, theta):
             check_if_z_gt_a(theta["z"], theta["a"])
 
 
+def make_noise_vec(
+    noise_level: float | np.ndarray, n_trials: int, n_particles: int
+) -> np.ndarray:
+    if n_particles == 1 or n_particles is None:
+        shape_tuple = n_trials
+    else:
+        shape_tuple = (n_trials, 1)
+
+    noise_vec = np.tile(
+        np.array(
+            [noise_level] * n_particles,
+            dtype=np.float32,
+        ),
+        shape_tuple,
+    )
+    return noise_vec
+
+
 def simulator(
-    theta,
-    model="angle",
-    n_samples=1000,
-    delta_t=0.001,
-    max_t=20,
-    no_noise=False,
-    bin_dim=None,
-    bin_pointwise=False,
-    smooth_unif=True,
-    return_option="full",
-    random_state=None,
-):
+    theta: list | np.ndarray | dict | pd.DataFrame,
+    model: str = "angle",
+    n_samples: int = 1000,
+    delta_t: float = 0.001,
+    max_t: float = 20,
+    no_noise: bool = False,
+    bin_dim: int | None = None,
+    bin_pointwise: bool = False,
+    smooth_unif: bool = True,
+    return_option: str = "full",
+    random_state: int | None = None,
+) -> dict:
     """Basic data simulator for the models included in HDDM.
 
     Arguments
@@ -365,7 +590,7 @@ def simulator(
             Maximum reaction the simulator can reach
         no_noise: bool <default=False>
             Turn noise of (useful for plotting purposes mostly)
-        bin_dim: int <default=None>
+        bin_dim: int | None <default=None>
             Number of bins to use (in case the simulator output is
             supposed to come out as a count histogram)
         bin_pointwise: bool <default=False>
@@ -380,7 +605,7 @@ def simulator(
             metadata contains the model parameters and some additional
             information. 'metadata' is a simpler dictionary with less information
             if 'minimal' is chosen.
-        random_state: int <default=None>
+        random_state: int | None <default=None>
             Integer passed to random_seed function in the simulator.
             Can be used for reproducibility.
 
@@ -396,137 +621,49 @@ def simulator(
     # (if supplied as 2d array or list in the first place,
     # user has to supply the correct ordering to begin with)
 
-    if isinstance(theta, list):
-        theta = np.asarray(theta).astype(np.float32)
-    elif isinstance(theta, np.ndarray):
-        theta = theta.astype(np.float32)
-    elif isinstance(theta, dict):
-        theta = _make_valid_dict(deepcopy(theta))
-    elif isinstance(theta, pd.DataFrame):
-        theta = theta.to_dict(orient="list")
-        theta = {k: np.array(v).astype(np.float32) for k, v in theta.items()}
-    else:
-        try:
-            import torch
-
-            if isinstance(theta, torch.Tensor):
-                theta = theta.numpy().astype(np.float32)
-            else:
-                raise ValueError(
-                    "theta is not supplied as list, numpy array,"
-                    " dictionary or torch tensor!"
-                )
-        except ImportError as e:
-            raise e
-
-    # Turn theta into array if it is a dictionary
-    # if isinstance(theta, dict):
-    #     theta = _theta_dict_to_array(theta, model_config[model]["params"])
-
     if "_deadline" in model:
         deadline = True
         model = model.replace("_deadline", "")
     else:
         deadline = False
 
-    # Make sure theta is a dict going forward
-    if not isinstance(theta, dict):
-        if deadline:
-            theta = _theta_array_to_dict(
-                theta, model_config[model]["params"] + ["deadline"]
-            )
-            warnings.warn(
-                "Deadline model request, and theta not supplied as dict."
-                + "Make sure to supply the deadline parameters in last position!"
-            )
-        else:
-            theta = _theta_array_to_dict(theta, model_config[model]["params"])
+    model_config_local = deepcopy(model_config[model])
 
-    n_trials = theta[model_config[model]["params"][0]].shape[0]
-    if not deadline:
-        # print('Setting mock deadline to 999 (this should never have an effect)')
-        theta["deadline"] = np.tile(np.array([999], dtype=np.float32), n_trials)
+    if deadline:
+        model_config_local["params"] += ["deadline"]
+
+    theta = _preprocess_theta_generic(theta)
+    n_trials, theta = _preprocess_theta_deadline(theta, deadline, model_config_local)
 
     # Initialize dictionary that collects
     # simulator inputs that are commong across simulator functions
+    sim_param_dict = deepcopy(DEFAULT_SIM_PARAMS)
+
+    # Update all values of sim_param_dict that are defined in locals()
+    locals_dict = locals()
     sim_param_dict = {
-        "max_t": max_t,
-        "s": 0.0,
-        "n_samples": n_samples,
-        "n_trials": n_trials,
-        "delta_t": delta_t,
-        "random_state": random_state,
-        "return_option": return_option,
-        "smooth": smooth_unif,
+        key_: locals_dict[key_]
+        for key_ in locals_dict.keys()
+        if key_ in sim_param_dict.keys()
     }
 
-    boundary_dict = make_boundary_dict(model_config, model, theta)
-    drift_dict = make_drift_dict(model_config, model, theta)
-
-    # 2 choice models (single particle)
-    # The correct settings for the noise parameters in the simulator
-    # depends on context. We predefine a dictionary to collect all
-    # relevant settings here and fill in the correct value given
-    # the actual model string.
-
-    noise_dict = {
-        "1_particles": 1.0,
-        "2_particles": np.tile(
-            np.array(
-                [1.0] * 2,
-                dtype=np.float32,
-            ),
-            (n_trials, 1),
-        ),
-        "3_particles": np.tile(
-            np.array(
-                [1.0] * 3,
-                dtype=np.float32,
-            ),
-            (n_trials, 1),
-        ),
-        "4_particles": np.tile(
-            np.array(
-                [1.0] * 4,
-                dtype=np.float32,
-            ),
-            (n_trials, 1),
-        ),
-        "lba_based_models": 0.1,
-    }
-
+    # Fix up noise level
     if no_noise:
-        noise_dict = {key: value * 0.0 for key, value in noise_dict.items()}
+        noise_level = 0.0
+    elif "lba" in model:
+        noise_level = 0.1
+    else:
+        noise_level = 1.0
 
-    if model in [
-        "glob",
-        "ddm",
-        "angle",
-        "weibull",
-        "weibull_cdf",
-        "ddm_hddm_base",
-        "ddm_legacy",  # AF-TODO what was DDM legacy?
-        "levy",
-        "levy_angle",
-        "full_ddm",
-        "full_ddm2",
-        "full_ddm_legacy",
-        "full_ddm_hddm_base",
-        "ddm_sdv",
-        "ornstein",
-        "ornstein_uhlenbeck",
-        "ornstein_angle",
-        "gamma_drift",
-        "shrink_spot",
-        "gamma_drift_angle",
-    ]:
-        sim_param_dict["s"] = noise_dict["1_particles"]
+    noise_vec = make_noise_vec(noise_level, n_trials, model_config_local["n_particles"])
 
-    if model in ["ds_conflict_drift", "ds_conflict_drift_angle"]:
-        sim_param_dict["s"] = noise_dict["1_particles"]
-        theta["v"] = np.tile(np.array([0], dtype=np.float32), n_trials)
+    if "lba" in model:
+        theta["sd"] = noise_vec
+    else:
+        theta["s"] = noise_vec
 
-    # Multi-particle models
+    # Process theta
+    theta = SimpleThetaProcessor().process_theta(theta, model_config_local, n_trials)
 
     #   LBA-based models
     if model == "lba2":
@@ -587,284 +724,23 @@ def simulator(
         theta["z"] = np.expand_dims(theta["z"], axis=1)
         theta["t_WM"] = np.expand_dims(theta["t_WM"], axis=1)
 
+    # Make boundary dictionary
+    boundary_dict = make_boundary_dict(model_config_local, theta)
+    # Make drift dictionary
+    drift_dict = make_drift_dict(model_config_local, theta)
+
+    # Check if parameters are valid
     validate_ssm_parameters(model, theta)
 
-    # 2 Choice
-    if model == "race_2":
-        sim_param_dict["s"] = noise_dict["2_particles"]
-        theta["z"] = np.column_stack([theta["z0"], theta["z1"]])
-        theta["v"] = np.column_stack([theta["v0"], theta["v1"]])
-        theta["t"] = np.expand_dims(theta["t"], axis=1)
-        theta["a"] = np.expand_dims(theta["a"], axis=1)
-
-    if model in ["race_no_bias_2", "race_no_bias_angle_2"]:
-        sim_param_dict["s"] = noise_dict["2_particles"]
-        theta["z"] = np.column_stack([theta["z"], theta["z"]])
-        theta["v"] = np.column_stack([theta["v0"], theta["v1"]])
-        theta["t"] = np.expand_dims(theta["t"], axis=1)
-        theta["a"] = np.expand_dims(theta["a"], axis=1)
-
-    if model in ["race_no_z_2", "race_no_z_angle_2"]:
-        sim_param_dict["s"] = noise_dict["2_particles"]
-        theta["z"] = np.tile(np.array([0.0] * 2, dtype=np.float32), (n_trials, 1))
-        theta["v"] = np.column_stack([theta["v0"], theta["v1"]])
-        theta["t"] = np.expand_dims(theta["t"], axis=1)
-        theta["a"] = np.expand_dims(theta["a"], axis=1)
-
-    # 3 Choice models
-
-    if model == "race_3":
-        sim_param_dict["s"] = noise_dict["3_particles"]
-        theta["z"] = np.column_stack([theta["z0"], theta["z1"], theta["z2"]])
-        theta["v"] = np.column_stack([theta["v0"], theta["v1"], theta["v2"]])
-        theta["t"] = np.expand_dims(theta["t"], axis=1)
-        theta["a"] = np.expand_dims(theta["a"], axis=1)
-
-    if model in ["race_no_bias_3", "race_no_bias_angle_3"]:
-        sim_param_dict["s"] = noise_dict["3_particles"]
-        theta["z"] = np.column_stack([theta["z"], theta["z"], theta["z"]])
-        theta["v"] = np.column_stack([theta["v0"], theta["v1"], theta["v2"]])
-        theta["t"] = np.expand_dims(theta["t"], axis=1)
-        theta["a"] = np.expand_dims(theta["a"], axis=1)
-
-    if model in ["race_no_z_3", "race_no_z_angle_3"]:
-        sim_param_dict["s"] = noise_dict["3_particles"]
-        theta["z"] = np.tile(np.array([0.0] * 3, dtype=np.float32), (n_trials, 1))
-        theta["v"] = np.column_stack([theta["v0"], theta["v1"], theta["v2"]])
-        theta["t"] = np.expand_dims(theta["t"], axis=1)
-        theta["a"] = np.expand_dims(theta["a"], axis=1)
-
-    if model == "lca_3":
-        sim_param_dict["s"] = noise_dict["3_particles"]
-        theta["z"] = np.column_stack([theta["z0"], theta["z1"], theta["z2"]])
-        theta["v"] = np.column_stack([theta["v0"], theta["v1"], theta["v2"]])
-        theta["t"] = np.expand_dims(theta["t"], axis=1)
-        theta["a"] = np.expand_dims(theta["a"], axis=1)
-        theta["g"] = np.expand_dims(theta["g"], axis=1)
-        theta["b"] = np.expand_dims(theta["b"], axis=1)
-
-    if model in ["lca_no_bias_3", "lca_no_bias_angle_3"]:
-        sim_param_dict["s"] = noise_dict["3_particles"]
-        theta["z"] = np.column_stack([theta["z"], theta["z"], theta["z"]])
-        theta["v"] = np.column_stack([theta["v0"], theta["v1"], theta["v2"]])
-        theta["t"] = np.expand_dims(theta["t"], axis=1)
-        theta["a"] = np.expand_dims(theta["a"], axis=1)
-        theta["g"] = np.expand_dims(theta["g"], axis=1)
-        theta["b"] = np.expand_dims(theta["b"], axis=1)
-
-    if model in ["lca_no_z_3", "lca_no_z_angle_3"]:
-        sim_param_dict["s"] = noise_dict["3_particles"]
-        theta["z"] = np.tile(np.array([0.0] * 3, dtype=np.float32), (n_trials, 1))
-        theta["v"] = np.column_stack([theta["v0"], theta["v1"], theta["v2"]])
-        theta["t"] = np.expand_dims(theta["t"], axis=1)
-        theta["a"] = np.expand_dims(theta["a"], axis=1)
-        theta["g"] = np.expand_dims(theta["g"], axis=1)
-        theta["b"] = np.expand_dims(theta["b"], axis=1)
-
-    # 4 Choice models
-
-    if model == "race_4":
-        sim_param_dict["s"] = noise_dict["4_particles"]
-        theta["z"] = np.column_stack(
-            [theta["z0"], theta["z1"], theta["z2"], theta["z3"]]
-        )
-        theta["v"] = np.column_stack(
-            [theta["v0"], theta["v1"], theta["v2"], theta["v3"]]
-        )
-        theta["t"] = np.expand_dims(theta["t"], axis=1)
-        theta["a"] = np.expand_dims(theta["a"], axis=1)
-
-    if model in ["race_no_bias_4", "race_no_bias_angle_4"]:
-        sim_param_dict["s"] = noise_dict["4_particles"]
-        theta["z"] = np.column_stack([theta["z"], theta["z"], theta["z"], theta["z"]])
-        theta["v"] = np.column_stack(
-            [theta["v0"], theta["v1"], theta["v2"], theta["v3"]]
-        )
-        theta["t"] = np.expand_dims(theta["t"], axis=1)
-        theta["a"] = np.expand_dims(theta["a"], axis=1)
-
-    if model in ["race_no_z_4", "race_no_z_angle_4"]:
-        sim_param_dict["s"] = noise_dict["4_particles"]
-        theta["z"] = np.tile(np.array([0.0] * 4, dtype=np.float32), (n_trials, 1))
-        theta["v"] = np.column_stack(
-            [theta["v0"], theta["v1"], theta["v2"], theta["v3"]]
-        )
-        theta["t"] = np.expand_dims(theta["t"], axis=1)
-        theta["a"] = np.expand_dims(theta["a"], axis=1)
-
-    if model == "lca_4":
-        sim_param_dict["s"] = noise_dict["4_particles"]
-        theta["z"] = np.column_stack(
-            [theta["z0"], theta["z1"], theta["z2"], theta["z3"]]
-        )
-        theta["v"] = np.column_stack(
-            [theta["v0"], theta["v1"], theta["v2"], theta["v3"]]
-        )
-        theta["t"] = np.expand_dims(theta["t"], axis=1)
-        theta["a"] = np.expand_dims(theta["a"], axis=1)
-        theta["g"] = np.expand_dims(theta["g"], axis=1)
-        theta["b"] = np.expand_dims(theta["b"], axis=1)
-
-    if model in ["lca_no_bias_4", "lca_no_bias_angle_4"]:
-        sim_param_dict["s"] = noise_dict["4_particles"]
-        theta["z"] = np.column_stack([theta["z"], theta["z"], theta["z"], theta["z"]])
-        theta["v"] = np.column_stack(
-            [theta["v0"], theta["v1"], theta["v2"], theta["v3"]]
-        )
-        theta["t"] = np.expand_dims(theta["t"], axis=1)
-        theta["a"] = np.expand_dims(theta["a"], axis=1)
-        theta["g"] = np.expand_dims(theta["g"], axis=1)
-        theta["b"] = np.expand_dims(theta["b"], axis=1)
-
-    if model in ["lca_no_z_4", "lca_no_z_angle_4"]:
-        sim_param_dict["s"] = noise_dict["4_particles"]
-        theta["z"] = np.tile(np.array([0.0] * 4, dtype=np.float32), (n_trials, 1))
-        theta["v"] = np.column_stack(
-            [theta["v0"], theta["v1"], theta["v2"], theta["v3"]]
-        )
-        theta["t"] = np.expand_dims(theta["t"], axis=1)
-        theta["a"] = np.expand_dims(theta["a"], axis=1)
-        theta["g"] = np.expand_dims(theta["g"], axis=1)
-        theta["b"] = np.expand_dims(theta["b"], axis=1)
-
-    # Seq / Parallel models (4 choice)
-
-    z_vec = np.tile(np.array([0.5], dtype=np.float32), reps=n_trials)
-    g_zero_vec = np.tile(np.array([0.0], dtype=np.float32), reps=n_trials)
-    g_vec_leak = np.tile(np.array([2.0], dtype=np.float32), reps=n_trials)
-    s_pre_high_level_choice_zero_vec = np.tile(
-        np.array([0.0], dtype=np.float32), reps=n_trials
-    )
-    s_pre_high_level_choice_one_vec = np.tile(
-        np.array([1.0], dtype=np.float32), reps=n_trials
-    )
-
-    if model in ["ddm_seq2", "ddm_seq2_traj"]:
-        sim_param_dict["s"] = noise_dict["1_particles"]
-
-    if model in [
-        "ddm_seq2_no_bias",
-        "ddm_seq2_angle_no_bias",
-        "ddm_seq2_weibull_no_bias",
-        "ddm_seq2_conflict_gamma_no_bias",
-    ]:
-        sim_param_dict["s"] = noise_dict["1_particles"]
-        theta["zh"], theta["zl1"], theta["zl2"] = [z_vec, z_vec, z_vec]
-
-    if model == "ddm_par2":
-        sim_param_dict["s"] = noise_dict["1_particles"]
-
-    if model in [
-        "ddm_par2_no_bias",
-        "ddm_par2_angle_no_bias",
-        "ddm_par2_weibull_no_bias",
-        "ddm_par2_conflict_gamma_no_bias",
-    ]:
-        sim_param_dict["s"] = noise_dict["1_particles"]
-        theta["zh"], theta["zl1"], theta["zl2"] = [z_vec, z_vec, z_vec]
-
-    if model == "ddm_mic2_adj":
-        sim_param_dict["s"] = noise_dict["1_particles"]
-        sim_param_dict["s_pre_high_level_choice"] = s_pre_high_level_choice_one_vec
-        theta["g"] = g_zero_vec
-
-    if model in [
-        "ddm_mic2_adj_no_bias",
-        "ddm_mic2_adj_angle_no_bias",
-        "ddm_mic2_adj_weibull_no_bias",
-        "ddm_mic2_adj_conflict_gamma_no_bias",
-    ]:
-        sim_param_dict["s"] = noise_dict["1_particles"]
-        theta["zh"], theta["zl1"], theta["zl2"] = [z_vec, z_vec, z_vec]
-        theta["g"] = g_zero_vec
-        sim_param_dict["s_pre_high_level_choice"] = s_pre_high_level_choice_one_vec
-
-    # ----- Ornstein version of mic2_adj ---------
-    if model == "ddm_mic2_ornstein":
-        sim_param_dict["s"] = noise_dict["1_particles"]
-        sim_param_dict["s_pre_high_level_choice"] = s_pre_high_level_choice_one_vec
-
-    if model in [
-        "ddm_mic2_ornstein_no_bias",
-        "ddm_mic2_ornstein_angle_no_bias",
-        "ddm_mic2_ornstein_weibull_no_bias",
-        "ddm_mic2_ornstein_conflict_gamma_no_bias",
-    ]:
-        sim_param_dict["s"] = noise_dict["1_particles"]
-        theta["zh"], theta["zl1"], theta["zl2"] = [z_vec, z_vec, z_vec]
-        sim_param_dict["s_pre_high_level_choice"] = s_pre_high_level_choice_one_vec
-
-    if model in [
-        "ddm_mic2_ornstein_no_bias_no_lowdim_noise",
-        "ddm_mic2_ornstein_angle_no_bias_no_lowdim_noise",
-        "ddm_mic2_ornstein_weibull_no_bias_no_lowdim_noise",
-        "ddm_mic2_ornstein_conflict_gamma_no_bias_no_lowdim_noise",
-    ]:
-        sim_param_dict["s"] = noise_dict["1_particles"]
-        theta["zh"], theta["zl1"], theta["zl2"] = [z_vec, z_vec, z_vec]
-        sim_param_dict["s_pre_high_level_choice"] = s_pre_high_level_choice_zero_vec
-
-    # Leak version of mic2
-    if model == "ddm_mic2_leak":
-        sim_param_dict["s"] = noise_dict["1_particles"]
-        theta["g"] = g_vec_leak
-        sim_param_dict["s_pre_high_level_choice"] = s_pre_high_level_choice_one_vec
-
-    if model in [
-        "ddm_mic2_leak_no_bias",
-        "ddm_mic2_leak_angle_no_bias",
-        "ddm_mic2_leak_weibull_no_bias",
-        "ddm_mic2_leak_conflict_gamma_no_bias",
-    ]:
-        sim_param_dict["s"] = noise_dict["1_particles"]
-        theta["zh"], theta["zl1"], theta["zl2"] = [z_vec, z_vec, z_vec]
-        theta["g"] = g_vec_leak
-        sim_param_dict["s_pre_high_level_choice"] = s_pre_high_level_choice_one_vec
-
-    if model in [
-        "ddm_mic2_leak_no_bias_no_lowdim_noise",
-        "ddm_mic2_leak_angle_no_bias_no_lowdim_noise",
-        "ddm_mic2_leak_weibull_no_bias_no_lowdim_noise",
-        "ddm_mic2_leak_conflict_gamma_no_bias_no_lowdim_noise",
-    ]:
-        sim_param_dict["s"] = noise_dict["1_particles"]
-        theta["zh"], theta["zl1"], theta["zl2"] = [z_vec, z_vec, z_vec]
-        theta["g"] = g_vec_leak
-        sim_param_dict["s_pre_high_level_choice"] = s_pre_high_level_choice_zero_vec
-
-    # ----------------- High level dependent noise scaling --------------
-    if model in [
-        "ddm_mic2_multinoise_no_bias",
-        "ddm_mic2_multinoise_angle_no_bias",
-        "ddm_mic2_multinoise_weibull_no_bias",
-        "ddm_mic2_multinoise_conflict_gamma_no_bias",
-    ]:
-        sim_param_dict["s"] = noise_dict["1_particles"]
-        theta["zh"], theta["zl1"], theta["zl2"] = [z_vec, z_vec, z_vec]
-
-    # ----------------- Tradeoff models -----------------
-    if model in [
-        "tradeoff_no_bias",
-        "tradeoff_angle_no_bias",
-        "tradeoff_weibull_no_bias",
-        "tradeoff_conflict_gamma_no_bias",
-    ]:
-        sim_param_dict["s"] = noise_dict["1_particles"]
-        theta["zh"], theta["zl1"], theta["zl2"] = [z_vec, z_vec, z_vec]
-
-    # print(theta)
-    # print(boundary_dict)
-    # print(drift_dict)
-    # print(sim_param_dict)
-
     # Call to the simulator
-    x = model_config[model]["simulator"](
+    x = model_config_local["simulator"](
         **theta,
         **boundary_dict,
         **drift_dict,
         **sim_param_dict,
     )
 
+    # Postprocess simulator output ----------------------------
     # Additional model outputs, easy to compute:
     # Choice probability
     x["choice_p"] = np.zeros((n_trials, len(x["metadata"]["possible_choices"])))
@@ -875,6 +751,8 @@ def simulator(
     x["nogo_p"] = np.zeros((n_trials, 1))
     x["go_p"] = np.zeros((n_trials, 1))
 
+    # Calculate choice probabilities by trial
+    # TODO: vectorize this
     for k in range(n_trials):
         out_len = x["rts"][:, k, :].shape[0]
         out_len_no_omission = x["rts"][:, k, :][x["rts"][:, k, :] != -999].shape[0]
