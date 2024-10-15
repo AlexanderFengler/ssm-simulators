@@ -93,16 +93,25 @@ def test_simulator_runs(sim_input_data):
 
             # Go over different number of samples
             if subkey == "theta_dict_uneven":
+
                 for n_samples in [1, 10]:
+                    raised_value_error = 0
+                    print("input data: ", sim_input_data[key][subkey])
+                    print("n_samples: ", n_samples)
                     try:
                         out = simulator(
-                            model=key, theta=sim_input_data[key][subkey], n_samples=1
+                            model=key,
+                            theta=sim_input_data[key][subkey],
+                            n_samples=n_samples,
                         )
                     except ValueError:
                         raised_val_error = 1
-                    assert raised_val_error == 1
+
+                    assert raised_val_error
             else:
                 for n_samples in [1, 10]:
+                    print("input data: ", sim_input_data[key][subkey])
+                    print("n_samples: ", n_samples)
                     out = simulator(
                         model=key,
                         theta=sim_input_data[key][subkey],
