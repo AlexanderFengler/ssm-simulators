@@ -539,7 +539,7 @@ def validate_ssm_parameters(model: str, theta: dict) -> None:
 
 
 def make_noise_vec(
-    noise_level: float | np.ndarray, n_trials: int, n_particles: int
+    sigma_noise: float | np.ndarray, n_trials: int, n_particles: int
 ) -> np.ndarray:
     if n_particles == 1 or n_particles is None:
         shape_tuple = n_trials
@@ -548,7 +548,11 @@ def make_noise_vec(
 
     noise_vec = np.tile(
         np.array(
-            [noise_level] * n_particles,
+            (
+                [sigma_noise[0]] * n_particles
+                if isinstance(sigma_noise, np.ndarray)
+                else [sigma_noise] * n_particles
+            ),
             dtype=np.float32,
         ),
         shape_tuple,
@@ -565,6 +569,7 @@ def simulator(
     no_noise: bool = False,
     bin_dim: int | None = None,
     bin_pointwise: bool = False,
+    sigma_noise: float | None = None,
     smooth_unif: bool = True,
     return_option: str = "full",
     random_state: int | None = None,
@@ -596,6 +601,12 @@ def simulator(
             If true the 'RT' part of the data is now specifies the
             'bin-number' of a given trial instead of the 'RT' directly.
             You need to specify bin_dim as some number for this to work.
+        sigma_noise: float | None <default=None>
+            Standard deviation of noise in the diffusion process. If None, defaults to 1.0 for most models
+            and 0.1 for LBA models. If no_noise is True, sigma_noise will be set to 0.0.
+            If 'sd' or 's' is passed via theta dictionary, sigma_noise must be None.
+        smooth_unif: bool <default=True>
+            Whether to add uniform random noise to RTs to smooth the distributions.
         return_option: str <default='full'>
             Determines what the function returns. Can be either
             'full' or 'minimal'. If 'full' the function returns
@@ -646,15 +657,28 @@ def simulator(
     }
 
     # Fix up noise level
-    if no_noise:
-        noise_level = 0.0
-    elif "lba" in model:
-        noise_level = 0.1
+    if "sd" in theta or "s" in theta:
+        if sigma_noise is not None:
+            raise ValueError(
+                "sigma_noise parameter should be None if 'sd' or 's' is passed via theta dictionary"
+            )
+        elif no_noise:
+            sigma_noise = 0.0
+        elif "sd" in theta:
+            sigma_noise = theta["sd"]
+        elif "s" in theta:
+            sigma_noise = theta["s"]
     else:
-        noise_level = 1.0
+        if no_noise:
+            sigma_noise = 0.0
+        elif "lba" in model and sigma_noise is None:
+            sigma_noise = 0.1
+        elif sigma_noise is None:
+            sigma_noise = 1.0
 
-    noise_vec = make_noise_vec(noise_level, n_trials, model_config_local["n_particles"])
-
+    noise_vec = make_noise_vec(sigma_noise, n_trials, model_config_local["n_particles"])
+    print("noise vec ", noise_vec)
+    print("theta", theta)
     if "lba" in model:
         theta["sd"] = noise_vec
     else:
