@@ -548,7 +548,11 @@ def make_noise_vec(
 
     noise_vec = np.tile(
         np.array(
-            [sigma_noise] * n_particles,
+            (
+                [sigma_noise[0]] * n_particles
+                if isinstance(sigma_noise, np.ndarray)
+                else [sigma_noise] * n_particles
+            ),
             dtype=np.float32,
         ),
         shape_tuple,
@@ -673,7 +677,8 @@ def simulator(
             sigma_noise = 1.0
 
     noise_vec = make_noise_vec(sigma_noise, n_trials, model_config_local["n_particles"])
-
+    print("noise vec ", noise_vec)
+    print("theta", theta)
     if "lba" in model:
         theta["sd"] = noise_vec
     else:
