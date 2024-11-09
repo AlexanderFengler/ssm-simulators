@@ -677,8 +677,6 @@ def simulator(
             sigma_noise = 1.0
 
     noise_vec = make_noise_vec(sigma_noise, n_trials, model_config_local["n_particles"])
-    print("noise vec ", noise_vec)
-    print("theta", theta)
     if "lba" in model:
         theta["sd"] = noise_vec
     else:
