@@ -9,25 +9,23 @@
       
       
       
-        <link rel="prev" href="../basic_simulators/">
+        <link rel="prev" href="../config/">
       
-      
-        <link rel="next" href="../dataset_generators/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.0">
+      <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.2.8">
     
     
       
-        <title>config - SSMS (Sequential Sampling Model Simulators)</title>
+        <title>data generators - SSMS (Sequential Sampling Model Simulators)</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.45e1311d.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.046329b4.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.85d0ee34.min.css">
       
       
 
@@ -68,13 +66,16 @@
     <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
   
     
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
         
-        <a href="#ssms.config" class="md-skip">
+        <a href="#ssms.dataset_generators" class="md-skip">
           Skip to content
         </a>
       
@@ -92,7 +93,7 @@
             
 <span class="show-on-small right-margin">
     <span class="twemoji right-margin show-on-small move-down">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M246.6 470.6c-12.5 12.5-32.8 12.5-45.3 0l-160-160c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L224 402.7l137.4-137.3c12.5-12.5 32.8-12.5 45.3 0s12.5 32.8 0 45.3l-160 160zm160-352-160 160c-12.5 12.5-32.8 12.5-45.3 0l-160-160c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L224 210.7 361.4 73.4c12.5-12.5 32.8-12.5 45.3 0s12.5 32.8 0 45.3z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M246.6 470.6c-12.5 12.5-32.8 12.5-45.3 0l-160-160c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L224 402.7l137.4-137.3c12.5-12.5 32.8-12.5 45.3 0s12.5 32.8 0 45.3l-160 160zm160-352-160 160c-12.5 12.5-32.8 12.5-45.3 0l-160-160c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L224 210.7 361.4 73.4c12.5-12.5 32.8-12.5 45.3 0s12.5 32.8 0 45.3z"/></svg>
     </span>
     Navigate the site here!
 </span>
@@ -140,7 +141,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              config
+              data generators
             
           </span>
         </div>
@@ -153,9 +154,9 @@
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
     
-      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_3" hidden>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9h-1.9M20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69m-9.15 3.96h2.3L12 9l-1.15 3.65Z"/></svg>
       </label>
     
@@ -163,9 +164,9 @@
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
     
-      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_2" hidden>
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
       </label>
     
@@ -173,18 +174,15 @@
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to automatic mode"  type="radio" name="__palette" id="__palette_2">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to automatic mode"  type="radio" name="__palette" id="__palette_3">
     
-      <label class="md-header__button md-icon" title="Switch to automatic mode" for="__palette_0" hidden>
+      <label class="md-header__button md-icon" title="Switch to automatic mode" for="__palette_2" hidden>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12c0-2.42-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
       </label>
     
   
 </form>
       
-    
-    
-      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
     
     
     
@@ -230,7 +228,7 @@
         <a href="htps://github.com/AlexanderFengler/ssm-simulators" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
     AlexanderFengler/ssm-simulators
@@ -343,7 +341,7 @@
       <a href="htps://github.com/AlexanderFengler/ssm-simulators" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
     AlexanderFengler/ssm-simulators
@@ -358,24 +356,18 @@
   
   
   
-  
     
     
     
-    
-    
+    <li class="md-nav__item md-nav__item--nested">
       
-      
-    
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-      
+        
         
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
         
-          
-          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="">
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -395,7 +387,6 @@
             
               
                 
-  
   
   
   
@@ -426,24 +417,18 @@
   
   
   
-  
     
     
     
-    
-    
+    <li class="md-nav__item md-nav__item--nested">
       
-      
-    
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-      
+        
         
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
         
-          
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -463,7 +448,6 @@
             
               
                 
-  
   
   
   
@@ -496,24 +480,18 @@
     
   
   
-  
     
     
     
-    
-    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
-      
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
-      
+        
         
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
-          
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -533,7 +511,6 @@
             
               
                 
-  
   
   
   
@@ -557,7 +534,6 @@
   
   
   
-  
     <li class="md-nav__item">
       <a href="../basic_simulators/" class="md-nav__link">
         
@@ -577,8 +553,27 @@
                 
   
   
-    
   
+    <li class="md-nav__item">
+      <a href="../config/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    config
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
   
   
     <li class="md-nav__item md-nav__item--active">
@@ -591,7 +586,7 @@
           
   
   <span class="md-ellipsis">
-    config
+    data generators
   </span>
   
 
@@ -602,7 +597,7 @@
         
   
   <span class="md-ellipsis">
-    config
+    data generators
   </span>
   
 
@@ -622,29 +617,43 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#ssms.config" class="md-nav__link">
-    <span class="md-ellipsis">
-      ssms.config
-    </span>
+  <a href="#ssms.dataset_generators" class="md-nav__link">
+    dataset_generators
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#ssms.config.config" class="md-nav__link">
-    <span class="md-ellipsis">
-      config
-    </span>
+  <a href="#ssms.dataset_generators.lan_mlp" class="md-nav__link">
+    lan_mlp
   </a>
   
-    <nav class="md-nav" aria-label="config">
+    <nav class="md-nav" aria-label="lan_mlp">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#ssms.config.config.boundary_config_to_function_params" class="md-nav__link">
-    <span class="md-ellipsis">
-      boundary_config_to_function_params()
-    </span>
+  <a href="#ssms.dataset_generators.lan_mlp.data_generator" class="md-nav__link">
+    data_generator
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ssms.dataset_generators.snpe" class="md-nav__link">
+    snpe
+  </a>
+  
+    <nav class="md-nav" aria-label="snpe">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ssms.dataset_generators.snpe.data_generator_snpe" class="md-nav__link">
+    data_generator_snpe
   </a>
   
 </li>
@@ -658,27 +667,6 @@
   
 </nav>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../dataset_generators/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    data generators
-  </span>
-  
-
-      </a>
     </li>
   
 
@@ -716,29 +704,43 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#ssms.config" class="md-nav__link">
-    <span class="md-ellipsis">
-      ssms.config
-    </span>
+  <a href="#ssms.dataset_generators" class="md-nav__link">
+    dataset_generators
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#ssms.config.config" class="md-nav__link">
-    <span class="md-ellipsis">
-      config
-    </span>
+  <a href="#ssms.dataset_generators.lan_mlp" class="md-nav__link">
+    lan_mlp
   </a>
   
-    <nav class="md-nav" aria-label="config">
+    <nav class="md-nav" aria-label="lan_mlp">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#ssms.config.config.boundary_config_to_function_params" class="md-nav__link">
-    <span class="md-ellipsis">
-      boundary_config_to_function_params()
-    </span>
+  <a href="#ssms.dataset_generators.lan_mlp.data_generator" class="md-nav__link">
+    data_generator
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ssms.dataset_generators.snpe" class="md-nav__link">
+    snpe
+  </a>
+  
+    <nav class="md-nav" aria-label="snpe">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ssms.dataset_generators.snpe.data_generator_snpe" class="md-nav__link">
+    data_generator_snpe
   </a>
   
 </li>
@@ -763,7 +765,7 @@
                   
 
   
-    <a href="edit/main/docs/api/config.md" title="Edit this page" class="md-content__button md-icon">
+    <a href="edit/main/docs/api/dataset_generators.md" title="Edit this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4v-2m10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1 2.1 2.1Z"/></svg>
     </a>
@@ -772,22 +774,23 @@
     
       
     
-    <a href="raw/main/docs/api/config.md" title="View source of this page" class="md-content__button md-icon">
+    <a href="raw/main/docs/api/dataset_generators.md" title="View source of this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.15 8.15 0 0 1-1.23-2Z"/></svg>
     </a>
   
 
 
-  <h1>config</h1>
+  <h1>data generators</h1>
 
 <div class="doc doc-object doc-module">
 
-<a id="ssms.config"></a>
-    <div class="doc doc-contents first">
 
 
+<a id="ssms.dataset_generators"></a>
+  <div class="doc doc-contents first">
 
+  
 
   <div class="doc doc-children">
 
@@ -797,21 +800,20 @@
 
 
 
-  <div class="doc doc-object doc-module">
+<div class="doc doc-object doc-module">
 
 
 
-<h2 id="ssms.config.config" class="doc doc-heading">
-        <code>config</code>
 
+<h2 id="ssms.dataset_generators.lan_mlp" class="doc doc-heading">
+          <span class="doc doc-object-name doc-module-name">ssms.dataset_generators.lan_mlp</span>
 
 
 </h2>
 
-    <div class="doc doc-contents ">
+  <div class="doc doc-contents ">
 
-
-
+  
 
   <div class="doc doc-children">
 
@@ -821,37 +823,107 @@
 
 
 
-  <div class="doc doc-object doc-function">
 
 
 
-<h3 id="ssms.config.config.boundary_config_to_function_params" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">boundary_config_to_function_params</span><span class="p">(</span><span class="n">boundary_config</span><span class="p">)</span></code>
+
+<div class="doc doc-object doc-class">
+
+
+
+
+<h3 id="ssms.dataset_generators.lan_mlp.data_generator" class="doc doc-heading">
+          <span class="doc doc-object-name doc-class-name">data_generator</span>
 
 
 </h3>
+<div class="doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">data_generator</span><span class="p">(</span><span class="n">generator_config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">model_config</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</span></code></pre></div>
 
-    <div class="doc doc-contents ">
+  <div class="doc doc-contents ">
 
-      <p>Convert boundary configuration to function parameters</p>
-      <hr />
-<div class="admonition boundary_config">
-<p class="admonition-title">dict</p>
-<p>Dictionary containing the boundary configuration</p>
+  
+      <p>The data_generator() class is used to generate training data
+  for various likelihood approximators.</p>
+
+
+
+  <p>Attributes:</p>
+  <ul>
+      <li class="field-body">
+        <b>generator_config</b>
+            (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#dict">dict</a></code>)
+        –
+        <div class="doc-md-description">
+          <div class="language-text highlight"><pre><span></span><code>Configuation dictionary for the data generator. 
+(For an example load ssms.config.data_generator_config[&#39;lan&#39;])
+</code></pre></div>
+<p>model_config: dict
+    Configuration dictionary for the model to be simulated. 
+    (For an example load ssms.config.model_config['ddm'])</p>
+        </div>
+      </li>
+  </ul>
+
+
+
+  <p>Methods:</p>
+  <ul>
+        <li class="field-body">
+          <b>generate_data_training_uniform</b>
+          –
+          <div class="doc-md-description">
+            <p>Generates training data for LANs.
+get_simulations(theta=None, random_seed=None)
+    Generates simulations for a given parameter set.
+_filter_simulations(simulations=None)
+    Filters simulations according to the criteria specified in the generator_config.
+_make_kde_data(simulations=None, theta=None)
+    Generates KDE data from simulations.
+_mlp_get_processed_data_for_theta(random_seed_tuple)
+    Helper function for generating training data for MLPs.
+_cpn_get_processed_data_for_theta(random_seed_tuple)
+    Helper function for generating training data for CPNs.
+_get_rejected_parameter_setups(random_seed_tuple)
+    Helper function that collectes parameters sets which were rejected
+    by the filter used in the _filter_simulations() method.
+_make_save_file_name(unique_tag=None)
+    Helper function for generating save file names.
+_build_simulator()
+    Builds simulator function for LANs.
+_get_ncpus()
+    Helper function for determining the number of cpus to use for parallelization.</p>
+          </div>
+        </li>
+  </ul>
+
+
+
+  <p>Returns:</p>
+  <ul>
+      <li class="field-body">
+            <code>    data_generator object</code>
+        –
+        <div class="doc-md-description">
+          
+      </div>
+      </li>
+  </ul>
+
+
+  
+
+  <div class="doc doc-children">
+
+
+
+
+
+  </div>
+
+  </div>
+
 </div>
-      <hr />
-<p>dict
-    Dictionary with adjusted key names so that they match function parameters names
-    directly.</p>
-
-    </div>
-
-  </div>
-
-
-
-
-
 
 
 
@@ -866,10 +938,128 @@
 
   </div>
 
-    </div>
+  </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-module">
+
+
+
+
+<h2 id="ssms.dataset_generators.snpe" class="doc doc-heading">
+          <span class="doc doc-object-name doc-module-name">ssms.dataset_generators.snpe</span>
+
+
+</h2>
+
+  <div class="doc doc-contents ">
+
+  
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+
+<h3 id="ssms.dataset_generators.snpe.data_generator_snpe" class="doc doc-heading">
+          <span class="doc doc-object-name doc-class-name">data_generator_snpe</span>
+
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">data_generator_snpe</span><span class="p">(</span><span class="n">generator_config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">model_config</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</span></code></pre></div>
+
+  <div class="doc doc-contents ">
+          <p class="doc doc-class-bases">
+            Bases: <code><a class="autorefs autorefs-internal" title="ssms.dataset_generators.lan_mlp.data_generator" href="../ssms/#ssms.dataset_generators.lan_mlp.data_generator">data_generator</a></code></p>
+
+  
+      <div class="language-text highlight"><pre><span></span><code>
+</code></pre></div>
+<p>Class for generating data for SNPE.</p>
+
+
+
+  <p>Attributes:</p>
+  <ul>
+      <li class="field-body">
+        <b>generator_config</b>
+            (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#dict">dict</a></code>)
+        –
+        <div class="doc-md-description">
+          <p>Configuration for data generation</p>
+        </div>
+      </li>
+      <li class="field-body">
+        <b>model_config</b>
+            (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#dict">dict</a></code>)
+        –
+        <div class="doc-md-description">
+          <p>Configuration for model</p>
+        </div>
+      </li>
+  </ul>
+
+
+
+  <p>Methods:</p>
+  <ul>
+        <li class="field-body">
+          <b>generate_data_training_uniform</b>
+          –
+          <div class="doc-md-description">
+            <p>Generates data for training SNPE.</p>
+          </div>
+        </li>
+        <li class="field-body">
+          <b>_snpe_get_processed_data_for_theta</b>
+          –
+          <div class="doc-md-description">
+            <p>Helper function for generating data for SNPE.</p>
+          </div>
+        </li>
+        <li class="field-body">
+          <b>_build_simulator</b>
+          –
+          <div class="doc-md-description">
+            <p>Builds simulator function for SNPE.</p>
+          </div>
+        </li>
+  </ul>
+
+
+  
+
+  <div class="doc doc-children">
+
+
+
+
 
   </div>
 
+  </div>
+
+</div>
+
 
 
 
@@ -879,16 +1069,18 @@
 
   </div>
 
-    </div>
+  </div>
+
+</div>
+
+
+
 
   </div>
 
+  </div>
 
-
-
-
-
-
+</div>
 
 
 
@@ -899,14 +1091,13 @@
             </div>
           
           
-<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
           <button type="button" class="md-top md-icon" data-md-component="top" hidden>
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
-  Back to top
-</button>
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+            Back to top
+          </button>
         
       </main>
       
@@ -933,11 +1124,10 @@
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.path", "navigation.top", "content.code.copy", "content.action.view", "content.action.edit", "header.autohide", "announce.dismiss"], "search": "../../assets/javascripts/workers/search.dfff1995.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.path", "navigation.top", "content.code.copy", "content.action.view", "content.action.edit", "header.autohide", "announce.dismiss"], "search": "../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
-    
-      <script src="../../assets/javascripts/bundle.d7c377c4.min.js"></script>
+      <script src="../../assets/javascripts/bundle.dff1b7c8.min.js"></script>
       
     
   </body>

@@ -93,7 +93,7 @@
     Navigate the site here!
 </span>
 <span class="right-margin">
-    v0.5.3 is out!
+    v0.6.1 is out!
 </span>
 <span>
     <span class="twemoji">
@@ -686,6 +686,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#ssms.support_utils.kde_class.LogKDE.attach_data_from_simulator" class="md-nav__link">
+    <span class="md-ellipsis">
+      attach_data_from_simulator()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#ssms.support_utils.kde_class.LogKDE.compute_bandwidths" class="md-nav__link">
     <span class="md-ellipsis">
       compute_bandwidths()
@@ -730,6 +739,66 @@
   <a href="#ssms.support_utils.kde_class.bandwidth_silverman" class="md-nav__link">
     <span class="md-ellipsis">
       bandwidth_silverman()
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ssms.support_utils.utils" class="md-nav__link">
+    <span class="md-ellipsis">
+      utils
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="utils">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ssms.support_utils.utils.build_dependency_graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      build_dependency_graph()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ssms.support_utils.utils.parse_bounds" class="md-nav__link">
+    <span class="md-ellipsis">
+      parse_bounds()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ssms.support_utils.utils.sample_parameters_from_constraints" class="md-nav__link">
+    <span class="md-ellipsis">
+      sample_parameters_from_constraints()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ssms.support_utils.utils.topological_sort" class="md-nav__link">
+    <span class="md-ellipsis">
+      topological_sort()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ssms.support_utils.utils.topological_sort_util" class="md-nav__link">
+    <span class="md-ellipsis">
+      topological_sort_util()
     </span>
   </a>
   
@@ -826,8 +895,9 @@ LogKDE        </code>
 
       <p>Class for generating kdes from (rt, choice) data. Works for any number of choices.</p>
 <h5 id="ssms.support_utils.kde_class.LogKDE--attributes">Attributes</h5>
-<div class="language-text highlight"><pre><span></span><code>!!! simulator_data &quot;(rt, choice, simulator_info)&quot;
-    tuple as returned by simulator function
+<div class="language-text highlight"><pre><span></span><code>!!! simulator_data &quot;dict, default&lt;None&quot;
+    Dictionary of the type {&#39;rts&#39;:[], &#39;choices&#39;:[], &#39;metadata&#39;:{}}.
+    Follows the format of simulator returns in this package.
 !!! bandwidth_type &quot;string&quot;
     type of bandwidth to use, default is &#39;silverman&#39;
 !!! auto_bandwidth &quot;boolean&quot;
@@ -842,7 +912,7 @@ kde_eval(data=([], []), log_eval=True)
     Evaluates kde log likelihood at chosen points.
 kde_sample(n_samples=2000, use_empirical_choice_p=True, alternate_choice_p=0)
     Samples from a given kde.
-attach_data_from_simulator(simulator_data=([0, 2, 4], [-1, 1, -1]))
+attach_data_from_simulator(simulator_data={&#39;rts&#39;:[0, 2, 4], &#39;choices&#39;:[-1, 1, -1], &#39;metadata&#39;:{}}))
     Helper function to transform ddm simulator output
     to dataset suitable for the kde function class.
 </code></pre></div>
@@ -871,6 +941,36 @@ attach_data_from_simulator(simulator_data=([0, 2, 4], [-1, 1, -1]))
 
 
 
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="ssms.support_utils.kde_class.LogKDE.attach_data_from_simulator" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">attach_data_from_simulator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simulator_data</span><span class="o">=</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="n">filter_rts</span><span class="o">=-</span><span class="mi">999</span><span class="p">)</span></code>
+
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Helper function to transform ddm simulator output to dataset suitable for
+the kde function class.</p>
+      <hr />
+<div class="admonition simulator_data">
+<p class="admonition-title">tuple</p>
+<p>Tuple of (rts, choices, simulator_info) as returned by simulator function.</p>
+</div>
+<div class="admonition filter_rts">
+<p class="admonition-title">float</p>
+<p>Value to filter rts by, default is -999. -999 is the number returned by the
+simulators if we breach max_t or deadline.</p>
+</div>
+
+    </div>
+
+  </div>
 
 
 
@@ -949,7 +1049,7 @@ attach_data_from_simulator(simulator_data=([0, 2, 4], [-1, 1, -1]))
 
 
 <h4 id="ssms.support_utils.kde_class.LogKDE.kde_eval" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">kde_eval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">([],</span> <span class="p">[]),</span> <span class="n">log_eval</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">kde_eval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{},</span> <span class="n">log_eval</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">lb</span><span class="o">=-</span><span class="mf">66.774</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">,</span> <span class="n">filter_rts</span><span class="o">=-</span><span class="mi">999</span><span class="p">)</span></code>
 
 
 </h4>
@@ -959,12 +1059,26 @@ attach_data_from_simulator(simulator_data=([0, 2, 4], [-1, 1, -1]))
       <p>Evaluates kde log likelihood at chosen points.</p>
       <hr />
 <div class="admonition data">
-<p class="admonition-title">tuple</p>
-<p>Tuple of (rts, choices) to evaluate the kde at.</p>
+<p class="admonition-title">dict</p>
+<p>Dictionary with keys 'rts', and/or 'log_rts' and 'choices' to evaluate the kde at.
+If 'rts' is provided, 'log_rts' is ignored.</p>
 </div>
 <div class="admonition log_eval">
 <p class="admonition-title">boolean</p>
 <p>Whether to return log likelihood or likelihood, default is True.</p>
+</div>
+<div class="admonition lb">
+<p class="admonition-title">float</p>
+<p>Lower bound for log likelihoods, default is -66.774. (This is the log of 1e-29)</p>
+</div>
+<div class="admonition eps">
+<p class="admonition-title">float</p>
+<p>Epsilon value to use for lower bounds on rts.</p>
+</div>
+<div class="admonition filter_rts">
+<p class="admonition-title">float</p>
+<p>Value to filter rts by, default is -999. -999 is the number returned by the
+simulators if we breach max_t or deadline.</p>
 </div>
       <hr />
 <div class="admonition log_kde_eval">
@@ -1066,6 +1180,379 @@ to the 'empirical' choice proportions)</p>
 when generating gaussian-based kdes in the LogKDE class.</p>
 </div>
 
+    </div>
+
+  </div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-module">
+
+
+
+<h2 id="ssms.support_utils.utils" class="doc doc-heading">
+        <code>utils</code>
+
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="ssms.support_utils.utils.build_dependency_graph" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">build_dependency_graph</span><span class="p">(</span><span class="n">param_dict</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Build a dependency graph based on parameter bounds.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>param_dict</code></td>
+        <td><code>Dict[str, Tuple[Any, Any]]</code></td>
+        <td><p>A dictionary mapping parameter names to their bounds.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Dict[str, Set[str]]</code></td>
+      <td><p>A dictionary representing the dependency graph where keys are parameter names,
+                     and values are sets of parameter names they depend on.</p></td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="ssms.support_utils.utils.parse_bounds" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">parse_bounds</span><span class="p">(</span><span class="n">bounds</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Parse the bounds of a parameter and extract any dependencies.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>bounds</code></td>
+        <td><code>Tuple[Any, Any]</code></td>
+        <td><p>A tuple containing the lower and upper bounds,
+                      which can be numeric or strings indicating dependencies.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Set[str]</code></td>
+      <td><p>A set of parameter names that the bounds depend on.</p></td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="ssms.support_utils.utils.sample_parameters_from_constraints" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">sample_parameters_from_constraints</span><span class="p">(</span><span class="n">param_dict</span><span class="p">,</span> <span class="n">sample_size</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Sample parameters uniformly within specified bounds, respecting any dependencies.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>param_dict</code></td>
+        <td><code>Dict[str, Tuple[Any, Any]]</code></td>
+        <td><p>Dictionary mapping parameter names to their bounds.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>sample_size</code></td>
+        <td><code>int</code></td>
+        <td><p>Number of samples to generate.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Dict[str, np.ndarray]</code></td>
+      <td><p>A dictionary mapping parameter names to arrays of sampled values.</p></td>
+    </tr>
+  </tbody>
+</table>
+<p><strong>Exceptions:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>ValueError</code></td>
+        <td><p>If dependencies cannot be resolved due to missing parameters or circular dependencies.</p></td>
+      </tr>
+  </tbody>
+</table>
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="ssms.support_utils.utils.topological_sort" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">topological_sort</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Perform a topological sort on the dependency graph to determine the sampling order.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>graph</code></td>
+        <td><code>Dict[str, Set[str]]</code></td>
+        <td><p>The dependency graph.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>List[str]</code></td>
+      <td><p>A list of parameter names in the order they should be sampled.</p></td>
+    </tr>
+  </tbody>
+</table>
+<p><strong>Exceptions:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>ValueError</code></td>
+        <td><p>If a circular dependency is detected.</p></td>
+      </tr>
+  </tbody>
+</table>
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="ssms.support_utils.utils.topological_sort_util" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">topological_sort_util</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">visited</span><span class="p">,</span> <span class="n">stack</span><span class="p">,</span> <span class="n">graph</span><span class="p">,</span> <span class="n">temp_marks</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Helper function for performing a depth-first search in the topological sort.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>node</code></td>
+        <td><code>str</code></td>
+        <td><p>The current node being visited.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>visited</code></td>
+        <td><code>Set[str]</code></td>
+        <td><p>Set of nodes that have been permanently marked (fully processed).</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>stack</code></td>
+        <td><code>List[str]</code></td>
+        <td><p>List representing the ordering of nodes.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>graph</code></td>
+        <td><code>Dict[str, Set[str]]</code></td>
+        <td><p>The dependency graph.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>temp_marks</code></td>
+        <td><code>Set[str]</code></td>
+        <td><p>Set of nodes that have been temporarily marked (currently being processed).</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Exceptions:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>ValueError</code></td>
+        <td><p>If a circular dependency is detected.</p></td>
+      </tr>
+  </tbody>
+</table>
     </div>
 
   </div>
