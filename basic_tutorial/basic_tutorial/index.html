@@ -1285,7 +1285,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h4 id="install">Install<a class="anchor-link" href="#install">¶</a></h4><p>Let's start with <em>installing</em> the <code>ssms</code> package.</p>
 <p>You can do so by typing,</p>
-<p><code>pip install git+https://github.com/AlexanderFengler/ssm_simulators</code></p>
+<p><code>pip install ssm-simulators</code></p>
 <p>in your terminal.</p>
 <p>Below you find a basic tutorial on how to use the package.</p>
 </div>
@@ -1308,7 +1308,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [1]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [10]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy for="cell-1">
@@ -1343,7 +1343,7 @@ import ssms</div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h4 id="using-the-simulators">Using the Simulators<a class="anchor-link" href="#using-the-simulators">¶</a></h4><p>Let's start with using the basic simulators.
-You access the main simulators through the  <code>ssms.basic_simulators.simulator</code> function.</p>
+You access the main simulators through the  <code>ssms.basic_simulators.simulator.simulator()</code> function.</p>
 <p>To get an idea about the models included in <code>ssms</code>, use the <code>config</code> module.
 The central dictionary with metadata about included models sits in <code>ssms.config.model_config</code>.</p>
 </div>
@@ -1355,7 +1355,7 @@ The central dictionary with metadata about included models sits in <code>ssms.co
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [2]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [11]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy for="cell-2">
@@ -1382,7 +1382,7 @@ list(ssms.config.model_config.keys())[:10]</div>
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[2]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[11]:</div>
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
 <pre>['ddm',
  'ddm_legacy',
@@ -1405,7 +1405,7 @@ list(ssms.config.model_config.keys())[:10]</div>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [1]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy for="cell-3">
@@ -1431,20 +1431,17 @@ ssms.config.model_config["ddm"]</div>
 <div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[3]:</div>
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
-<pre>{'name': 'ddm',
- 'params': ['v', 'a', 'z', 't'],
- 'param_bounds': [[-3.0, 0.3, 0.1, 0.0], [3.0, 2.5, 0.9, 2.0]],
- 'boundary_name': 'constant',
- 'boundary': &lt;function ssms.basic_simulators.boundary_functions.constant(t: float | numpy.ndarray = 0) -&gt; float | numpy.ndarray&gt;,
- 'boundary_params': [],
- 'n_params': 4,
- 'default_params': [0.0, 1.0, 0.5, 0.001],
- 'nchoices': 2,
- 'n_particles': 1,
- 'simulator': &lt;cyfunction ddm_flexbound at 0x16d40ee90&gt;}</pre>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
+Cell <span class="ansi-green-fg">In[1], line 2</span>
+<span class="ansi-green-intense-fg ansi-bold">      1</span> <span style="color: rgb(95,135,135)"># Take an example config for a given model</span>
+<span class="ansi-green-fg">----&gt; 2</span> <span class="ansi-yellow-bg">ssms</span><span style="color: rgb(98,98,98)">.</span>config<span style="color: rgb(98,98,98)">.</span>model_config[<span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">ddm</span><span style="color: rgb(175,0,0)">"</span>]
+
+<span class="ansi-red-fg">NameError</span>: name 'ssms' is not defined</pre>
 </div>
 </div>
 </div>
@@ -1471,13 +1468,13 @@ The usual structure of these models includes,</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [13]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy for="cell-4">
@@ -1501,20 +1498,6 @@ The usual structure of these models includes,</p>
 sim_out = simulator(
     model="ddm", theta={"v": 0, "a": 1, "z": 0.5, "t": 0.5}, n_samples=1000,
 )</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>noise vec  [1.]
-theta {'v': array([0.], dtype=float32), 'a': array([1.], dtype=float32), 'z': array([0.5], dtype=float32), 't': array([0.5], dtype=float32), 'deadline': array([999.], dtype=float32)}
-</pre>
 </div>
 </div>
 </div>
@@ -1561,7 +1544,7 @@ theta {'v': array([0.], dtype=float32), 'a': array([1.], dtype=float32), 'z': ar
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [14]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy for="cell-5">
@@ -1586,7 +1569,7 @@ theta {'v': array([0.], dtype=float32), 'a': array([1.], dtype=float32), 'z': ar
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[5]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[14]:</div>
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
 <pre>{'output_folder': 'data/lan_mlp/',
  'model': 'ddm',
@@ -1633,7 +1616,7 @@ An example below.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [15]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy for="cell-6">
@@ -1689,7 +1672,7 @@ generator_config["n_samples"] = 1000</div>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [7]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [16]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy for="cell-7">
@@ -1718,7 +1701,7 @@ print(model_config)</div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>{'name': 'angle', 'params': ['v', 'a', 'z', 't', 'theta'], 'param_bounds': [[-3.0, 0.3, 0.1, 0.001, -0.1], [3.0, 3.0, 0.9, 2.0, 1.3]], 'boundary_name': 'angle', 'boundary': &lt;function angle at 0x12cc96710&gt;, 'n_params': 5, 'default_params': [0.0, 1.0, 0.5, 0.001, 0.0], 'nchoices': 2, 'n_particles': 1, 'simulator': &lt;cyfunction ddm_flexbound at 0x16d40ee90&gt;}
+<pre>{'name': 'angle', 'params': ['v', 'a', 'z', 't', 'theta'], 'param_bounds': [[-3.0, 0.3, 0.1, 0.001, -0.1], [3.0, 3.0, 0.9, 2.0, 1.3]], 'boundary_name': 'angle', 'boundary': &lt;function angle at 0x1260a27a0&gt;, 'n_params': 5, 'default_params': [0.0, 1.0, 0.5, 0.001, 0.0], 'nchoices': 2, 'n_particles': 1, 'simulator': &lt;cyfunction ddm_flexbound at 0x156032f60&gt;}
 </pre>
 </div>
 </div>
@@ -1742,7 +1725,7 @@ print(model_config)</div>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [8]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [17]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy for="cell-8">
@@ -1787,7 +1770,7 @@ checking:  data/lan_mlp/
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [9]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [18]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy for="cell-9">
@@ -1815,285 +1798,15 @@ checking:  data/lan_mlp/
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre>simulation round: 1  of 10
-noise vec noise vec noise vec noise vec noise vec noise vec noise vec noise vec noise vec  noise vec        [1.]  [1.][1.][1.][1.][1.][1.]
-[1.][1.][1.]
-
-
-
-
-
-theta
-
-
-thetathetathetathetathetathetatheta thetatheta       {'v': array([-1.5815475], dtype=float32), 't': array([1.7629961], dtype=float32), 'theta': array([1.0606446], dtype=float32), 'z': array([0.49612412], dtype=float32), 'a': array([1.1218749], dtype=float32), 'deadline': array([999.], dtype=float32)}  {'v': array([1.7990276], dtype=float32), 't': array([1.7954082], dtype=float32), 'theta': array([0.24307337], dtype=float32), 'z': array([0.6520809], dtype=float32), 'a': array([0.76440805], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([-0.29084763], dtype=float32), 't': array([0.11591952], dtype=float32), 'theta': array([0.27667785], dtype=float32), 'z': array([0.66920996], dtype=float32), 'a': array([0.43510893], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([2.9813046], dtype=float32), 't': array([1.0903807], dtype=float32), 'theta': array([0.5045757], dtype=float32), 'z': array([0.3006258], dtype=float32), 'a': array([1.9425921], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([2.6833365], dtype=float32), 't': array([1.1487328], dtype=float32), 'theta': array([0.7157537], dtype=float32), 'z': array([0.8066676], dtype=float32), 'a': array([1.9776855], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([2.1077278], dtype=float32), 't': array([1.0621948], dtype=float32), 'theta': array([0.6674717], dtype=float32), 'z': array([0.69560075], dtype=float32), 'a': array([2.6962552], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([-2.8088822], dtype=float32), 't': array([0.46557274], dtype=float32), 'theta': array([0.40974176], dtype=float32), 'z': array([0.22423773], dtype=float32), 'a': array([2.2673018], dtype=float32), 'deadline': array([999.], dtype=float32)}
-{'v': array([-0.93204665], dtype=float32), 't': array([1.8054197], dtype=float32), 'theta': array([0.7199268], dtype=float32), 'z': array([0.36434984], dtype=float32), 'a': array([1.4999578], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([-0.6926844], dtype=float32), 't': array([0.04367267], dtype=float32), 'theta': array([0.44903234], dtype=float32), 'z': array([0.48672193], dtype=float32), 'a': array([1.3618172], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([2.4927447], dtype=float32), 't': array([1.4226595], dtype=float32), 'theta': array([0.17250913], dtype=float32), 'z': array([0.18749622], dtype=float32), 'a': array([0.59660953], dtype=float32), 'deadline': array([999.], dtype=float32)}
-
-
-
-
-
-
-
-
-noise vec noise vec   noise vec noise vec [1.][1.]  
-
-[1.][1.]thetatheta
-
-  theta{'v': array([1.1359868], dtype=float32), 't': array([0.74460655], dtype=float32), 'theta': array([0.42552933], dtype=float32), 'z': array([0.8464311], dtype=float32), 'a': array([1.9353975], dtype=float32), 'deadline': array([999.], dtype=float32)}theta{'v': array([2.3630583], dtype=float32), 't': array([0.49770558], dtype=float32), 'theta': array([0.69774157], dtype=float32), 'z': array([0.7554058], dtype=float32), 'a': array([2.0669515], dtype=float32), 'deadline': array([999.], dtype=float32)}  
-
-{'v': array([1.59501], dtype=float32), 't': array([0.8848647], dtype=float32), 'theta': array([0.11622743], dtype=float32), 'z': array([0.5474532], dtype=float32), 'a': array([2.6813505], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([2.5297785], dtype=float32), 't': array([1.5452864], dtype=float32), 'theta': array([1.2554287], dtype=float32), 'z': array([0.5605791], dtype=float32), 'a': array([1.6225457], dtype=float32), 'deadline': array([999.], dtype=float32)}
-
-noise vec  [1.]
-theta {'v': array([1.7056708], dtype=float32), 't': array([0.39391515], dtype=float32), 'theta': array([0.19614622], dtype=float32), 'z': array([0.51058245], dtype=float32), 'a': array([0.35217282], dtype=float32), 'deadline': array([999.], dtype=float32)}noise vec 
- [1.]
-theta {'v': array([0.9109407], dtype=float32), 't': array([1.199134], dtype=float32), 'theta': array([0.3908524], dtype=float32), 'z': array([0.8539272], dtype=float32), 'a': array([2.0198643], dtype=float32), 'deadline': array([999.], dtype=float32)}
-noise vec noise vec noise vec noise vec noise vec noise vec noise vec  noise vec  noise vec   noise vec   [1.][1.]   [1.] [1.][1.]
-
-[1.]
-[1.][1.][1.][1.]
-
-thetathetatheta
-
-
-
-
-thetatheta theta  thetathetatheta theta {'v': array([0.5685865], dtype=float32), 't': array([0.42036706], dtype=float32), 'theta': array([0.5064865], dtype=float32), 'z': array([0.27518687], dtype=float32), 'a': array([2.6291122], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([1.0148793], dtype=float32), 't': array([0.5955078], dtype=float32), 'theta': array([0.5447145], dtype=float32), 'z': array([0.7487949], dtype=float32), 'a': array([1.4248813], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([1.4816619], dtype=float32), 't': array([0.04443437], dtype=float32), 'theta': array([0.44168594], dtype=float32), 'z': array([0.2958761], dtype=float32), 'a': array([1.748113], dtype=float32), 'deadline': array([999.], dtype=float32)}    {'v': array([1.8298197], dtype=float32), 't': array([1.5688374], dtype=float32), 'theta': array([0.5631007], dtype=float32), 'z': array([0.60850525], dtype=float32), 'a': array([2.9864633], dtype=float32), 'deadline': array([999.], dtype=float32)} 
-{'v': array([0.55743754], dtype=float32), 't': array([0.23610167], dtype=float32), 'theta': array([0.49255642], dtype=float32), 'z': array([0.6047272], dtype=float32), 'a': array([1.9214389], dtype=float32), 'deadline': array([999.], dtype=float32)}
-{'v': array([1.3667592], dtype=float32), 't': array([0.26292068], dtype=float32), 'theta': array([-0.0478907], dtype=float32), 'z': array([0.7140396], dtype=float32), 'a': array([2.3212097], dtype=float32), 'deadline': array([999.], dtype=float32)}
-{'v': array([-1.1432638], dtype=float32), 't': array([0.9812119], dtype=float32), 'theta': array([1.2819085], dtype=float32), 'z': array([0.6372981], dtype=float32), 'a': array([1.8522406], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([2.6169858], dtype=float32), 't': array([0.15829566], dtype=float32), 'theta': array([1.2756053], dtype=float32), 'z': array([0.82031745], dtype=float32), 'a': array([0.9492308], dtype=float32), 'deadline': array([999.], dtype=float32)}
-
-{'v': array([2.1710546], dtype=float32), 't': array([1.2140316], dtype=float32), 'theta': array([0.07665673], dtype=float32), 'z': array([0.14419341], dtype=float32), 'a': array([2.2033944], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([1.2974733], dtype=float32), 't': array([1.812408], dtype=float32), 'theta': array([0.29289553], dtype=float32), 'z': array([0.7695998], dtype=float32), 'a': array([1.8272843], dtype=float32), 'deadline': array([999.], dtype=float32)}
-
-
-
-
 simulation round: 2  of 10
-noise vec  [1.]noise vec 
- theta[1.] 
-theta{'v': array([-2.7107854], dtype=float32), 't': array([1.4802767], dtype=float32), 'theta': array([1.2012565], dtype=float32), 'z': array([0.6895004], dtype=float32), 'a': array([2.7679727], dtype=float32), 'deadline': array([999.], dtype=float32)} 
-{'v': array([2.8562846], dtype=float32), 't': array([0.29939422], dtype=float32), 'theta': array([0.7555162], dtype=float32), 'z': array([0.3021635], dtype=float32), 'a': array([2.3451884], dtype=float32), 'deadline': array([999.], dtype=float32)}
-noise vec noise vec  noise vec noise vec noise vec  noise vec noise vec  [1.]noise vec noise vec noise vec   [1.]  
-[1.]   [1.][1.]
-[1.]theta[1.]
-[1.][1.][1.]
-
-theta
- 
-
-theta
-
-theta thetathetathetatheta {'v': array([-0.11920691], dtype=float32), 't': array([0.9775628], dtype=float32), 'theta': array([0.6527033], dtype=float32), 'z': array([0.4681816], dtype=float32), 'a': array([0.38943815], dtype=float32), 'deadline': array([999.], dtype=float32)}thetatheta   {'v': array([-0.49329087], dtype=float32), 't': array([0.5676184], dtype=float32), 'theta': array([1.1038808], dtype=float32), 'z': array([0.41117966], dtype=float32), 'a': array([0.5529102], dtype=float32), 'deadline': array([999.], dtype=float32)}  {'v': array([1.7271312], dtype=float32), 't': array([1.8112344], dtype=float32), 'theta': array([0.4012856], dtype=float32), 'z': array([0.5206255], dtype=float32), 'a': array([2.4174445], dtype=float32), 'deadline': array([999.], dtype=float32)}
- {'v': array([2.8087804], dtype=float32), 't': array([1.0699718], dtype=float32), 'theta': array([0.506972], dtype=float32), 'z': array([0.71497715], dtype=float32), 'a': array([2.6168563], dtype=float32), 'deadline': array([999.], dtype=float32)} {'v': array([0.7844112], dtype=float32), 't': array([0.3843805], dtype=float32), 'theta': array([-0.06130135], dtype=float32), 'z': array([0.12719113], dtype=float32), 'a': array([2.0909493], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([1.661473], dtype=float32), 't': array([1.4963514], dtype=float32), 'theta': array([0.9003999], dtype=float32), 'z': array([0.43184584], dtype=float32), 'a': array([2.0633898], dtype=float32), 'deadline': array([999.], dtype=float32)}
-{'v': array([-2.1024668], dtype=float32), 't': array([0.26742378], dtype=float32), 'theta': array([0.5418846], dtype=float32), 'z': array([0.43493307], dtype=float32), 'a': array([1.2380724], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([1.769951], dtype=float32), 't': array([1.9732155], dtype=float32), 'theta': array([0.55026305], dtype=float32), 'z': array([0.8184086], dtype=float32), 'a': array([1.0265113], dtype=float32), 'deadline': array([999.], dtype=float32)}
-{'v': array([1.4361385], dtype=float32), 't': array([0.8170187], dtype=float32), 'theta': array([0.44068015], dtype=float32), 'z': array([0.4802018], dtype=float32), 'a': array([1.2557731], dtype=float32), 'deadline': array([999.], dtype=float32)}
-
-
-{'v': array([1.6131343], dtype=float32), 't': array([1.9068549], dtype=float32), 'theta': array([1.0378436], dtype=float32), 'z': array([0.7765988], dtype=float32), 'a': array([1.1676556], dtype=float32), 'deadline': array([999.], dtype=float32)}
-
-
-
-noise vec noise vec   [1.][1.]
-
-thetatheta  {'v': array([-1.5133655], dtype=float32), 't': array([0.592757], dtype=float32), 'theta': array([0.51794297], dtype=float32), 'z': array([0.8974275], dtype=float32), 'a': array([2.022728], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([-0.53833157], dtype=float32), 't': array([1.9741006], dtype=float32), 'theta': array([1.101967], dtype=float32), 'z': array([0.88538045], dtype=float32), 'a': array([0.33656466], dtype=float32), 'deadline': array([999.], dtype=float32)}
-
-noise vec noise vec noise vec  noise vec   noise vec [1.]  [1.][1.]noise vec noise vec noise vec [1.]
-noise vec 
-noise vec [1.]
-    theta
-thetatheta[1.] 
-[1.][1.] theta[1.]  
-[1.]theta
-
-
- {'v': array([2.1416845], dtype=float32), 't': array([1.7052168], dtype=float32), 'theta': array([0.8173894], dtype=float32), 'z': array([0.13488613], dtype=float32), 'a': array([1.6380217], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([2.264642], dtype=float32), 't': array([0.34859577], dtype=float32), 'theta': array([0.09674168], dtype=float32), 'z': array([0.36290368], dtype=float32), 'a': array([2.698517], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([-0.23246096], dtype=float32), 't': array([1.8805131], dtype=float32), 'theta': array([0.09325832], dtype=float32), 'z': array([0.32637748], dtype=float32), 'a': array([2.57933], dtype=float32), 'deadline': array([999.], dtype=float32)}theta
 simulation round: 3  of 10
 simulation round: 4  of 10
- thetathetatheta
-{'v': array([1.5902486], dtype=float32), 't': array([1.3988873], dtype=float32), 'theta': array([-0.0267275], dtype=float32), 'z': array([0.23649697], dtype=float32), 'a': array([1.1399226], dtype=float32), 'deadline': array([999.], dtype=float32)}
-
- theta{'v': array([2.0850687], dtype=float32), 't': array([1.4441721], dtype=float32), 'theta': array([0.77815765], dtype=float32), 'z': array([0.1501219], dtype=float32), 'a': array([0.6217216], dtype=float32), 'deadline': array([999.], dtype=float32)}   
- {'v': array([-0.92149687], dtype=float32), 't': array([1.8480641], dtype=float32), 'theta': array([1.0268003], dtype=float32), 'z': array([0.10550325], dtype=float32), 'a': array([1.9830202], dtype=float32), 'deadline': array([999.], dtype=float32)}
-{'v': array([-0.51241976], dtype=float32), 't': array([1.6368637], dtype=float32), 'theta': array([0.89156616], dtype=float32), 'z': array([0.3366201], dtype=float32), 'a': array([1.8139806], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([-1.2329199], dtype=float32), 't': array([1.8113676], dtype=float32), 'theta': array([1.0835584], dtype=float32), 'z': array([0.61460435], dtype=float32), 'a': array([1.9113922], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([2.8819425], dtype=float32), 't': array([1.0177721], dtype=float32), 'theta': array([1.2932391], dtype=float32), 'z': array([0.70614666], dtype=float32), 'a': array([0.52013963], dtype=float32), 'deadline': array([999.], dtype=float32)}
-{'v': array([0.24552937], dtype=float32), 't': array([1.9407398], dtype=float32), 'theta': array([1.2089145], dtype=float32), 'z': array([0.8913506], dtype=float32), 'a': array([0.44844013], dtype=float32), 'deadline': array([999.], dtype=float32)}
-
-
-
-noise vec  [1.]
-theta {'v': array([-2.4243667], dtype=float32), 't': array([1.1396295], dtype=float32), 'theta': array([0.5563907], dtype=float32), 'z': array([0.28436595], dtype=float32), 'a': array([2.7733862], dtype=float32), 'deadline': array([999.], dtype=float32)}
-noise vec  [1.]
-theta {'v': array([-1.276741], dtype=float32), 't': array([1.6537803], dtype=float32), 'theta': array([0.08209295], dtype=float32), 'z': array([0.8592858], dtype=float32), 'a': array([1.5378709], dtype=float32), 'deadline': array([999.], dtype=float32)}
-noise vec noise vec   noise vec noise vec noise vec noise vec noise vec noise vec noise vec   [1.]  noise vec    [1.][1.][1.]
- [1.][1.][1.][1.][1.]
-
-
-theta[1.]
-
-
-
-
-thetathetatheta 
-thetathetathetatheta theta  theta{'v': array([-0.3780857], dtype=float32), 't': array([0.41571292], dtype=float32), 'theta': array([0.4464019], dtype=float32), 'z': array([0.25025], dtype=float32), 'a': array([2.176741], dtype=float32), 'deadline': array([999.], dtype=float32)}     {'v': array([-2.1110654], dtype=float32), 't': array([0.33479938], dtype=float32), 'theta': array([0.30111971], dtype=float32), 'z': array([0.7338887], dtype=float32), 'a': array([2.0187685], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([-2.2308507], dtype=float32), 't': array([1.7748554], dtype=float32), 'theta': array([0.42462265], dtype=float32), 'z': array([0.10132883], dtype=float32), 'a': array([0.37528723], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([-2.4615319], dtype=float32), 't': array([1.8814436], dtype=float32), 'theta': array([1.0670561], dtype=float32), 'z': array([0.6561625], dtype=float32), 'a': array([1.2473935], dtype=float32), 'deadline': array([999.], dtype=float32)}
- {'v': array([1.9883919], dtype=float32), 't': array([0.05415671], dtype=float32), 'theta': array([0.45975268], dtype=float32), 'z': array([0.82089895], dtype=float32), 'a': array([0.513585], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([-2.9541554], dtype=float32), 't': array([1.2604929], dtype=float32), 'theta': array([1.0642531], dtype=float32), 'z': array([0.75855756], dtype=float32), 'a': array([2.412531], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([-0.7811695], dtype=float32), 't': array([0.8547132], dtype=float32), 'theta': array([0.7683993], dtype=float32), 'z': array([0.23893507], dtype=float32), 'a': array([2.6661584], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([-0.8519348], dtype=float32), 't': array([1.7276554], dtype=float32), 'theta': array([0.5412373], dtype=float32), 'z': array([0.18268251], dtype=float32), 'a': array([0.71791154], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([1.7587719], dtype=float32), 't': array([0.592975], dtype=float32), 'theta': array([1.0350444], dtype=float32), 'z': array([0.24914148], dtype=float32), 'a': array([2.618182], dtype=float32), 'deadline': array([999.], dtype=float32)}
-
-
-{'v': array([-2.543665], dtype=float32), 't': array([0.5289124], dtype=float32), 'theta': array([0.49384198], dtype=float32), 'z': array([0.8603396], dtype=float32), 'a': array([0.819244], dtype=float32), 'deadline': array([999.], dtype=float32)}
-
-
-
-
-
-noise vec  noise vec noise vec noise vec [1.] 
-theta[1.]noise vec 
- theta{'v': array([-0.7520339], dtype=float32), 't': array([0.22259365], dtype=float32), 'theta': array([0.21776488], dtype=float32), 'z': array([0.47164518], dtype=float32), 'a': array([2.1563804], dtype=float32), 'deadline': array([999.], dtype=float32)} 
- noise vec  {'v': array([2.331451], dtype=float32), 't': array([1.0888153], dtype=float32), 'theta': array([1.01011], dtype=float32), 'z': array([0.3709013], dtype=float32), 'a': array([1.0475017], dtype=float32), 'deadline': array([999.], dtype=float32)}noise vec 
- [1.][1.]  
-[1.]
-[1.]theta[1.]
-theta
-theta
-  theta thetanoise vec  [1.]{'v': array([1.946757], dtype=float32), 't': array([1.0092478], dtype=float32), 'theta': array([0.5149749], dtype=float32), 'z': array([0.40062645], dtype=float32), 'a': array([1.8932605], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([-1.5198141], dtype=float32), 't': array([0.41713232], dtype=float32), 'theta': array([0.30782673], dtype=float32), 'z': array([0.12950207], dtype=float32), 'a': array([1.5676395], dtype=float32), 'deadline': array([999.], dtype=float32)}
-theta   
-{'v': array([-2.8746111], dtype=float32), 't': array([0.68447495], dtype=float32), 'theta': array([0.05753895], dtype=float32), 'z': array([0.43416706], dtype=float32), 'a': array([2.3659546], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([-0.76417863], dtype=float32), 't': array([0.04343332], dtype=float32), 'theta': array([0.25718582], dtype=float32), 'z': array([0.43149325], dtype=float32), 'a': array([1.3240795], dtype=float32), 'deadline': array([999.], dtype=float32)}
-
-{'v': array([-1.791525], dtype=float32), 't': array([1.4376532], dtype=float32), 'theta': array([0.12037326], dtype=float32), 'z': array([0.17138173], dtype=float32), 'a': array([0.37336707], dtype=float32), 'deadline': array([999.], dtype=float32)}
-{'v': array([-0.7729633], dtype=float32), 't': array([1.6574106], dtype=float32), 'theta': array([0.6249887], dtype=float32), 'z': array([0.43995026], dtype=float32), 'a': array([1.547432], dtype=float32), 'deadline': array([999.], dtype=float32)}
-
-noise vec  [1.]noise vec 
-theta {'v': array([-2.1123703], dtype=float32), 't': array([1.3512789], dtype=float32), 'theta': array([-0.08964755], dtype=float32), 'z': array([0.11571205], dtype=float32), 'a': array([0.75930005], dtype=float32), 'deadline': array([999.], dtype=float32)}
-noise vec  noise vec  [1.]noise vec  
-theta[1.]  
-theta [1.]{'v': array([2.927997], dtype=float32), 't': array([1.4093596], dtype=float32), 'theta': array([1.1838293], dtype=float32), 'z': array([0.75599694], dtype=float32), 'a': array([2.3142498], dtype=float32), 'deadline': array([999.], dtype=float32)}[1.]
-
-
-{'v': array([0.42155206], dtype=float32), 't': array([1.4836653], dtype=float32), 'theta': array([1.1316783], dtype=float32), 'z': array([0.6204043], dtype=float32), 'a': array([1.0363802], dtype=float32), 'deadline': array([999.], dtype=float32)}thetatheta
-  {'v': array([-0.45514596], dtype=float32), 't': array([1.0737478], dtype=float32), 'theta': array([0.8047028], dtype=float32), 'z': array([0.47241053], dtype=float32), 'a': array([1.1489443], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([1.2194313], dtype=float32), 't': array([0.90744376], dtype=float32), 'theta': array([0.14603356], dtype=float32), 'z': array([0.32880223], dtype=float32), 'a': array([2.8455334], dtype=float32), 'deadline': array([999.], dtype=float32)}
-
-noise vec  [1.]
-theta {'v': array([-1.675122], dtype=float32), 't': array([1.6724018], dtype=float32), 'theta': array([0.65498805], dtype=float32), 'z': array([0.28407592], dtype=float32), 'a': array([1.0121024], dtype=float32), 'deadline': array([999.], dtype=float32)}
 simulation round: 5  of 10
 simulation round: 6  of 10
-noise vec noise vec  noise vec  noise vec [1.]noise vec [1.] noise vec noise vec  noise vec noise vec 
- 
-noise vec [1.]   [1.] theta[1.]
- theta[1.][1.][1.][1.] 
-
- [1.]theta
-
-
-
-thetatheta
-theta {'v': array([1.3285103], dtype=float32), 't': array([1.120925], dtype=float32), 'theta': array([0.82443786], dtype=float32), 'z': array([0.82237995], dtype=float32), 'a': array([2.7074997], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([1.1351691], dtype=float32), 't': array([0.62424743], dtype=float32), 'theta': array([0.88187474], dtype=float32), 'z': array([0.28275514], dtype=float32), 'a': array([2.1731899], dtype=float32), 'deadline': array([999.], dtype=float32)}thetatheta theta theta 
-
-{'v': array([-2.6673083], dtype=float32), 't': array([1.1360706], dtype=float32), 'theta': array([0.5444876], dtype=float32), 'z': array([0.51858145], dtype=float32), 'a': array([2.411831], dtype=float32), 'deadline': array([999.], dtype=float32)}   {'v': array([2.1171741], dtype=float32), 't': array([1.4296129], dtype=float32), 'theta': array([-0.01191241], dtype=float32), 'z': array([0.6606512], dtype=float32), 'a': array([1.0982989], dtype=float32), 'deadline': array([999.], dtype=float32)} {'v': array([2.3894525], dtype=float32), 't': array([0.41374865], dtype=float32), 'theta': array([0.94797605], dtype=float32), 'z': array([0.5045301], dtype=float32), 'a': array([0.7684715], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([-2.9263873], dtype=float32), 't': array([0.53420854], dtype=float32), 'theta': array([0.02106685], dtype=float32), 'z': array([0.39384285], dtype=float32), 'a': array([2.3858445], dtype=float32), 'deadline': array([999.], dtype=float32)}
-{'v': array([-2.380275], dtype=float32), 't': array([0.8643115], dtype=float32), 'theta': array([-0.06676342], dtype=float32), 'z': array([0.5866919], dtype=float32), 'a': array([2.2659478], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([-2.220038], dtype=float32), 't': array([0.16282366], dtype=float32), 'theta': array([0.45799893], dtype=float32), 'z': array([0.5744137], dtype=float32), 'a': array([0.5465161], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([-2.4898098], dtype=float32), 't': array([1.9630162], dtype=float32), 'theta': array([0.97477084], dtype=float32), 'z': array([0.68540823], dtype=float32), 'a': array([2.9590287], dtype=float32), 'deadline': array([999.], dtype=float32)}
-
-
-{'v': array([0.48114586], dtype=float32), 't': array([1.9667982], dtype=float32), 'theta': array([1.2229036], dtype=float32), 'z': array([0.88399696], dtype=float32), 'a': array([0.7326962], dtype=float32), 'deadline': array([999.], dtype=float32)}
-
-
-
-noise vec  noise vec [1.]noise vec noise vec  
-  theta[1.][1.][1.] 
-
-
-theta{'v': array([2.091572], dtype=float32), 't': array([0.7139734], dtype=float32), 'theta': array([0.76413715], dtype=float32), 'z': array([0.71679133], dtype=float32), 'a': array([2.6824524], dtype=float32), 'deadline': array([999.], dtype=float32)}theta theta
- noise vec  {'v': array([1.1633031], dtype=float32), 't': array([0.24789807], dtype=float32), 'theta': array([0.72696435], dtype=float32), 'z': array([0.36058173], dtype=float32), 'a': array([0.64399827], dtype=float32), 'deadline': array([999.], dtype=float32)} 
-{'v': array([-0.38639936], dtype=float32), 't': array([1.4335854], dtype=float32), 'theta': array([0.3702157], dtype=float32), 'z': array([0.5475362], dtype=float32), 'a': array([0.549194], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([1.4345173], dtype=float32), 't': array([1.4689131], dtype=float32), 'theta': array([0.9163339], dtype=float32), 'z': array([0.31079516], dtype=float32), 'a': array([2.2652981], dtype=float32), 'deadline': array([999.], dtype=float32)}[1.]
-
-
-theta {'v': array([0.8560478], dtype=float32), 't': array([1.4161814], dtype=float32), 'theta': array([1.1766753], dtype=float32), 'z': array([0.8250858], dtype=float32), 'a': array([1.201026], dtype=float32), 'deadline': array([999.], dtype=float32)}
-noise vec  [1.]
-theta {'v': array([-1.104064], dtype=float32), 't': array([0.40297347], dtype=float32), 'theta': array([1.0642444], dtype=float32), 'z': array([0.70110875], dtype=float32), 'a': array([0.5077399], dtype=float32), 'deadline': array([999.], dtype=float32)}
-noise vec  noise vec noise vec [1.]  
-[1.]noise vec [1.]thetanoise vec noise vec 
-noise vec thetatheta theta 
- [1.] {'v': array([2.2450788], dtype=float32), 't': array([1.1348437], dtype=float32), 'theta': array([0.03086031], dtype=float32), 'z': array([0.44083127], dtype=float32), 'a': array([1.5533557], dtype=float32), 'deadline': array([999.], dtype=float32)}[1.]theta
-
-
- {'v': array([1.3403623], dtype=float32), 't': array([0.21529992], dtype=float32), 'theta': array([-0.03111248], dtype=float32), 'z': array([0.2870942], dtype=float32), 'a': array([1.1241665], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([-1.5764205], dtype=float32), 't': array([0.35898668], dtype=float32), 'theta': array([0.5643698], dtype=float32), 'z': array([0.4914356], dtype=float32), 'a': array([2.934978], dtype=float32), 'deadline': array([999.], dtype=float32)}
-  
-{'v': array([1.6221417], dtype=float32), 't': array([0.38575464], dtype=float32), 'theta': array([1.0035361], dtype=float32), 'z': array([0.85095966], dtype=float32), 'a': array([1.7672229], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([2.719657], dtype=float32), 't': array([1.6044991], dtype=float32), 'theta': array([0.12379763], dtype=float32), 'z': array([0.53859246], dtype=float32), 'a': array([1.3546221], dtype=float32), 'deadline': array([999.], dtype=float32)}
- 
- noise vec noise vec noise vec    [1.]
-theta[1.][1.] [1.]
-
-[1.]{'v': array([1.6614057], dtype=float32), 't': array([1.8928857], dtype=float32), 'theta': array([1.0847284], dtype=float32), 'z': array([0.8182975], dtype=float32), 'a': array([1.591465], dtype=float32), 'deadline': array([999.], dtype=float32)}
-noise vec 
-
-thetanoise vec thetatheta     [1.][1.]{'v': array([2.8051376], dtype=float32), 't': array([1.9138727], dtype=float32), 'theta': array([-0.0091663], dtype=float32), 'z': array([0.805455], dtype=float32), 'a': array([2.0980132], dtype=float32), 'deadline': array([999.], dtype=float32)}noise vec 
-
-{'v': array([-2.832248], dtype=float32), 't': array([1.7081006], dtype=float32), 'theta': array([-0.02819052], dtype=float32), 'z': array([0.5670458], dtype=float32), 'a': array([2.1947746], dtype=float32), 'deadline': array([999.], dtype=float32)}
-{'v': array([-2.1223261], dtype=float32), 't': array([1.2105597], dtype=float32), 'theta': array([0.53681284], dtype=float32), 'z': array([0.8869907], dtype=float32), 'a': array([0.6333218], dtype=float32), 'deadline': array([999.], dtype=float32)} theta
-theta
-[1.]  
-{'v': array([-1.7305373], dtype=float32), 't': array([0.38442793], dtype=float32), 'theta': array([0.37655032], dtype=float32), 'z': array([0.26517484], dtype=float32), 'a': array([2.6218655], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([0.49884617], dtype=float32), 't': array([0.3286323], dtype=float32), 'theta': array([0.36097947], dtype=float32), 'z': array([0.8527303], dtype=float32), 'a': array([1.7363479], dtype=float32), 'deadline': array([999.], dtype=float32)}noise vec theta
-
- simulation round: 7  of 10
+simulation round: 7  of 10
 simulation round: 8  of 10
- {'v': array([1.7722654], dtype=float32), 't': array([0.10828111], dtype=float32), 'theta': array([0.84766054], dtype=float32), 'z': array([0.14981654], dtype=float32), 'a': array([1.698711], dtype=float32), 'deadline': array([999.], dtype=float32)}[1.]
-
-theta noise vec  {'v': array([1.4828434], dtype=float32), 't': array([0.21614318], dtype=float32), 'theta': array([1.0811363], dtype=float32), 'z': array([0.89821213], dtype=float32), 'a': array([0.82852364], dtype=float32), 'deadline': array([999.], dtype=float32)}[1.]
-noise vec 
-theta [1.] 
-{'v': array([1.6554254], dtype=float32), 't': array([1.2464328], dtype=float32), 'theta': array([0.19911987], dtype=float32), 'z': array([0.87251246], dtype=float32), 'a': array([1.6952368], dtype=float32), 'deadline': array([999.], dtype=float32)}theta
- {'v': array([2.175683], dtype=float32), 't': array([0.01300915], dtype=float32), 'theta': array([0.02590021], dtype=float32), 'z': array([0.39711922], dtype=float32), 'a': array([0.73900485], dtype=float32), 'deadline': array([999.], dtype=float32)}theta
- noise vec  [1.]
-{'v': array([-2.7375345], dtype=float32), 't': array([1.4616817], dtype=float32), 'theta': array([0.13187532], dtype=float32), 'z': array([0.21678789], dtype=float32), 'a': array([1.359876], dtype=float32), 'deadline': array([999.], dtype=float32)}theta 
-{'v': array([2.299262], dtype=float32), 't': array([0.07952382], dtype=float32), 'theta': array([0.4917618], dtype=float32), 'z': array([0.12306637], dtype=float32), 'a': array([2.607178], dtype=float32), 'deadline': array([999.], dtype=float32)}
-noise vec  [1.]
-theta {'v': array([2.5332298], dtype=float32), 't': array([0.33713356], dtype=float32), 'theta': array([0.4114249], dtype=float32), 'z': array([0.13467877], dtype=float32), 'a': array([0.61423296], dtype=float32), 'deadline': array([999.], dtype=float32)}
-noise vec noise vec noise vec  noise vec noise vec noise vec noise vec noise vec   noise vec noise vec [1.]      [1.][1.] 
-[1.][1.][1.][1.][1.]
-[1.]
-theta[1.]
-
-
-
-
-theta theta
-
-thetathetathetathetatheta  theta theta {'v': array([0.1029132], dtype=float32), 't': array([0.33712134], dtype=float32), 'theta': array([1.0975404], dtype=float32), 'z': array([0.6984567], dtype=float32), 'a': array([2.3368943], dtype=float32), 'deadline': array([999.], dtype=float32)}  {'v': array([2.1690514], dtype=float32), 't': array([0.20474248], dtype=float32), 'theta': array([0.99985576], dtype=float32), 'z': array([0.6380279], dtype=float32), 'a': array([1.618159], dtype=float32), 'deadline': array([999.], dtype=float32)} {'v': array([-1.6818863], dtype=float32), 't': array([1.4080058], dtype=float32), 'theta': array([1.129161], dtype=float32), 'z': array([0.71580565], dtype=float32), 'a': array([1.3151069], dtype=float32), 'deadline': array([999.], dtype=float32)}  
-{'v': array([-2.2791882], dtype=float32), 't': array([1.3004377], dtype=float32), 'theta': array([0.7552095], dtype=float32), 'z': array([0.6564174], dtype=float32), 'a': array([2.7403147], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([2.463006], dtype=float32), 't': array([1.513937], dtype=float32), 'theta': array([0.7626819], dtype=float32), 'z': array([0.17191778], dtype=float32), 'a': array([0.39578593], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([2.3716493], dtype=float32), 't': array([0.58936435], dtype=float32), 'theta': array([0.11759665], dtype=float32), 'z': array([0.5106996], dtype=float32), 'a': array([1.0511018], dtype=float32), 'deadline': array([999.], dtype=float32)}
-
-{'v': array([-0.20035082], dtype=float32), 't': array([1.3166909], dtype=float32), 'theta': array([0.88621557], dtype=float32), 'z': array([0.56233984], dtype=float32), 'a': array([0.5602462], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([1.5460608], dtype=float32), 't': array([1.0061862], dtype=float32), 'theta': array([0.6155978], dtype=float32), 'z': array([0.14321809], dtype=float32), 'a': array([2.4157279], dtype=float32), 'deadline': array([999.], dtype=float32)}
-{'v': array([1.7951142], dtype=float32), 't': array([1.996171], dtype=float32), 'theta': array([0.88690734], dtype=float32), 'z': array([0.86734986], dtype=float32), 'a': array([2.3467014], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([-1.4367942], dtype=float32), 't': array([0.94336194], dtype=float32), 'theta': array([0.1126817], dtype=float32), 'z': array([0.8669778], dtype=float32), 'a': array([2.3780787], dtype=float32), 'deadline': array([999.], dtype=float32)}
-
-
-
-
-
-noise vec  [1.]
-theta {'v': array([1.1721635], dtype=float32), 't': array([0.66433007], dtype=float32), 'theta': array([1.1678085], dtype=float32), 'z': array([0.509182], dtype=float32), 'a': array([1.1896605], dtype=float32), 'deadline': array([999.], dtype=float32)}
 simulation round: 9  of 10
-noise vec noise vec noise vec noise vec noise vec noise vec noise vec   noise vec noise vec    noise vec   [1.][1.]  [1.][1.][1.] [1.][1.]
-[1.]
-
-[1.]
-
-[1.]
-
-
-theta
-thetathetatheta
-thetatheta thetatheta theta   theta {'v': array([-1.712481], dtype=float32), 't': array([0.537461], dtype=float32), 'theta': array([1.1108876], dtype=float32), 'z': array([0.1343417], dtype=float32), 'a': array([0.7644233], dtype=float32), 'deadline': array([999.], dtype=float32)} {'v': array([2.889276], dtype=float32), 't': array([1.6553475], dtype=float32), 'theta': array([0.89024174], dtype=float32), 'z': array([0.8297473], dtype=float32), 'a': array([1.3128242], dtype=float32), 'deadline': array([999.], dtype=float32)} {'v': array([2.9508002], dtype=float32), 't': array([0.28227141], dtype=float32), 'theta': array([0.2867521], dtype=float32), 'z': array([0.18380187], dtype=float32), 'a': array([1.7382536], dtype=float32), 'deadline': array([999.], dtype=float32)}simulation round: 10  of 10
- {'v': array([-0.38900852], dtype=float32), 't': array([0.17226414], dtype=float32), 'theta': array([0.95210433], dtype=float32), 'z': array([0.64564604], dtype=float32), 'a': array([2.305739], dtype=float32), 'deadline': array([999.], dtype=float32)} {'v': array([-2.9196978], dtype=float32), 't': array([0.34302557], dtype=float32), 'theta': array([0.19775973], dtype=float32), 'z': array([0.53572434], dtype=float32), 'a': array([1.0746361], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([0.89831793], dtype=float32), 't': array([0.66598433], dtype=float32), 'theta': array([0.8906062], dtype=float32), 'z': array([0.29051358], dtype=float32), 'a': array([2.3344471], dtype=float32), 'deadline': array([999.], dtype=float32)}
-
-{'v': array([-2.6447477], dtype=float32), 't': array([0.18733671], dtype=float32), 'theta': array([1.2853134], dtype=float32), 'z': array([0.1380668], dtype=float32), 'a': array([1.1036878], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([1.9406991], dtype=float32), 't': array([1.0674154], dtype=float32), 'theta': array([0.4211908], dtype=float32), 'z': array([0.860897], dtype=float32), 'a': array([2.8525496], dtype=float32), 'deadline': array([999.], dtype=float32)}
-
-{'v': array([2.913253], dtype=float32), 't': array([1.9943807], dtype=float32), 'theta': array([0.26086435], dtype=float32), 'z': array([0.7627498], dtype=float32), 'a': array([2.5726209], dtype=float32), 'deadline': array([999.], dtype=float32)}{'v': array([0.3526142], dtype=float32), 't': array([1.6679082], dtype=float32), 'theta': array([0.6141364], dtype=float32), 'z': array([0.82733876], dtype=float32), 'a': array([2.7245886], dtype=float32), 'deadline': array([999.], dtype=float32)}
-
-
-
-
-
-noise vec noise vec   [1.][1.]noise vec 
-
- thetatheta[1.]  
-{'v': array([-0.23375468], dtype=float32), 't': array([1.1029271], dtype=float32), 'theta': array([0.46388653], dtype=float32), 'z': array([0.5836357], dtype=float32), 'a': array([0.84251446], dtype=float32), 'deadline': array([999.], dtype=float32)}theta{'v': array([1.0187591], dtype=float32), 't': array([1.60392], dtype=float32), 'theta': array([-0.08385586], dtype=float32), 'z': array([0.5058216], dtype=float32), 'a': array([2.485763], dtype=float32), 'deadline': array([999.], dtype=float32)}
- 
-{'v': array([-2.2737904], dtype=float32), 't': array([1.3519466], dtype=float32), 'theta': array([-0.02821826], dtype=float32), 'z': array([0.80033815], dtype=float32), 'a': array([1.3258846], dtype=float32), 'deadline': array([999.], dtype=float32)}
-noise vec  [1.]
-theta {'v': array([-0.1392996], dtype=float32), 't': array([1.2064464], dtype=float32), 'theta': array([1.0346993], dtype=float32), 'z': array([0.76190406], dtype=float32), 'a': array([2.2099004], dtype=float32), 'deadline': array([999.], dtype=float32)}
+simulation round: 10  of 10
 </pre>
 </div>
 </div>
