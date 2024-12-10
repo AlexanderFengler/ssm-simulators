@@ -797,7 +797,7 @@ def simulator(
         theta["z"] = np.expand_dims(theta["z"], axis=1)
         theta["theta"] = np.expand_dims(theta["theta"], axis=1)
 
-    if model == "rlwm_lba_race_v1":
+    if model in ["rlwm_lba_race_v1", "rlwm_lba_race_v2"]:
         sim_param_dict["sd"] = noise_dict["lba_based_models"]
         theta["v_RL"] = np.column_stack(
             [theta["v_RL_0"], theta["v_RL_1"], theta["v_RL_2"]]
@@ -807,7 +807,7 @@ def simulator(
         )
         theta["a"] = np.expand_dims(theta["a"], axis=1)
         theta["z"] = np.expand_dims(theta["z"], axis=1)
-    
+
     if model == "rlwm_lba_pw_v1":
         sim_param_dict["sd"] = noise_dict["lba_based_models"]
         theta["v_RL"] = np.column_stack(
