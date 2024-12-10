@@ -310,7 +310,7 @@ model_config = {
         "simulator": cssm.lba_angle,
     },
     "rlwm_lba_pw_v1": {
-        "name": "rlwm_lba_pw_v1", 
+        "name": "rlwm_lba_pw_v1",
         "params": [
             "v_RL_0",
             "v_RL_1",
@@ -320,7 +320,7 @@ model_config = {
             "v_WM_2",
             "a",
             "z",
-            "t_WM"
+            "t_WM",
         ],
         "param_bounds": [
             [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.05, 0.0, 0.01],
