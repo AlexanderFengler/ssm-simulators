@@ -298,6 +298,41 @@ model_config = {
         "nchoices": 3,
         "simulator": cssm.lba_angle,
     },
+    "lba_angle_3_v2": {
+        "name": "lba_angle_3_v2",  # LBA_Angle_3 without ndt; removing the constraint that sum of all v = 1; this is essentially conventional analytical LBA with angle
+        "params": ["v0", "v1", "v2", "a", "z", "theta"],
+        "param_bounds": [[0.0, 0.0, 0.0, 0.1, 0.0, 0], [1.0, 1.0, 1.0, 1.1, 0.5, 1.3]],
+        "boundary_name": "constant",
+        "boundary": bf.constant,
+        "n_params": 6,
+        "default_params": [0.5, 0.3, 0.2, 0.5, 0.2, 0.0],
+        "nchoices": 3,
+        "simulator": cssm.lba_angle,
+    },
+    "rlwm_lba_pw_v1": {
+        "name": "rlwm_lba_pw_v1", 
+        "params": [
+            "v_RL_0",
+            "v_RL_1",
+            "v_RL_2",
+            "v_WM_0",
+            "v_WM_1",
+            "v_WM_2",
+            "a",
+            "z",
+            "t_WM"
+        ],
+        "param_bounds": [
+            [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.05, 0.0, 0.01],
+            [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.1, 0.5, 0.5],
+        ],
+        "boundary_name": "constant",
+        "boundary": bf.constant,
+        "n_params": 9,
+        "default_params": [0.5, 0.3, 0.2, 0.5, 0.3, 0.2, 0.5, 0.2, 0.1],
+        "nchoices": 3,
+        "simulator": cssm.rlwm_lba_pw_v1,
+    },
     "rlwm_lba_race_v1": {
         "name": "rlwm_lba_race_wo_ndt_v1",  # RLWM_Race_LBA_3 without ndt; sum of all v_RL = 1 and sum of all v_WM = 1
         "params": [
@@ -313,6 +348,29 @@ model_config = {
         "param_bounds": [
             [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.05, 0.0],
             [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.1, 0.5],
+        ],
+        "boundary_name": "constant",
+        "boundary": bf.constant,
+        "n_params": 8,
+        "default_params": [0.5, 0.3, 0.2, 0.5, 0.3, 0.2, 0.5, 0.2],
+        "nchoices": 3,
+        "simulator": cssm.rlwm_lba_race,
+    },
+    "rlwm_lba_race_v2": {
+        "name": "rlwm_lba_race_wo_ndt_v1",  # RLWM_Race_LBA_3 without ndt; no constraints on the sum of v_RL and v_WM.
+        "params": [
+            "v_RL_0",
+            "v_RL_1",
+            "v_RL_2",
+            "v_WM_0",
+            "v_WM_1",
+            "v_WM_2",
+            "a",
+            "z",
+        ],
+        "param_bounds": [
+            [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.05, 0.0],
+            [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 3.0, 2.0],
         ],
         "boundary_name": "constant",
         "boundary": bf.constant,
