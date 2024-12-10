@@ -368,7 +368,7 @@ class data_generator:
                 tmp = theta[3]
                 theta[3] = theta[4]
                 theta[4] = tmp
-
+        
         if self.model_config["name"] == "rlwm_lba_pw_v1":
             # ensure that a is always greater than z
             if theta[6] <= theta[7]:

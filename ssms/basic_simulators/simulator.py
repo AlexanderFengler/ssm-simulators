@@ -534,9 +534,7 @@ def validate_ssm_parameters(model: str, theta: dict) -> None:
             check_lba_drifts_sum(theta["v_RL"])
             check_lba_drifts_sum(theta["v_WM"])
             check_if_z_gt_a(theta["z"], theta["a"])
-        elif model in ["rlwm_lba_race_v2"]:
-            check_if_z_gt_a(theta["z"], theta["a"])
-        elif model in ["lba3", "lba2", "lba_angle_3_v2", "rlwm_lba_pw_v1"]:
+        elif model in ["lba3", "lba2", "lba_angle_3_v2", "rlwm_lba_pw_v1", "rlwm_lba_race_v2"]:
             check_if_z_gt_a(theta["z"], theta["a"])
 
 
@@ -560,6 +558,7 @@ def make_noise_vec(
         shape_tuple,
     )
     return noise_vec
+        
 
 
 def simulator(
@@ -750,6 +749,76 @@ def simulator(
     boundary_dict = make_boundary_dict(model_config_local, theta)
     # Make drift dictionary
     drift_dict = make_drift_dict(model_config_local, theta)
+    if no_noise:
+        noise_dict = {key: value * 0.0 for key, value in noise_dict.items()}
+
+    if model in [
+        "glob",
+        "ddm",
+        "angle",
+        "weibull",
+        "weibull_cdf",
+        "ddm_hddm_base",
+        "ddm_legacy",  # AF-TODO what was DDM legacy?
+        "levy",
+        "levy_angle",
+        "full_ddm",
+        "full_ddm2",
+        "full_ddm_legacy",
+        "full_ddm_hddm_base",
+        "ddm_sdv",
+        "ornstein",
+        "ornstein_uhlenbeck",
+        "ornstein_angle",
+        "gamma_drift",
+        "gamma_drift_angle",
+    ]:
+        sim_param_dict["s"] = noise_dict["1_particles"]
+
+    if model in ["ds_conflict_drift", "ds_conflict_drift_angle"]:
+        sim_param_dict["s"] = noise_dict["1_particles"]
+        theta["v"] = np.tile(np.array([0], dtype=np.float32), n_trials)
+
+    # Multi-particle models
+
+    #   LBA-based models
+
+    # lba_sd = 0.1
+    if model == "lba_3_v1":
+        sim_param_dict["sd"] = noise_dict["lba_based_models"]
+        theta["v"] = np.column_stack([theta["v0"], theta["v1"], theta["v2"]])
+        theta["a"] = np.expand_dims(theta["a"], axis=1)
+        theta["z"] = np.expand_dims(theta["z"], axis=1)
+
+    if model in ["lba_angle_3_v1", "lba_angle_3_v2"]:
+        sim_param_dict["sd"] = noise_dict["lba_based_models"]
+        theta["v"] = np.column_stack([theta["v0"], theta["v1"], theta["v2"]])
+        theta["a"] = np.expand_dims(theta["a"], axis=1)
+        theta["z"] = np.expand_dims(theta["z"], axis=1)
+        theta["theta"] = np.expand_dims(theta["theta"], axis=1)
+
+    if model == "rlwm_lba_race_v1":
+        sim_param_dict["sd"] = noise_dict["lba_based_models"]
+        theta["v_RL"] = np.column_stack(
+            [theta["v_RL_0"], theta["v_RL_1"], theta["v_RL_2"]]
+        )
+        theta["v_WM"] = np.column_stack(
+            [theta["v_WM_0"], theta["v_WM_1"], theta["v_WM_2"]]
+        )
+        theta["a"] = np.expand_dims(theta["a"], axis=1)
+        theta["z"] = np.expand_dims(theta["z"], axis=1)
+    
+    if model == "rlwm_lba_pw_v1":
+        sim_param_dict["sd"] = noise_dict["lba_based_models"]
+        theta["v_RL"] = np.column_stack(
+            [theta["v_RL_0"], theta["v_RL_1"], theta["v_RL_2"]]
+        )
+        theta["v_WM"] = np.column_stack(
+            [theta["v_WM_0"], theta["v_WM_1"], theta["v_WM_2"]]
+        )
+        theta["a"] = np.expand_dims(theta["a"], axis=1)
+        theta["z"] = np.expand_dims(theta["z"], axis=1)
+        theta["t_WM"] = np.expand_dims(theta["t_WM"], axis=1)
 
     # Check if parameters are valid
     validate_ssm_parameters(model, theta)
