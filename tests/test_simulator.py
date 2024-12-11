@@ -96,8 +96,8 @@ def test_simulator_runs(sim_input_data):
 
                 for n_samples in [1, 10]:
                     raised_value_error = 0
-                    print("input data: ", sim_input_data[key][subkey])
-                    print("n_samples: ", n_samples)
+                    # print("input data: ", sim_input_data[key][subkey])
+                    # print("n_samples: ", n_samples)
                     try:
                         out = simulator(
                             model=key,
@@ -110,8 +110,8 @@ def test_simulator_runs(sim_input_data):
                     assert raised_val_error
             else:
                 for n_samples in [1, 10]:
-                    print("input data: ", sim_input_data[key][subkey])
-                    print("n_samples: ", n_samples)
+                    # print("input data: ", sim_input_data[key][subkey])
+                    # print("n_samples: ", n_samples)
                     out = simulator(
                         model=key,
                         theta=sim_input_data[key][subkey],

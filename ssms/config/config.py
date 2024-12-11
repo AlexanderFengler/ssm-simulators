@@ -548,6 +548,7 @@ model_config = {
         "n_params": 6,
         "default_params": [0.5, 0.3, 0.2, 0.5, 0.2, 0.0],
         "nchoices": 3,
+        "n_particles": 3,
         "simulator": cssm.lba_angle,
     },
     "rlwm_lba_pw_v1": {
@@ -572,6 +573,7 @@ model_config = {
         "n_params": 9,
         "default_params": [0.5, 0.3, 0.2, 0.5, 0.3, 0.2, 0.5, 0.2, 0.1],
         "nchoices": 3,
+        "n_particles": 3,
         "simulator": cssm.rlwm_lba_pw_v1,
     },
     "rlwm_lba_race_v1": {
@@ -599,7 +601,7 @@ model_config = {
         "simulator": cssm.rlwm_lba_race,
     },
     "rlwm_lba_race_v2": {
-        "name": "rlwm_lba_race_wo_ndt_v1",  # RLWM_Race_LBA_3 without ndt; no constraints on the sum of v_RL and v_WM.
+        "name": "rlwm_lba_race_v2",  # RLWM_Race_LBA_3 without ndt; no constraints on the sum of v_RL and v_WM.
         "params": [
             "v_RL_0",
             "v_RL_1",
@@ -619,6 +621,7 @@ model_config = {
         "n_params": 8,
         "default_params": [0.5, 0.3, 0.2, 0.5, 0.3, 0.2, 0.5, 0.2],
         "nchoices": 3,
+        "n_particles": 3,
         "simulator": cssm.rlwm_lba_race,
     },
     "race_2": {

@@ -4066,8 +4066,8 @@ def rlwm_lba_pw_v1(np.ndarray[float, ndim = 2] v_RL,
         np.ndarray[float, ndim = 2] z,  
         np.ndarray[float, ndim = 2] t_WM,
         np.ndarray[float, ndim = 1] deadline,
-        float sd, # std dev 
-        float ndt = 0, # ndt is supposed to be 0 by default because of parameter identifiability issues
+        np.ndarray[float, ndim = 2] sd, # std dev 
+        np.ndarray[float, ndim = 1] ndt, # ndt is supposed to be 0 by default because of parameter identifiability issues
         int nact = 3,
         int n_samples = 2000,
         int n_trials = 1,
@@ -4081,8 +4081,10 @@ def rlwm_lba_pw_v1(np.ndarray[float, ndim = 2] v_RL,
     cdef float[:, :] a_view = a
     cdef float[:, :] z_view = z
     cdef float[:, :] t_WM_view = t_WM
+    cdef float[:] ndt_view = ndt
 
     cdef float[:] deadline_view = deadline
+    cdef float[:, :] sd_view = sd
 
     cdef np.ndarray[float, ndim = 1] zs
     cdef np.ndarray[double, ndim = 2] x_t_RL
@@ -4103,8 +4105,8 @@ def rlwm_lba_pw_v1(np.ndarray[float, ndim = 2] v_RL,
         for n in range(n_samples):
             zs = np.random.uniform(0, z_view[k], nact).astype(DTYPE)
 
-            vs_RL = np.abs(np.random.normal(v_RL_view[k], sd)) # np.abs() to avoid negative vs
-            vs_WM = np.abs(np.random.normal(v_WM_view[k], sd)) # np.abs() to avoid negative vs
+            vs_RL = np.abs(np.random.normal(v_RL_view[k], sd_view[k])) # np.abs() to avoid negative vs
+            vs_WM = np.abs(np.random.normal(v_WM_view[k], sd_view[k])) # np.abs() to avoid negative vs
 
             x_t_RL = ([a_view[k]]*nact - zs)/vs_RL
             # x_t_WM = ([a_view[k]]*nact - zs)/vs_WM
@@ -4115,7 +4117,7 @@ def rlwm_lba_pw_v1(np.ndarray[float, ndim = 2] v_RL,
                 x_t = t_WM_view[k] + ( [a_view[k]]*nact - zs - ([t_WM_view[k]]*nact)*vs_RL ) / ( vs_RL + vs_WM )
 
             choices_view[n, k, 0] = np.argmin(x_t) # store choices for sample n
-            rts_view[n, k, 0] = np.min(x_t) + ndt # store reaction time for sample n
+            rts_view[n, k, 0] = np.min(x_t) + ndt_view[k] # store reaction time for sample n
             
             # If the rt exceeds the deadline, set rt to -999
             if rts_view[n, k, 0] >= deadline_view[k]:
