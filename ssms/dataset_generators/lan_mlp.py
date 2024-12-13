@@ -362,19 +362,21 @@ class data_generator:
                 Dictionary containing the transformed parameters.
         """
 
+        #print(theta)
+
         if self.model_config["name"] in ["lba_angle_3_v2", "lba_angle_3_v3"]:
             # ensure that a is always greater than z
-            if theta[3] <= theta[4]:
-                tmp = theta[3]
-                theta[3] = theta[4]
-                theta[4] = tmp
+            if theta["a"] <= theta["z"]:
+                tmp = theta["a"]
+                theta["a"] = theta["z"]
+                theta["z"] = tmp
 
         if self.model_config["name"] == "rlwm_lba_pw_v1":
             # ensure that a is always greater than z
-            if theta[6] <= theta[7]:
-                tmp = theta[6]
-                theta[6] = theta[7]
-                theta[7] = tmp
+            if theta["a"] <= theta["z"]:
+                tmp = theta["a"]
+                theta["a"] = theta["z"]
+                theta["z"] = tmp
 
         # For LBA-based models, we need to ensure that the drift rates sum to 1
         if self.model_config["name"] == "rlwm_lba_race_wo_ndt_v1":

@@ -3859,7 +3859,7 @@ def lba_vanilla(np.ndarray[float, ndim = 2] v,
         np.ndarray[float, ndim = 2] z, 
         np.ndarray[float, ndim = 1] deadline,
         np.ndarray[float, ndim = 2] sd, # noise sigma
-        np.ndarray[float, ndim = 1] ndt, # non-decision time
+        np.ndarray[float, ndim = 1] t, # non-decision time
         int nact = 3,
         int n_samples = 2000,
         int n_trials = 1,
@@ -3881,7 +3881,7 @@ def lba_vanilla(np.ndarray[float, ndim = 2] v,
         Maximum allowed decision time.
     sd : np.ndarray[float, ndim=1]
         Standard deviation of the drift rate distribution.
-    ndt : np.ndarray[float, ndim=1]
+    t : np.ndarray[float, ndim=1]
         Non-decision time.
     nact : int, optional
         Number of accumulators (default is 3).
@@ -3907,7 +3907,7 @@ def lba_vanilla(np.ndarray[float, ndim = 2] v,
     cdef float[:, :] v_view = v
     cdef float[:, :] a_view = a
     cdef float[:, :] z_view = z
-    cdef float[:] ndt_view = ndt
+    cdef float[:] t_view = t
     cdef float[:] deadline_view = deadline
     cdef float[:, :] sd_view = sd
 
@@ -3929,7 +3929,7 @@ def lba_vanilla(np.ndarray[float, ndim = 2] v,
             x_t = ([a_view[k]]*nact - zs)/vs
         
             choices_view[n, k, 0] = np.argmin(x_t) # store choices for sample n
-            rts_view[n, k, 0] = np.min(x_t) + ndt_view[k]  # store reaction time for sample n
+            rts_view[n, k, 0] = np.min(x_t) + t_view[k]  # store reaction time for sample n
 
             # If the rt exceeds the deadline, set rt to -999
             if rts_view[n, k, 0] >= deadline_view[k]:
@@ -3945,7 +3945,7 @@ def lba_vanilla(np.ndarray[float, ndim = 2] v,
                                                          'z': z,
                                                          'deadline': deadline,
                                                          'sd': sd,
-                                                         'ndt': ndt,
+                                                         't': t,
                                                          'n_samples': n_samples,
                                                          'simulator' : 'lba_vanilla',
                                                          'possible_choices': list(np.arange(0, nact, 1)),
@@ -3961,7 +3961,7 @@ def lba_angle(np.ndarray[float, ndim = 2] v,
         np.ndarray[float, ndim = 2] theta,
         np.ndarray[float, ndim = 1] deadline,
         np.ndarray[float, ndim = 2] sd, # noise sigma
-        np.ndarray[float, ndim = 1] ndt, # non-decision time
+        np.ndarray[float, ndim = 1] t, # non-decision time
         int nact = 3,
         int n_samples = 2000,
         int n_trials = 1,
@@ -3985,7 +3985,7 @@ def lba_angle(np.ndarray[float, ndim = 2] v,
         Maximum allowed decision time.
     sd : np.ndarray[float, ndim=1]
         Standard deviation of the drift rate distribution.
-    ndt : np.ndarray[float, ndim=1]
+    t : np.ndarray[float, ndim=1]
         Non-decision time.
     nact : int, optional
         Number of accumulators (default is 3).
@@ -4010,7 +4010,7 @@ def lba_angle(np.ndarray[float, ndim = 2] v,
     cdef float[:, :] a_view = a
     cdef float[:, :] z_view = z
     cdef float[:, :] theta_view = theta
-    cdef float[:] ndt_view = ndt
+    cdef float[:] t_view = t
 
     cdef float[:] deadline_view = deadline
     cdef float[:, :] sd_view = sd
@@ -4031,7 +4031,7 @@ def lba_angle(np.ndarray[float, ndim = 2] v,
             x_t = ([a_view[k]]*nact - zs)/(vs + np.tan(theta_view[k, 0]))
         
             choices_view[n, k, 0] = np.argmin(x_t) # store choices for sample n
-            rts_view[n, k, 0] = np.min(x_t) + ndt_view[k] # store reaction time for sample n
+            rts_view[n, k, 0] = np.min(x_t) + t_view[k] # store reaction time for sample n
 
             # If the rt exceeds the deadline, set rt to -999
             if rts_view[n, k, 0] >= deadline_view[k]:
@@ -4050,6 +4050,7 @@ def lba_angle(np.ndarray[float, ndim = 2] v,
                                                          'theta': theta,
                                                          'deadline': deadline,
                                                          'sd': sd,
+                                                         't': t,
                                                          'n_samples': n_samples,
                                                          'simulator' : 'lba_angle',
                                                          'possible_choices': list(np.arange(0, nact, 1)),
@@ -4065,7 +4066,7 @@ def rlwm_lba_pw_v1(np.ndarray[float, ndim = 2] v_RL,
         np.ndarray[float, ndim = 2] t_WM,
         np.ndarray[float, ndim = 1] deadline,
         np.ndarray[float, ndim = 2] sd, # std dev 
-        np.ndarray[float, ndim = 1] ndt, # ndt is supposed to be 0 by default because of parameter identifiability issues
+        np.ndarray[float, ndim = 1] t, # ndt is supposed to be 0 by default because of parameter identifiability issues
         int nact = 3,
         int n_samples = 2000,
         int n_trials = 1,
@@ -4079,7 +4080,7 @@ def rlwm_lba_pw_v1(np.ndarray[float, ndim = 2] v_RL,
     cdef float[:, :] a_view = a
     cdef float[:, :] z_view = z
     cdef float[:, :] t_WM_view = t_WM
-    cdef float[:] ndt_view = ndt
+    cdef float[:] t_view = t
 
     cdef float[:] deadline_view = deadline
     cdef float[:, :] sd_view = sd
@@ -4115,7 +4116,7 @@ def rlwm_lba_pw_v1(np.ndarray[float, ndim = 2] v_RL,
                 x_t = t_WM_view[k] + ( [a_view[k]]*nact - zs - ([t_WM_view[k]]*nact)*vs_RL ) / ( vs_RL + vs_WM )
 
             choices_view[n, k, 0] = np.argmin(x_t) # store choices for sample n
-            rts_view[n, k, 0] = np.min(x_t) + ndt_view[k] # store reaction time for sample n
+            rts_view[n, k, 0] = np.min(x_t) + t_view[k] # store reaction time for sample n
             
             # If the rt exceeds the deadline, set rt to -999
             if rts_view[n, k, 0] >= deadline_view[k]:
@@ -4131,7 +4132,7 @@ def rlwm_lba_pw_v1(np.ndarray[float, ndim = 2] v_RL,
                                                          'a': a,
                                                          'z': z,
                                                          't_WM': t_WM,
-                                                         't': 0,
+                                                         't': t,
                                                          'deadline': deadline,
                                                          'sd': sd,
                                                          'n_samples': n_samples,
@@ -4147,7 +4148,7 @@ def rlwm_lba_race(np.ndarray[float, ndim = 2] v_RL, # RL drift parameters (np.ar
         np.ndarray[float, ndim = 2] z, # initial bias parameters (np.array expect: one column of floats)
         np.ndarray[float, ndim = 1] deadline,
         np.ndarray[float, ndim = 2] sd, # noise sigma
-        np.ndarray[float, ndim = 1] ndt, # non-decision time
+        np.ndarray[float, ndim = 1] t, # non-decision time
         int nact = 3,
         int n_samples = 2000,
         int n_trials = 1,
@@ -4171,7 +4172,7 @@ def rlwm_lba_race(np.ndarray[float, ndim = 2] v_RL, # RL drift parameters (np.ar
         Maximum allowed decision time.
     sd : np.ndarray[float, ndim=1]
         Standard deviation of the drift rate distribution.
-    ndt : np.ndarray[float, ndim=1]
+    t : np.ndarray[float, ndim=1]
         Non-decision time.
     nact : int, optional
         Number of accumulators (default is 3).
@@ -4196,7 +4197,7 @@ def rlwm_lba_race(np.ndarray[float, ndim = 2] v_RL, # RL drift parameters (np.ar
     cdef float[:, :] v_WM_view = v_WM
     cdef float[:, :] a_view = a
     cdef float[:, :] z_view = z
-    cdef float[:] ndt_view = ndt
+    cdef float[:] t_view = t
 
     cdef float[:] deadline_view = deadline
     cdef float[:, :] sd_view = sd
@@ -4226,10 +4227,10 @@ def rlwm_lba_race(np.ndarray[float, ndim = 2] v_RL, # RL drift parameters (np.ar
             x_t_WM = ([a_view[k]]*nact - zs)/vs_WM
 
             if np.min(x_t_RL) <= np.min(x_t_WM):
-                rts_view[n, k, 0] = np.min(x_t_RL) + ndt_view[k]  # store reaction time for sample n
+                rts_view[n, k, 0] = np.min(x_t_RL) + t_view[k]  # store reaction time for sample n
                 choices_view[n, k, 0] = np.argmin(x_t_RL) # store choices for sample n
             else:
-                rts_view[n, k, 0] = np.min(x_t_WM) + ndt_view[k]  # store reaction time for sample n
+                rts_view[n, k, 0] = np.min(x_t_WM) + t_view[k]  # store reaction time for sample n
                 choices_view[n, k, 0] = np.argmin(x_t_WM) # store choices for sample n  
             
             # If the rt exceeds the deadline, set rt to -999
@@ -4248,7 +4249,7 @@ def rlwm_lba_race(np.ndarray[float, ndim = 2] v_RL, # RL drift parameters (np.ar
                                                          't': 0,
                                                          'deadline': deadline,
                                                          'sd': sd,
-                                                         'ndt': ndt,
+                                                         't': t,
                                                          'n_samples': n_samples,
                                                          'simulator' : 'rlwm_lba_race',
                                                          'possible_choices': list(np.arange(0, nact, 1)),
