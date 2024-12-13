@@ -157,14 +157,14 @@ class SimpleThetaProcessor(AbstractThetaProcessor):
             theta["z"] = np.expand_dims(theta["z"], axis=1)
             theta["ndt"] = np.zeros(n_trials).astype(np.float32)
 
-        if model == "lba_angle_3_v1":
+        if model in ["lba_angle_3_v1", "lba_angle_3_v2"]:
             theta["v"] = np.column_stack([theta["v0"], theta["v1"], theta["v2"]])
             theta["a"] = np.expand_dims(theta["a"], axis=1)
             theta["z"] = np.expand_dims(theta["z"], axis=1)
             theta["theta"] = np.expand_dims(theta["theta"], axis=1)
             theta["ndt"] = np.zeros(n_trials).astype(np.float32)
 
-        if model == "rlwm_lba_race_v1":
+        if model in ["rlwm_lba_race_v1", "rlwm_lba_race_v2"]:
             theta["v_RL"] = np.column_stack(
                 [theta["v_RL_0"], theta["v_RL_1"], theta["v_RL_2"]]
             )
@@ -173,6 +173,18 @@ class SimpleThetaProcessor(AbstractThetaProcessor):
             )
             theta["a"] = np.expand_dims(theta["a"], axis=1)
             theta["z"] = np.expand_dims(theta["z"], axis=1)
+            theta["ndt"] = np.zeros(n_trials).astype(np.float32)
+
+        if model == "rlwm_lba_pw_v1":
+            theta["v_RL"] = np.column_stack(
+                [theta["v_RL_0"], theta["v_RL_1"], theta["v_RL_2"]]
+            )
+            theta["v_WM"] = np.column_stack(
+                [theta["v_WM_0"], theta["v_WM_1"], theta["v_WM_2"]]
+            )
+            theta["a"] = np.expand_dims(theta["a"], axis=1)
+            theta["z"] = np.expand_dims(theta["z"], axis=1)
+            theta["t_WM"] = np.expand_dims(theta["t_WM"], axis=1)
             theta["ndt"] = np.zeros(n_trials).astype(np.float32)
 
         # 2 Choice

@@ -4057,6 +4057,89 @@ def lba_angle(np.ndarray[float, ndim = 2] v,
                                                          }}
 
 
+# Simulate (rt, choice) tuples from LBA piece-wise model  -----------------------------
+def rlwm_lba_pw_v1(np.ndarray[float, ndim = 2] v_RL, 
+        np.ndarray[float, ndim = 2] v_WM,
+        np.ndarray[float, ndim = 2] a, 
+        np.ndarray[float, ndim = 2] z,  
+        np.ndarray[float, ndim = 2] t_WM,
+        np.ndarray[float, ndim = 1] deadline,
+        np.ndarray[float, ndim = 2] sd, # std dev 
+        np.ndarray[float, ndim = 1] ndt, # ndt is supposed to be 0 by default because of parameter identifiability issues
+        int nact = 3,
+        int n_samples = 2000,
+        int n_trials = 1,
+        float max_t = 20,
+        **kwargs
+        ):
+
+    # Param views
+    cdef float[:, :] v_RL_view = v_RL
+    cdef float[:, :] v_WM_view = v_WM
+    cdef float[:, :] a_view = a
+    cdef float[:, :] z_view = z
+    cdef float[:, :] t_WM_view = t_WM
+    cdef float[:] ndt_view = ndt
+
+    cdef float[:] deadline_view = deadline
+    cdef float[:, :] sd_view = sd
+
+    cdef np.ndarray[float, ndim = 1] zs
+    cdef np.ndarray[double, ndim = 2] x_t_RL
+    cdef np.ndarray[double, ndim = 2] x_t_WM
+    cdef np.ndarray[double, ndim = 1] vs_RL
+    cdef np.ndarray[double, ndim = 1] vs_WM
+
+    rts = np.zeros((n_samples, n_trials, 1), dtype = DTYPE)
+    cdef float[:, :, :] rts_view = rts
+    
+    choices = np.zeros((n_samples, n_trials, 1), dtype = np.intc)
+    cdef int[:, :, :] choices_view = choices
+    
+    cdef Py_ssize_t n, k, i
+
+    for k in range(n_trials):
+        
+        for n in range(n_samples):
+            zs = np.random.uniform(0, z_view[k], nact).astype(DTYPE)
+
+            vs_RL = np.abs(np.random.normal(v_RL_view[k], sd_view[k])) # np.abs() to avoid negative vs
+            vs_WM = np.abs(np.random.normal(v_WM_view[k], sd_view[k])) # np.abs() to avoid negative vs
+
+            x_t_RL = ([a_view[k]]*nact - zs)/vs_RL
+            # x_t_WM = ([a_view[k]]*nact - zs)/vs_WM
+
+            if np.min(x_t_RL) < t_WM_view[k]:
+                x_t = x_t_RL
+            else:
+                x_t = t_WM_view[k] + ( [a_view[k]]*nact - zs - ([t_WM_view[k]]*nact)*vs_RL ) / ( vs_RL + vs_WM )
+
+            choices_view[n, k, 0] = np.argmin(x_t) # store choices for sample n
+            rts_view[n, k, 0] = np.min(x_t) + ndt_view[k] # store reaction time for sample n
+            
+            # If the rt exceeds the deadline, set rt to -999
+            if rts_view[n, k, 0] >= deadline_view[k]:
+                rts_view[n, k, 0] = -999
+        
+
+    v_dict = {}    
+    for i in range(nact):
+        v_dict['v_RL_' + str(i)] = v_RL[:, i]
+        v_dict['v_WM_' + str(i)] = v_WM[:, i]
+
+    return {'rts': rts, 'choices': choices, 'metadata': {**v_dict,
+                                                         'a': a,
+                                                         'z': z,
+                                                         't_WM': t_WM,
+                                                         't': 0,
+                                                         'deadline': deadline,
+                                                         'sd': sd,
+                                                         'n_samples': n_samples,
+                                                         'simulator' : 'rlwm_lba_pw_v1',
+                                                         'possible_choices': list(np.arange(0, nact, 1)),
+                                                         'max_t': max_t,
+                                                         }}
+
 # Simulate (rt, choice) tuples from: RLWM LBA Race Model without ndt -----------------------------
 def rlwm_lba_race(np.ndarray[float, ndim = 2] v_RL, # RL drift parameters (np.array expect: one column of floats)
         np.ndarray[float, ndim = 2] v_WM, # WM drift parameters (np.array expect: one column of floats)
@@ -4162,6 +4245,7 @@ def rlwm_lba_race(np.ndarray[float, ndim = 2] v_RL, # RL drift parameters (np.ar
     return {'rts': rts, 'choices': choices, 'metadata': {**v_dict,
                                                          'a': a,
                                                          'z': z,
+                                                         't': 0,
                                                          'deadline': deadline,
                                                          'sd': sd,
                                                          'ndt': ndt,
