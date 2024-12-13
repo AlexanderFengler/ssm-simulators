@@ -86,6 +86,10 @@ drift_config = {
         "fun": df.attend_drift,
         "params": ["p_target", "p_outer", "p_inner", "r", "sda"],
     },
+    "attend_drift_simple": {
+        "fun": df.attend_drift_simple,
+        "params": ["p_target", "p_outer", "r", "sda"],
+    },
 }
 
 # Configuration dictionary for simulators
@@ -407,7 +411,7 @@ model_config = {
         ],
         "boundary_name": "constant",
         "boundary": bf.constant,
-        "drift_name": "attend_drift",
+        "drift_name": "attend_drift_simple",
         "drift_fun": df.attend_drift_simple,
         "n_params": 7,
         "default_params": [0.7, 0.5, 0.25, 2.0, -2.0, 0.01, 1],

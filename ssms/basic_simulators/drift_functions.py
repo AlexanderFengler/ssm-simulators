@@ -206,8 +206,6 @@ def attend_drift_simple(
             Usually np.arange() of some sort.
         p_outer: float
             perceptual input for outer flankers
-        p_inner: float
-            perceptual input for inner flankers
         p_target: float
             perceptual input for target flanker
         r: float
@@ -226,7 +224,7 @@ def attend_drift_simple(
     )  # equivalent to norm.sf(0.5, loc=0, scale=new_sda)
     a_target = norm.cdf(0.5, loc=0, scale=new_sda) - 0.5
 
-    v_t = 2 * p_outer * a_outer + 2 * p_target * a_target
+    v_t = (2 * p_outer * a_outer) + (2 * p_target * a_target)
 
     return v_t
 
