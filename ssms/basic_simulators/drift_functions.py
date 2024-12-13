@@ -146,9 +146,9 @@ def ds_conflict_drift(
 
 def attend_drift(
     t: np.ndarray = np.arange(0, 20, 0.1),
-    p_target: float = -0.3,
-    p_outer: float = -0.3,
-    p_inner: float = 0.3,
+    ptarget: float = -0.3,
+    pouter: float = -0.3,
+    pinner: float = 0.3,
     r: float = 0.5,
     sda: float = 2,
 ) -> np.ndarray:
@@ -160,11 +160,11 @@ def attend_drift(
         t: np.ndarray
             Timepoints at which to evaluate the drift.
             Usually np.arange() of some sort.
-        p_outer: float
+        pouter: float
             perceptual input for outer flankers
-        p_inner: float
+        pinner: float
             perceptual input for inner flankers
-        p_target: float
+        ptarget: float
             perceptual input for target flanker
         r: float
             rate parameter for sda decrease
@@ -184,15 +184,15 @@ def attend_drift(
         -0.5, loc=0, scale=new_sda
     )
 
-    v_t = 2 * p_outer * a_outer + 2 * p_inner * a_inner + p_target * a_target
+    v_t = (2 * pouter * a_outer) + (2 * pinner * a_inner) + (ptarget * a_target)
 
     return v_t
 
 
 def attend_drift_simple(
     t: np.ndarray = np.arange(0, 20, 0.1),
-    p_target: float = -0.3,
-    p_outer: float = -0.3,
+    ptarget: float = -0.3,
+    pouter: float = -0.3,
     r: float = 0.5,
     sda: float = 2,
 ) -> np.ndarray:
@@ -204,9 +204,9 @@ def attend_drift_simple(
         t: np.ndarray
             Timepoints at which to evaluate the drift.
             Usually np.arange() of some sort.
-        p_outer: float
+        pouter: float
             perceptual input for outer flankers
-        p_target: float
+        ptarget: float
             perceptual input for target flanker
         r: float
             rate parameter for sda decrease
@@ -224,7 +224,7 @@ def attend_drift_simple(
     )  # equivalent to norm.sf(0.5, loc=0, scale=new_sda)
     a_target = norm.cdf(0.5, loc=0, scale=new_sda) - 0.5
 
-    v_t = (2 * p_outer * a_outer) + (2 * p_target * a_target)
+    v_t = (2 * pouter * a_outer) + (2 * ptarget * a_target)
 
     return v_t
 

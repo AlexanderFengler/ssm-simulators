@@ -124,6 +124,7 @@ class SimpleThetaProcessor(AbstractThetaProcessor):
             "shrink_spot",
             "shrink_spot_extended",
             "shrink_spot_extended_angle",
+            "shrink_spot_simple_extended",
         ]:
             theta["v"] = np.tile(np.array([0], dtype=np.float32), n_trials)
 
