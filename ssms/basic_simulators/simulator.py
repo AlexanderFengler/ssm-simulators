@@ -526,7 +526,7 @@ def validate_ssm_parameters(model: str, theta: dict) -> None:
         if np.any(z >= a):
             raise ValueError("Starting point z >= a for at least one trial")
 
-    if model in ["lba_3_v1", "lba_angle_3_v1", "rlwm_lba_race_v1", "rlwm_lba_race_v2"]:
+    if model in ["lba_3_v1", "lba_angle_3_v1", "lba_angle_3_v2", "lba_angle_3_v3", "rlwm_lba_race_v1", "rlwm_lba_race_v2", "rlwm_lba_pw_v1"]:
         if model in ["lba_3_v1", "lba_angle_3_v1"]:
             check_lba_drifts_sum(theta["v"])
             check_if_z_gt_a(theta["z"], theta["a"])
@@ -538,6 +538,7 @@ def validate_ssm_parameters(model: str, theta: dict) -> None:
             "lba3",
             "lba2",
             "lba_angle_3_v2",
+            "lba_angle_3_v3",
             "rlwm_lba_pw_v1",
             "rlwm_lba_race_v2",
         ]:

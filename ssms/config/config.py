@@ -580,6 +580,18 @@ model_config = {
         "n_particles": 3,
         "simulator": cssm.lba_angle,
     },
+    "lba_angle_3_v3": {
+        "name": "lba_angle_3_v3",  # LBA_Angle_3 without ndt; removing the constraint that sum of all v = 1; this is essentially conventional analytical LBA with angle
+        "params": ["v0", "v1", "v2", "a", "z", "theta"],
+        "param_bounds": [[0.0, 0.0, 0.0, 0.1, 0.0, 0], [6.0, 6.0, 6.0, 1.1, 0.5, 1.3]],
+        "boundary_name": "constant",
+        "boundary": bf.constant,
+        "n_params": 6,
+        "default_params": [0.5, 0.3, 0.2, 0.5, 0.2, 0.0],
+        "nchoices": 3,
+        "n_particles": 3,
+        "simulator": cssm.lba_angle,
+    },
     "rlwm_lba_pw_v1": {
         "name": "rlwm_lba_pw_v1",
         "params": [
