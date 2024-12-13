@@ -692,11 +692,7 @@ def simulator(
 
     # Check if parameters are valid
     validate_ssm_parameters(model, theta)
-    print(theta)
-    print(boundary_dict)
-    print(drift_dict)
-    print(sim_param_dict)
-    print(model_config_local)
+
     # Call to the simulator
     x = model_config_local["simulator"](
         **theta,
