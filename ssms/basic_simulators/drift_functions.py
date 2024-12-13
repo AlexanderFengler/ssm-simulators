@@ -189,6 +189,48 @@ def attend_drift(
     return v_t
 
 
+def attend_drift_simple(
+    t: np.ndarray = np.arange(0, 20, 0.1),
+    p_target: float = -0.3,
+    p_outer: float = -0.3,
+    r: float = 0.5,
+    sda: float = 2,
+) -> np.ndarray:
+    """Drift function for shrinking spotlight model, which involves a time varying
+    function dependent on a linearly decreasing standard deviation of attention.
+
+    Arguments
+    --------
+        t: np.ndarray
+            Timepoints at which to evaluate the drift.
+            Usually np.arange() of some sort.
+        p_outer: float
+            perceptual input for outer flankers
+        p_inner: float
+            perceptual input for inner flankers
+        p_target: float
+            perceptual input for target flanker
+        r: float
+            rate parameter for sda decrease
+        sda: float
+            width of attentional spotlight
+    Return
+    ------
+    np.ndarray
+        Drift evaluated at timepoints t
+    """
+
+    new_sda = np.maximum(sda - r * t, 0.001)
+    a_outer = 1.0 - norm.cdf(
+        0.5, loc=0, scale=new_sda
+    )  # equivalent to norm.sf(0.5, loc=0, scale=new_sda)
+    a_target = norm.cdf(0.5, loc=0, scale=new_sda) - 0.5
+
+    v_t = 2 * p_outer * a_outer + 2 * p_target * a_target
+
+    return v_t
+
+
 # Type alias for drift functions
 DriftFunction = Callable[..., np.ndarray]
 
