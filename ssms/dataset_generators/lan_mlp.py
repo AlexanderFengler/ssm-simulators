@@ -362,7 +362,7 @@ class data_generator:
                 Dictionary containing the transformed parameters.
         """
 
-        #print(theta)
+        # print(theta)
 
         if self.model_config["name"] in ["lba_angle_3_v2", "lba_angle_3_v3"]:
             # ensure that a is always greater than z
