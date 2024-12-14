@@ -2685,8 +2685,8 @@ def ddm_flexbound_seq2_race2(np.ndarray[float, ndim = 1] vha,
             ix = 0 # reset boundary index
 
             # Random walker 1 (high dimensional)
-            y_ha = (-1) * boundary_view[0] + (zh_view[k,0] * 2 * (boundary_view[0]))  # reset starting position 
-            y_hb = (-1) * boundary_view[0] + (zh_view[k,1] * 2 * (boundary_view[0])) 
+            y_ha = zh_view[k,0] * boundary_view[0]# reset starting position 
+            y_hb = zh_view[k,1] * boundary_view[0]
             if n == 0:
                 if k == 0:
                     traja_view[0, 0] = y_ha
@@ -2740,17 +2740,15 @@ def ddm_flexbound_seq2_race2(np.ndarray[float, ndim = 1] vha,
                 if boundary_view[ix] <= 0:
                     if random_uniform() <= 0.5:
                         choices_view[n, k, 0] += 2
-                # Otherwise apply rule from above
-                elif y_ha >= boundary_view[ix]: #High dim racer wins
+                # Otherwise apply rule from abov
+
+                elif random_uniform() <= ((y_h + boundary_view[ix]) / (2 * boundary_view[ix])):
                     choices_view[n, k, 0] += 2
 
-                # elif random_uniform() <= ((y_h + boundary_view[ix]) / (2 * boundary_view[ix])):
-                #     choices_view[n, k, 0] += 2
-
-                y_l1a = (-1) * boundary_view[ix] + (zl1_view[k,0] * 2 * (boundary_view[ix]))
-                y_l2a = (-1) * boundary_view[ix] + (zl2_view[k,0] * 2 * (boundary_view[ix]))
-                y_l1b = (-1) * boundary_view[ix] + (zl1_view[k,1] * 2 * (boundary_view[ix]))
-                y_l2b = (-1) * boundary_view[ix] + (zl2_view[k,1] * 2 * (boundary_view[ix])) 
+                y_l1a = zl1_view[k,0] * boundary_view[ix]
+                y_l2a = zl2_view[k,0] * boundary_view[ix]
+                y_l1b = zl1_view[k,1] * boundary_view[ix]
+                y_l2b = zl2_view[k,1] * boundary_view[ix]
                 
                 ix1 = ix
                 t_particle1 = t_particle
@@ -2760,7 +2758,7 @@ def ddm_flexbound_seq2_race2(np.ndarray[float, ndim = 1] vha,
                 # Figure out negative bound for low level
                 if choices_view[n, k, 0] == 0: #High dim is wrong
                     # In case boundary is negative already, we flip a coin with bias determined by w_l_ parameter
-                    if (y_l1a >= boundary_view[ix]) or (y_l1a <= ((-1) * boundary_view[ix])):
+                    if y_l1a >= boundary_view[ix]:
                         if random_uniform() < zl1_view[k,0]:
                             choices_view[n, k, 0] += 1 #Flip a coin for low dim to be correct
                         decision_taken = 1
@@ -2771,7 +2769,7 @@ def ddm_flexbound_seq2_race2(np.ndarray[float, ndim = 1] vha,
                             trajb_view[ix, 1] = y_l1b
                 else:
                     # In case boundary is negative already, we flip a coin with bias determined by w_l_ parameter
-                    if (y_l2a >= boundary_view[ix]) or (y_l2a <= ((-1) * boundary_view[ix])):
+                    if y_l2a >= boundary_view[ix]:
                         if random_uniform() < zl2_view[k,0]:
                             choices_view[n, k, 0] += 1
                         decision_taken = 1

@@ -1062,10 +1062,10 @@ model_config = {
         "n_particles": 1,
         "simulator": cssm.ddm_flexbound_seq2,
     },
-    "ddm_seq2_no_bias_race2": {
-        "name": "ddm_seq2_no_bias_race2",
+    "ddm_seq2_race_no_bias": {
+        "name": "ddm_seq2_race_no_bias",
         "params": ["vha", "vhb", "vl1a", "vl1b", "vl2a", "vl2b" , "a", "t"],
-        "param_bounds": [[-4.0,-4.0,-4.0,-4.0, -4.0, -4.0, 0.3, 0.0], [4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 2.5, 2.0]],
+        "param_bounds": [[0.0,0.0,0.0,0.0, 0.0, 0.0, 0.3, 0.0], [4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 2.5, 2.0]],
         "boundary_name": "constant",
         "boundary": bf.constant,
         "n_params": 5,

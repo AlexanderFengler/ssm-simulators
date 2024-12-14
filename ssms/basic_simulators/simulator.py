@@ -27,7 +27,7 @@ DEFAULT_SIM_PARAMS: Dict[str, Any] = {
 
 def _make_valid_dict(dict_in: dict) -> dict:
     """Turn all values in dictionary into numpy arrays and make sure,
-    that all thetas are either scalar   s or vectors of the same length
+    that all thetas are either scalars or vectors of the same length
 
     Arguments:
     ----------
@@ -541,8 +541,6 @@ def validate_ssm_parameters(model: str, theta: dict) -> None:
 def make_noise_vec(
     sigma_noise: float | np.ndarray, n_trials: int, n_particles: int
 ) -> np.ndarray:
-    print('Making noise')
-    print(n_particles)
     if n_particles == 1 or n_particles is None:
         shape_tuple = n_trials
     else:
