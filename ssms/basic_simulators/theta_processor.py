@@ -122,6 +122,7 @@ class SimpleThetaProcessor(AbstractThetaProcessor):
 
         if model in [
             "shrink_spot",
+            "shrink_spot_simple",
             "shrink_spot_extended",
             "shrink_spot_extended_angle",
             "shrink_spot_simple_extended",
