@@ -1,6 +1,7 @@
 from ssms.basic_simulators.simulator import simulator  # , bin_simulator_output
 from ssms.support_utils import kde_class
 import numpy as np
+import warnings
 from copy import deepcopy
 import pickle
 import uuid
@@ -112,6 +113,18 @@ class data_generator:
                     self.model_config["default_params"].append(10)
                     self.model_config["name"] += "_deadline"
                     self.model_config["n_params"] += 1
+
+            if "kde_displace_t" not in self.generator_config:
+                self.generator_config["kde_displace_t"] = False
+
+            if (
+                self.generator_config["kde_displace_t"] is True
+                and self.model_config["name"].split("_deadline")[0] in KDE_NO_DISPLACE_T
+            ):
+                warnings.warn(
+                    f"kde_displace_t is True, but model is in {KDE_NO_DISPLACE_T}. Overriding setting to False"
+                )
+                self.generator_config["kde_displace_t"] = False
 
             # Define constrained parameter space as dictionary
             # and add to internal model config
@@ -287,12 +300,7 @@ class data_generator:
 
         tmp_kde = kde_class.LogKDE(
             simulations,
-            displace_t=(
-                True
-                if self.model_config["name"].split("_deadline")[0]
-                not in KDE_NO_DISPLACE_T
-                else False
-            ),
+            displace_t=self.generator_config["kde_displace_t"],
         )
 
         # Get kde part
