@@ -1674,6 +1674,7 @@ data_generator_config = {
         "bin_pointwise": False,
         "separate_response_channels": False,
         "smooth_unif": True,
+        "kde_displace_t": False,
     },
     # AF-TODO: Add opn, gonogo
     "ratio_estimator": {
