@@ -46,11 +46,28 @@ class LogKDE:
     # Initialize the class
     def __init__(
         self,
-        simulator_data,  # as returned by simulator function
-        bandwidth_type="silverman",
-        auto_bandwidth=True,
-        displace_t=True,
+        simulator_data: dict,  # as returned by simulator function
+        bandwidth_type: str = "silverman",
+        auto_bandwidth: bool = True,
+        displace_t: bool = False,
     ):
+        """Initialize LogKDE class.
+
+        Arguments:
+        ----------
+            simulator_data: Dictionary containing simulation data with keys 'rts', 'choices', and 'metadata'.
+                Follows the format returned by simulator functions in this package.
+            bandwidth_type: Type of bandwidth to use for KDE. Currently only 'silverman' is supported.
+                Defaults to 'silverman'.
+            auto_bandwidth: Whether to automatically compute bandwidths based on the data.
+                If False, bandwidths must be set manually. Defaults to True.
+            displace_t: Whether to shift RTs by the t parameter from metadata.
+                Only works if all trials have the same t value. Defaults to False.
+
+        Raises:
+        -------
+            AssertionError: If displace_t is True but metadata contains multiple t values.
+        """
         self.simulator_info = simulator_data["metadata"]
 
         if displace_t:
