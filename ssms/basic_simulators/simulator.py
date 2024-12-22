@@ -3,6 +3,8 @@ import numpy as np
 import pandas as pd
 from copy import deepcopy
 import warnings
+from numpy.random import default_rng
+from threading import Lock
 
 """
 This module defines the basic simulator function which is the main
@@ -23,6 +25,17 @@ DEFAULT_SIM_PARAMS: Dict[str, Any] = {
     "return_option": "full",
     "smooth_unif": False,
 }
+
+_global_rng = default_rng()
+_rng_lock = Lock()
+
+
+def _get_unique_seed() -> int:
+    """
+    Generate a unique seed for the random number generator.
+    """
+    with _rng_lock:
+        return _global_rng.integers(0, 2**32 - 1)
 
 
 def _make_valid_dict(dict_in: dict) -> dict:
@@ -655,6 +668,9 @@ def simulator(
 
     if deadline:
         model_config_local["params"] += ["deadline"]
+
+    if random_state is None:
+        random_state = _get_unique_seed()
 
     theta = _preprocess_theta_generic(theta)
     n_trials, theta = _preprocess_theta_deadline(theta, deadline, model_config_local)
