@@ -1064,8 +1064,11 @@ model_config = {
     },
     "ddm_seq2_race_no_bias": {
         "name": "ddm_seq2_race_no_bias",
-        "params": ["vha", "vhb", "vl1a", "vl1b", "vl2a", "vl2b" , "a", "t"],
-        "param_bounds": [[0.0,0.0,0.0,0.0, 0.0, 0.0, 0.3, 0.0], [4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 2.5, 2.0]],
+        "params": ["vha", "vhb", "vl1a", "vl1b", "vl2a", "vl2b", "a", "t"],
+        "param_bounds": [
+            [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.0],
+            [4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 2.5, 2.0],
+        ],
         "boundary_name": "constant",
         "boundary": bf.constant,
         "n_params": 5,
