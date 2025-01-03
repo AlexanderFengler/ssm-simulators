@@ -1071,7 +1071,7 @@ model_config = {
         ],
         "boundary_name": "constant",
         "boundary": bf.constant,
-        "n_params": 5,
+        "n_params": 8,
         "default_params": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0],
         "nchoices": 4,
         "n_particles": 2,
