@@ -372,14 +372,14 @@ class data_generator:
 
         # print(theta)
 
-        if self.model_config["name"] in ["lba_angle_3_v2", "lba_angle_3_v3"]:
+        if self.model_config["name"] in ["lba_angle_3"]:
             # ensure that a is always greater than z
             if theta["a"] <= theta["z"]:
                 tmp = theta["a"]
                 theta["a"] = theta["z"]
                 theta["z"] = tmp
 
-        if self.model_config["name"] == "rlwm_lba_pw_v1":
+        if self.model_config["name"] == "dev_rlwm_lba_pw_v1":
             # ensure that a is always greater than z
             if theta["a"] <= theta["z"]:
                 tmp = theta["a"]
@@ -387,7 +387,7 @@ class data_generator:
                 theta["z"] = tmp
 
         # For LBA-based models, we need to ensure that the drift rates sum to 1
-        if self.model_config["name"] == "rlwm_lba_race_wo_ndt_v1":
+        if self.model_config["name"] == "dev_rlwm_lba_race_v1":
             # normalize the RL drift rates
             v_rl_sum = (
                 np.sum([theta["v_RL_0"], theta["v_RL_1"], theta["v_RL_2"]]).astype(

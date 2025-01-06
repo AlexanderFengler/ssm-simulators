@@ -568,7 +568,7 @@ model_config = {
         "simulator": cssm.ornstein_uhlenbeck,
     },
     "lba2": {
-        "name": "lba2",  # LBA_3 without ndt; sum of all v = 1
+        "name": "lba2",
         "params": ["A", "b", "v0", "v1"],
         "param_bounds": [[0.0, 0.0, 0.0, 0.1], [1.0, 1.0, 1.0, 1.1]],
         "boundary_name": "constant",
@@ -581,7 +581,7 @@ model_config = {
         "simulator": cssm.lba_vanilla,
     },
     "lba3": {
-        "name": "lba3",  # LBA_3 without ndt; sum of all v = 1
+        "name": "lba3",
         "params": ["A", "b", "v0", "v1", "v2"],
         "param_bounds": [[0.0, 0.0, 0.0, 0.1, 0.1], [1.0, 1.0, 1.0, 1.1, 0.50]],
         "boundary_name": "constant",
@@ -593,8 +593,8 @@ model_config = {
         "n_particles": 3,
         "simulator": cssm.lba_vanilla,
     },
-    "lba_3_v1": {
-        "name": "lba_3_v1",  # LBA_3 without ndt; sum of all v = 1
+    "lba_3_vs_constraint": {
+        "name": "lba_3_vs_constraint",  # this is essentially conventional analytical LBA with constraints on vs (sum of all v = 1)
         "params": ["v0", "v1", "v2", "a", "z"],
         "param_bounds": [[0.0, 0.0, 0.0, 0.1, 0.1], [1.0, 1.0, 1.0, 1.1, 0.50]],
         "boundary_name": "constant",
@@ -606,8 +606,8 @@ model_config = {
         "n_particles": 3,
         "simulator": cssm.lba_vanilla,
     },
-    "lba_angle_3_v1": {
-        "name": "lba_angle_3_v1",  # LBA_Angle_3 without ndt; sum of all v = 1
+    "lba_angle_3_vs_constraint": {
+        "name": "lba_angle_3_vs_constraint",  # this is essentially conventional analytical LBA with angle with constraints on vs (sum of all v = 1)
         "params": ["v0", "v1", "v2", "a", "z", "theta"],
         "param_bounds": [[0.0, 0.0, 0.0, 0.1, 0.0, 0], [1.0, 1.0, 1.0, 1.1, 0.5, 1.3]],
         "boundary_name": "constant",
@@ -619,20 +619,8 @@ model_config = {
         "n_particles": 3,
         "simulator": cssm.lba_angle,
     },
-    "lba_angle_3_v2": {
-        "name": "lba_angle_3_v2",  # LBA_Angle_3 without ndt; removing the constraint that sum of all v = 1; this is essentially conventional analytical LBA with angle
-        "params": ["v0", "v1", "v2", "a", "z", "theta"],
-        "param_bounds": [[0.0, 0.0, 0.0, 0.1, 0.0, 0], [1.0, 1.0, 1.0, 1.1, 0.5, 1.3]],
-        "boundary_name": "constant",
-        "boundary": bf.constant,
-        "n_params": 6,
-        "default_params": [0.5, 0.3, 0.2, 0.5, 0.2, 0.0],
-        "nchoices": 3,
-        "n_particles": 3,
-        "simulator": cssm.lba_angle,
-    },
-    "lba_angle_3_v3": {
-        "name": "lba_angle_3_v3",  # LBA_Angle_3 without ndt; removing the constraint that sum of all v = 1; this is essentially conventional analytical LBA with angle
+    "lba_angle_3": {
+        "name": "lba_angle_3",  # this is essentially conventional analytical LBA with angle without any constraints on vs
         "params": ["v0", "v1", "v2", "a", "z", "theta"],
         "param_bounds": [[0.0, 0.0, 0.0, 0.1, 0.0, 0], [6.0, 6.0, 6.0, 1.1, 0.5, 1.3]],
         "boundary_name": "constant",
@@ -643,8 +631,8 @@ model_config = {
         "n_particles": 3,
         "simulator": cssm.lba_angle,
     },
-    "rlwm_lba_pw_v1": {
-        "name": "rlwm_lba_pw_v1",
+    "dev_rlwm_lba_pw_v1": {
+        "name": "dev_rlwm_lba_pw_v1",
         "params": [
             "v_RL_0",
             "v_RL_1",
@@ -668,8 +656,8 @@ model_config = {
         "n_particles": 3,
         "simulator": cssm.rlwm_lba_pw_v1,
     },
-    "rlwm_lba_race_v1": {
-        "name": "rlwm_lba_race_v1",  # RLWM_Race_LBA_3 without ndt; sum of all v_RL = 1 and sum of all v_WM = 1
+    "dev_rlwm_lba_race_v1": {
+        "name": "dev_rlwm_lba_race_v1",  # RLWM_Race_LBA_3 without ndt; sum of all v_RL = 1 and sum of all v_WM = 1
         "params": [
             "v_RL_0",
             "v_RL_1",
@@ -693,8 +681,8 @@ model_config = {
         "n_particles": 3,
         "simulator": cssm.rlwm_lba_race,
     },
-    "rlwm_lba_race_v2": {
-        "name": "rlwm_lba_race_v2",  # RLWM_Race_LBA_3 without ndt; no constraints on the sum of v_RL and v_WM.
+    "dev_rlwm_lba_race_v2": {
+        "name": "dev_rlwm_lba_race_v2",  # RLWM_Race_LBA_3 without ndt; no constraints on the sum of v_RL and v_WM.
         "params": [
             "v_RL_0",
             "v_RL_1",
