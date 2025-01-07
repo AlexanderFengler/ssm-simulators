@@ -120,7 +120,13 @@ class SimpleThetaProcessor(AbstractThetaProcessor):
                 theta["sv"]
             )
 
-        if model in ["shrink_spot", "shrink_spot_extended"]:
+        if model in [
+            "shrink_spot",
+            "shrink_spot_simple",
+            "shrink_spot_extended",
+            "shrink_spot_extended_angle",
+            "shrink_spot_simple_extended",
+        ]:
             theta["v"] = np.tile(np.array([0], dtype=np.float32), n_trials)
 
         # Multi-particle models
