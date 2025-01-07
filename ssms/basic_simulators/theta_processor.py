@@ -317,7 +317,8 @@ class SimpleThetaProcessor(AbstractThetaProcessor):
         #     sim_param_dict["s"] = noise_dict["1_particles"]
 
         # Seq Race 2 Model
-        if model in ["ddm_seq2_no_bias_race2"]:
+        # if model in ["ddm_seq2_no_bias_race2"]:
+        if model in ["ddm_seq2_race_no_bias"]:
             z_vec = np.tile(
                 np.tile(np.array([0.5], dtype=np.float32), reps=n_trials), (2, 1)
             )
