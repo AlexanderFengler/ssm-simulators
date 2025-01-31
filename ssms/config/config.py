@@ -767,6 +767,11 @@ model_config = {
         "name": "lba_angle_3",  # this is essentially conventional analytical LBA with angle without any constraints on vs
         "params": ["v0", "v1", "v2", "a", "z", "theta"],
         "param_bounds": [[0.0, 0.0, 0.0, 0.1, 0.0, 0], [6.0, 6.0, 6.0, 1.1, 0.5, 1.3]],
+        "param_bounds_logical": dict(
+            a=[0.0, 999999.0],
+            z=[0.0, 999999.0],
+            theta=[0.0, 1.57],
+        ),
         "boundary_name": "constant",
         "boundary": bf.constant,
         "n_params": 6,
@@ -792,6 +797,10 @@ model_config = {
             [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.05, 0.0, 0.01],
             [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.1, 0.5, 0.5],
         ],
+        "param_bounds_logical": dict(
+            a=[0.0, 999999.0],
+            z=[0.0, 999999.0],
+        ),
         "boundary_name": "constant",
         "boundary": bf.constant,
         "n_params": 9,
@@ -845,6 +854,10 @@ model_config = {
             [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.05, 0.0],
             [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 3.0, 2.0],
         ],
+        "param_bounds_logical": dict(
+            a=[0.0, 999999.0],
+            z=[0.0, 999999.0],
+        ),
         "boundary_name": "constant",
         "boundary": bf.constant,
         "n_params": 8,
