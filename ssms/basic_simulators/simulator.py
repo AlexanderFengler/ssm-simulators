@@ -128,6 +128,21 @@ def _theta_dict_to_array(
     )
 
 
+def _check_logical_param_bound(theta: dict, config: dict) -> None:
+    """
+    Check if the parameters in theta are within the logical bounds specified in the config.
+    """
+    for key, value in theta.items():
+        if key in config["param_bounds_logical"]:
+            if np.any(value < config["param_bounds_logical"][key][0]) or np.any(
+                value > config["param_bounds_logical"][key][1]
+            ):
+                raise ValueError(
+                    f"Parameter {key} is violates conceptual bounds for the simulator. "
+                    f"Bounds are {config['param_bounds_logical'][key]}."
+                )
+
+
 def _theta_array_to_dict(
     theta: np.ndarray | None = None, model_param_list: list[str] | None = None
 ) -> dict:
@@ -214,32 +229,32 @@ def _preprocess_theta_generic(
     return theta
 
 
-def _preprocess_theta_deadline(
-    theta: dict | np.ndarray, deadline: bool, config: dict
-) -> tuple[int, dict]:
-    """
-    Preprocess the input theta to a consistent format.
+# def _preprocess_theta_deadline(
+#     theta: dict | np.ndarray, deadline: bool, config: dict
+# ) -> tuple[int, dict]:
+#     """
+#     Preprocess the input theta to a consistent format.
 
-    This function takes theta in various input formats and converts it to a
-    standardized numpy array or dictionary format for further processing.
+#     This function takes theta in various input formats and converts it to a
+#     standardized numpy array or dictionary format for further processing.
 
-    Args:
-        theta (dict | np.ndarray): The input theta in dictionary or numpy array format
-        deadline (bool): Whether the model is a deadline model
-        config (dict): The model configuration
+#     Args:
+#         theta (dict | np.ndarray): The input theta in dictionary or numpy array format
+#         deadline (bool): Whether the model is a deadline model
+#         config (dict): The model configuration
 
-    Returns:
-        tuple[int, dict]: The number of trials and the preprocessed theta in dictionary format
-    """
-    if not isinstance(theta, dict):
-        theta = _theta_array_to_dict(theta, config["params"])
+#     Returns:
+#         tuple[int, dict]: The number of trials and the preprocessed theta in dictionary format
+#     """
+#     if not isinstance(theta, dict):
+#         theta = _theta_array_to_dict(theta, config["params"])
 
-    n_trials = theta[config["params"][0]].shape[0]
+#     n_trials = theta[config["params"][0]].shape[0]
 
-    if not deadline:
-        theta["deadline"] = np.tile(np.array([999], dtype=np.float32), n_trials)
+#     if not deadline:
+#         theta["deadline"] = np.tile(np.array([999], dtype=np.float32), n_trials)
 
-    return n_trials, theta
+#     return n_trials, theta
 
 
 def make_boundary_dict(config: dict, theta: dict) -> dict:
@@ -658,7 +673,20 @@ def simulator(
         random_state = _get_unique_seed()
 
     theta = _preprocess_theta_generic(theta)
-    n_trials, theta = _preprocess_theta_deadline(theta, deadline, model_config_local)
+
+    # Make theta a dictionary
+    if not isinstance(theta, dict):
+        theta = _theta_array_to_dict(theta, model_config_local["params"])
+
+    # Get number of trials
+    n_trials = theta[model_config_local["params"][0]].shape[0]
+
+    # Add deadline if not already present
+    if not deadline:
+        theta["deadline"] = np.tile(np.array([999], dtype=np.float32), n_trials)
+
+    # Check if parameters are within the logical bounds
+    _check_logical_param_bound(theta, model_config_local)
 
     # Initialize dictionary that collects
     # simulator inputs that are commong across simulator functions

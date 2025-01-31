@@ -12,7 +12,7 @@ def sim_input_data():
     data = dict()
 
     # Prepare input data for each model
-    for key in model_config.keys():
+    for key, value in model_config.items():
         # Get model parameter names
         model_param_list = model_config[key]["params"]
 
@@ -78,25 +78,59 @@ def sim_input_data():
             "theta_pd_1": theta_pd_1,
             "theta_pd_n": theta_pd_n,
         }
+    return data
 
+
+@pytest.fixture(scope="module")
+def sim_input_data_violate_bounds():
+    data = dict()
+
+    # Prepare input data for each model
+    for key, value in model_config.items():
+        # Get model parameter names
+        model_param_list = model_config[key]["params"]
+
+        # Dictionary with all scalar values
+        theta_dict_all_scalars = {
+            param: model_config[key]["default_params"][i]
+            for i, param in enumerate(model_param_list)
+        }
+
+        # Dictionary with all vectors
+        theta_dict_all_vectors = {
+            param: np.tile(
+                np.array(model_config[key]["default_params"][i]),
+                100,
+            )
+            for i, param in enumerate(model_param_list)
+        }
+
+        logical_param_bounds = model_config[key]["param_bounds_logical"]
+        for param, bounds in logical_param_bounds.items():
+            theta_dict_all_vectors[param] = np.tile(bounds[0] - 0.01, 100)
+            theta_dict_all_scalars[param] = bounds[0] - 0.01
+
+        data[key] = {
+            "theta_dict_all_scalars": theta_dict_all_scalars,
+            "theta_dict_all_vectors": theta_dict_all_vectors,
+        }
     return data
 
 
 def test_simulator_runs(sim_input_data):
     """Test that simulator runs for all models"""
     # Go over model names
-    for key in model_config.keys():
+    for key, value in model_config.items():
         # Go over different types of input data
         # (listed above in sim_input_data() fixture)
         for subkey in sim_input_data[key].keys():
             print(key, " -> ", subkey)
+            print("input data: ", sim_input_data[key][subkey])
 
             # Go over different number of samples
             if subkey == "theta_dict_uneven":
-
                 for n_samples in [1, 10]:
                     raised_value_error = 0
-                    print("input data: ", sim_input_data[key][subkey])
                     print("n_samples: ", n_samples)
                     try:
                         out = simulator(
@@ -105,12 +139,11 @@ def test_simulator_runs(sim_input_data):
                             n_samples=n_samples,
                         )
                     except ValueError:
-                        raised_val_error = 1
+                        raised_value_error = 1
 
-                    assert raised_val_error
+                    assert raised_value_error
             else:
                 for n_samples in [1, 10]:
-                    print("input data: ", sim_input_data[key][subkey])
                     print("n_samples: ", n_samples)
                     out = simulator(
                         model=key,
@@ -121,3 +154,22 @@ def test_simulator_runs(sim_input_data):
                     assert "metadata" in out.keys()
                     assert "rts" in out.keys()
                     assert "choices" in out.keys()
+
+
+def test_logical_bound_violation(sim_input_data_violate_bounds):
+    """Test that simulator runs for all models"""
+    # Go over model names
+    for key, value in model_config.items():
+        # Go over different types of input data
+        # (listed above in sim_input_data() fixture)
+        for subkey in sim_input_data_violate_bounds[key].keys():
+            print(key, " -> ", subkey)
+            print("input data: ", sim_input_data_violate_bounds[key][subkey])
+            print("n_samples: ", 1)
+
+            with pytest.raises(ValueError):
+                simulator(
+                    model=key,
+                    theta=sim_input_data_violate_bounds[key][subkey],
+                    n_samples=1,
+                )
