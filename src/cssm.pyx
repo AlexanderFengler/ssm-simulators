@@ -1131,10 +1131,8 @@ def full_ddm_rv(np.ndarray[float, ndim = 1] v, # = 0,
 
         # Precompute boundary evaluations
         if boundary_multiplicative:
-            # print(a)
             boundary[:] = np.multiply(a_view[k], boundary_fun(t = t_s, **boundary_params_tmp)).astype(DTYPE)
         else:
-            # print(a)
             boundary[:] = np.add(a_view[k], boundary_fun(t = t_s, **boundary_params_tmp)).astype(DTYPE)
 
         sqrt_st = delta_t_sqrt * s_view[k]
@@ -1329,10 +1327,8 @@ def full_ddm(np.ndarray[float, ndim = 1] v, # = 0,
 
         # Precompute boundary evaluations
         if boundary_multiplicative:
-            # print(a)
             boundary[:] = np.multiply(a_view[k], boundary_fun(t = t_s, **boundary_params_tmp)).astype(DTYPE)
         else:
-            # print(a)
             boundary[:] = np.add(a_view[k], boundary_fun(t = t_s, **boundary_params_tmp)).astype(DTYPE)
         
         deadline_tmp = min(max_t, deadline_view[k] - t_view[k])
@@ -2240,7 +2236,6 @@ def ddm_flexbound_seq2(np.ndarray[float, ndim = 1] vh,
                        float max_t = 20,
                        int n_samples = 20000,
                        int n_trials = 1,
-                       print_info = True,
                        boundary_fun = None, # function of t (and potentially other parameters) that takes in (t, *args)
                        boundary_multiplicative = True,
                        boundary_params = {},
@@ -2277,8 +2272,6 @@ def ddm_flexbound_seq2(np.ndarray[float, ndim = 1] vh,
         Number of samples to simulate (default: 20000).
     n_trials : int, optional
         Number of trials to simulate (default: 1).
-    print_info : bool, optional
-        Whether to print information during the simulation (default: True).
     boundary_fun : callable, optional
         Function that determines the decision boundary over time (default: None).
     boundary_multiplicative : bool, optional
@@ -2554,7 +2547,6 @@ def ddm_flexbound_par2(np.ndarray[float, ndim = 1] vh,
                        float max_t = 20,
                        int n_samples = 20000,
                        int n_trials = 1,
-                       print_info = True,
                        boundary_fun = None, # function of t (and potentially other parameters) that takes in (t, *args)
                        boundary_multiplicative = True,
                        boundary_params = {},
@@ -2591,8 +2583,6 @@ def ddm_flexbound_par2(np.ndarray[float, ndim = 1] vh,
         Number of simulations per trial. Default is 20000.
     n_trials : int, optional
         Number of trials to simulate. Default is 1.
-    print_info : bool, optional
-        Whether to print information during simulation. Default is True.
     boundary_fun : callable, optional
         Function defining the decision boundary over time.
     boundary_multiplicative : bool, optional
@@ -2839,7 +2829,6 @@ def ddm_flexbound_mic2_ornstein(np.ndarray[float, ndim = 1] vh,
                                 float max_t = 20,
                                 int n_samples = 20000,
                                 int n_trials = 1,
-                                print_info = True,
                                 boundary_fun = None, # function of t (and potentially other parameters) that takes in (t, *args)
                                 boundary_multiplicative = True,
                                 boundary_params = {},
@@ -2878,8 +2867,6 @@ def ddm_flexbound_mic2_ornstein(np.ndarray[float, ndim = 1] vh,
         Number of samples to simulate (default: 20000).
     n_trials : int, optional
         Number of trials to simulate (default: 1).
-    print_info : bool, optional
-        Whether to print information during simulation (default: True).
     boundary_fun : callable, optional
         Boundary function of t and potentially other parameters (default: None).
     boundary_multiplicative : bool, optional
@@ -3178,7 +3165,6 @@ def ddm_flexbound_mic2_multinoise(np.ndarray[float, ndim = 1] vh,
                                   float max_t = 20,
                                   int n_samples = 20000,
                                   int n_trials = 1,
-                                  print_info = True,
                                   boundary_fun = None,
                                   boundary_multiplicative = True,
                                   boundary_params = {},
@@ -3213,8 +3199,6 @@ def ddm_flexbound_mic2_multinoise(np.ndarray[float, ndim = 1] vh,
         Number of samples to simulate (default: 20000).
     n_trials : int, optional
         Number of trials to simulate (default: 1).
-    print_info : bool, optional
-        Whether to print information during simulation (default: True).
     boundary_fun : callable, optional
         Function defining the decision boundary (default: None).
     boundary_multiplicative : bool, optional
@@ -3527,7 +3511,6 @@ def ddm_flexbound_mic2_ornstein_multinoise(np.ndarray[float, ndim = 1] vh,
                                            float max_t = 20,
                                            int n_samples = 20000,
                                            int n_trials = 1,
-                                           print_info = True,
                                            boundary_fun = None, # function of t (and potentially other parameters) that takes in (t, *args)
                                            boundary_multiplicative = True,
                                            boundary_params = {},
@@ -3567,8 +3550,6 @@ def ddm_flexbound_mic2_ornstein_multinoise(np.ndarray[float, ndim = 1] vh,
         Number of samples to generate (default is 20000).
     n_trials : int, optional
         Number of trials to simulate (default is 1).
-    print_info : bool, optional
-        Whether to print simulation information (default is True).
     boundary_fun : callable, optional
         Function defining the decision boundary over time.
     boundary_multiplicative : bool, optional
@@ -4276,7 +4257,6 @@ def ddm_flexbound_mic2_unnormalized_ornstein_multinoise(np.ndarray[float, ndim =
                                                         float max_t = 20,
                                                         int n_samples = 20000,
                                                         int n_trials = 1,
-                                                        print_info = True,
                                                         boundary_fun = None, # function of t (and potentially other parameters) that takes in (t, *args)
                                                         boundary_multiplicative = True,
                                                         boundary_params = {},
@@ -4317,8 +4297,6 @@ def ddm_flexbound_mic2_unnormalized_ornstein_multinoise(np.ndarray[float, ndim =
         Number of samples per trial (default: 20000).
     n_trials : int, optional
         Number of trials to simulate (default: 1).
-    print_info : bool, optional
-        Whether to print simulation information (default: True).
     boundary_fun : callable, optional
         Function defining the decision boundary over time.
     boundary_multiplicative : bool, optional
@@ -4618,7 +4596,6 @@ def ddm_flexbound_tradeoff(np.ndarray[float, ndim = 1] vh,
                            float max_t = 20,
                            int n_samples = 20000,
                            int n_trials = 1,
-                           print_info = True,
                            boundary_fun = None, # function of t (and potentially other parameters) that takes in (t, *args)
                            boundary_multiplicative = True,
                            boundary_params = {},
@@ -4656,8 +4633,6 @@ def ddm_flexbound_tradeoff(np.ndarray[float, ndim = 1] vh,
         Number of samples to simulate (default: 20000).
     n_trials : int, optional
         Number of trials to simulate (default: 1).
-    print_info : bool, optional
-        Whether to print simulation information (default: True).
     boundary_fun : callable, optional
         Function defining the decision boundary over time.
     boundary_multiplicative : bool, optional
